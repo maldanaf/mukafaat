@@ -4,9 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "postinstall": "bash scripts/patch-react-dom.sh || true",
     "dev": "next dev",
-    "build": "bash scripts/patch-react-dom.sh || true && next build",
+    "build": "next build",
     "start": "next start",
     "locales:ur-hi": "node scripts/generate-ur-hi-locales.mjs",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
