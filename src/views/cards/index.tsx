@@ -1,0 +1,599 @@
+"use client";
+
+import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Link } from "@/lib/router-compat";
+import CardsHero from "./components/CardsHero";
+import CardsCategorySection from "./components/CardsCategorySection";
+import CardsSliderSection from "./components/CardsSliderSection";
+import { useIsRTL } from "@hooks";
+import { Helmet } from "@/lib/helmet-compat";
+import GetStartedSection from "@views/home/components/GetStartedSection";
+import { useWebCards } from "@hooks/api/useMokafaatQueries";
+import {
+  mapApiHomeCardsToOffers,
+  type CardOfferWithCompanyId,
+} from "@network/mappers/cardsMapper";
+import { LoadingSpinner } from "@components/LoadingSpinner";
+import { buildWebCardsParams } from "@utils/webFilters";
+import { FiFilter } from "react-icons/fi";
+import { IoMdClose } from "react-icons/io";
+
+interface ApiCategory {
+  id: number;
+  name: string;
+  image?: string;
+}
+
+interface ApiMerchant {
+  id: number;
+  name: string;
+  logo: string;
+  slug?: string;
+}
+
+const CardsPage = () => {
+  const { t } = useTranslation();
+  const isRTL = useIsRTL();
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("all");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [search, setSearch] = useState<string>("");
+  const createDefaultCardsFilters = useCallback(
+    () => ({ merchantIds: [] as Array<string | number>, validityTypes: [] as string[] }),
+    [],
+  );
+  const [draftCardsFilters, setDraftCardsFilters] = useState<{
+    merchantIds: Array<string | number>;
+    validityTypes: string[];
+    isRenewable?: boolean;
+    priceMin?: number;
+    priceMax?: number;
+  }>(createDefaultCardsFilters);
+  const [appliedCardsFilters, setAppliedCardsFilters] = useState<{
+    merchantIds: Array<string | number>;
+    validityTypes: string[];
+    isRenewable?: boolean;
+    priceMin?: number;
+    priceMax?: number;
+  }>(createDefaultCardsFilters);
+
+  const categoryIdNum =
+    selectedCategoryId !== "all" ? Number(selectedCategoryId) : undefined;
+
+  const baseParams = useMemo(
+    () => ({
+      categoryIds: categoryIdNum ? [categoryIdNum] : undefined,
+      merchantIds:
+        appliedCardsFilters.merchantIds.length > 0
+          ? appliedCardsFilters.merchantIds
+          : undefined,
+      validityTypes:
+        appliedCardsFilters.validityTypes.length > 0
+          ? appliedCardsFilters.validityTypes
+          : undefined,
+      isRenewable: appliedCardsFilters.isRenewable,
+      priceMin: appliedCardsFilters.priceMin,
+      priceMax: appliedCardsFilters.priceMax,
+      search: search || undefined,
+      perPage: 50,
+      page: 1,
+    }),
+    [categoryIdNum, appliedCardsFilters, search],
+  );
+
+  const { data: latestRes, isLoading: latestLoading } = useWebCards(
+    buildWebCardsParams({
+      ...baseParams,
+      sortBy: "newest",
+    }),
+  );
+  const { data: topSellingRes, isLoading: topSellingLoading } = useWebCards(
+    buildWebCardsParams({
+      ...baseParams,
+      sortBy: "best_selling",
+    }),
+  );
+  const { data: mostViewedRes, isLoading: mostViewedLoading } = useWebCards(
+    buildWebCardsParams({
+      ...baseParams,
+      sortBy: "most_viewed",
+    }),
+  );
+
+  const extractCardsPayload = useCallback((res: unknown) => {
+    const root = (res as Record<string, unknown>) ?? {};
+    return (root.data as Record<string, unknown>) ?? root;
+  }, []);
+
+  const latestData = useMemo(
+    () => extractCardsPayload(latestRes),
+    [latestRes, extractCardsPayload],
+  );
+
+  const categories = useMemo((): ApiCategory[] => {
+    const arr =
+      (latestData?.categories as ApiCategory[] | undefined) ??
+      (latestData?.data as ApiCategory[] | undefined);
+    return Array.isArray(arr) ? arr : [];
+  }, [latestData]);
+
+  const categoryItems = useMemo(
+    () =>
+      categories.map((c) => ({
+        id: c.id,
+        name: c.name,
+        image: c.image,
+      })),
+    [categories],
+  );
+
+  const merchants = useMemo((): ApiMerchant[] => {
+    const arr = latestData?.merchants as ApiMerchant[] | undefined;
+    return Array.isArray(arr) ? arr : [];
+  }, [latestData]);
+
+  const latestCards = useMemo((): CardOfferWithCompanyId[] => {
+    const payload = extractCardsPayload(latestRes);
+    const arr = payload?.cards as Array<Record<string, unknown>> | undefined;
+    return mapApiHomeCardsToOffers(Array.isArray(arr) ? arr : []);
+  }, [latestRes, extractCardsPayload]);
+
+  const topSellingCards = useMemo((): CardOfferWithCompanyId[] => {
+    const payload = extractCardsPayload(topSellingRes);
+    const arr = payload?.cards as Array<Record<string, unknown>> | undefined;
+    return mapApiHomeCardsToOffers(Array.isArray(arr) ? arr : []);
+  }, [topSellingRes, extractCardsPayload]);
+
+  const mostViewedCards = useMemo((): CardOfferWithCompanyId[] => {
+    const payload = extractCardsPayload(mostViewedRes);
+    const arr = payload?.cards as Array<Record<string, unknown>> | undefined;
+    return mapApiHomeCardsToOffers(Array.isArray(arr) ? arr : []);
+  }, [mostViewedRes, extractCardsPayload]);
+
+  const isLoading = latestLoading || topSellingLoading || mostViewedLoading;
+
+  if (isLoading) {
+    return (
+      <>
+        <Helmet>
+          <title>{t("cardsPage.pageTitle")}</title>
+          <link rel="canonical" href="https://mukafaat.com/cards" />
+        </Helmet>
+        <CardsHero />
+        <div className="min-h-[40vh] flex items-center justify-center">
+          <LoadingSpinner />
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Helmet>
+        <title>{t("cardsPage.pageTitle")}</title>
+        <link rel="canonical" href="https://mukafaat.com/cards" />
+      </Helmet>
+
+      <CardsHero />
+
+      <CardsCategorySection
+        categories={categoryItems}
+        selectedCategoryId={selectedCategoryId}
+        onSelectCategory={setSelectedCategoryId}
+        isLoading={isLoading}
+      />
+
+      {/* Cards filters trigger (Sidebar) */}
+      <section className="container mx-auto px-4 -mt-2 pb-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="w-full md:w-80">
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={t("cardsPage.searchPlaceholder")}
+              className="w-full px-5 py-3 rounded-full font-medium text-sm shadow-md transition-all duration-300 bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#400198] focus:border-transparent"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setDraftCardsFilters(appliedCardsFilters);
+              setIsFilterOpen(true);
+            }}
+            className="px-5 py-3 rounded-full font-medium text-sm shadow-md transition-all duration-300 bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 inline-flex items-center gap-2"
+          >
+            <FiFilter size={18} />
+            {t("cardsPage.filter")}
+          </button>
+        </div>
+
+        {/* Applied Filters Tags (like Offers page) */}
+        <div className="text-sm text-gray-600 mt-4">
+          <div className="flex flex-wrap gap-2">
+            {appliedCardsFilters.merchantIds.map((id) => {
+              const label =
+                merchants.find((m) => String(m?.id) === String(id))?.name ?? String(id);
+              return (
+                <span
+                  key={`m-${id}`}
+                  className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium"
+                >
+                  {label}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setAppliedCardsFilters((p) => ({
+                        ...p,
+                        merchantIds: p.merchantIds.filter(
+                          (x) => String(x) !== String(id),
+                        ),
+                      }))
+                    }
+                    className="ml-1 hover:bg-blue-200 rounded-full p-0.5"
+                  >
+                    ×
+                  </button>
+                </span>
+              );
+            })}
+
+            {appliedCardsFilters.validityTypes.map((v) => (
+              <span
+                key={`v-${v}`}
+                className="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium"
+              >
+                {v}
+                <button
+                  type="button"
+                  onClick={() =>
+                    setAppliedCardsFilters((p) => ({
+                      ...p,
+                      validityTypes: p.validityTypes.filter((x) => x !== v),
+                    }))
+                  }
+                  className="ml-1 hover:bg-green-200 rounded-full p-0.5"
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+
+            {appliedCardsFilters.isRenewable && (
+              <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
+                {t("cardsPage.renewable")}
+                <button
+                  type="button"
+                  onClick={() =>
+                    setAppliedCardsFilters((p) => ({ ...p, isRenewable: undefined }))
+                  }
+                  className="ml-1 hover:bg-purple-200 rounded-full p-0.5"
+                >
+                  ×
+                </button>
+              </span>
+            )}
+
+            {(appliedCardsFilters.priceMin != null ||
+              appliedCardsFilters.priceMax != null) && (
+              <span className="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium">
+                {appliedCardsFilters.priceMin != null &&
+                appliedCardsFilters.priceMax != null
+                  ? `${appliedCardsFilters.priceMin} - ${appliedCardsFilters.priceMax}`
+                  : appliedCardsFilters.priceMin != null
+                    ? t("cardsPage.priceTagMinOnly", {
+                        value: appliedCardsFilters.priceMin,
+                      })
+                    : t("cardsPage.priceTagMaxOnly", {
+                        value: appliedCardsFilters.priceMax as number,
+                      })}
+                <button
+                  type="button"
+                  onClick={() =>
+                    setAppliedCardsFilters((p) => ({
+                      ...p,
+                      priceMin: undefined,
+                      priceMax: undefined,
+                    }))
+                  }
+                  className="ml-1 hover:bg-gray-200 rounded-full p-0.5"
+                >
+                  ×
+                </button>
+              </span>
+            )}
+
+            {(appliedCardsFilters.merchantIds.length > 0 ||
+              appliedCardsFilters.validityTypes.length > 0 ||
+              appliedCardsFilters.isRenewable ||
+              appliedCardsFilters.priceMin != null ||
+              appliedCardsFilters.priceMax != null) && (
+              <button
+                type="button"
+                onClick={() => {
+                  // Reset everything back to "no filtering"
+                  const reset = createDefaultCardsFilters();
+                  setAppliedCardsFilters(reset);
+                  setDraftCardsFilters(reset);
+                  setSearch("");
+                  setSelectedCategoryId("all");
+                }}
+                className="inline-flex items-center gap-1 px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium hover:bg-red-200 transition-colors"
+              >
+                {t("cardsPage.clearAll")}
+              </button>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Filter Sidebar (WEB Cards) */}
+      {isFilterOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+          onClick={() => setIsFilterOpen(false)}
+        />
+      )}
+      <div
+        className={`fixed top-0 h-full w-full md:w-1/2 lg:w-1/3 xl:w-1/4 bg-white z-[9999] transition-all duration-300 ease-in-out shadow-2xl ${
+          isFilterOpen
+            ? isRTL
+              ? "right-0 translate-x-0"
+              : "left-0 translate-x-0"
+            : isRTL
+              ? "-right-full translate-x-full"
+              : "-left-full -translate-x-full"
+        }`}
+      >
+        <div className="flex items-center justify-between py-4 px-6 border-b border-gray-200">
+          <h2 className="text-lg font-semibold text-gray-800">
+            {t("cardsPage.filterSidebarTitle")}
+          </h2>
+          <button
+            type="button"
+            onClick={() => setIsFilterOpen(false)}
+            className="text-gray-400 hover:text-gray-600 transition-colors duration-200 bg-gray-100 rounded-full p-2"
+          >
+            <IoMdClose size={20} />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-6 pb-24 h-[calc(100vh-160px)]">
+          <div className="space-y-6">
+            {/* Merchants */}
+            {merchants.length > 0 && (
+              <div>
+                <p className="text-sm font-semibold text-gray-800 mb-3">
+                  {t("cardsPage.merchants")}
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  {merchants.map((m) => {
+                    const id = m?.id;
+                    const name = String(m?.name ?? "").trim();
+                    if (!id || !name) return null;
+                    const selected = draftCardsFilters.merchantIds.some(
+                      (x) => String(x) === String(id),
+                    );
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        onClick={() =>
+                          setDraftCardsFilters((p) => ({
+                            ...p,
+                            merchantIds: selected
+                              ? p.merchantIds.filter((x) => String(x) !== String(id))
+                              : [...p.merchantIds, id],
+                          }))
+                        }
+                        className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors border ${
+                          selected
+                            ? "bg-purple-100 text-purple-700 border-purple-200"
+                            : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                        }`}
+                      >
+                        {name}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Validity types */}
+            <div className="border-t border-gray-200 pt-5">
+              <p className="text-sm font-semibold text-gray-800 mb-3">
+                {t("cardsPage.validityType")}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {(
+                  [
+                    "daily",
+                    "weekly",
+                    "monthly",
+                    "quarterly",
+                    "semi_annual",
+                    "annual",
+                    "unlimited",
+                  ] as const
+                ).map((v) => {
+                  const selected = draftCardsFilters.validityTypes.includes(v);
+                  return (
+                    <button
+                      key={v}
+                      type="button"
+                      onClick={() =>
+                        setDraftCardsFilters((p) => ({
+                          ...p,
+                          validityTypes: selected
+                            ? p.validityTypes.filter((x) => x !== v)
+                            : [...p.validityTypes, v],
+                        }))
+                      }
+                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors border ${
+                        selected
+                          ? "bg-purple-100 text-purple-700 border-purple-200"
+                          : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                      }`}
+                    >
+                      {v}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Renewable */}
+            <div className="border-t border-gray-200 pt-5">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-800">
+                <input
+                  type="checkbox"
+                  checked={Boolean(draftCardsFilters.isRenewable)}
+                  onChange={(e) =>
+                    setDraftCardsFilters((p) => ({
+                      ...p,
+                      isRenewable: e.target.checked ? true : undefined,
+                    }))
+                  }
+                />
+                {t("cardsPage.renewable")}
+              </label>
+            </div>
+
+            {/* Price range */}
+            <div className="border-t border-gray-200 pt-5">
+              <p className="text-sm font-semibold text-gray-800 mb-3">
+                {t("cardsPage.priceRange")}
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                <input
+                  type="number"
+                  min={0}
+                  value={draftCardsFilters.priceMin ?? ""}
+                  onChange={(e) =>
+                    setDraftCardsFilters((p) => ({
+                      ...p,
+                      priceMin: e.target.value === "" ? undefined : Number(e.target.value),
+                    }))
+                  }
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#400198]/30"
+                  placeholder={t("cardsPage.min")}
+                />
+                <input
+                  type="number"
+                  min={0}
+                  value={draftCardsFilters.priceMax ?? ""}
+                  onChange={(e) =>
+                    setDraftCardsFilters((p) => ({
+                      ...p,
+                      priceMax: e.target.value === "" ? undefined : Number(e.target.value),
+                    }))
+                  }
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#400198]/30"
+                  placeholder={t("cardsPage.max")}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t border-gray-200 p-6">
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() =>
+                (() => {
+                  const reset = createDefaultCardsFilters();
+                  setDraftCardsFilters(reset);
+                  setAppliedCardsFilters(reset);
+                  setSearch("");
+                  setSelectedCategoryId("all");
+                })()
+              }
+              className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+            >
+              {t("cardsPage.reset")}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setAppliedCardsFilters(draftCardsFilters);
+                setIsFilterOpen(false);
+              }}
+              className="flex-1 px-4 py-2 bg-[#fd671a] text-white rounded-lg font-medium hover:bg-[#e55a17] transition-colors"
+            >
+              {t("cardsPage.apply")}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {merchants.length > 0 && (
+        <section className="container mx-auto px-4 pb-10">
+          <div className="text-start mb-4">
+            <h2 className="text-[#400198] text-3xl font-bold">
+              {t("cardsPage.merchants")}
+            </h2>
+            <p className="text-md text-gray-700 leading-relaxed">
+              {t("cardsPage.merchantsSectionSubtitle")}
+            </p>
+          </div>
+          <div className="relative">
+            <div
+              className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide"
+              style={{ scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch", scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
+              {merchants.map((merchant) => (
+                <Link
+                  key={merchant.id}
+                  to={`/cards/${merchant.slug || merchant.id}`}
+                  className="flex-shrink-0 w-28 bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-100 flex flex-col items-center p-3 no-underline text-inherit"
+                  style={{ scrollSnapAlign: "start" }}
+                >
+                  <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-50 flex-shrink-0 mb-2 ring-2 ring-gray-100">
+                    <img
+                      src={merchant.logo}
+                      alt={merchant.name}
+                      className="w-full h-full object-contain p-1"
+                    />
+                  </div>
+                  <span className="text-xs font-semibold text-gray-800 text-center line-clamp-2 leading-tight">
+                    {merchant.name}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <CardsSliderSection
+        title={t("cardsPage.sections.latestTitle")}
+        subtitle={t("cardsPage.sections.latestSubtitle")}
+        cards={latestCards}
+        isLoading={isLoading}
+        categories={categoryItems}
+      />
+
+      <CardsSliderSection
+        title={t("cardsPage.sections.topSellingTitle")}
+        subtitle={t("cardsPage.sections.topSellingSubtitle")}
+        cards={topSellingCards}
+        isLoading={isLoading}
+        categories={categoryItems}
+      />
+
+      <CardsSliderSection
+        title={t("cardsPage.sections.mostViewedTitle")}
+        subtitle={t("cardsPage.sections.mostViewedSubtitle")}
+        cards={mostViewedCards}
+        isLoading={isLoading}
+        categories={categoryItems}
+      />
+
+      <GetStartedSection className="mt-16 mb-28" />
+    </>
+  );
+};
+
+export default CardsPage;

@@ -1,0 +1,107 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": false,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "react": [
+        "./node_modules/@types/react"
+      ],
+      "@*": [
+        "src/*"
+      ],
+      "@assets/*": [
+        "src/assets/*"
+      ],
+      "@context/*": [
+        "src/context/*"
+      ],
+      "@business-registration/*": [
+        "src/business-registration/*"
+      ],
+      "@components/*": [
+        "src/components/*"
+      ],
+      "@data/*": [
+        "src/data/*"
+      ],
+      "@entities/*": [
+        "src/entities/*"
+      ],
+      "@constants/*": [
+        "src/constants/*"
+      ],
+      "@enums/*": [
+        "src/enums/*"
+      ],
+      "@hooks/*": [
+        "src/hooks/*"
+      ],
+      "@network/*": [
+        "src/network/*"
+      ],
+      "@views/*": [
+        "src/views/*"
+      ],
+      "@interfaces/*": [
+        "src/interfaces/*"
+      ],
+      "@locale/*": [
+        "src/locale/*"
+      ],
+      "@types/*": [
+        "src/types/*"
+      ],
+      "@validations/*": [
+        "src/validations/*"
+      ],
+      "@stores/*": [
+        "src/stores/*"
+      ],
+      "@config/*": [
+        "src/config/*"
+      ],
+      "@utils/*": [
+        "src/utils/*"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -1,0 +1,793 @@
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+import {
+  authService,
+  type CompleteProfileParams,
+} from "@network/services/authService";
+
+// واجهة المستخدم
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  phone?: string;
+  avatar?: string;
+  isVerified: boolean;
+  createdAt: string;
+  preferences: {
+    language: "ar" | "en";
+    notifications: boolean;
+    emailUpdates: boolean;
+  };
+}
+
+// واجهة العنصر المحفوظ
+export interface SavedItem {
+  id: string;
+  type: "offer" | "card" | "booking";
+  itemId: string;
+  companyId?: string;
+  title: { ar: string; en: string };
+  image: string;
+  price?: number;
+  originalPrice?: number;
+  savedAt: string;
+}
+
+// واجهة عنصر السلة
+export interface CartItem {
+  id: string;
+  type: "offer" | "card" | "booking";
+  itemId: string;
+  companyId?: string;
+  title: { ar: string; en: string };
+  image: string;
+  price: number;
+  originalPrice?: number;
+  quantity: number;
+  addedAt: string;
+}
+
+// واجهة الطلب
+export interface Order {
+  id: string;
+  items: CartItem[];
+  totalAmount: number;
+  status: "pending" | "confirmed" | "completed" | "cancelled";
+  paymentMethod: string;
+  createdAt: string;
+  completedAt?: string;
+}
+
+// واجهة حالة المستخدم
+interface UserState {
+  // بيانات المستخدم
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  loading: boolean;
+  error: string | null;
+  otpSent: boolean;
+  /** بعد verify-otp: إذا true يجب إكمال البروفايل قبل استخدام النظام */
+  needsProfileCompletion: boolean;
+
+  // المفضلة
+  savedItems: SavedItem[];
+
+  // السلة
+  cartItems: CartItem[];
+
+  // الطلبات
+  orders: Order[];
+
+  // الإجراءات OTP (مرتبطة بـ API مكافآت)
+  sendOtp: (
+    phone: string,
+    countryCode?: string,
+  ) => Promise<{ status: boolean; msg: string }>;
+  verifyOtp: (
+    phone: string,
+    otp: string,
+    countryCode?: string,
+  ) => Promise<{
+    status: boolean;
+    msg: string;
+    data?: {
+      user: User;
+      token: string;
+      is_profile_completed: boolean;
+      needs_profile_completion?: boolean;
+    };
+  }>;
+  completeRegistration: (
+    payload: CompleteProfileParams,
+  ) => Promise<{ status: boolean; msg: string; errNum?: string }>;
+
+  // الإجراءات القديمة (للتوافق)
+  login: (email: string, password: string) => Promise<boolean>;
+  register: (userData: Partial<User>) => Promise<boolean>;
+  logout: () => void;
+  updateProfile: (userData: {
+    name?: string;
+    email?: string;
+    phone?: string;
+    first_name?: string;
+    last_name?: string;
+    id_number?: string;
+    country_code?: string;
+    city_id?: string | number;
+    gender?: string;
+    avatar?: File | string | null;
+  }) => Promise<{ status: boolean; msg: string }>;
+
+  // المفضلة
+  addToSaved: (item: Omit<SavedItem, "id" | "savedAt">) => void;
+  removeFromSaved: (itemId: string) => void;
+  isItemSaved: (itemId: string) => boolean;
+
+  // السلة
+  addToCart: (item: Omit<CartItem, "id" | "addedAt">) => void;
+  removeFromCart: (itemId: string) => void;
+  updateCartQuantity: (itemId: string, quantity: number) => void;
+  clearCart: () => void;
+  getCartTotal: () => number;
+
+  // إعادة تعيين البيانات
+  resetStore: () => void;
+
+  // الطلبات
+  createOrder: (paymentMethod: string) => Order;
+  updateOrderStatus: (orderId: string, status: Order["status"]) => void;
+}
+
+// بيانات وهمية للمستخدمين
+const mockUsers: User[] = [
+  {
+    id: "1",
+    email: "user@example.com",
+    name: "Ahmed Mohammed",
+    phone: "+966501234567",
+    avatar:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+    isVerified: true,
+    createdAt: "2024-01-15T10:00:00Z",
+    preferences: {
+      language: "ar",
+      notifications: true,
+      emailUpdates: true,
+    },
+  },
+  {
+    id: "2",
+    email: "sara@example.com",
+    name: "Sarah Ahmed",
+    phone: "+966507654321",
+    avatar:
+      "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
+    isVerified: true,
+    createdAt: "2024-02-20T14:30:00Z",
+    preferences: {
+      language: "ar",
+      notifications: false,
+      emailUpdates: true,
+    },
+  },
+];
+
+export const useUserStore = create<UserState>()(
+  persist(
+    (set, get) => ({
+      // الحالة الأولية
+      user: null,
+      token: null,
+      isAuthenticated: false,
+      loading: false,
+      error: null,
+      otpSent: false,
+      needsProfileCompletion: false,
+      savedItems: [],
+      cartItems: [],
+      orders: [],
+
+      // إرسال OTP عبر API مكافآت (POST مع query: phone, country_code, type=sms)
+      sendOtp: async (phone: string, countryCode = "966") => {
+        set({ loading: true, error: null });
+        try {
+          const res = await authService.sendOtp({
+            phone,
+            country_code: countryCode,
+            type: "sms",
+          });
+          const data = res.data as {
+            status?: boolean;
+            message?: string;
+            msg?: string;
+          };
+          if (data?.status === false) {
+            const errorMsg = data?.message ?? data?.msg ?? "Error sending OTP";
+            set({ loading: false, error: errorMsg });
+            return { status: false, msg: errorMsg };
+          }
+          const msg = data?.message ?? data?.msg ?? "Verification code sent";
+          set({ otpSent: true, loading: false, error: null });
+          return { status: true, msg };
+        } catch (err: unknown) {
+          const errData = (
+            err as { response?: { data?: { message?: string } } }
+          )?.response?.data;
+          const errorMsg =
+            errData?.message ?? "Error sending verification code";
+          set({ error: errorMsg, loading: false });
+          return { status: false, msg: errorMsg };
+        }
+      },
+
+      // التحقق من OTP عبر API مكافآت (POST مع query: phone, country_code, otp_code)
+      // يدعم أشكال استجابة متعددة: data.data.user + token، أو data.user + data.token، أو data كائن user مع data.token
+      verifyOtp: async (phone: string, otp: string, countryCode = "966") => {
+        set({ loading: true, error: null });
+        try {
+          const res = await authService.verifyOtp({
+            phone,
+            country_code: countryCode,
+            otp_code: otp,
+          });
+          const data = res.data as Record<string, unknown> & {
+            status?: boolean;
+            msg?: string;
+            message?: string;
+            errNum?: string;
+            data?: Record<string, unknown> & {
+              user?: Record<string, unknown>;
+              token?: string;
+              is_profile_completed?: boolean;
+            };
+            user_meta?: Record<string, unknown>;
+          };
+          const verifyFailed =
+            data?.status === false ||
+            (typeof data?.errNum === "string" &&
+              data.errNum.startsWith("E"));
+          if (verifyFailed) {
+            const errorMsg =
+              (data?.message as string) ??
+              (data?.msg as string) ??
+              "Invalid verification code";
+            set({ loading: false, error: errorMsg });
+            return { status: false, msg: errorMsg };
+          }
+          const inner = data?.data as Record<string, unknown> | undefined;
+          // استخراج user: data.data.user أو data.data (إذا كان الكائن نفسه المستخدم) أو data.user
+          const apiUser =
+            (inner?.user as Record<string, unknown>) ??
+            (inner &&
+            typeof inner === "object" &&
+            (inner.id != null || inner.token != null)
+              ? inner
+              : null) ??
+            (data?.user as Record<string, unknown>);
+          // استخراج token: من user أو من data.data.token أو data.token
+          const token: string | undefined =
+            (apiUser?.token as string) ??
+            (inner?.token as string) ??
+            (data?.token as string);
+          if (!apiUser || !token || typeof token !== "string") {
+            set({ loading: false, error: "Invalid response from server" });
+            return { status: false, msg: "Invalid response from server" };
+          }
+          // من الـ API: is_profile_completed داخل data.user — false = يجب فتح فورم إكمال التسجيل
+          const isProfileCompleted =
+            apiUser.is_profile_completed === true ||
+            inner?.is_profile_completed === true;
+          const needsProfileCompletion =
+            apiUser.is_profile_completed === false;
+          const rawName = apiUser.name;
+          const userName =
+            rawName != null && rawName !== ""
+              ? String(rawName)
+              : apiUser.email
+                ? String(apiUser.email).split("@")[0]
+                : "User";
+          const user: User = {
+            id: String(apiUser.id ?? "user_unknown"),
+            email: String(apiUser.email ?? ""),
+            name: userName,
+            phone: String(apiUser.phone ?? phone),
+            avatar: apiUser.avatar as string | undefined,
+            isVerified: Boolean(
+              apiUser.email_verified_at ?? isProfileCompleted ?? true,
+            ),
+            createdAt: String(apiUser.created_at ?? new Date().toISOString()),
+            preferences: {
+              language: "ar",
+              notifications: true,
+              emailUpdates: true,
+            },
+          };
+          set({
+            user,
+            token,
+            isAuthenticated: true,
+            otpSent: false,
+            needsProfileCompletion,
+            loading: false,
+            error: null,
+          });
+          const msg = (data?.message ??
+            data?.msg ??
+            "Login successful") as string;
+          return {
+            status: true,
+            msg,
+            data: {
+              user,
+              token,
+              is_profile_completed: isProfileCompleted,
+              needs_profile_completion: needsProfileCompletion,
+            },
+          };
+        } catch (err: unknown) {
+          const errData = (
+            err as { response?: { data?: { message?: string; msg?: string } } }
+          )?.response?.data;
+          const errorMsg =
+            errData?.message ?? errData?.msg ?? "Invalid verification code";
+          set({ error: errorMsg, loading: false });
+          return { status: false, msg: errorMsg };
+        }
+      },
+
+      // إكمال التسجيل عبر API مكافآت (POST /api/auth/complete-profile مع FormData)
+      completeRegistration: async (payload: CompleteProfileParams) => {
+        set({ loading: true, error: null });
+        try {
+          const res = await authService.completeProfile(payload);
+          const root = res.data as Record<string, unknown>;
+          const inner = root?.data as Record<string, unknown> | undefined;
+          /** دمج الجذر مع data الداخلية حتى لا يضيع status/msg/errNum */
+          const data = {
+            ...root,
+            ...(typeof inner === "object" && inner != null ? inner : {}),
+          } as {
+            status?: boolean;
+            message?: string;
+            msg?: string;
+            errNum?: string;
+            user?: Record<string, unknown>;
+            data?: { user?: Record<string, unknown> };
+          };
+          const errNum =
+            (data.errNum as string | undefined) ??
+            (inner?.errNum as string | undefined);
+          const apiMsg =
+            (data.msg as string | undefined) ??
+            (data.message as string | undefined) ??
+            (inner?.msg as string | undefined) ??
+            (inner?.message as string | undefined);
+          const completeFailed =
+            data?.status === false ||
+            (typeof errNum === "string" && errNum.startsWith("E"));
+          if (completeFailed) {
+            const errorMsg = apiMsg ?? "Error updating data";
+            // أخطاء حقول (E001 بريد…) لا نملأ error العام ليظهر توست عام
+            const isFieldError = errNum === "E001";
+            set({
+              loading: false,
+              error: isFieldError ? null : errorMsg,
+            });
+            return { status: false, msg: errorMsg, errNum };
+          }
+          const innerPayload = (data as { data?: unknown })?.data as
+            | Record<string, unknown>
+            | undefined;
+          const apiUser =
+            (data?.user as Record<string, unknown>) ??
+            (innerPayload?.user as Record<string, unknown>) ??
+            (typeof innerPayload === "object" &&
+            innerPayload &&
+            "id" in innerPayload
+              ? innerPayload
+              : undefined);
+          const { user: currentUser } = get();
+          const displayName =
+            `${payload.first_name} ${payload.last_name}`.trim() || "User";
+          const mergedUser = currentUser
+            ? {
+                ...currentUser,
+                name: displayName,
+                email: payload.email,
+                phone: payload.phone,
+              }
+            : null;
+          if (apiUser) {
+            const updatedUser: User = {
+              id: String(apiUser?.id ?? mergedUser?.id ?? "user_unknown"),
+              email: String(apiUser?.email ?? mergedUser?.email ?? ""),
+              name: String(
+                apiUser?.name ?? mergedUser?.name ?? displayName ?? "User",
+              ),
+              phone: String(
+                apiUser?.phone ?? mergedUser?.phone ?? payload.phone ?? "",
+              ),
+              avatar: (apiUser?.avatar ?? mergedUser?.avatar) as
+                | string
+                | undefined,
+              isVerified: Boolean(apiUser?.email_verified_at ?? true),
+              createdAt: String(
+                apiUser?.created_at ??
+                  mergedUser?.createdAt ??
+                  new Date().toISOString(),
+              ),
+              preferences: mergedUser?.preferences ?? {
+                language: "ar",
+                notifications: true,
+                emailUpdates: true,
+              },
+            };
+            set({
+              user: updatedUser,
+              needsProfileCompletion: false,
+              loading: false,
+              error: null,
+            });
+          } else if (mergedUser) {
+            set({
+              user: mergedUser,
+              needsProfileCompletion: false,
+              loading: false,
+              error: null,
+            });
+          } else {
+            set({ loading: false, needsProfileCompletion: false });
+          }
+          const msg = data?.message ?? data?.msg ?? "Data updated successfully";
+          return { status: true, msg };
+        } catch (err: unknown) {
+          const errData = (
+            err as {
+              response?: {
+                data?: {
+                  message?: string;
+                  msg?: string;
+                  errNum?: string;
+                };
+              };
+            }
+          )?.response?.data;
+          const errorMsg =
+            errData?.msg ?? errData?.message ?? "Error updating data";
+          const errNum = errData?.errNum;
+          const isFieldError = errNum === "E001";
+          set({
+            error: isFieldError ? null : errorMsg,
+            loading: false,
+          });
+          return { status: false, msg: errorMsg, errNum };
+        }
+      },
+
+      // تسجيل الدخول (الطريقة القديمة - للتوافق)
+      login: async (email: string, password: string) => {
+        try {
+          // محاكاة API call
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+
+          const user = mockUsers.find((u) => u.email === email);
+          if (user && password === "password123") {
+            const token = `token_${user.id}_${Date.now()}`;
+            set({
+              user,
+              token,
+              isAuthenticated: true,
+            });
+            return true;
+          }
+          return false;
+        } catch (error) {
+          console.error("Login error:", error);
+          return false;
+        }
+      },
+
+      // التسجيل
+      register: async (userData: Partial<User>) => {
+        try {
+          // محاكاة API call
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+
+          const newUser: User = {
+            id: `user_${Date.now()}`,
+            email: userData.email || "",
+            name: userData.name || "",
+            phone: userData.phone,
+            avatar: userData.avatar,
+            isVerified: false,
+            createdAt: new Date().toISOString(),
+            preferences: {
+              language: "ar",
+              notifications: true,
+              emailUpdates: true,
+            },
+          };
+
+          const token = `token_${newUser.id}_${Date.now()}`;
+          set({
+            user: newUser,
+            token,
+            isAuthenticated: true,
+          });
+          return true;
+        } catch (error) {
+          console.error("Register error:", error);
+          return false;
+        }
+      },
+
+      // تسجيل الخروج (POST /api/auth/logout مع Bearer ثم مسح الحالة المحلية)
+      logout: () => {
+        authService.logout().catch(() => {});
+        set({
+          user: null,
+          token: null,
+          isAuthenticated: false,
+          needsProfileCompletion: false,
+          cartItems: [],
+        });
+      },
+
+      // تحديث البروفايل عبر API (POST /api/auth/complete-profile)
+      updateProfile: async (userData: {
+        name?: string;
+        email?: string;
+        phone?: string;
+        first_name?: string;
+        last_name?: string;
+        id_number?: string;
+        country_code?: string;
+        city_id?: string | number;
+        gender?: string;
+        avatar?: File | string | null;
+      }) => {
+        const { user } = get();
+        if (!user) {
+          return { status: false, msg: "Not authenticated" };
+        }
+        const parts = (userData.name ?? user.name ?? "").trim().split(/\s+/);
+        const first =
+          userData.first_name ?? parts[0] ?? "";
+        const last =
+          userData.last_name ?? parts.slice(1).join(" ") ?? "";
+        const avatarFile =
+          userData.avatar instanceof File ? userData.avatar : null;
+        try {
+          const res = await authService.completeProfile({
+            first_name: first,
+            last_name: last,
+            id_number: String(userData.id_number ?? ""),
+            phone: userData.phone ?? user.phone ?? "",
+            country_code: String(userData.country_code ?? "966"),
+            email: userData.email ?? user.email,
+            city_id: userData.city_id ?? 0,
+            gender: String(userData.gender ?? "male"),
+            avatar: avatarFile,
+          });
+          const data = res.data as {
+            status?: boolean;
+            message?: string;
+            msg?: string;
+            user?: Record<string, unknown>;
+            data?: { user?: Record<string, unknown> };
+          };
+          if (data?.status === false) {
+            const errorMsg =
+              data?.message ?? data?.msg ?? "Error updating profile";
+            return { status: false, msg: errorMsg };
+          }
+          const apiUser = data?.user ?? data?.data?.user;
+          if (apiUser) {
+            const updatedUser: User = {
+              id: String(apiUser?.id ?? user.id),
+              email: String(apiUser?.email ?? userData.email ?? user.email),
+              name: String(apiUser?.name ?? userData.name ?? user.name),
+              phone: String(apiUser?.phone ?? userData.phone ?? user.phone),
+              avatar: (apiUser?.avatar ?? user.avatar) as string | undefined,
+              isVerified: Boolean(
+                apiUser?.email_verified_at ?? user.isVerified,
+              ),
+              createdAt: String(apiUser?.created_at ?? user.createdAt),
+              preferences: user.preferences,
+            };
+            set({ user: updatedUser });
+          } else {
+            set({
+              user: {
+                ...user,
+                name: userData.name ?? user.name,
+                email: userData.email ?? user.email,
+                phone: userData.phone ?? user.phone,
+                avatar:
+                  typeof userData.avatar === "string"
+                    ? userData.avatar
+                    : user.avatar,
+              },
+            });
+          }
+          const msg =
+            data?.message ?? data?.msg ?? "Profile updated successfully";
+          return { status: true, msg };
+        } catch (err: unknown) {
+          const errData = (
+            err as { response?: { data?: { message?: string } } }
+          )?.response?.data;
+          const errorMsg = errData?.message ?? "Error updating profile";
+          return { status: false, msg: errorMsg };
+        }
+      },
+
+      // إضافة للمحفوظات
+      addToSaved: (item: Omit<SavedItem, "id" | "savedAt">) => {
+        const { savedItems } = get();
+        const newItem: SavedItem = {
+          ...item,
+          id: `saved_${Date.now()}`,
+          savedAt: new Date().toISOString(),
+        };
+
+        // تجنب التكرار
+        const exists = savedItems.some((saved) => saved.itemId === item.itemId);
+        if (!exists) {
+          set({ savedItems: [...savedItems, newItem] });
+        }
+      },
+
+      // إزالة من المفضلة
+      removeFromSaved: (itemId: string) => {
+        const { savedItems } = get();
+        set({
+          savedItems: savedItems.filter((item) => item.itemId !== itemId),
+        });
+      },
+
+      // التحقق من وجود العنصر في المفضلة
+      isItemSaved: (itemId: string) => {
+        const { savedItems } = get();
+        return savedItems.some((item) => item.itemId === itemId);
+      },
+
+      // إضافة للسلة
+      addToCart: (item: Omit<CartItem, "id" | "addedAt">) => {
+        const { cartItems } = get();
+        const existingItem = cartItems.find(
+          (cartItem) => cartItem.itemId === item.itemId,
+        );
+
+        if (existingItem) {
+          // زيادة الكمية
+          set({
+            cartItems: cartItems.map((cartItem) =>
+              cartItem.itemId === item.itemId
+                ? { ...cartItem, quantity: cartItem.quantity + item.quantity }
+                : cartItem,
+            ),
+          });
+        } else {
+          // إضافة عنصر جديد
+          const newItem: CartItem = {
+            ...item,
+            id: `cart_${Date.now()}`,
+            addedAt: new Date().toISOString(),
+          };
+          set({ cartItems: [...cartItems, newItem] });
+        }
+      },
+
+      // إزالة من السلة
+      removeFromCart: (itemId: string) => {
+        const { cartItems } = get();
+        set({
+          cartItems: cartItems.filter((item) => item.itemId !== itemId),
+        });
+      },
+
+      // تحديث كمية العنصر في السلة
+      updateCartQuantity: (itemId: string, quantity: number) => {
+        const { cartItems } = get();
+        if (quantity <= 0) {
+          get().removeFromCart(itemId);
+        } else {
+          set({
+            cartItems: cartItems.map((item) =>
+              item.itemId === itemId ? { ...item, quantity } : item,
+            ),
+          });
+        }
+      },
+
+      // مسح السلة
+      clearCart: () => {
+        set({ cartItems: [] });
+      },
+
+      // حساب إجمالي السلة
+      getCartTotal: () => {
+        const { cartItems } = get();
+        return cartItems.reduce(
+          (total, item) => total + item.price * item.quantity,
+          0,
+        );
+      },
+
+      // إعادة تعيين البيانات
+      resetStore: () => {
+        // مسح localStorage
+        localStorage.removeItem("user-store");
+        // إعادة تحميل الصفحة لتطبيق البيانات الجديدة
+        window.location.reload();
+      },
+
+      // إنشاء طلب جديد
+      createOrder: (paymentMethod: string) => {
+        const { cartItems } = get();
+        const totalAmount = get().getCartTotal();
+
+        const newOrder: Order = {
+          id: `order_${Date.now()}`,
+          items: [...cartItems],
+          totalAmount,
+          status: "pending",
+          paymentMethod,
+          createdAt: new Date().toISOString(),
+        };
+
+        set({
+          orders: [newOrder, ...get().orders],
+          cartItems: [], // مسح السلة بعد إنشاء الطلب
+        });
+
+        return newOrder;
+      },
+
+      // تحديث حالة الطلب
+      updateOrderStatus: (orderId: string, status: Order["status"]) => {
+        const { orders } = get();
+        set({
+          orders: orders.map((order) =>
+            order.id === orderId
+              ? {
+                  ...order,
+                  status,
+                  completedAt:
+                    status === "completed"
+                      ? new Date().toISOString()
+                      : order.completedAt,
+                }
+              : order,
+          ),
+        });
+      },
+    }),
+    {
+      name: "user-store",
+      version: 2, // Bumped to clear old mock data from localStorage
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        user: state.user,
+        token: state.token,
+        isAuthenticated: state.isAuthenticated,
+        needsProfileCompletion: state.needsProfileCompletion,
+        savedItems: state.savedItems,
+        cartItems: state.cartItems,
+        orders: state.orders,
+      }),
+      merge: (persisted, current) => {
+        const p = persisted as Partial<UserState>;
+        return {
+          ...current,
+          ...p,
+          needsProfileCompletion: Boolean(p.needsProfileCompletion),
+          otpSent: false,
+        };
+      },
+    },
+  ),
+);
