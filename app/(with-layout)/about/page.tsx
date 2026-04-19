@@ -1,3 +1,4 @@
 "use client";
+import { Suspense } from "react";
 import AboutPage from "@views/about";
-export default function Page() { return <AboutPage />; }
+export default function Page() { return <Suspense><AboutPage /></Suspense>; }

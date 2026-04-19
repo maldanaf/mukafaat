@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 
 import Footer from "@components/Footer";
 import Navbar from "@components/Navbar";
@@ -19,13 +19,14 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { ToastContainer } from "react-toastify";
 
+export const dynamic = "force-dynamic";
+
 export default function WithLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   useEffect(() => {
-    // WOW.js: init once, live:false prevents re-scanning DOM on mutations
     if (typeof window !== "undefined" && !(window as unknown as Record<string, boolean>).__wowInit) {
       import("wow.js").then((WOWModule) => {
         const WOW = WOWModule.default;
@@ -38,14 +39,16 @@ export default function WithLayout({
   return (
     <div className="content relative min-h-screen">
       <GlobalStyles />
-      <Navbar />
-      <ScrollToTop />
-      {children}
-      <ShareSheetHost />
-      <WhatsAppButton />
-      <ScrollToTopButton />
-      <Footer />
-      <ToastContainer />
+      <Suspense>
+        <Navbar />
+        <ScrollToTop />
+        {children}
+        <ShareSheetHost />
+        <WhatsAppButton />
+        <ScrollToTopButton />
+        <Footer />
+        <ToastContainer />
+      </Suspense>
     </div>
   );
 }
