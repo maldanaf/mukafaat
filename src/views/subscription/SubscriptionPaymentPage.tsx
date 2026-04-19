@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate, useLocation } from "@/lib/router-compat";
+import { useNavigate } from "@/lib/router-compat";
 import { Helmet } from "@/lib/helmet-compat";
 import { useTranslation } from "react-i18next";
 import { useIsRTL } from "@hooks";

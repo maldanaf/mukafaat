@@ -75,7 +75,7 @@ function TalentApplicationPage() {
     endpoint: API_ENDPOINTS.registerJobSeeker,
   });
 
-  const submitForm = (data: any) => {
+  const submitForm = (data: unknown) => {
     const jobSeeker: JobSeekerModel = {
       photo: photo,
       fullName: data.fullName,

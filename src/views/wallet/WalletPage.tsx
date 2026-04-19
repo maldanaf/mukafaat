@@ -389,12 +389,12 @@ const WalletPage: React.FC = () => {
 function WalletTransactionRow({
   item,
   type,
-  t,
+
   isRTL,
 }: {
   item: Record<string, unknown>;
   type: "points" | "transactions";
-  t: (key: string) => string;
+  _t?: (key: string) => string;
   isRTL?: boolean;
 }) {
   const description = String(

@@ -8,7 +8,7 @@ import { useNavigate } from "@/lib/router-compat";
 
 const UploadVideoComponent = (props: {
   email: string;
-  t: any;
+  t: unknown;
   clearEmail: () => void;
 }) => {
   const { email, t, clearEmail } = props;
