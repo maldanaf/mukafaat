@@ -76,11 +76,11 @@ export default function RootLayout({
               document.documentElement.setAttribute('lang', 'ar');
               document.documentElement.setAttribute('dir', 'rtl');
             }
-            // Prevent removeChild crashes from browser extensions / DOM mutations
+            // Prevent removeChild crashes from DOM mutations
             var origRemoveChild = Node.prototype.removeChild;
             Node.prototype.removeChild = function(child) {
-              if (child.parentNode !== this) {
-                return child;
+              if (!child || child.parentNode !== this) {
+                return child || this;
               }
               return origRemoveChild.call(this, child);
             };
