@@ -13,7 +13,11 @@ export interface NormalizedFavorite {
   originalPrice?: number;
   savedAt: string;
   category?: string;
+  categorySlug?: string;
   companyId?: string;
+  itemSlug?: string;
+  merchantSlug?: string;
+  bookingType?: string;
 }
 
 export function normalizeFavoritesList(data: unknown): NormalizedFavorite[] {
@@ -32,22 +36,27 @@ function normalizeFavoriteItem(row: unknown): NormalizedFavorite | null {
   if (!r || typeof r !== "object") return null;
   const type = String(r.favorable_type ?? r.type ?? "offer").toLowerCase();
   const favorableType =
-    type === "card" || type === "coupon" || type === "merchant"
+    type === "card" || type === "coupon" || type === "merchant" || type === "booking"
       ? type
-      : type === "booking"
-        ? "coupon"
-        : "offer";
-  const favorableId = r.favorable_id ?? r.favorable_id ?? r.id;
+      : "offer";
+  const favorableId = r.favorable_id ?? r.id;
   if (favorableId == null) return null;
   const favorable = (r.favorable ?? r.item ?? r) as Record<string, unknown> | undefined;
   const img = (favorable?.image ?? favorable?.logo ?? r.image ?? favorable?.thumbnail) as string | undefined;
-  const nameAr = (favorable?.name_ar ?? favorable?.title_ar ?? favorable?.name ?? r.name_ar) as string | undefined;
-  const nameEn = (favorable?.name_en ?? favorable?.title_en ?? favorable?.name ?? r.name_en) as string | undefined;
-  const price = favorable?.price ?? favorable?.discount_price ?? r.price;
-  const originalPrice = favorable?.original_price ?? favorable?.price ?? r.originalPrice;
+  const nameAr = (favorable?.name_ar ?? favorable?.title_ar ?? favorable?.name ?? r.name_ar ?? r.name) as string | undefined;
+  const nameEn = (favorable?.name_en ?? favorable?.title_en ?? favorable?.name ?? r.name_en ?? r.name) as string | undefined;
+  const priceAfter = (favorable?.price_after ?? r.price_after) as number | string | undefined;
+  const priceBefore = (favorable?.price_before ?? r.price_before) as number | string | undefined;
+  const price = priceAfter ?? favorable?.price ?? favorable?.discount_price ?? r.price;
+  const originalPrice = priceBefore ?? favorable?.old_price ?? favorable?.original_price ?? r.originalPrice;
   const savedAt = (r.created_at ?? r.saved_at ?? r.createdAt ?? new Date().toISOString()) as string;
   const categoryVal = favorable?.category ?? r.category;
-  const companyIdVal = favorable?.company_id ?? favorable?.merchant_id ?? r.company_id;
+  const merchant = (r.merchant ?? favorable?.merchant) as Record<string, unknown> | undefined;
+  const companyIdVal = merchant?.id ?? favorable?.company_id ?? favorable?.merchant_id ?? r.company_id;
+  const itemSlug = (r.slug ?? favorable?.slug) as string | undefined;
+  const merchantSlug = merchant?.slug as string | undefined;
+  const categorySlug = (r.category_slug ?? favorable?.category_slug) as string | undefined;
+  const bookingType = (r.booking_type ?? favorable?.booking_type ?? r.type) as string | undefined;
   return {
     id: String(r.id ?? `fav_${favorableType}_${favorableId}`),
     type: favorableType as NormalizedFavorite["type"],
@@ -59,6 +68,10 @@ function normalizeFavoriteItem(row: unknown): NormalizedFavorite | null {
     originalPrice: typeof originalPrice === "number" ? originalPrice : typeof originalPrice === "string" ? parseFloat(originalPrice as string) : undefined,
     savedAt: String(savedAt),
     category: typeof categoryVal === "string" ? categoryVal : undefined,
+    categorySlug: typeof categorySlug === "string" ? categorySlug : undefined,
     companyId: typeof companyIdVal === "string" ? companyIdVal : typeof companyIdVal === "number" ? String(companyIdVal) : undefined,
+    itemSlug: typeof itemSlug === "string" ? itemSlug : undefined,
+    merchantSlug: typeof merchantSlug === "string" ? merchantSlug : undefined,
+    bookingType: favorableType === "booking" && typeof bookingType === "string" ? bookingType : undefined,
   };
 }

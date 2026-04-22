@@ -1,9 +1,14 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import { useIsRTL } from "@hooks";
-import { BsHeart, BsShare } from "react-icons/bs";
+import { BsHeart, BsHeartFill, BsShare } from "react-icons/bs";
 import { IoStar } from "react-icons/io5";
+import { useNavigate } from "@/lib/router-compat";
+import { useFavorites, useFavoriteToggle } from "@hooks/api/useMokafaatQueries";
+import { useUserStore } from "@stores/userStore";
+import { normalizeFavoritesList } from "@utils/favorites";
+import { toast } from "react-toastify";
 
 interface InvestmentCardProps {
   id: number;
@@ -12,6 +17,8 @@ interface InvestmentCardProps {
   price: string;
   rating?: number;
   onShare?: (id: number) => void;
+  favoriteType?: "booking" | "offer" | "card";
+  onClick?: () => void;
 }
 
 const InvestmentCard: React.FC<InvestmentCardProps> = ({
@@ -21,8 +28,48 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({
   price,
   rating = 4.9,
   onShare,
+  favoriteType = "booking",
+  onClick,
 }) => {
   const isRTL = useIsRTL();
+  const navigate = useNavigate();
+  const isAuthenticated = useUserStore((s) => !!s.token);
+  const { data: favoritesData } = useFavorites();
+  const toggleFavorite = useFavoriteToggle();
+  const favoritesList = useMemo(
+    () => normalizeFavoritesList(favoritesData ?? null),
+    [favoritesData],
+  );
+  const isFavorite = useMemo(
+    () =>
+      favoritesList.some(
+        (f) => f.favorable_type === favoriteType && String(f.favorable_id) === String(id),
+      ),
+    [favoritesList, id, favoriteType],
+  );
+
+  const handleFavorite = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isAuthenticated) {
+      navigate(`/login?returnUrl=${encodeURIComponent(window.location.pathname)}`);
+      return;
+    }
+    const wasFavorite = isFavorite;
+    toggleFavorite.mutate(
+      { favorable_type: favoriteType, favorable_id: id },
+      {
+        onSuccess: () => {
+          toast.success(
+            wasFavorite
+              ? isRTL ? "تمت الإزالة من المفضلة" : "Removed from favorites"
+              : isRTL ? "تمت الإضافة للمفضلة" : "Added to favorites",
+          );
+        },
+        onError: () => toast.error(isRTL ? "حدث خطأ" : "Error"),
+      },
+    );
+  };
 
   const handleShare = () => {
     if (onShare) onShare(id);
@@ -30,10 +77,11 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({
 
   return (
     <div
-      className="investmentCard bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 max-w-sm"
+      className="investmentCard bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 max-w-sm cursor-pointer"
       style={{
         direction: isRTL ? "rtl" : "ltr",
       }}
+      onClick={onClick}
     >
       {/* Image Section */}
       <div className="relative h-[420px] overflow-hidden">
@@ -59,10 +107,13 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({
             <BsShare className="text-sm" />
           </button>
           <button
-            // onClick={() => onFavoriteClick?.(id)}
-            className="w-8 h-8 bg-white bg-opacity-90 rounded-full flex items-center justify-center text-gray-700 hover:bg-opacity-100 transition-all duration-200"
+            onClick={handleFavorite}
+            className={`w-8 h-8 bg-white bg-opacity-90 rounded-full flex items-center justify-center transition-all duration-200 ${
+              isFavorite ? "text-red-500" : "text-gray-700 hover:text-red-500"
+            }`}
+            aria-label="favorite"
           >
-            <BsHeart className="text-sm" />
+            {isFavorite ? <BsHeartFill className="text-sm" /> : <BsHeart className="text-sm" />}
           </button>
         </div>
 

@@ -102,6 +102,28 @@ const PaymentPage: React.FC = () => {
   const orderIdFromUrl = searchParams.get("order_id");
   const orderIdFromState = state?.orderId ?? (orderIdFromUrl ? orderIdFromUrl : undefined);
   const orderFromState = state?.order;
+
+  // Auto-create pending order on mount (for abandoned-cart tracking)
+  const preOrderCreatedRef = useRef(false);
+  useEffect(() => {
+    if (!token || !offerSlug || preOrderCreatedRef.current || orderIdFromState) return;
+    preOrderCreatedRef.current = true;
+    createOrder.mutate(
+      {
+        order_type: "offer",
+        item_id: offerSlug,
+        quantity: 1,
+        branch_id: undefined,
+        use_wallet: false,
+      },
+      {
+        onError: () => {
+          preOrderCreatedRef.current = false;
+        },
+      },
+    );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token, offerSlug, orderIdFromState]);
   const company = (state?.restaurant ?? (merchantSlug ? getRestaurantById(merchantSlug) : null)) as ReturnType<typeof getRestaurantById>;
   const offer = (state?.offer ?? (offerSlug && merchantSlug ? getOfferById(merchantSlug, offerSlug) : null)) as ReturnType<typeof getOfferById>;
   const categoryInfo = category

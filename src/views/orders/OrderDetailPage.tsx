@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate, Link } from "@/lib/router-compat";
 import { Helmet } from "@/lib/helmet-compat";
 import { useIsRTL } from "@hooks";
@@ -50,6 +50,9 @@ interface RawOrder {
     discount_percent?: string;
     discount_percentage?: number | null;
     terms?: string;
+    privacy_policy?: string;
+    privacy_policy_ar?: string;
+    privacy_policy_en?: string;
     features?: string;
     validity_type?: string;
     is_renewable?: boolean;
@@ -90,6 +93,8 @@ const OrderDetailPage: React.FC = () => {
   const isRTL = useIsRTL();
   const token = useUserStore((s) => s.token);
   const getToken = useUserStore.getState;
+  const [privacyOpen, setPrivacyOpen] = useState(false);
+  const [termsOpen, setTermsOpen] = useState(false);
 
   const {
     data: rawOrder,
@@ -203,6 +208,14 @@ const OrderDetailPage: React.FC = () => {
         : rawOrderData.total_price
       : (order?.totalAmount ?? 0);
   const terms = rawOrderData?.item?.terms;
+  const privacyPolicy =
+    rawOrderData?.item?.privacy_policy ||
+    (isRTL
+      ? rawOrderData?.item?.privacy_policy_ar
+      : rawOrderData?.item?.privacy_policy_en) ||
+    rawOrderData?.item?.privacy_policy_ar ||
+    rawOrderData?.item?.privacy_policy_en ||
+    "";
   const hasVoucher = !!voucherDownloadUrl;
   const isCardOrder = (rawOrderData?.order_type ?? order?.orderType) === "card";
   const isActiveOffer = !isCardOrder && (order?.status === "active" || rawOrderData?.status === "active");
@@ -432,7 +445,7 @@ const OrderDetailPage: React.FC = () => {
                   </span>
                 </div>
               )}
-              {rawOrderData?.activated_at && (
+              {!isCardOrder && rawOrderData?.activated_at && (
                 <div
                   className={`flex justify-between items-center text-sm gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
                 >
@@ -516,18 +529,29 @@ const OrderDetailPage: React.FC = () => {
               </div>
             </div>
 
-            {/* شروط الخصوصية */}
-            {terms && (
-              <div className="mt-4">
-                <Link
-                  to="/privacy-policy"
-                  className="text-sm text-gray-500 hover:text-[#fd671a] transition-colors inline-flex items-center gap-1"
-                >
-                  {isRTL ? "تابع شروط الخصوصية" : "Privacy Terms"}
-                  <span className="rtl:rotate-180" aria-hidden>
-                    →
-                  </span>
-                </Link>
+            {/* الشروط والأحكام + سياسة الخصوصية */}
+            {(terms || privacyPolicy) && (
+              <div className="mt-4 flex flex-wrap gap-4">
+                {terms && (
+                  <button
+                    type="button"
+                    onClick={() => setTermsOpen(true)}
+                    className="text-sm text-gray-500 hover:text-[#fd671a] transition-colors inline-flex items-center gap-1"
+                  >
+                    {isRTL ? "الشروط والأحكام" : "Terms & Conditions"}
+                    <span className="rtl:rotate-180" aria-hidden>→</span>
+                  </button>
+                )}
+                {privacyPolicy && (
+                  <button
+                    type="button"
+                    onClick={() => setPrivacyOpen(true)}
+                    className="text-sm text-gray-500 hover:text-[#fd671a] transition-colors inline-flex items-center gap-1"
+                  >
+                    {isRTL ? "سياسة الخصوصية" : "Privacy Policy"}
+                    <span className="rtl:rotate-180" aria-hidden>→</span>
+                  </button>
+                )}
               </div>
             )}
 
@@ -565,7 +589,81 @@ const OrderDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Terms Modal */}
+      {termsOpen && (
+        <InfoModal
+          title={isRTL ? "الشروط والأحكام" : "Terms & Conditions"}
+          content={terms || ""}
+          onClose={() => setTermsOpen(false)}
+          isRTL={isRTL}
+        />
+      )}
+
+      {/* Privacy Policy Modal */}
+      {privacyOpen && (
+        <InfoModal
+          title={isRTL ? "سياسة الخصوصية" : "Privacy Policy"}
+          content={privacyPolicy}
+          onClose={() => setPrivacyOpen(false)}
+          isRTL={isRTL}
+        />
+      )}
     </>
+  );
+};
+
+interface InfoModalProps {
+  title: string;
+  content: string;
+  onClose: () => void;
+  isRTL: boolean;
+}
+
+function stripHtml(html: string): string {
+  if (typeof html !== "string") return "";
+  return html.replace(/<[^>]*>/g, "").trim();
+}
+
+const InfoModal: React.FC<InfoModalProps> = ({ title, content, onClose, isRTL }) => {
+  const text = stripHtml(content);
+  return (
+    <div
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+    >
+      <div
+        className="relative bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[85vh] overflow-hidden flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+        dir={isRTL ? "rtl" : "ltr"}
+      >
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-[#400198] to-[#6b2bb8]">
+          <h3 className="text-lg font-bold text-white">{title}</h3>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-white/80 hover:text-white"
+            aria-label="close"
+          >
+            <IoClose className="w-6 h-6" />
+          </button>
+        </div>
+        <div className="p-6 overflow-y-auto flex-1 text-gray-700 leading-relaxed text-sm whitespace-pre-wrap">
+          {text}
+        </div>
+        <div className="px-6 py-3 border-t border-gray-200 bg-gray-50 text-end">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-5 py-2 rounded-full bg-[#400198] text-white hover:bg-[#33007a] transition-colors text-sm"
+          >
+            {isRTL ? "إغلاق" : "Close"}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 

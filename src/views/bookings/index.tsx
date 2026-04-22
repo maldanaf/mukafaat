@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { Link } from "@/lib/router-compat";
+import React, { useMemo, useState } from "react";
+import { Link, useNavigate } from "@/lib/router-compat";
 import { Helmet } from "@/lib/helmet-compat";
 import { useIsRTL } from "@hooks";
 import { useTranslation } from "react-i18next";
@@ -9,10 +9,12 @@ import { AboutPattern } from "@assets";
 import { MdOutlineFlight } from "react-icons/md";
 import { RiHotelLine } from "react-icons/ri";
 import { FaCar } from "react-icons/fa";
-import { FiStar, FiEye, FiMousePointer } from "react-icons/fi";
+import { FiStar, FiEye, FiMousePointer, FiHeart } from "react-icons/fi";
 import GetStartedSection from "@views/home/components/GetStartedSection";
-import { useBookings } from "@hooks/api/useMokafaatQueries";
-import { webApi } from "@network/services/mokafaatService";
+import { useBookings, useFavorites, useFavoriteToggle } from "@hooks/api/useMokafaatQueries";
+import { useUserStore } from "@stores/userStore";
+import { normalizeFavoritesList } from "@utils/favorites";
+import { toast } from "react-toastify";
 
 type BookingType = "flight" | "hotel" | "car";
 
@@ -22,6 +24,7 @@ type BookingListing = Record<string, any>;
 const BookingsPage: React.FC = () => {
   const isRTL = useIsRTL();
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<BookingType>("flight");
   const { data, isLoading, isError } = useBookings();
 
@@ -29,19 +32,40 @@ const BookingsPage: React.FC = () => {
   const listings: BookingListing[] =
     featured[activeTab] || featured[`${activeTab}s`] || [];
 
-  const handleBookNow = async (listing: BookingListing) => {
-    try {
-      const res = await webApi.bookingClick(listing.id);
-      const url =
-        res.data?.data?.affiliate_url ||
-        res.data?.affiliate_url ||
-        listing.affiliate_url;
-      window.open(url, "_blank");
-    } catch {
-      if (listing.affiliate_url) {
-        window.open(listing.affiliate_url, "_blank");
-      }
+  const isAuthenticated = useUserStore((s) => !!s.token);
+  const { data: favoritesData } = useFavorites();
+  const toggleFavorite = useFavoriteToggle();
+  const favoritesList = useMemo(
+    () => normalizeFavoritesList(favoritesData ?? null),
+    [favoritesData],
+  );
+
+  const isBookingFavorite = (id: number | string) =>
+    favoritesList.some(
+      (f) => f.favorable_type === "booking" && String(f.favorable_id) === String(id),
+    );
+
+  const handleFavoriteToggle = (e: React.MouseEvent, id: number | string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isAuthenticated) {
+      navigate(`/login?returnUrl=${encodeURIComponent(window.location.pathname)}`);
+      return;
     }
+    const wasFavorite = isBookingFavorite(id);
+    toggleFavorite.mutate(
+      { favorable_type: "booking", favorable_id: id },
+      {
+        onSuccess: () => {
+          toast.success(
+            wasFavorite
+              ? isRTL ? "تمت الإزالة من المفضلة" : "Removed from favorites"
+              : isRTL ? "تمت الإضافة للمفضلة" : "Added to favorites",
+          );
+        },
+        onError: () => toast.error(isRTL ? "حدث خطأ" : "Error"),
+      },
+    );
   };
 
   const tabs = [
@@ -82,12 +106,28 @@ const BookingsPage: React.FC = () => {
   const getDetailPath = (listing: BookingListing) =>
     `/bookings/${listing.type}/${listing.slug || listing.id}`;
 
+  const renderFavoriteBtn = (listing: BookingListing) => {
+    const fav = isBookingFavorite(listing.id);
+    return (
+      <button
+        onClick={(e) => handleFavoriteToggle(e, listing.id)}
+        className={`absolute top-3 end-3 w-9 h-9 bg-white bg-opacity-90 rounded-full flex items-center justify-center shadow transition-all ${
+          fav ? "text-red-500" : "text-gray-600 hover:text-red-500"
+        }`}
+        aria-label="favorite"
+      >
+        <FiHeart className={`text-base ${fav ? "fill-current" : ""}`} />
+      </button>
+    );
+  };
+
   const renderFlightCard = (listing: BookingListing) => (
     <Link
       to={getDetailPath(listing)}
       key={listing.id}
-      className="block bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group no-underline text-inherit"
+      className="block bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group no-underline text-inherit relative"
     >
+      {renderFavoriteBtn(listing)}
       {/* Image */}
       <div className="relative h-48 overflow-hidden">
         <img
@@ -181,8 +221,9 @@ const BookingsPage: React.FC = () => {
     <Link
       to={getDetailPath(listing)}
       key={listing.id}
-      className="block bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group no-underline text-inherit"
+      className="block bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group no-underline text-inherit relative"
     >
+      {renderFavoriteBtn(listing)}
       {/* Image */}
       <div className="relative h-48 overflow-hidden">
         <img
@@ -281,10 +322,12 @@ const BookingsPage: React.FC = () => {
   );
 
   const renderCarCard = (listing: BookingListing) => (
-    <div
+    <Link
+      to={getDetailPath(listing)}
       key={listing.id}
-      className="block bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group no-underline text-inherit"
+      className="block bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group no-underline text-inherit relative"
     >
+      {renderFavoriteBtn(listing)}
       {/* Image */}
       <div className="relative h-48 overflow-hidden">
         <img
@@ -372,7 +415,7 @@ const BookingsPage: React.FC = () => {
           {isRTL ? "عرض التفاصيل" : "View Details"}
         </span>
       </div>
-    </div>
+    </Link>
   );
 
   const renderCard = (listing: BookingListing) => {

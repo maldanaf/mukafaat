@@ -20,6 +20,7 @@ export const API_ENDPOINTS = {
   favorites: `${API}/favorites`,
   favoritesToggle: `${API}/favorites/toggle`,
   settings: `${API}/settings`,
+  webSettings: `${API}/web/settings`,
   appConfig: `${API}/app-config`,
   settingsUpdateLanguage: `${API}/settings/update-language`,
   settingsUpdate: `${API}/settings/update`,
@@ -27,6 +28,7 @@ export const API_ENDPOINTS = {
   // ========== Pages (refund-policy, terms, etc.) ==========
   pages: `${API}/pages`,
   pageDetail: (slug: string) => `${API}/pages/${slug}`,
+  faqs: `${API}/web/faqs`,
 
   // ========== General ==========
   categories: `${API}/categories`,

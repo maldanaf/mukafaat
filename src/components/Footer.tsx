@@ -186,87 +186,29 @@ const Footer: React.FC<FooterProps> = () => {
               </div>
             </div>
 
-            {/* Row 2 - About Us + Learn More */}
+            {/* Row 2 - Legal + Learn More */}
             <div className="grid grid-cols-2 gap-8">
-              {/* Column 2 - About Us */}
+              {/* Column 2 - Legal */}
               <div className="space-y-4">
-                <h3 className="font-bold text-white text-base text-start">
-                  {t("footer.about")}
-                </h3>
+                <h3 className="font-bold text-white text-base text-start">{isRTL ? "المعلومات القانونية" : "Legal"}</h3>
                 <ul className="space-y-2 text-start">
-                  <li>
-                    <Link
-                      to={APP_ROUTES.contact}
-                      className="text-[#EBEBEB] hover:text-white transition-colors text-sm"
-                    >
-                      {t("footer.contactUs")}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/join"
-                      className="text-[#EBEBEB] hover:text-white transition-colors text-sm"
-                    >
-                      {t("footer.joinOurSite")}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/privacy"
-                      className="text-[#EBEBEB] hover:text-white transition-colors text-sm"
-                    >
-                      {t("footer.userPrivacyTerms")}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/privacy-policy"
-                      className="text-[#EBEBEB] hover:text-white transition-colors text-sm"
-                    >
-                      {t("footer.generalPrivacyPolicy")}
-                    </Link>
-                  </li>
+                  <li><Link to="/pages/privacy-policy" className="text-[#EBEBEB] hover:text-white transition-colors text-sm">{isRTL ? "سياسة الخصوصية" : "Privacy Policy"}</Link></li>
+                  <li><Link to="/pages/terms-and-conditions" className="text-[#EBEBEB] hover:text-white transition-colors text-sm">{isRTL ? "شروط الاستخدام" : "Terms of Service"}</Link></li>
+                  <li><Link to="/pages/refund-policy" className="text-[#EBEBEB] hover:text-white transition-colors text-sm">{isRTL ? "سياسة الاسترداد" : "Refund Policy"}</Link></li>
+                  <li><Link to="/pages/merchant-agreement" className="text-[#EBEBEB] hover:text-white transition-colors text-sm">{isRTL ? "اتفاقية التاجر" : "Merchant Agreement"}</Link></li>
                 </ul>
               </div>
 
               {/* Column 3 - Learn More */}
               <div className="space-y-4">
-                <h3 className="font-bold text-white text-base text-start">
-                  {t("footer.learnMore")}
-                </h3>
+                <h3 className="font-bold text-white text-base text-start">{isRTL ? "اعرف أكثر" : "Learn More"}</h3>
                 <ul className="space-y-2 text-start">
-                  <li>
-                    <Link
-                      to="/rewards"
-                      className="text-[#EBEBEB] hover:text-white transition-colors text-sm"
-                    >
-                      {t("footer.rewardsPrinciple")}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/faq"
-                      className="text-[#EBEBEB] hover:text-white transition-colors text-sm"
-                    >
-                      {t("footer.faq")}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/share-offer"
-                      className="text-[#EBEBEB] hover:text-white transition-colors text-sm"
-                    >
-                      {t("footer.shareOffer")}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/subscriptions"
-                      className="text-[#EBEBEB] hover:text-white transition-colors text-sm"
-                    >
-                      {t("footer.companySubscriptions")}
-                    </Link>
-                  </li>
+                  <li><Link to="/pages/about-us" className="text-[#EBEBEB] hover:text-white transition-colors text-sm">{isRTL ? "من نحن" : "About Us"}</Link></li>
+                  <li><Link to="/pages/how-it-works" className="text-[#EBEBEB] hover:text-white transition-colors text-sm">{isRTL ? "شرح مبدأ مكافآت" : "How It Works"}</Link></li>
+                  <li><Link to="/faq" className="text-[#EBEBEB] hover:text-white transition-colors text-sm">{isRTL ? "الأسئلة المتكررة" : "FAQ"}</Link></li>
+                  <li><Link to="/pages/company-subscriptions" className="text-[#EBEBEB] hover:text-white transition-colors text-sm">{isRTL ? "اشتراكات الشركات" : "Corporate Plans"}</Link></li>
+                  <li><Link to="/pages/become-merchant" className="text-[#EBEBEB] hover:text-white transition-colors text-sm">{isRTL ? "انضم كتاجر" : "Become a Merchant"}</Link></li>
+                  <li><Link to={APP_ROUTES.contact} className="text-[#EBEBEB] hover:text-white transition-colors text-sm">{isRTL ? "اتصل بنا" : "Contact Us"}</Link></li>
                 </ul>
               </div>
             </div>
@@ -447,93 +389,31 @@ const Footer: React.FC<FooterProps> = () => {
               </ul>
             </div>
 
-            {/* Column 3 - About Us */}
+            {/* Column 3 - Legal */}
             <div className="w-1/6 space-y-4">
-              <h3
-                className={`font-bold text-white text-base ${
-                  isRTL ? "text-right" : "text-left"
-                }`}
-              >
-                {t("footer.about")}
+              <h3 className={`font-bold text-white text-base ${isRTL ? "text-right" : "text-left"}`}>
+                {isRTL ? "المعلومات القانونية" : "Legal"}
               </h3>
               <ul className={`space-y-2 ${isRTL ? "text-right" : "text-left"}`}>
-                <li>
-                  <Link
-                    to={APP_ROUTES.contact}
-                    className="text-[#EBEBEB] hover:text-white transition-colors text-sm"
-                  >
-                    {t("footer.contactUs")}
-                  </Link>
-                </li>
-                {/* <li>
-                  <Link
-                    to="/join"
-                    className="text-[#EBEBEB] hover:text-white transition-colors text-sm"
-                  >
-                    {t("footer.joinOurSite")}
-                  </Link>
-                </li> */}
-                <li>
-                  <Link
-                    to="/privacy"
-                    className="text-[#EBEBEB] hover:text-white transition-colors text-sm"
-                  >
-                    {t("footer.userPrivacyTerms")}
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/privacy-policy"
-                    className="text-[#EBEBEB] hover:text-white transition-colors text-sm"
-                  >
-                    {t("footer.generalPrivacyPolicy")}
-                  </Link>
-                </li>
+                <li><Link to="/pages/privacy-policy" className="text-[#EBEBEB] hover:text-white transition-colors text-sm">{isRTL ? "سياسة الخصوصية" : "Privacy Policy"}</Link></li>
+                <li><Link to="/pages/terms-and-conditions" className="text-[#EBEBEB] hover:text-white transition-colors text-sm">{isRTL ? "شروط الاستخدام" : "Terms of Service"}</Link></li>
+                <li><Link to="/pages/refund-policy" className="text-[#EBEBEB] hover:text-white transition-colors text-sm">{isRTL ? "سياسة الاسترداد" : "Refund Policy"}</Link></li>
+                <li><Link to="/pages/merchant-agreement" className="text-[#EBEBEB] hover:text-white transition-colors text-sm">{isRTL ? "اتفاقية التاجر" : "Merchant Agreement"}</Link></li>
               </ul>
             </div>
 
             {/* Column 4 - Learn More */}
             <div className="w-1/6 space-y-4">
-              <h3
-                className={`font-bold text-white text-base ${
-                  isRTL ? "text-right" : "text-left"
-                }`}
-              >
-                {t("footer.learnMore")}
+              <h3 className={`font-bold text-white text-base ${isRTL ? "text-right" : "text-left"}`}>
+                {isRTL ? "اعرف أكثر" : "Learn More"}
               </h3>
               <ul className={`space-y-2 ${isRTL ? "text-right" : "text-left"}`}>
-                <li>
-                  <Link
-                    to="/rewards"
-                    className="text-[#EBEBEB] hover:text-white transition-colors text-sm"
-                  >
-                    {t("footer.rewardsPrinciple")}
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/faq"
-                    className="text-[#EBEBEB] hover:text-white transition-colors text-sm"
-                  >
-                    {t("footer.faq")}
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/share-offer"
-                    className="text-[#EBEBEB] hover:text-white transition-colors text-sm"
-                  >
-                    {t("footer.shareOffer")}
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/subscriptions"
-                    className="text-[#EBEBEB] hover:text-white transition-colors text-sm"
-                  >
-                    {t("footer.companySubscriptions")}
-                  </Link>
-                </li>
+                <li><Link to="/pages/about-us" className="text-[#EBEBEB] hover:text-white transition-colors text-sm">{isRTL ? "من نحن" : "About Us"}</Link></li>
+                <li><Link to="/pages/how-it-works" className="text-[#EBEBEB] hover:text-white transition-colors text-sm">{isRTL ? "شرح مبدأ مكافآت" : "How It Works"}</Link></li>
+                <li><Link to="/faq" className="text-[#EBEBEB] hover:text-white transition-colors text-sm">{isRTL ? "الأسئلة المتكررة" : "FAQ"}</Link></li>
+                <li><Link to="/pages/company-subscriptions" className="text-[#EBEBEB] hover:text-white transition-colors text-sm">{isRTL ? "اشتراكات الشركات" : "Corporate Plans"}</Link></li>
+                <li><Link to="/pages/become-merchant" className="text-[#EBEBEB] hover:text-white transition-colors text-sm">{isRTL ? "انضم كتاجر" : "Become a Merchant"}</Link></li>
+                <li><Link to={APP_ROUTES.contact} className="text-[#EBEBEB] hover:text-white transition-colors text-sm">{isRTL ? "اتصل بنا" : "Contact Us"}</Link></li>
               </ul>
             </div>
 
@@ -615,16 +495,16 @@ const Footer: React.FC<FooterProps> = () => {
             </div>
             <div className="flex items-center space-x-4 text-[#EBEBEB] text-sm gap-4">
               <Link
-                to={APP_ROUTES.privacy_policy}
+                to="/pages/privacy-policy"
                 className="hover:text-white transition-colors"
               >
-                {t("footer.privacyPolicy")}
+                {isRTL ? "سياسة الخصوصية" : "Privacy Policy"}
               </Link>
               <Link
-                to={APP_ROUTES.terms_conditions}
+                to="/pages/terms-and-conditions"
                 className="hover:text-white transition-colors"
               >
-                {t("footer.termsOfUse")}
+                {isRTL ? "شروط الاستخدام" : "Terms of Service"}
               </Link>
             </div>
           </div>

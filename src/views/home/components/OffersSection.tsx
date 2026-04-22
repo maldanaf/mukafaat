@@ -94,7 +94,7 @@ const OffersSection: React.FC = () => {
   const makeOwlOptions = useMemo(
     () => (len: number) => ({
       loop: len > 1,
-      margin: 10,
+      margin: 24,
       nav: len > 1,
       dots: len > 1,
       autoplay: len > 1,
@@ -103,9 +103,9 @@ const OffersSection: React.FC = () => {
       // عند استخدام OwlCarousel نجعل الاتجاه دائماً LTR
       rtl: false,
       responsive: {
-        0: { items: 1 },
-        600: { items: 2 },
-        1000: { items: 4 },
+        0: { items: 1, margin: 16 },
+        600: { items: 2, margin: 20 },
+        1000: { items: 4, margin: 24 },
       },
     }),
     [],
@@ -223,7 +223,7 @@ const OffersSection: React.FC = () => {
           style={{ direction: "ltr" }}
         >
           {apiLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pb-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-10">
               {Array.from({ length: 4 }).map((_, index) => (
                 <SkeletonCard key={index} />
               ))}
@@ -237,7 +237,7 @@ const OffersSection: React.FC = () => {
           ) : isRTL && displayOffers.length < 4 ? (
             // في العربية ومع عدد عناصر أقل من 4: لا نستخدم OwlCarousel ونطبق RTL
             <div
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pb-10"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-10"
               style={{ direction: "rtl" }}
             >
               {displayOffers.map((offer) => (

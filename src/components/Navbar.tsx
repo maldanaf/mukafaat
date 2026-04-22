@@ -1,7 +1,7 @@
 "use client";
 
 import { APP_ROUTES } from "@constants";
-import { Link } from "@/lib/router-compat";
+import { Link, useNavigate } from "@/lib/router-compat";
 import { Logo } from "@assets";
 // import LogoLight from "@assets/images/logo-light.png";
 import { NavLinks } from "@constants";
@@ -28,10 +28,23 @@ import { normalizeFavoritesList } from "@utils/favorites";
 
 const Navbar: React.FC = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const isRTL = useIsRTL();
   const [openNavigation, setOpenNavigation] = useState(false);
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = searchQuery.trim();
+    if (!q) return;
+    navigate(`/offers?search=${encodeURIComponent(q)}`);
+    setIsSearchOpen(false);
+    setSearchQuery("");
+  };
 
   const hydrated = useHydrated();
   const { user, isAuthenticated, logout } = useUserStore();
@@ -112,7 +125,6 @@ const Navbar: React.FC = () => {
     setShowUserMenu(false);
   };
 
-  const isRTL = useIsRTL();
   const openClass = isRTL ? "right-0 w-4/5" : "left-0 w-4/5";
   const closeClass = isRTL ? "-right-full w-full" : "-left-full w-full";
 
@@ -328,18 +340,77 @@ const Navbar: React.FC = () => {
 
             <LanguageToggle handleCloseNavigation={handleCloseSideMenu} />
             {/* Search Button */}
-            <Link
-              to="#"
+            <button
+              type="button"
+              onClick={() => setIsSearchOpen(true)}
               className="flex items-center justify-center w-9 h-9 bg-[#fff] border-2 border border-[#440798] rounded-full transition-all duration-300 hover:bg-[#eee]"
+              aria-label={isRTL ? "بحث" : "Search"}
             >
               <IoSearchOutline className="text-[#440798] text-md" />
-            </Link>
+            </button>
           </div>
         </div>
 
         {/* Side Menu */}
       </div>
       <SideMenu isOpen={isSideMenuOpen} onClose={handleCloseSideMenu} />
+
+      {/* Search Modal */}
+      {isSearchOpen && (
+        <div
+          className="fixed inset-0 bg-black/60 z-[100] flex items-start justify-center p-4 pt-24"
+          onClick={() => setIsSearchOpen(false)}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6"
+            onClick={(e) => e.stopPropagation()}
+            dir={isRTL ? "rtl" : "ltr"}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-[#400198]">
+                {isRTL ? "ابحث في العروض" : "Search Offers"}
+              </h3>
+              <button
+                type="button"
+                onClick={() => setIsSearchOpen(false)}
+                className="text-gray-400 hover:text-gray-600"
+                aria-label="close"
+              >
+                <IoMdClose className="text-2xl" />
+              </button>
+            </div>
+            <form onSubmit={handleSearchSubmit}>
+              <div className="relative">
+                <IoSearchOutline className={`absolute top-1/2 -translate-y-1/2 ${isRTL ? "right-4" : "left-4"} text-gray-400 text-xl`} />
+                <input
+                  type="text"
+                  autoFocus
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={isRTL ? "اكتب اسم العرض أو التاجر..." : "Type offer or merchant name..."}
+                  className={`w-full py-3 ${isRTL ? "pr-12 pl-4" : "pl-12 pr-4"} border-2 border-gray-200 rounded-full focus:border-[#400198] focus:outline-none transition-colors`}
+                />
+              </div>
+              <div className="flex gap-3 mt-4 justify-end">
+                <button
+                  type="button"
+                  onClick={() => setIsSearchOpen(false)}
+                  className="px-5 py-2 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors text-sm"
+                >
+                  {isRTL ? "إلغاء" : "Cancel"}
+                </button>
+                <button
+                  type="submit"
+                  disabled={!searchQuery.trim()}
+                  className="px-6 py-2 rounded-full bg-[#400198] text-white hover:bg-[#33007a] transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isRTL ? "بحث" : "Search"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </>
   );
 };

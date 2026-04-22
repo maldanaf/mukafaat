@@ -107,6 +107,28 @@ const PaymentPage = () => {
   const orderIdFromState = state?.orderId;
   const orderFromState = state?.order;
 
+  // Auto-create pending order on mount (for abandoned-cart tracking)
+  const preOrderCreatedRef = useRef(false);
+  useEffect(() => {
+    if (!token || !offerId || preOrderCreatedRef.current || orderIdFromState) return;
+    preOrderCreatedRef.current = true;
+    createOrder.mutate(
+      {
+        order_type: "card",
+        item_id: offerId,
+        quantity,
+        branch_id: undefined,
+        use_wallet: false,
+      },
+      {
+        onError: () => {
+          preOrderCreatedRef.current = false;
+        },
+      },
+    );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token, offerId, quantity, orderIdFromState]);
+
   const companyAndOffer = useMemo((): { company: CardCompany; offer: CardOffer } | null => {
     if (!cardDetailResponse || !offerId) return null;
     const data = (cardDetailResponse as Record<string, unknown>)?.data ?? cardDetailResponse;

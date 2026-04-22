@@ -54,6 +54,7 @@ export const favoritesApi = {
 // ========== Settings (يتطلب توكن) ==========
 export const settingsApi = {
   get: () => api.get(API_ENDPOINTS.settings),
+  getSiteSettings: () => api.get(API_ENDPOINTS.webSettings),
   updateLanguage: (language: string) =>
     api.post(API_ENDPOINTS.settingsUpdateLanguage, null, {
       params: { language },
@@ -162,7 +163,7 @@ export type SubscribeForOtherBody = {
 };
 
 export const subscriptionApi = {
-  plans: () => api.get(API_ENDPOINTS.subscription.plans),
+  plans: (type?: string) => api.get(API_ENDPOINTS.subscription.plans, { params: type ? { type } : undefined }),
   subscribeForOther: (body: SubscribeForOtherBody) =>
     api.post(API_ENDPOINTS.subscription.subscribeForOther, body),
   subscribe: (

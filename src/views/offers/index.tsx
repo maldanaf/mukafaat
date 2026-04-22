@@ -1,8 +1,8 @@
 "use client";
 
-// import React from "react";
 import { Helmet } from "@/lib/helmet-compat";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "@/lib/router-compat";
 import OffersHero from "./components/OffersHero";
 import CategorySection from "./components/CategorySection";
 import LatestOffersSection from "./components/LatestOffersSection";
@@ -13,6 +13,9 @@ import GetStartedSection from "@views/home/components/GetStartedSection";
 
 const OffersPage = () => {
   const { t } = useTranslation();
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("search") || "";
+  const isSearching = searchQuery.trim().length > 0;
 
   return (
     <>
@@ -23,15 +26,17 @@ const OffersPage = () => {
 
       <OffersHero />
 
-      <CategorySection />
+      {!isSearching && <CategorySection />}
 
       <LatestOffersSection />
 
-      <WeeklyDiscountsSection />
-
-      <PaidOffersSection />
-
-      <SuggestedOffersSection />
+      {!isSearching && (
+        <>
+          <WeeklyDiscountsSection />
+          <PaidOffersSection />
+          <SuggestedOffersSection />
+        </>
+      )}
 
       <GetStartedSection className="mt-16 mb-28" />
     </>

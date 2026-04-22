@@ -4,6 +4,7 @@ import React from "react";
 import { useIsRTL } from "@hooks";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/lib/router-compat";
+import { useSiteSettings } from "@hooks/api/useMokafaatQueries";
 import {
   FaCalendarAlt,
   FaPercent,
@@ -25,9 +26,36 @@ interface CardItem {
 }
 
 const PopularCountries: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const isRTL = useIsRTL();
   const navigate = useNavigate();
+  const { data: settingsData } = useSiteSettings();
+  const langBase = i18n.language?.split("-")[0] || "ar";
+
+  // Read section texts from /api/web/settings (supports 4 languages: ar/en/ur/hi)
+  // Response shape: { data: { settings: { home: {...}, home_new_title_ar: "...", ... } } }
+  const root = settingsData as Record<string, unknown> | undefined;
+  const settings = (
+    (root?.data as Record<string, unknown>)?.settings ??
+    (root?.settings as Record<string, unknown>) ??
+    root
+  ) as Record<string, unknown> | undefined;
+  const homeSection = (settings?.home ?? {}) as Record<string, string>;
+
+  const getSetting = (baseKey: string, fallback: string): string => {
+    // Try language-specific flat key (e.g. home_new_title_ar)
+    const flatKey = `${baseKey}_${langBase}`;
+    const flat = settings?.[flatKey];
+    if (typeof flat === "string" && flat.trim()) return flat;
+    // Try nested "home" object (already localized by server)
+    const nestedKey = baseKey.replace(/^home_/, "");
+    const nested = homeSection[nestedKey];
+    if (typeof nested === "string" && nested.trim()) return nested;
+    return fallback;
+  };
+
+  const sectionTitle = getSetting("home_new_title", t("home.popularCountries.title"));
+  const sectionDescription = getSetting("home_new_description", t("popularCountries.description"));
 
   const newCards: CardItem[] = [
     {
@@ -123,7 +151,7 @@ const PopularCountries: React.FC = () => {
                     : "Jost, sans-serif",
                 }}
               >
-                {t("home.popularCountries.title")}
+                {sectionTitle}
               </h2>
             </div>
 
@@ -136,7 +164,7 @@ const PopularCountries: React.FC = () => {
                   : "Jost, sans-serif",
               }}
             >
-              {t("popularCountries.description")}
+              {sectionDescription}
             </p>
 
             {/* البطاقات الأربع (الحجوزات، العروض، البطاقات، الكوبونز) */}

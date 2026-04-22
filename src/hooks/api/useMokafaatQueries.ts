@@ -229,6 +229,16 @@ export function useSettings() {
   });
 }
 
+// Site settings (public) - for homepage texts, social links, etc.
+export function useSiteSettings() {
+  const lang = useQueryLang();
+  return useQuery({
+    queryKey: ["mokafaat", "site-settings", lang],
+    queryFn: () => settingsApi.getSiteSettings().then((r) => r.data),
+    staleTime: 60 * 1000,
+  });
+}
+
 // ========== Pages ==========
 export function usePages(platform?: string) {
   const lang = useQueryLang();
@@ -537,11 +547,11 @@ export function useCities(id: string | number | null) {
 }
 
 // ========== Subscription ==========
-export function useSubscriptionPlans() {
+export function useSubscriptionPlans(type?: string) {
   const lang = useQueryLang();
   return useQuery({
-    queryKey: [...mokafaatKeys.subscriptionPlans, lang],
-    queryFn: () => subscriptionApi.plans().then((r) => r.data),
+    queryKey: [...mokafaatKeys.subscriptionPlans, lang, type ?? "all"],
+    queryFn: () => subscriptionApi.plans(type).then((r) => r.data),
   });
 }
 

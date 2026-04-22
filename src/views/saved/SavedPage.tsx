@@ -24,7 +24,7 @@ const SavedPage: React.FC = () => {
   const { data: favoritesData, isLoading, refetch } = useFavorites();
   const toggleMutation = useFavoriteToggle();
 
-  const [filter, setFilter] = useState<"all" | "offer" | "card" | "coupon">(
+  const [filter, setFilter] = useState<"all" | "offer" | "card" | "coupon" | "booking">(
     "all",
   );
 
@@ -76,26 +76,40 @@ const SavedPage: React.FC = () => {
         return "bg-blue-100 text-blue-800";
       case "coupon":
         return "bg-green-100 text-green-800";
+      case "booking":
+        return "bg-purple-100 text-purple-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
   };
 
   const getItemPath = (item: NormalizedFavorite): string | null => {
-    const id = String(item.favorable_id);
+    const idStr = String(item.favorable_id);
     switch (item.type) {
-      case "offer":
-        if (item.companyId && (item.category || "offers")) {
-          return `/offers/${item.category || "offers"}/${item.companyId}/offer/${id}`;
-        }
+      case "offer": {
+        const cat = item.categorySlug || item.category || "offers";
+        const merchant = item.merchantSlug || item.companyId;
+        const offer = item.itemSlug || idStr;
+        if (merchant) return `/offers/${cat}/${merchant}/${offer}`;
         return null;
-      case "card":
-        if (item.companyId) {
-          return `/cards/${item.companyId}/offer/${id}`;
-        }
-        return `/cards/${id}/offer/${id}`;
+      }
+      case "card": {
+        const merchant = item.merchantSlug || item.companyId;
+        const card = item.itemSlug || idStr;
+        if (merchant) return `/cards/${merchant}/${card}`;
+        return null;
+      }
+      case "booking": {
+        const type = item.bookingType || "hotel";
+        const slug = item.itemSlug || idStr;
+        return `/bookings/${type}/${slug}`;
+      }
       case "coupon":
-        return "/coupons";
+        return `/coupons?coupon=${idStr}`;
+      case "merchant": {
+        const merchant = item.merchantSlug || item.companyId || idStr;
+        return `/offers/all/${merchant}`;
+      }
       default:
         return null;
     }
@@ -190,6 +204,11 @@ const SavedPage: React.FC = () => {
                   key: "coupon" as const,
                   label: t("saved.types.coupon"),
                   count: items.filter((i) => i.type === "coupon").length,
+                },
+                {
+                  key: "booking" as const,
+                  label: t("saved.types.booking"),
+                  count: items.filter((i) => i.type === "booking").length,
                 },
               ].map((opt) => (
                 <button

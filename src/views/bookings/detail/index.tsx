@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { useParams, Link } from "@/lib/router-compat";
+import { useParams, Link, useNavigate } from "@/lib/router-compat";
 import { Helmet } from "@/lib/helmet-compat";
 import { useIsRTL } from "@hooks";
 import { useTranslation } from "react-i18next";
@@ -9,11 +9,15 @@ import { useQuery } from "@tanstack/react-query";
 import { webApi } from "@network/services/mokafaatService";
 import { LoadingSpinner } from "@components/LoadingSpinner";
 import { AboutPattern } from "@assets";
-import { FiMapPin, FiStar, FiEye, FiMousePointer, FiExternalLink, FiArrowLeft } from "react-icons/fi";
+import { FiMapPin, FiStar, FiEye, FiMousePointer, FiExternalLink, FiHeart } from "react-icons/fi";
 import { MdOutlineFlight } from "react-icons/md";
 import { RiHotelLine } from "react-icons/ri";
 import { FaCar } from "react-icons/fa";
 import CurrencyIcon from "@components/CurrencyIcon";
+import { useFavorites, useFavoriteToggle } from "@hooks/api/useMokafaatQueries";
+import { useUserStore } from "@stores/userStore";
+import { normalizeFavoritesList } from "@utils/favorites";
+import { toast } from "react-toastify";
 
 const typeConfig = {
   flight: { icon: MdOutlineFlight, color: "bg-blue-500", label: { ar: "طيران", en: "Flight" } },
@@ -24,8 +28,16 @@ const typeConfig = {
 export default function BookingDetailPage() {
   const { type, slug } = useParams<{ type: string; slug: string }>();
   const isRTL = useIsRTL();
-  const { t, i18n } = useTranslation();
+  const { t: _t, i18n } = useTranslation();
   const langBase = i18n.language?.split("-")[0] || "ar";
+  const navigate = useNavigate();
+  const isAuthenticated = useUserStore((s) => !!s.token);
+  const { data: favoritesData } = useFavorites();
+  const toggleFavorite = useFavoriteToggle();
+  const favoritesList = useMemo(
+    () => normalizeFavoritesList(favoritesData ?? null),
+    [favoritesData],
+  );
 
   const { data: rawData, isLoading } = useQuery({
     queryKey: ["mokafaat", "booking-detail", slug, langBase],
@@ -54,14 +66,32 @@ export default function BookingDetailPage() {
     }
   };
 
-  const handleRelatedClick = async (item: Record<string, unknown>) => {
-    try {
-      const res = await webApi.bookingClick(Number(item.id));
-      const url = (res.data as Record<string, unknown>)?.data?.affiliate_url || item.affiliate_url;
-      window.open(String(url), "_blank");
-    } catch {
-      window.open(String(item.affiliate_url), "_blank");
+  const isBookingFavorite = (id: number | string) =>
+    favoritesList.some(
+      (f) => f.favorable_type === "booking" && String(f.favorable_id) === String(id),
+    );
+
+  const handleFavoriteToggle = (e: React.MouseEvent, id: number | string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isAuthenticated) {
+      navigate(`/login?returnUrl=${encodeURIComponent(window.location.pathname)}`);
+      return;
     }
+    const wasFavorite = isBookingFavorite(id);
+    toggleFavorite.mutate(
+      { favorable_type: "booking", favorable_id: id },
+      {
+        onSuccess: () => {
+          toast.success(
+            wasFavorite
+              ? isRTL ? "تمت الإزالة من المفضلة" : "Removed from favorites"
+              : isRTL ? "تمت الإضافة للمفضلة" : "Added to favorites",
+          );
+        },
+        onError: () => toast.error(isRTL ? "حدث خطأ" : "Error"),
+      },
+    );
   };
 
   const tc = typeConfig[(type as keyof typeof typeConfig) || "hotel"];
@@ -296,14 +326,27 @@ export default function BookingDetailPage() {
                   )}
                 </div>
 
-                {/* زر الحجز */}
-                <button
-                  onClick={handleBookNow}
-                  className="w-full py-3.5 bg-[#400198] text-white rounded-xl font-bold text-lg hover:bg-[#33007a] transition-colors flex items-center justify-center gap-2"
-                >
-                  <FiExternalLink />
-                  {isRTL ? "احجز الآن" : "Book Now"}
-                </button>
+                {/* زر الحجز + المفضلة */}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handleBookNow}
+                    className="flex-1 py-3.5 bg-[#400198] text-white rounded-xl font-bold text-lg hover:bg-[#33007a] transition-colors flex items-center justify-center gap-2"
+                  >
+                    <FiExternalLink />
+                    {isRTL ? "احجز الآن" : "Book Now"}
+                  </button>
+                  <button
+                    onClick={(e) => handleFavoriteToggle(e, Number(listing.id))}
+                    className={`w-14 h-14 rounded-xl border-2 flex items-center justify-center transition-all ${
+                      isBookingFavorite(Number(listing.id))
+                        ? "border-red-500 text-red-500 bg-red-50"
+                        : "border-gray-200 text-gray-600 hover:border-red-500 hover:text-red-500"
+                    }`}
+                    aria-label="favorite"
+                  >
+                    <FiHeart className={`text-xl ${isBookingFavorite(Number(listing.id)) ? "fill-current" : ""}`} />
+                  </button>
+                </div>
                 <p className="text-xs text-gray-400 text-center mt-2">
                   {isRTL ? "سيتم توجيهك لموقع المزود لإتمام الحجز" : "You will be redirected to the provider's website"}
                 </p>
@@ -342,34 +385,49 @@ export default function BookingDetailPage() {
               {isRTL ? "عروض مشابهة" : "Similar Listings"}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {related.map((item) => (
-                <div key={String(item.id)} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all">
-                  <div className="relative h-40 overflow-hidden">
-                    <img src={String(item.image ?? "")} alt={String(item.title ?? "")} className="w-full h-full object-cover" />
-                    <span className={`absolute top-2 start-2 ${tc?.color} text-white text-xs px-2 py-1 rounded`}>
-                      {tc?.label[isRTL ? "ar" : "en"]}
-                    </span>
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-bold text-gray-900 text-sm mb-2 line-clamp-2">{String(item.title ?? "")}</h3>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-[#400198] font-bold">
-                        {item.price_from} <CurrencyIcon size={12} className="inline" />
-                      </span>
-                      {(item.provider as Record<string, unknown>)?.logo && (
-                        <img src={String((item.provider as Record<string, unknown>).logo)} alt="" className="h-5 object-contain" />
-                      )}
-                    </div>
+              {related.map((item) => {
+                const itemId = item.id;
+                const itemType = (item.type as string) || type || "hotel";
+                const itemSlug = (item.slug as string) || String(itemId);
+                const fav = isBookingFavorite(Number(itemId));
+                return (
+                  <Link
+                    to={`/bookings/${itemType}/${itemSlug}`}
+                    key={String(itemId)}
+                    className="block bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all no-underline text-inherit relative"
+                  >
                     <button
-                      onClick={() => handleRelatedClick(item)}
-                      className="w-full py-2 bg-[#400198] text-white rounded-lg text-sm font-medium hover:bg-[#33007a] transition-colors flex items-center justify-center gap-1"
+                      onClick={(e) => handleFavoriteToggle(e, Number(itemId))}
+                      className={`absolute top-2 end-2 z-10 w-8 h-8 bg-white bg-opacity-90 rounded-full flex items-center justify-center shadow transition-all ${
+                        fav ? "text-red-500" : "text-gray-600 hover:text-red-500"
+                      }`}
+                      aria-label="favorite"
                     >
-                      <FiExternalLink className="w-3 h-3" />
-                      {isRTL ? "احجز" : "Book"}
+                      <FiHeart className={`text-sm ${fav ? "fill-current" : ""}`} />
                     </button>
-                  </div>
-                </div>
-              ))}
+                    <div className="relative h-40 overflow-hidden">
+                      <img src={String(item.image ?? "")} alt={String(item.title ?? "")} className="w-full h-full object-cover" />
+                      <span className={`absolute top-2 start-2 ${tc?.color} text-white text-xs px-2 py-1 rounded`}>
+                        {tc?.label[isRTL ? "ar" : "en"]}
+                      </span>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-bold text-gray-900 text-sm mb-2 line-clamp-2">{String(item.title ?? "")}</h3>
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-[#400198] font-bold">
+                          {item.price_from} <CurrencyIcon size={12} className="inline" />
+                        </span>
+                        {(item.provider as Record<string, unknown>)?.logo && (
+                          <img src={String((item.provider as Record<string, unknown>).logo)} alt="" className="h-5 object-contain" />
+                        )}
+                      </div>
+                      <span className="block w-full py-2 bg-[#400198] text-white rounded-lg text-sm font-medium text-center">
+                        {isRTL ? "عرض التفاصيل" : "View Details"}
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           </section>
         )}

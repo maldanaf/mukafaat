@@ -47,6 +47,8 @@ export interface CardModel {
   description?: string;
   price: string;
   category: string;
+  slug?: string;
+  merchantSlug?: string;
 }
 
 /**
@@ -86,6 +88,10 @@ export function mapApiCardToModel(
         cardImage.substring(storageIndex + "/storage/https://".length);
     }
 
+    const slug = apiCard.slug ? String(apiCard.slug) : undefined;
+    const merchantObj = apiCard.merchant as Record<string, unknown> | undefined;
+    const merchantSlug = merchantObj?.slug ? String(merchantObj.slug) : undefined;
+
     return {
       id,
       image: fixedImage,
@@ -93,6 +99,8 @@ export function mapApiCardToModel(
       description: description || undefined,
       price,
       category: categoryName,
+      slug,
+      merchantSlug,
     };
   } catch (error) {
     console.error("Error mapping card:", error, apiCard);

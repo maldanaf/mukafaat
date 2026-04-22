@@ -4,7 +4,6 @@ import React, { useState, useMemo } from "react";
 import { useIsRTL } from "@hooks";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/lib/router-compat";
-import { Link } from "@/lib/router-compat";
 import { PatternNewProperty } from "@assets";
 import OwlCarousel from "@components/DynamicOwlCarousel";
 import { IoIosArrowRoundForward } from "react-icons/io";
@@ -75,14 +74,19 @@ const Boking: React.FC = () => {
   }, [activeFilter, properties]);
 
   const owlCarouselOptions = {
-    loop: true,
-    margin: 10,
-    nav: true,
+    loop: filteredProperties.length > 1,
+    margin: 24,
+    nav: filteredProperties.length > 1,
     dots: false,
-    autoplay: true,
+    autoplay: filteredProperties.length > 1,
     autoplayTimeout: 5000,
     autoplayHoverPause: true,
-    responsive: { 0: { items: 1 }, 600: { items: 2 }, 1000: { items: 4 } },
+    rtl: false,
+    responsive: {
+      0: { items: 1, margin: 16 },
+      600: { items: 2, margin: 20 },
+      1000: { items: 4, margin: 24 },
+    },
   };
 
   const handleShare = (id: number) => {
@@ -153,9 +157,11 @@ const Boking: React.FC = () => {
           >
             {filteredProperties.map((property) => (
               <div key={property.id} className="item">
-                <Link to={getDetailPath(property as BookingProperty & { slug?: string; type?: string })} className="block no-underline text-inherit">
-                  <InvestmentCard {...property} onShare={handleShare} />
-                </Link>
+                <InvestmentCard
+                  {...property}
+                  onShare={handleShare}
+                  onClick={() => navigate(getDetailPath(property as BookingProperty & { slug?: string; type?: string }))}
+                />
               </div>
             ))}
           </OwlCarousel>

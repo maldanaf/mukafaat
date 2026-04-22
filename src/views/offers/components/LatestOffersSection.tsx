@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "@/lib/router-compat";
+import { useNavigate, useSearchParams } from "@/lib/router-compat";
 import { useIsRTL } from "@hooks";
 import { type Offer } from "@data/offers";
 import OfferCard from "./OfferCard";
@@ -26,17 +26,19 @@ const LatestOffersSection: React.FC = () => {
   const { t } = useTranslation();
   const isRTL = useIsRTL();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("search") || "";
   const [carouselKey, setCarouselKey] = useState(0);
   const owlCarouselRef = useRef<OwlCarousel | null>(null);
 
   const { data: latestRes, isLoading: apiLoading } = useWebOffers(
-    buildWebOffersParams({ sortBy: "latest" }),
+    buildWebOffersParams({ sortBy: "latest", search: searchQuery || undefined }),
   );
 
-  const offers = useMemo(
-    () => mapApiOffersToModels(extractOffersArray(latestRes)).slice(0, 8),
-    [latestRes],
-  );
+  const offers = useMemo(() => {
+    const all = mapApiOffersToModels(extractOffersArray(latestRes));
+    return searchQuery ? all : all.slice(0, 8);
+  }, [latestRes, searchQuery]);
 
   // Force re-render when language or direction changes
   useEffect(() => {
@@ -109,10 +111,14 @@ const LatestOffersSection: React.FC = () => {
       </div>
       <div className="text-start mb-4">
         <h2 className="text-[#400198] text-3xl font-bold">
-          {t("offersPage.latestOffers.title")}
+          {searchQuery
+            ? (isRTL ? `نتائج البحث عن "${searchQuery}"` : `Search results for "${searchQuery}"`)
+            : t("offersPage.latestOffers.title")}
         </h2>
         <p className="text-md text-gray-700 leading-relaxed">
-          {t("offersPage.latestOffers.subtitle")}
+          {searchQuery
+            ? (isRTL ? `${offers.length} نتيجة` : `${offers.length} result(s)`)
+            : t("offersPage.latestOffers.subtitle")}
         </p>
       </div>
 

@@ -117,9 +117,14 @@ const OrdersPage: React.FC = () => {
   };
 
   const canCancelOrder = (order: (typeof orders)[number]) => {
-    // Only offer orders can be cancelled.
-    const isOffer = order.orderType === "offer" || order.items?.[0]?.type === "offer";
-    if (!isOffer) return false;
+    // Cards, bookings, etc. can NEVER be cancelled
+    if (order.orderType && order.orderType !== "offer") return false;
+    // If orderType is missing, fall back to items type (defaults to "offer")
+    if (!order.orderType && order.items?.[0]?.type && order.items[0].type !== "offer") return false;
+
+    // Free offers (price = 0) can't be cancelled - no refund needed
+    const total = Number(order.totalAmount ?? 0);
+    if (total <= 0) return false;
 
     // Not used
     const rawStatus = String(order.rawStatus ?? "").toLowerCase();
@@ -320,7 +325,7 @@ const OrdersPage: React.FC = () => {
         </div>
 
         {/* Filters */}
-        <div className="flex justify-start mb-8 gap-3 relative z-10 w-1/2">
+        <div className="flex flex-wrap justify-start mb-8 gap-3 relative z-10">
           {[
             {
               key: "all",
@@ -371,7 +376,7 @@ const OrdersPage: React.FC = () => {
                     | "cancelled"
                 )
               }
-              className={`px-5 py-3 rounded-full font-medium text-sm shadow-md transition-all duration-300 ${
+              className={`px-5 py-3 rounded-full font-medium text-sm shadow-md transition-all duration-300 whitespace-nowrap ${
                 filter === filterOption.key
                   ? "bg-[#400198] text-white shadow-lg"
                   : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"

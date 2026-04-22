@@ -827,7 +827,7 @@ html[lang="ar"] .content-mobile {
 }
 
 .owl-theme .owl-item {
-  padding: 0 3px !important;
+  padding: 0 12px !important;
   display: flex !important;
   align-items: stretch !important;
 }
