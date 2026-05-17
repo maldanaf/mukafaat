@@ -9,7 +9,7 @@ import { useIsRTL } from "@hooks";
 import FAQSection from "@views/home/components/FAQSection";
 import { useNavigate, useLocation } from "@/lib/router-compat";
 import NewsCard from "@views/home/components/NewsCard";
-import Pagination from "../../components/Pagination";
+import { useLoadMoreOnScroll } from "@hooks/useLoadMoreOnScroll";
 import { useInquiryModal } from "@context";
 import GetStartedSection from "@views/home/components/GetStartedSection";
 import { useWebHome } from "@hooks/api/useMokafaatQueries";
@@ -76,17 +76,15 @@ const BlogsPage: React.FC = () => {
 
   const allNews = filteredNews;
 
-  // Pagination logic
+  // Load-more pagination
   const totalPages = Math.ceil(allNews.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentNews = allNews.slice(startIndex, endIndex);
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    // Scroll to top of blogs section
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  const currentNews = allNews.slice(0, currentPage * itemsPerPage);
+  const hasMoreNews = currentPage < totalPages;
+  const loadMoreRef = useLoadMoreOnScroll({
+    hasMore: hasMoreNews,
+    loading: false,
+    loadMore: () => setCurrentPage((p) => p + 1),
+  });
 
   const handleCategoryChange = (categoryKey: string) => {
     setSelectedCategory(categoryKey);
@@ -216,13 +214,19 @@ const BlogsPage: React.FC = () => {
                   ))}
                 </div>
 
-                {/* Pagination */}
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={handlePageChange}
-                  isLoading={false}
-                />
+                {/* Load More + Infinite Scroll */}
+                {hasMoreNews && (
+                  <div className="flex flex-col items-center justify-center mt-10 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setCurrentPage((p) => p + 1)}
+                      className="px-6 py-3 bg-[#400198] text-white rounded-xl font-medium hover:bg-[#54015d] transition-colors"
+                    >
+                      {isRTL ? "عرض المزيد" : "Load more"}
+                    </button>
+                    <div ref={loadMoreRef} className="h-px w-full" aria-hidden="true" />
+                  </div>
+                )}
               </div>
             </div>
           </div>

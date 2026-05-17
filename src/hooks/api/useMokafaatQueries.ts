@@ -26,7 +26,9 @@ import {
   profileApi,
   filtersApi,
   membershipApi,
+  discountCodesApi,
   type SubscribeForOtherBody,
+  type DiscountCodeValidateParams,
 } from "@network/services/mokafaatService";
 
 /** لغة حالية للـ query key (يعيد طلب البيانات عند تغيير اللغة) */
@@ -62,6 +64,9 @@ export const mokafaatKeys = {
     ["mokafaat", "cards", "byMerchant", id, params] as const,
   webCards: (params?: Record<string, unknown>) =>
     ["mokafaat", "web", "cards", params] as const,
+  webCardCountries: ["mokafaat", "web", "cardCountries"] as const,
+  webCategoryCards: (slug: string, params?: Record<string, unknown>) =>
+    ["mokafaat", "web", "categories", slug, "cards", params] as const,
   webOffers: (params?: Record<string, unknown>) =>
     ["mokafaat", "web", "offers", params] as const,
   webCoupons: (params?: Record<string, unknown>) =>
@@ -81,6 +86,8 @@ export const mokafaatKeys = {
     ["mokafaat", "locations", "regions", id] as const,
   cities: (id: string | number) =>
     ["mokafaat", "locations", "cities", id] as const,
+  citiesByCountry: (id: string | number) =>
+    ["mokafaat", "locations", "cities-by-country", id] as const,
   subscriptionPlans: ["mokafaat", "subscription", "plans"] as const,
   subscriptionStatus: ["mokafaat", "subscription", "status"] as const,
   subscriptionHistory: ["mokafaat", "subscription", "history"] as const,
@@ -288,10 +295,20 @@ export function useCreateOrder() {
       quantity: number;
       branch_id?: string | number;
       order_id?: string | number;
+      use_wallet?: boolean;
+      discount_code?: string;
     }) => ordersApi.create(params),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mokafaat", "orders"] });
     },
+  });
+}
+
+/** التحقق من كود الخصم قبل إتمام الحجز (POST /api/discount-codes/validate) */
+export function useValidateDiscountCode() {
+  return useMutation({
+    mutationFn: (params: DiscountCodeValidateParams) =>
+      discountCodesApi.validate(params).then((r) => r.data),
   });
 }
 
@@ -374,6 +391,27 @@ export function useWebCards(params?: Record<string, unknown>) {
   return useQuery({
     queryKey: [...mokafaatKeys.webCards(params), lang],
     queryFn: () => webApi.cards(params).then((r) => r.data),
+  });
+}
+
+export function useWebCardCountries() {
+  const lang = useQueryLang();
+  return useQuery({
+    queryKey: [...mokafaatKeys.webCardCountries, lang],
+    queryFn: () => webApi.cardCountries().then((r) => r.data),
+  });
+}
+
+export function useWebCategoryCards(
+  slug: string,
+  params?: Record<string, unknown>,
+) {
+  const lang = useQueryLang();
+  return useQuery({
+    queryKey: [...mokafaatKeys.webCategoryCards(slug, params), lang],
+    queryFn: () =>
+      webApi.categoriesCards(slug, params).then((r) => r.data),
+    enabled: !!slug,
   });
 }
 
@@ -546,6 +584,19 @@ export function useCities(id: string | number | null) {
   });
 }
 
+/** كل مدن الدولة (بدون تقسيم على مناطق) */
+export function useCitiesByCountry(id: string | number | null) {
+  const lang = useQueryLang();
+  return useQuery({
+    queryKey: [...mokafaatKeys.citiesByCountry(id ?? 0), lang],
+    queryFn: () =>
+      locationsApi
+        .citiesByCountry(id as string | number)
+        .then((r) => normalizeLocationListResponse(r.data, "cities")),
+    enabled: locationQueryEnabled(id),
+  });
+}
+
 // ========== Subscription ==========
 export function useSubscriptionPlans(type?: string) {
   const lang = useQueryLang();
@@ -590,11 +641,13 @@ export function useSubscribe() {
       planId,
       paymentMethod,
       useWallet,
+      discountCode,
     }: {
       planId: string | number;
       paymentMethod?: "online" | "cash" | "bank";
       useWallet?: boolean;
-    }) => subscriptionApi.subscribe(planId, paymentMethod, useWallet),
+      discountCode?: string;
+    }) => subscriptionApi.subscribe(planId, paymentMethod, useWallet, discountCode),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: mokafaatKeys.subscriptionStatus });
       queryClient.invalidateQueries({ queryKey: mokafaatKeys.subscriptionHistory });

@@ -22,6 +22,9 @@ interface ProductCardProps {
   brandColor?: string;
   isNew?: boolean;
   isBestSeller?: boolean;
+  pricingType?: string;        // 'free' | 'paid'
+  requiresSubscription?: boolean;
+  isSubscriber?: boolean;
   onShareClick?: (id: number) => void;
   onFavoriteClick?: (id: number) => void;
   onBuyClick?: (id: number) => void;
@@ -41,6 +44,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
   brandColor,
   isNew = false,
   isBestSeller = false,
+  pricingType,
+  requiresSubscription = false,
+  isSubscriber = false,
   onShareClick,
   onFavoriteClick,
   onBuyClick,
@@ -49,10 +55,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const isRTL = useIsRTL();
   const { t } = useTranslation();
 
+  // هل العرض مجاني للمستخدم الحالي؟
+  const isFreeForUser = useMemo(() => {
+    if (pricingType === "free") {
+      return !requiresSubscription || isSubscriber;
+    }
+    return discountPrice <= 0;
+  }, [pricingType, requiresSubscription, isSubscriber, discountPrice]);
+
   // Memoize buy button text based on language
   const buyButtonText = useMemo(() => {
-    return t("home.product.buyNow");
-  }, [t]);
+    return t(isFreeForUser ? "home.product.viewNow" : "home.product.buyNow");
+  }, [t, isFreeForUser]);
 
   // Memoize discount text based on language
   const discountText = useMemo(() => {

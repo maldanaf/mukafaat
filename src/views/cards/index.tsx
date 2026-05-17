@@ -4,7 +4,6 @@ import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "@/lib/router-compat";
 import CardsHero from "./components/CardsHero";
-import CardsCategorySection from "./components/CardsCategorySection";
 import CardsSliderSection from "./components/CardsSliderSection";
 import { useIsRTL } from "@hooks";
 import { Helmet } from "@/lib/helmet-compat";
@@ -18,55 +17,50 @@ import { LoadingSpinner } from "@components/LoadingSpinner";
 import { buildWebCardsParams } from "@utils/webFilters";
 import { FiFilter } from "react-icons/fi";
 import { IoMdClose } from "react-icons/io";
+import CategoryCard from "@components/CategoryCard";
 
 interface ApiCategory {
   id: number;
   name: string;
+  slug?: string;
   image?: string;
 }
 
-interface ApiMerchant {
+interface ApiCardCountry {
   id: number;
   name: string;
-  logo: string;
-  slug?: string;
+  code?: string;
+  flag?: string;
+  flag_url?: string;
 }
 
 const CardsPage = () => {
   const { t } = useTranslation();
   const isRTL = useIsRTL();
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("all");
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [search, setSearch] = useState<string>("");
+  const [selectedCountryId, setSelectedCountryId] = useState<number | "all">("all");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const createDefaultCardsFilters = useCallback(
-    () => ({ merchantIds: [] as Array<string | number>, validityTypes: [] as string[] }),
+    () => ({ validityTypes: [] as string[] }),
     [],
   );
   const [draftCardsFilters, setDraftCardsFilters] = useState<{
-    merchantIds: Array<string | number>;
     validityTypes: string[];
     isRenewable?: boolean;
     priceMin?: number;
     priceMax?: number;
   }>(createDefaultCardsFilters);
   const [appliedCardsFilters, setAppliedCardsFilters] = useState<{
-    merchantIds: Array<string | number>;
     validityTypes: string[];
     isRenewable?: boolean;
     priceMin?: number;
     priceMax?: number;
   }>(createDefaultCardsFilters);
 
-  const categoryIdNum =
-    selectedCategoryId !== "all" ? Number(selectedCategoryId) : undefined;
-
   const baseParams = useMemo(
     () => ({
-      categoryIds: categoryIdNum ? [categoryIdNum] : undefined,
-      merchantIds:
-        appliedCardsFilters.merchantIds.length > 0
-          ? appliedCardsFilters.merchantIds
-          : undefined,
+      cardCountryId:
+        selectedCountryId !== "all" ? Number(selectedCountryId) : undefined,
       validityTypes:
         appliedCardsFilters.validityTypes.length > 0
           ? appliedCardsFilters.validityTypes
@@ -75,29 +69,14 @@ const CardsPage = () => {
       priceMin: appliedCardsFilters.priceMin,
       priceMax: appliedCardsFilters.priceMax,
       search: search || undefined,
-      perPage: 50,
+      perPage: 30,
       page: 1,
     }),
-    [categoryIdNum, appliedCardsFilters, search],
+    [selectedCountryId, appliedCardsFilters, search],
   );
 
-  const { data: latestRes, isLoading: latestLoading } = useWebCards(
-    buildWebCardsParams({
-      ...baseParams,
-      sortBy: "newest",
-    }),
-  );
-  const { data: topSellingRes, isLoading: topSellingLoading } = useWebCards(
-    buildWebCardsParams({
-      ...baseParams,
-      sortBy: "best_selling",
-    }),
-  );
-  const { data: mostViewedRes, isLoading: mostViewedLoading } = useWebCards(
-    buildWebCardsParams({
-      ...baseParams,
-      sortBy: "most_viewed",
-    }),
+  const { data: cardsRes, isLoading } = useWebCards(
+    buildWebCardsParams(baseParams),
   );
 
   const extractCardsPayload = useCallback((res: unknown) => {
@@ -105,17 +84,20 @@ const CardsPage = () => {
     return (root.data as Record<string, unknown>) ?? root;
   }, []);
 
-  const latestData = useMemo(
-    () => extractCardsPayload(latestRes),
-    [latestRes, extractCardsPayload],
+  const payload = useMemo(
+    () => extractCardsPayload(cardsRes),
+    [cardsRes, extractCardsPayload],
   );
 
   const categories = useMemo((): ApiCategory[] => {
-    const arr =
-      (latestData?.categories as ApiCategory[] | undefined) ??
-      (latestData?.data as ApiCategory[] | undefined);
+    const arr = payload?.categories as ApiCategory[] | undefined;
     return Array.isArray(arr) ? arr : [];
-  }, [latestData]);
+  }, [payload]);
+
+  const countries = useMemo((): ApiCardCountry[] => {
+    const arr = payload?.card_countries as ApiCardCountry[] | undefined;
+    return Array.isArray(arr) ? arr : [];
+  }, [payload]);
 
   const categoryItems = useMemo(
     () =>
@@ -127,30 +109,39 @@ const CardsPage = () => {
     [categories],
   );
 
-  const merchants = useMemo((): ApiMerchant[] => {
-    const arr = latestData?.merchants as ApiMerchant[] | undefined;
-    return Array.isArray(arr) ? arr : [];
-  }, [latestData]);
-
   const latestCards = useMemo((): CardOfferWithCompanyId[] => {
-    const payload = extractCardsPayload(latestRes);
+    const arr = (payload?.latest_cards ?? payload?.cards) as
+      | Array<Record<string, unknown>>
+      | undefined;
+    return mapApiHomeCardsToOffers(Array.isArray(arr) ? arr : []);
+  }, [payload]);
+
+  const recommendedCards = useMemo((): CardOfferWithCompanyId[] => {
+    const arr = payload?.recommended_cards as
+      | Array<Record<string, unknown>>
+      | undefined;
+    return mapApiHomeCardsToOffers(Array.isArray(arr) ? arr : []);
+  }, [payload]);
+
+  const featuredCards = useMemo((): CardOfferWithCompanyId[] => {
+    const arr = payload?.featured_cards as
+      | Array<Record<string, unknown>>
+      | undefined;
+    return mapApiHomeCardsToOffers(Array.isArray(arr) ? arr : []);
+  }, [payload]);
+
+  const filteredCards = useMemo((): CardOfferWithCompanyId[] => {
     const arr = payload?.cards as Array<Record<string, unknown>> | undefined;
     return mapApiHomeCardsToOffers(Array.isArray(arr) ? arr : []);
-  }, [latestRes, extractCardsPayload]);
+  }, [payload]);
 
-  const topSellingCards = useMemo((): CardOfferWithCompanyId[] => {
-    const payload = extractCardsPayload(topSellingRes);
-    const arr = payload?.cards as Array<Record<string, unknown>> | undefined;
-    return mapApiHomeCardsToOffers(Array.isArray(arr) ? arr : []);
-  }, [topSellingRes, extractCardsPayload]);
-
-  const mostViewedCards = useMemo((): CardOfferWithCompanyId[] => {
-    const payload = extractCardsPayload(mostViewedRes);
-    const arr = payload?.cards as Array<Record<string, unknown>> | undefined;
-    return mapApiHomeCardsToOffers(Array.isArray(arr) ? arr : []);
-  }, [mostViewedRes, extractCardsPayload]);
-
-  const isLoading = latestLoading || topSellingLoading || mostViewedLoading;
+  const hasFilters =
+    !!search ||
+    selectedCountryId !== "all" ||
+    appliedCardsFilters.validityTypes.length > 0 ||
+    appliedCardsFilters.isRenewable ||
+    appliedCardsFilters.priceMin != null ||
+    appliedCardsFilters.priceMax != null;
 
   if (isLoading) {
     return (
@@ -176,15 +167,49 @@ const CardsPage = () => {
 
       <CardsHero />
 
-      <CardsCategorySection
-        categories={categoryItems}
-        selectedCategoryId={selectedCategoryId}
-        onSelectCategory={setSelectedCategoryId}
-        isLoading={isLoading}
-      />
+      {/* Main Categories — single-row horizontal scroll */}
+      {categoryItems.length > 0 && (
+        <section className="relative container mx-auto px-4 py-8 z-10">
+          <div
+            className="w-full max-w-6xl mx-auto"
+            style={{ marginTop: "-80px" }}
+          >
+            <div
+              className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide"
+              style={{
+                direction: isRTL ? "rtl" : "ltr",
+                scrollSnapType: "x mandatory",
+                WebkitOverflowScrolling: "touch",
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
+              }}
+            >
+              {categoryItems.map((cat) => {
+                const slug =
+                  categories.find((c) => c.id === cat.id)?.slug ??
+                  String(cat.id);
+                return (
+                  <Link
+                    key={cat.id}
+                    to={`/cards/${slug}`}
+                    className="flex-shrink-0 w-[150px] md:w-[160px] xl:w-[170px]"
+                    style={{ scrollSnapAlign: "start" }}
+                  >
+                    <CategoryCard
+                      icon={cat.image || ""}
+                      title={cat.name}
+                      alt={cat.name}
+                    />
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
-      {/* Cards filters trigger (Sidebar) */}
-      <section className="container mx-auto px-4 -mt-2 pb-6">
+      {/* Search + Filter trigger */}
+      <section className="container mx-auto px-4 pb-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="w-full md:w-80">
             <input
@@ -208,126 +233,70 @@ const CardsPage = () => {
           </button>
         </div>
 
-        {/* Applied Filters Tags (like Offers page) */}
-        <div className="text-sm text-gray-600 mt-4">
-          <div className="flex flex-wrap gap-2">
-            {appliedCardsFilters.merchantIds.map((id) => {
-              const label =
-                merchants.find((m) => String(m?.id) === String(id))?.name ?? String(id);
+        {/* Country chips */}
+        {countries.length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => setSelectedCountryId("all")}
+              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
+                selectedCountryId === "all"
+                  ? "bg-[#400198] text-white border-[#400198]"
+                  : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+              }`}
+            >
+              {t("cardsPage.allCountries", "كل الدول")}
+            </button>
+            {countries.map((c) => {
+              const selected = selectedCountryId === c.id;
+              const isEmoji = c.flag && c.flag.length <= 4;
               return (
-                <span
-                  key={`m-${id}`}
-                  className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium"
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => setSelectedCountryId(c.id)}
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
+                    selected
+                      ? "bg-[#400198] text-white border-[#400198]"
+                      : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                  }`}
                 >
-                  {label}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setAppliedCardsFilters((p) => ({
-                        ...p,
-                        merchantIds: p.merchantIds.filter(
-                          (x) => String(x) !== String(id),
-                        ),
-                      }))
-                    }
-                    className="ml-1 hover:bg-blue-200 rounded-full p-0.5"
-                  >
-                    ×
-                  </button>
-                </span>
+                  {isEmoji ? (
+                    <span className="text-lg leading-none">{c.flag}</span>
+                  ) : c.flag_url ? (
+                    <img
+                      src={c.flag_url}
+                      alt={c.name}
+                      className="w-5 h-4 object-cover rounded-sm"
+                    />
+                  ) : null}
+                  <span>{c.name}</span>
+                </button>
               );
             })}
-
-            {appliedCardsFilters.validityTypes.map((v) => (
-              <span
-                key={`v-${v}`}
-                className="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium"
-              >
-                {v}
-                <button
-                  type="button"
-                  onClick={() =>
-                    setAppliedCardsFilters((p) => ({
-                      ...p,
-                      validityTypes: p.validityTypes.filter((x) => x !== v),
-                    }))
-                  }
-                  className="ml-1 hover:bg-green-200 rounded-full p-0.5"
-                >
-                  ×
-                </button>
-              </span>
-            ))}
-
-            {appliedCardsFilters.isRenewable && (
-              <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
-                {t("cardsPage.renewable")}
-                <button
-                  type="button"
-                  onClick={() =>
-                    setAppliedCardsFilters((p) => ({ ...p, isRenewable: undefined }))
-                  }
-                  className="ml-1 hover:bg-purple-200 rounded-full p-0.5"
-                >
-                  ×
-                </button>
-              </span>
-            )}
-
-            {(appliedCardsFilters.priceMin != null ||
-              appliedCardsFilters.priceMax != null) && (
-              <span className="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium">
-                {appliedCardsFilters.priceMin != null &&
-                appliedCardsFilters.priceMax != null
-                  ? `${appliedCardsFilters.priceMin} - ${appliedCardsFilters.priceMax}`
-                  : appliedCardsFilters.priceMin != null
-                    ? t("cardsPage.priceTagMinOnly", {
-                        value: appliedCardsFilters.priceMin,
-                      })
-                    : t("cardsPage.priceTagMaxOnly", {
-                        value: appliedCardsFilters.priceMax as number,
-                      })}
-                <button
-                  type="button"
-                  onClick={() =>
-                    setAppliedCardsFilters((p) => ({
-                      ...p,
-                      priceMin: undefined,
-                      priceMax: undefined,
-                    }))
-                  }
-                  className="ml-1 hover:bg-gray-200 rounded-full p-0.5"
-                >
-                  ×
-                </button>
-              </span>
-            )}
-
-            {(appliedCardsFilters.merchantIds.length > 0 ||
-              appliedCardsFilters.validityTypes.length > 0 ||
-              appliedCardsFilters.isRenewable ||
-              appliedCardsFilters.priceMin != null ||
-              appliedCardsFilters.priceMax != null) && (
-              <button
-                type="button"
-                onClick={() => {
-                  // Reset everything back to "no filtering"
-                  const reset = createDefaultCardsFilters();
-                  setAppliedCardsFilters(reset);
-                  setDraftCardsFilters(reset);
-                  setSearch("");
-                  setSelectedCategoryId("all");
-                }}
-                className="inline-flex items-center gap-1 px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium hover:bg-red-200 transition-colors"
-              >
-                {t("cardsPage.clearAll")}
-              </button>
-            )}
           </div>
-        </div>
+        )}
+
+        {hasFilters && (
+          <div className="text-sm text-gray-600 mt-4">
+            <button
+              type="button"
+              onClick={() => {
+                const reset = createDefaultCardsFilters();
+                setAppliedCardsFilters(reset);
+                setDraftCardsFilters(reset);
+                setSearch("");
+                setSelectedCountryId("all");
+              }}
+              className="inline-flex items-center gap-1 px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium hover:bg-red-200 transition-colors"
+            >
+              {t("cardsPage.clearAll")}
+            </button>
+          </div>
+        )}
       </section>
 
-      {/* Filter Sidebar (WEB Cards) */}
+      {/* Filter Sidebar */}
       {isFilterOpen && (
         <div
           className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
@@ -360,48 +329,8 @@ const CardsPage = () => {
 
         <div className="flex-1 overflow-y-auto p-6 pb-24 h-[calc(100vh-160px)]">
           <div className="space-y-6">
-            {/* Merchants */}
-            {merchants.length > 0 && (
-              <div>
-                <p className="text-sm font-semibold text-gray-800 mb-3">
-                  {t("cardsPage.merchants")}
-                </p>
-                <div className="grid grid-cols-2 gap-2">
-                  {merchants.map((m) => {
-                    const id = m?.id;
-                    const name = String(m?.name ?? "").trim();
-                    if (!id || !name) return null;
-                    const selected = draftCardsFilters.merchantIds.some(
-                      (x) => String(x) === String(id),
-                    );
-                    return (
-                      <button
-                        key={id}
-                        type="button"
-                        onClick={() =>
-                          setDraftCardsFilters((p) => ({
-                            ...p,
-                            merchantIds: selected
-                              ? p.merchantIds.filter((x) => String(x) !== String(id))
-                              : [...p.merchantIds, id],
-                          }))
-                        }
-                        className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors border ${
-                          selected
-                            ? "bg-purple-100 text-purple-700 border-purple-200"
-                            : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
-                        }`}
-                      >
-                        {name}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
             {/* Validity types */}
-            <div className="border-t border-gray-200 pt-5">
+            <div>
               <p className="text-sm font-semibold text-gray-800 mb-3">
                 {t("cardsPage.validityType")}
               </p>
@@ -443,7 +372,6 @@ const CardsPage = () => {
               </div>
             </div>
 
-            {/* Renewable */}
             <div className="border-t border-gray-200 pt-5">
               <label className="flex items-center gap-2 text-sm font-medium text-gray-800">
                 <input
@@ -460,7 +388,6 @@ const CardsPage = () => {
               </label>
             </div>
 
-            {/* Price range */}
             <div className="border-t border-gray-200 pt-5">
               <p className="text-sm font-semibold text-gray-800 mb-3">
                 {t("cardsPage.priceRange")}
@@ -473,7 +400,10 @@ const CardsPage = () => {
                   onChange={(e) =>
                     setDraftCardsFilters((p) => ({
                       ...p,
-                      priceMin: e.target.value === "" ? undefined : Number(e.target.value),
+                      priceMin:
+                        e.target.value === ""
+                          ? undefined
+                          : Number(e.target.value),
                     }))
                   }
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#400198]/30"
@@ -486,7 +416,10 @@ const CardsPage = () => {
                   onChange={(e) =>
                     setDraftCardsFilters((p) => ({
                       ...p,
-                      priceMax: e.target.value === "" ? undefined : Number(e.target.value),
+                      priceMax:
+                        e.target.value === ""
+                          ? undefined
+                          : Number(e.target.value),
                     }))
                   }
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#400198]/30"
@@ -501,15 +434,13 @@ const CardsPage = () => {
           <div className="flex gap-3">
             <button
               type="button"
-              onClick={() =>
-                (() => {
-                  const reset = createDefaultCardsFilters();
-                  setDraftCardsFilters(reset);
-                  setAppliedCardsFilters(reset);
-                  setSearch("");
-                  setSelectedCategoryId("all");
-                })()
-              }
+              onClick={() => {
+                const reset = createDefaultCardsFilters();
+                setDraftCardsFilters(reset);
+                setAppliedCardsFilters(reset);
+                setSearch("");
+                setSelectedCountryId("all");
+              }}
               className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
             >
               {t("cardsPage.reset")}
@@ -528,68 +459,41 @@ const CardsPage = () => {
         </div>
       </div>
 
-      {merchants.length > 0 && (
-        <section className="container mx-auto px-4 pb-10">
-          <div className="text-start mb-4">
-            <h2 className="text-[#400198] text-3xl font-bold">
-              {t("cardsPage.merchants")}
-            </h2>
-            <p className="text-md text-gray-700 leading-relaxed">
-              {t("cardsPage.merchantsSectionSubtitle")}
-            </p>
-          </div>
-          <div className="relative">
-            <div
-              className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide"
-              style={{ scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch", scrollbarWidth: "none", msOverflowStyle: "none" }}
-            >
-              {merchants.map((merchant) => (
-                <Link
-                  key={merchant.id}
-                  to={`/cards/${merchant.slug || merchant.id}`}
-                  className="flex-shrink-0 w-28 bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-100 flex flex-col items-center p-3 no-underline text-inherit"
-                  style={{ scrollSnapAlign: "start" }}
-                >
-                  <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-50 flex-shrink-0 mb-2 ring-2 ring-gray-100">
-                    <img
-                      src={merchant.logo}
-                      alt={merchant.name}
-                      className="w-full h-full object-contain p-1"
-                    />
-                  </div>
-                  <span className="text-xs font-semibold text-gray-800 text-center line-clamp-2 leading-tight">
-                    {merchant.name}
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
+      {hasFilters ? (
+        <CardsSliderSection
+          title={t("cardsPage.sections.resultsTitle", "نتائج البحث")}
+          subtitle=""
+          cards={filteredCards}
+          isLoading={isLoading}
+          categories={categoryItems}
+        />
+      ) : (
+        <>
+          <CardsSliderSection
+            title={t("cardsPage.sections.latestTitle")}
+            subtitle={t("cardsPage.sections.latestSubtitle")}
+            cards={latestCards}
+            isLoading={isLoading}
+            categories={categoryItems}
+          />
+
+          <CardsSliderSection
+            title={t("cardsPage.sections.recommendedTitle", "اخترنا لك")}
+            subtitle={t("cardsPage.sections.recommendedSubtitle", "بطاقات قد تعجبك")}
+            cards={recommendedCards}
+            isLoading={isLoading}
+            categories={categoryItems}
+          />
+
+          <CardsSliderSection
+            title={t("cardsPage.sections.featuredTitle", "بطاقات مميزة")}
+            subtitle={t("cardsPage.sections.featuredSubtitle", "اختيارنا المميز")}
+            cards={featuredCards}
+            isLoading={isLoading}
+            categories={categoryItems}
+          />
+        </>
       )}
-
-      <CardsSliderSection
-        title={t("cardsPage.sections.latestTitle")}
-        subtitle={t("cardsPage.sections.latestSubtitle")}
-        cards={latestCards}
-        isLoading={isLoading}
-        categories={categoryItems}
-      />
-
-      <CardsSliderSection
-        title={t("cardsPage.sections.topSellingTitle")}
-        subtitle={t("cardsPage.sections.topSellingSubtitle")}
-        cards={topSellingCards}
-        isLoading={isLoading}
-        categories={categoryItems}
-      />
-
-      <CardsSliderSection
-        title={t("cardsPage.sections.mostViewedTitle")}
-        subtitle={t("cardsPage.sections.mostViewedSubtitle")}
-        cards={mostViewedCards}
-        isLoading={isLoading}
-        categories={categoryItems}
-      />
 
       <GetStartedSection className="mt-16 mb-28" />
     </>

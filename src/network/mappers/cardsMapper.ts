@@ -137,7 +137,8 @@ export function mapApiHomeCardToOffer(
   const merchant = (raw.merchant as Record<string, unknown>) || {};
   const category = (raw.category as Record<string, unknown>) || {};
   const id = String(raw.id ?? "");
-  const companyId = String(merchant.id ?? "");
+  const categorySlug = typeof category.slug === "string" ? category.slug : "";
+  const companyId = String(merchant.id ?? categorySlug ?? "cards");
   const cardSlug = typeof raw.slug === "string" ? raw.slug : undefined;
   const merchantSlugVal = typeof merchant.slug === "string" ? merchant.slug : undefined;
   const categoryId = category?.id != null ? Number(category.id) : undefined;
@@ -194,5 +195,5 @@ export function mapApiHomeCardsToOffers(
   if (!Array.isArray(items)) return [];
   return items
     .map(mapApiHomeCardToOffer)
-    .filter((o) => o.id && o.companyId && o.title.ar);
+    .filter((o) => o.id && o.title.ar);
 }

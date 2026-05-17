@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useParams, useNavigate, Link } from "@/lib/router-compat";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useParams, useNavigate, useSearchParams, Link } from "@/lib/router-compat";
+import { useLoadMoreOnScroll } from "@hooks/useLoadMoreOnScroll";
 import { Helmet } from "@/lib/helmet-compat";
 import { useTranslation } from "react-i18next";
 import { FiArrowLeft, FiFilter, FiGrid, FiList } from "react-icons/fi";
@@ -44,6 +45,8 @@ function buildCategoryIconUrl(
 const CategoryOffersPage = () => {
   const { category } = useParams<{ category: string }>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const activeSubSlug = searchParams.get("subcategory") || "";
   const { t, i18n } = useTranslation();
   const langBase = i18n.language?.split("-")[0] || "en";
 
@@ -181,6 +184,45 @@ const CategoryOffersPage = () => {
     };
   }, [category, webHomeResponse]);
 
+  // مزامنة الـ URL `?subcategory=<slug>` مع `appliedFilters.subcategoryIds`
+  // single-select: لو القيمة موجودة بالـ URL نطبّقها كفلتر واحد، وإلا نمسحه
+  useEffect(() => {
+    // نحتاج أولاً قائمة subcategories لنحول slug → id
+    if (!webHomeResponse) return;
+    const res = webHomeResponse as Record<string, unknown>;
+    const data = res?.data as Record<string, unknown> | undefined;
+    const cats = data?.categories as Array<Record<string, unknown>> | undefined;
+    const mainCat = cats?.find((c) => String(c?.slug ?? "") === category);
+    const subs = (mainCat?.subcategories as Array<{ id: number; slug?: string }>) ?? [];
+    const matched = activeSubSlug
+      ? subs.find((s) => String(s?.slug ?? "") === activeSubSlug)
+      : null;
+
+    let didChange = false;
+    setAppliedFilters((prev) => {
+      const base = prev ?? {
+        sortBy: "nearest" as const,
+        subcategoryIds: [],
+        offerTypeIds: [],
+        brandIds: [],
+        priceRange: {},
+      };
+      const ids = matched?.id ? [matched.id] : [];
+      // تجنّب re-render لو نفس الـids
+      if (
+        base.subcategoryIds.length === ids.length &&
+        base.subcategoryIds.every((id, i) => id === ids[i])
+      ) {
+        return prev;
+      }
+      didChange = true;
+      return { ...base, subcategoryIds: ids };
+    });
+    // فقط لو الـsubcategory فعلاً تغيرت — لا نريد reset عند background refetch
+    if (didChange) setCurrentPage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSubSlug, webHomeResponse, category]);
+
   // التصنيفات الفرعية للتصنيف الحالي من API (data.categories[].subcategories)
   const apiSubcategories = useMemo(() => {
     if (!category || !webHomeResponse) return [];
@@ -274,7 +316,7 @@ const CategoryOffersPage = () => {
     return { currentPage, lastPage, total };
   }
 
-  const filteredOffers = useMemo(
+  const pageOffers = useMemo(
     () => mapApiOffersToModels(extractOffersArray(webOffersRes)),
     [webOffersRes],
   );
@@ -283,6 +325,46 @@ const CategoryOffersPage = () => {
     () => extractPagination(webOffersRes),
     [webOffersRes],
   );
+
+  // 🔁 Accumulate offers across pages (load-more / infinite scroll)
+  const [accumulatedOffers, setAccumulatedOffers] = useState<typeof pageOffers>([]);
+  const filterSignature = useMemo(
+    () => JSON.stringify({ categoryId, search, appliedFilters }),
+    [categoryId, search, appliedFilters],
+  );
+  const prevSigRef = useRef<string>("");
+  const lastIncorporatedPageRef = useRef<number>(0);
+  const responsePage = pagination.currentPage || 0;
+  const hasResponse = !!webOffersRes;
+
+  // إعادة الضبط فقط عند تغيير الفلتر
+  useEffect(() => {
+    if (prevSigRef.current !== filterSignature) {
+      prevSigRef.current = filterSignature;
+      lastIncorporatedPageRef.current = 0;
+      setAccumulatedOffers([]);
+    }
+  }, [filterSignature]);
+
+  // دمج بيانات الصفحة لما تصل من الـAPI
+  useEffect(() => {
+    if (!hasResponse) return;
+    if (responsePage <= lastIncorporatedPageRef.current) return;
+    lastIncorporatedPageRef.current = responsePage;
+    setAccumulatedOffers((prev) =>
+      responsePage === 1 ? pageOffers : [...prev, ...pageOffers],
+    );
+  }, [hasResponse, pageOffers, responsePage]);
+
+  const filteredOffers = accumulatedOffers;
+  const hasMore = currentPage < (pagination.lastPage || 1);
+  const isLoadingMore = currentPage > lastIncorporatedPageRef.current;
+
+  const loadMoreRef = useLoadMoreOnScroll({
+    hasMore,
+    loading: isLoadingMore,
+    loadMore: () => setCurrentPage((p) => p + 1),
+  });
 
   const handleApplyFilters = (filters: FilterState) => {
     setAppliedFilters(filters);
@@ -419,31 +501,20 @@ const CategoryOffersPage = () => {
               position: "relative",
             }}
           >
-            {/* Optional: subcategories section title */}
+            {/* التصنيفات الفرعية — single-select عبر URL */}
             <div className="flex flex-wrap justify-center gap-2">
               {apiSubcategories.map((sub) => {
-                const isSelected = appliedFilters?.subcategoryIds?.includes(
-                  sub.id,
-                );
+                const isSelected = activeSubSlug === sub.slug;
                 return (
                   <button
                     key={sub.id}
                     type="button"
                     onClick={() => {
-                      setAppliedFilters((prev) => {
-                        const next = prev ?? {
-                          sortBy: "nearest",
-                          subcategoryIds: [],
-                          offerTypeIds: [],
-                          brandIds: [],
-                          priceRange: {},
-                        };
-                        const has = next.subcategoryIds.includes(sub.id);
-                        const subcategoryIds = has
-                          ? next.subcategoryIds.filter((s) => s !== sub.id)
-                          : [...next.subcategoryIds, sub.id];
-                        return { ...next, subcategoryIds };
-                      });
+                      // اضغط نفسه مرة ثانية → إزالة الفلتر؛ غير ذلك انتقل لرابطه
+                      const url = isSelected
+                        ? `/offers/${category}`
+                        : `/offers/${category}?subcategory=${encodeURIComponent(sub.slug)}`;
+                      navigate(url);
                       setCurrentPage(1);
                     }}
                     className={`rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-[#400198]/30 min-w-[120px] ${
@@ -728,26 +799,20 @@ const CategoryOffersPage = () => {
           </div>
         )}
 
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 mt-10">
-            {Array.from({ length: totalPages }).map((_, idx) => {
-              const page = idx + 1;
-              const isActive = page === currentPage;
-              return (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`w-8 h-8 rounded-md text-sm ${
-                    isActive
-                      ? "bg-[#C13899] text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
-                >
-                  {page}
-                </button>
-              );
-            })}
+        {/* Load More + Infinite Scroll Sentinel */}
+        {hasMore && (
+          <div className="flex flex-col items-center justify-center mt-10 gap-3">
+            <button
+              type="button"
+              onClick={() => setCurrentPage((p) => p + 1)}
+              disabled={isLoadingMore}
+              className="px-6 py-3 bg-[#400198] text-white rounded-xl font-medium hover:bg-[#54015d] transition-colors disabled:opacity-60"
+            >
+              {isLoadingMore
+                ? langBase === "ar" ? "جارٍ التحميل..." : "Loading..."
+                : langBase === "ar" ? "عرض المزيد" : "Load more"}
+            </button>
+            <div ref={loadMoreRef} className="h-px w-full" aria-hidden="true" />
           </div>
         )}
       </section>

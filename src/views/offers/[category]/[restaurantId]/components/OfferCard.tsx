@@ -3,6 +3,7 @@
 import React, { useMemo } from "react";
 import { useNavigate } from "@/lib/router-compat";
 import { useIsRTL } from "@hooks";
+import { useTranslation } from "react-i18next";
 import { type Offer } from "@data/offers";
 import { Pro1, Pro2, Pro3, Pro4, Pro5, Pro6, Pro7, Pro8 } from "@assets";
 import CurrencyIcon from "@components/CurrencyIcon";
@@ -21,8 +22,16 @@ interface OfferCardProps {
 
 const OfferCard: React.FC<OfferCardProps> = ({ offer, onOfferClick }) => {
   const isRTL = useIsRTL();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const isAuthenticated = useUserStore((s) => !!s.token);
+  const userObj = useUserStore((s) => s.user) as
+    | (Record<string, unknown> & { has_subscription?: boolean })
+    | null;
+  const isSubscriber = Boolean(userObj?.has_subscription);
+  const isFreeForUser =
+    offer.pricingType === "free" &&
+    (!offer.requiresSubscription || isSubscriber);
   const { data: favoritesData } = useFavorites();
   const toggleFavorite = useFavoriteToggle();
   const favoritesList = useMemo(
@@ -211,7 +220,7 @@ const OfferCard: React.FC<OfferCardProps> = ({ offer, onOfferClick }) => {
           </div>
 
           <button className="text-orange-500 font-semibold text-sm hover:text-orange-600 transition-colors">
-            {isRTL ? "عرض التفاصيل" : "View Details"}
+            {t(isFreeForUser ? "home.product.viewNow" : "home.product.buyNow")}
           </button>
         </div>
       </div>

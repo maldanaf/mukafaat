@@ -11,7 +11,17 @@ export default function Error({
 }) {
   useEffect(() => {
     // removeChild errors from DOM mutations (browser extensions, etc) - auto-recover
-    if (error.message?.includes("removeChild") || error.message?.includes("parentNode")) {
+    if (
+      error.message?.includes("removeChild") ||
+      error.message?.includes("parentNode") ||
+      error.message?.includes("deletedFiber")
+    ) {
+      // Hard reload the *intended* destination URL so an interrupted navigation
+      // doesn't leave the user stuck on the previous page.
+      if (typeof window !== "undefined") {
+        window.location.replace(window.location.href);
+        return;
+      }
       reset();
       return;
     }

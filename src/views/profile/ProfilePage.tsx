@@ -14,12 +14,18 @@ import {
   IoCheckmarkCircleOutline,
   IoCameraOutline,
   IoSparklesOutline,
+  IoEarthOutline,
+  IoLocationOutline,
 } from "react-icons/io5";
 import {
   useProfile,
   useProfileUpdate,
   useSubscriptionStatus,
+  useCountries,
+  useCitiesByCountry,
+  mokafaatKeys,
 } from "@hooks/api/useMokafaatQueries";
+import { useQueryClient } from "@tanstack/react-query";
 import { isUserSubscribed } from "@utils/subscription";
 
 /** تجميع الأرقام بمسافات (مثل 242 325 678 122) */
@@ -350,12 +356,33 @@ const ProfilePage: React.FC = () => {
       .trim() || displayUser.name;
 
   const [isEditing, setIsEditing] = useState(false);
+  const initialCountryId = useMemo(() => {
+    const c = profileUserObj?.country as Record<string, unknown> | undefined;
+    return c?.id != null ? Number(c.id) : null;
+  }, [profileUserObj]);
+  const initialRegionId = useMemo(() => {
+    const r = profileUserObj?.region as Record<string, unknown> | undefined;
+    return r?.id != null ? Number(r.id) : null;
+  }, [profileUserObj]);
+  const initialCityId = useMemo(() => {
+    const c = profileUserObj?.city as Record<string, unknown> | undefined;
+    return c?.id != null ? Number(c.id) : null;
+  }, [profileUserObj]);
+
   const [formData, setFormData] = useState({
     name: displayUser.name || "",
     email: displayUser.email || "",
     phone: displayUser.phone || "",
+    countryId: initialCountryId as number | null,
+    regionId: initialRegionId as number | null,
+    cityId: initialCityId as number | null,
   });
   const [isLoading, setIsLoading] = useState(false);
+
+  // Location dropdowns — كل مدن الدولة بدون فلتر بالمنطقة
+  const { data: countries = [] } = useCountries();
+  const { data: cities = [] } = useCitiesByCountry(formData.countryId);
+  const queryClient = useQueryClient();
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
@@ -366,9 +393,20 @@ const ProfilePage: React.FC = () => {
         name: displayUser.name || "",
         email: displayUser.email || "",
         phone: displayUser.phone || "",
+        countryId: initialCountryId,
+        regionId: initialRegionId,
+        cityId: initialCityId,
       });
     }
-  }, [displayUser.name, displayUser.email, displayUser.phone, isEditing]);
+  }, [
+    displayUser.name,
+    displayUser.email,
+    displayUser.phone,
+    isEditing,
+    initialCountryId,
+    initialRegionId,
+    initialCityId,
+  ]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -389,6 +427,9 @@ const ProfilePage: React.FC = () => {
         last_name: last || undefined,
         email: formData.email?.trim() || undefined,
         phone: formData.phone?.trim() || undefined,
+        country_id: formData.countryId ?? undefined,
+        region_id: formData.regionId ?? undefined,
+        city_id: formData.cityId ?? undefined,
       });
       const payload = (res?.data ?? res) as Record<string, unknown>;
       const ok = payload?.status !== false && payload?.status !== "error";
@@ -400,6 +441,13 @@ const ProfilePage: React.FC = () => {
             t("profile.toast_profile_updated")) as string,
         );
         await refetchProfile();
+        // إعادة تحميل البيانات المعتمدة على الموقع بعد تغيير المدينة/الدولة
+        queryClient.invalidateQueries({ queryKey: ["mokafaat", "web", "home"] });
+        queryClient.invalidateQueries({ queryKey: ["mokafaat", "web", "offers"] });
+        queryClient.invalidateQueries({ queryKey: ["mokafaat", "home"] });
+        queryClient.invalidateQueries({ queryKey: ["mokafaat", "web", "cards"] });
+        queryClient.invalidateQueries({ queryKey: ["mokafaat", "web", "coupons"] });
+        queryClient.invalidateQueries({ queryKey: ["mokafaat", "web", "popupAds"] });
       } else {
         toast.error(
           (payload?.msg ??
@@ -427,6 +475,9 @@ const ProfilePage: React.FC = () => {
       name: displayUser.name || "",
       email: displayUser.email || "",
       phone: displayUser.phone || "",
+      countryId: initialCountryId,
+      regionId: initialRegionId,
+      cityId: initialCityId,
     });
     setIsEditing(false);
   };
@@ -714,6 +765,84 @@ const ProfilePage: React.FC = () => {
                           )
                         : t("profile.date_em_dash")}
                     </p>
+                  </div>
+
+                  {/* الدولة */}
+                  <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-4">
+                    <label className="block text-xs font-semibold text-gray-600 mb-2">
+                      <IoEarthOutline className="inline w-4 h-4 ml-1" />
+                      {t("profile.label_country", "الدولة")}
+                    </label>
+                    {isEditing ? (
+                      <select
+                        value={formData.countryId ?? ""}
+                        onChange={(e) => {
+                          const v = e.target.value ? Number(e.target.value) : null;
+                          setFormData((p) => ({
+                            ...p,
+                            countryId: v,
+                            regionId: null,
+                            cityId: null,
+                          }));
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-[#440798] focus:border-[#440798]"
+                      >
+                        <option value="">
+                          {t("profile.select_country", "اختر الدولة")}
+                        </option>
+                        {(countries as Array<{ id: number | string; name?: string }>).map(
+                          (c) => (
+                            <option key={String(c.id)} value={c.id}>
+                              {c.name}
+                            </option>
+                          ),
+                        )}
+                      </select>
+                    ) : (
+                      <p className="text-gray-900">
+                        {(profileUserObj?.country as Record<string, unknown> | undefined)
+                          ?.name as string | undefined ||
+                          t("profile.not_set", "غير محدد")}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* المدينة */}
+                  <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-4">
+                    <label className="block text-xs font-semibold text-gray-600 mb-2">
+                      <IoLocationOutline className="inline w-4 h-4 ml-1" />
+                      {t("profile.label_city", "المدينة")}
+                    </label>
+                    {isEditing ? (
+                      <select
+                        value={formData.cityId ?? ""}
+                        onChange={(e) => {
+                          const v = e.target.value ? Number(e.target.value) : null;
+                          setFormData((p) => ({ ...p, cityId: v }));
+                        }}
+                        disabled={!formData.countryId}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-[#440798] focus:border-[#440798] disabled:bg-gray-100 disabled:text-gray-400"
+                      >
+                        <option value="">
+                          {formData.countryId
+                            ? t("profile.select_city", "اختر المدينة")
+                            : t("profile.select_country_first", "اختر الدولة أولاً")}
+                        </option>
+                        {(cities as Array<{ id: number | string; name?: string }>).map(
+                          (c) => (
+                            <option key={String(c.id)} value={c.id}>
+                              {c.name}
+                            </option>
+                          ),
+                        )}
+                      </select>
+                    ) : (
+                      <p className="text-gray-900">
+                        {(profileUserObj?.city as Record<string, unknown> | undefined)
+                          ?.name as string | undefined ||
+                          t("profile.not_set", "غير محدد")}
+                      </p>
+                    )}
                   </div>
                 </div>
 

@@ -117,27 +117,34 @@ const OrdersPage: React.FC = () => {
   };
 
   const canCancelOrder = (order: (typeof orders)[number]) => {
-    // Cards, bookings, etc. can NEVER be cancelled
+    // مصدر الحقيقة الأول: قرار الباك إند (يطبّق نافذة الـ 3 أيام للعروض المدفوعة)
+    if (typeof order.canCancel === "boolean") return order.canCancel;
+
+    // Fallback: نفس المنطق القديم (للـ APIs اللي لسه ما رجعت can_cancel)
     if (order.orderType && order.orderType !== "offer") return false;
-    // If orderType is missing, fall back to items type (defaults to "offer")
     if (!order.orderType && order.items?.[0]?.type && order.items[0].type !== "offer") return false;
 
-    // Free offers (price = 0) can't be cancelled - no refund needed
     const total = Number(order.totalAmount ?? 0);
     if (total <= 0) return false;
 
-    // Not used
     const rawStatus = String(order.rawStatus ?? "").toLowerCase();
     const isUsed = rawStatus === "used" || rawStatus === "redeemed" || Boolean(order.usedAt);
     if (isUsed) return false;
 
-    // Not cancelled
     if (order.status === "cancelled") return false;
 
-    // Not expired (if expiresAt exists and is in the past)
     if (order.expiresAt) {
       const exp = new Date(order.expiresAt).getTime();
       if (!Number.isNaN(exp) && exp < Date.now()) return false;
+    }
+
+    // نافذة 3 أيام: لو الباك ما رجع can_cancel نطبق القاعدة هنا أيضاً
+    if (order.createdAt) {
+      const created = new Date(order.createdAt).getTime();
+      if (!Number.isNaN(created)) {
+        const days = (Date.now() - created) / (1000 * 60 * 60 * 24);
+        if (days >= 3) return false;
+      }
     }
 
     return true;
@@ -527,6 +534,18 @@ const OrdersPage: React.FC = () => {
                                 <IoDownloadOutline className="w-4 h-4" />
                                 {t("orders.download")}
                               </button>
+                            )}
+                            {order.invoiceUrl && (
+                              <a
+                                href={order.invoiceUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-[#400198] hover:text-[#400198c9] transition-colors inline-flex items-center gap-1"
+                                title={isRTL ? "تحميل الفاتورة" : "Download invoice"}
+                              >
+                                <IoDownloadOutline className="w-4 h-4" />
+                                {isRTL ? "الفاتورة" : "Invoice"}
+                              </a>
                             )}
                             {canCancelOrder(order) && (
                               <button

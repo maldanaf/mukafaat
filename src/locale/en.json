@@ -142,6 +142,7 @@
     },
     "product": {
       "buyNow": "Buy Now",
+      "viewNow": "View Now",
       "addToCart": "Add to Cart",
       "discount": "Discount",
       "from": "From",

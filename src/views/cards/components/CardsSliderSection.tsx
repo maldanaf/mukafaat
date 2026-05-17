@@ -57,18 +57,19 @@ const CardsSliderSection: React.FC<CardsSliderSectionProps> = ({
 
   const owlCarouselOptions = useMemo(
     () => ({
-      loop: cards.length > 4,
+      loop: cards.length > 5,
       margin: 10,
-      nav: cards.length > 4,
+      nav: cards.length > 5,
       dots: false,
-      autoplay: cards.length > 4,
+      autoplay: cards.length > 5,
       autoplayTimeout: 5000,
       autoplayHoverPause: true,
-      rtl: isRTL && cards.length < 4 ? "true" : "false",
+      rtl: isRTL && cards.length < 5 ? "true" : "false",
       responsive: {
         0: { items: 1 },
         600: { items: 2 },
-        1000: { items: 4 },
+        900: { items: 3 },
+        1280: { items: 5 },
       },
     }),
     [cards.length, isRTL],
@@ -96,8 +97,8 @@ const CardsSliderSection: React.FC<CardsSliderSectionProps> = ({
         }}
       >
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {Array.from({ length: 4 }).map((_, index) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {Array.from({ length: 5 }).map((_, index) => (
               <SkeletonCard key={index} />
             ))}
           </div>

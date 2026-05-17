@@ -38,6 +38,8 @@ import {
   useWallet,
 } from "@hooks/api/useMokafaatQueries";
 import { LoadingSpinner } from "@components/LoadingSpinner";
+import DiscountCodeInput from "@components/DiscountCodeInput";
+import type { DiscountCodeResult } from "@network/services/mokafaatService";
 import { AxiosError } from "axios";
 import { isUserSubscribed } from "@utils/subscription";
 import { useQueryClient } from "@tanstack/react-query";
@@ -88,6 +90,7 @@ const PaymentPage = () => {
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [showMoyasarForm, setShowMoyasarForm] = useState(false);
+  const [discount, setDiscount] = useState<DiscountCodeResult | null>(null);
   const moyasarInitedRef = useRef(false);
   const moyasarConfigRef = useRef<{
     amountHalala: number;
@@ -173,6 +176,8 @@ const PaymentPage = () => {
 
   const unitPrice = offer?.price ?? 0;
   const totalPrice = offer ? unitPrice * quantity : 0;
+  // السعر الفعلي الذي يدفعه المستخدم (بعد الخصم لو في كود مطبّق)
+  const effectivePrice = discount ? Number(discount.final_amount) : totalPrice;
 
   useEffect(() => {
     if (!company || !offer) return;
@@ -234,10 +239,10 @@ const PaymentPage = () => {
     );
   }
 
-  const walletCoversAll = walletBalance >= totalPrice && totalPrice > 0;
-  const walletPartial = walletBalance > 0 && walletBalance < totalPrice;
+  const walletCoversAll = walletBalance >= effectivePrice && effectivePrice > 0;
+  const walletPartial = walletBalance > 0 && walletBalance < effectivePrice;
   const walletEmpty = walletBalance <= 0;
-  const remainingAfterWallet = Math.max(0, totalPrice - walletBalance);
+  const remainingAfterWallet = Math.max(0, effectivePrice - walletBalance);
 
   const paymentMethods = [
     { id: "card", name: { ar: "بطاقة ائتمانية", en: "Credit Card" }, icons: [Visa, Master], disabled: false },
@@ -294,15 +299,33 @@ const PaymentPage = () => {
       }
     }
 
-    // محفظة → طلب جديد مع use_wallet
-    if (useWalletPayment && orderIdFromState != null) {
+    // 💳 محفظة + طلب pending موجود → ادفع على نفس الطلب
+    // لكن لو في كود خصم متطبّق، نعدّي على createOrder عشان الـ backend يحدّث الطلب
+    if (useWalletPayment && orderIdFromState != null && !discount) {
       try {
         const { api } = await import("@network/apiClient");
-        await api.post(`/api/orders/${orderIdFromState}/cancel`);
-      } catch { /* ignore */ }
+        const res = await api.post(`/api/orders/${orderIdFromState}/pay-wallet`);
+        const d = (res.data as Record<string, unknown>) ?? {};
+        if (d.status === false) {
+          setErrorMsg(
+            String(d.msg || (isRTL ? "فشل الدفع بالمحفظة" : "Wallet payment failed")),
+          );
+          return;
+        }
+        window.location.href = `/orders/${orderIdFromState}`;
+        return;
+      } catch (err) {
+        const errData =
+          (err as { response?: { data?: { msg?: string } } })?.response?.data;
+        setErrorMsg(
+          String(errData?.msg || (isRTL ? "فشل الدفع بالمحفظة" : "Wallet payment failed")),
+        );
+        return;
+      }
     }
 
-    if (!useWalletPayment && orderIdFromState != null) {
+    // لو في كود خصم متطبّق، نعدّي على createOrder عشان الـ backend يحدّث الـ payment_info
+    if (!useWalletPayment && orderIdFromState != null && !discount) {
       const paymentUrlFromState = (orderFromState?.payment_url ??
         orderFromState?.redirect_url) as string | undefined;
       if (paymentUrlFromState && typeof paymentUrlFromState === "string") {
@@ -351,6 +374,7 @@ const PaymentPage = () => {
         quantity,
         branch_id: undefined,
         use_wallet: useWalletPayment,
+        discount_code: discount?.code,
       },
       {
         onSuccess: (res: unknown) => {
@@ -383,7 +407,15 @@ const PaymentPage = () => {
             | Record<string, unknown>
             | undefined;
           if (paymentInfo && typeof paymentInfo === "object") {
-            const amountHalala = Math.max(100, Math.floor((totalPrice || 0) * 100));
+            // المبلغ من السيرفر بعد تطبيق الخصم
+            const serverHalala = Number(paymentInfo.amount_halala);
+            const serverAmount = Number(paymentInfo.amount);
+            const fallbackAmount = discount ? Number(discount.final_amount) : (totalPrice || 0);
+            const amountHalala = Number.isFinite(serverHalala) && serverHalala > 0
+              ? Math.floor(serverHalala)
+              : Number.isFinite(serverAmount) && serverAmount > 0
+                ? Math.floor(serverAmount * 100)
+                : Math.max(100, Math.floor(fallbackAmount * 100));
             const publishableKey = (paymentInfo.publishable_key as string) || "";
             const callbackUrl =
               `${window.location.origin}/orders/callback?` +
@@ -433,6 +465,11 @@ const PaymentPage = () => {
             ?.response?.data;
           if (data?.errNum === "E005" && (data?.msg || data?.message)) {
             queryClient.invalidateQueries({ queryKey: mokafaatKeys.subscriptionStatus });
+            setErrorMsg(String(data.msg || data.message));
+            return;
+          }
+          // اعرض رسالة الخطأ الفعلية من السيرفر لو موجودة
+          if (data?.msg || data?.message) {
             setErrorMsg(String(data.msg || data.message));
             return;
           }
@@ -575,15 +612,38 @@ const PaymentPage = () => {
                   </div>
                 </div>
 
+                {/* Discount Code */}
+                <div className="border-t pt-4 mb-4">
+                  <DiscountCodeInput
+                    scope="card"
+                    amount={totalPrice}
+                    itemId={offerId ?? undefined}
+                    merchantId={(offer as unknown as { merchantId?: number | string })?.merchantId}
+                    onChange={setDiscount}
+                  />
+                </div>
+
                 <div className="border-t pt-4">
+                  {discount ? (
+                    <div className="space-y-1 mb-2">
+                      <div className="flex justify-between text-sm text-gray-600">
+                        <span>{isRTL ? "المجموع قبل الكود" : "Subtotal"}</span>
+                        <span className="line-through">{totalPrice} {isRTL ? "ر.س" : "SAR"}</span>
+                      </div>
+                      <div className="flex justify-between text-sm text-emerald-600">
+                        <span>{isRTL ? "خصم الكود" : "Code discount"}</span>
+                        <span>− {discount.discount_amount} {isRTL ? "ر.س" : "SAR"}</span>
+                      </div>
+                    </div>
+                  ) : null}
                   <div className="flex justify-between items-center">
                     <span className="font-semibold text-gray-800">
                       {isRTL ? "المجموع" : "Total"}
                     </span>
                     <span className="text-xl font-bold text-[#400198] flex items-center gap-1">
-                      {totalPrice > 0 ? (
+                      {(discount ? discount.final_amount : totalPrice) > 0 ? (
                         <>
-                          {totalPrice}
+                          {discount ? discount.final_amount : totalPrice}
                           <CurrencyIcon size={16} />
                         </>
                       ) : (
@@ -702,10 +762,10 @@ const PaymentPage = () => {
                       <button type="button" onClick={handleConfirmPayment}
                         className="w-full py-3.5 bg-[#400198] text-white rounded-xl font-medium hover:bg-[#33007a] transition-colors mb-4">
                         {selectedMethod === "wallet" && walletCoversAll
-                          ? (isRTL ? `ادفع ${totalPrice} ر.س من المحفظة` : `Pay ${totalPrice} SAR from wallet`)
+                          ? (isRTL ? `ادفع ${effectivePrice} ر.س من المحفظة` : `Pay ${effectivePrice} SAR from wallet`)
                           : selectedMethod === "wallet" && walletPartial
                             ? (isRTL ? `${walletBalance} محفظة + ${remainingAfterWallet.toFixed(2)} بطاقة` : `${walletBalance} wallet + ${remainingAfterWallet.toFixed(2)} card`)
-                            : (isRTL ? `ادفع ${totalPrice} ر.س` : `Pay ${totalPrice} SAR`)}
+                            : (isRTL ? `ادفع ${effectivePrice} ر.س` : `Pay ${effectivePrice} SAR`)}
                       </button>
                     )}
                     {createOrder.isPending && (

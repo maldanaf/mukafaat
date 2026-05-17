@@ -35,6 +35,8 @@ export const API_ENDPOINTS = {
   locations: {
     countries: `${API}/locations/countries`,
     regions: (id: string | number) => `${API}/locations/regions/${id}`,
+    citiesByCountry: (id: string | number) =>
+      `${API}/locations/cities-by-country/${id}`,
     cities: (id: string | number) => `${API}/locations/cities/${id}`,
   },
 
@@ -93,6 +95,14 @@ export const API_ENDPOINTS = {
   orderVerifyMerchantCode: (id: string | number) =>
     `${API}/orders/${id}/verify-merchant-code`,
 
+  // ========== Discount Codes (تطبق خصم على إجمالي الحجز) ==========
+  discountCodes: {
+    validate: `${API}/discount-codes/validate`,
+  },
+
+  // ========== Affiliate Public Stats (يفتح بدون توكن — protected by long token) ==========
+  affiliatePublic: (token: string) => `${API}/affiliate/public/${token}`,
+
   // ========== Coupons (app) ==========
   coupons: {
     home: `${API}/coupons/home`,
@@ -120,6 +130,7 @@ export const API_ENDPOINTS = {
     contact: `${API}/web/contact`,
     cards: `${API}/web/cards`,
     cardDetail: (id: string | number) => `${API}/web/cards/${id}`,
+    cardCountries: `${API}/web/card-countries`,
     categoriesCards: (platformSlug: string) =>
       `${API}/web/categories/${platformSlug}/cards`,
     news: `${API}/web/news`,

@@ -18,7 +18,8 @@ export type WebOffersParams = {
 
 export type WebCardsParams = {
   category_ids?: string;
-  merchant_ids?: string;
+  card_country_id?: number;
+  subcategory_id?: number;
   validity_types?: string; // daily, weekly, monthly, quarterly, semi_annual, annual, unlimited
   delivery_type?: string;
   is_renewable?: number; // 1|0
@@ -112,7 +113,8 @@ export function buildWebOffersParams(input: {
 
 export function buildWebCardsParams(input: {
   categoryIds?: Array<string | number>;
-  merchantIds?: Array<string | number>;
+  cardCountryId?: number;
+  subcategoryId?: number;
   validityTypes?: string[];
   deliveryType?: string;
   isRenewable?: boolean;
@@ -126,7 +128,8 @@ export function buildWebCardsParams(input: {
 }): WebCardsParams {
   return cleanParams<WebCardsParams>({
     category_ids: joinCsv(input.categoryIds),
-    merchant_ids: joinCsv(input.merchantIds),
+    card_country_id: input.cardCountryId,
+    subcategory_id: input.subcategoryId,
     validity_types: joinCsv(input.validityTypes),
     delivery_type: input.deliveryType,
     is_renewable: input.isRenewable == null ? undefined : input.isRenewable ? 1 : 0,

@@ -1,17 +1,15 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useParams, useNavigate, Link } from "@/lib/router-compat";
+import { useParams, useNavigate } from "@/lib/router-compat";
 import { Helmet } from "@/lib/helmet-compat";
 import { useIsRTL } from "@hooks";
-import { FiArrowLeft, FiGrid, FiList } from "react-icons/fi";
-import { AboutPattern } from "@assets";
+import { FiArrowLeft } from "react-icons/fi";
+import { useTranslation } from "react-i18next";
 import GetStartedSection from "@views/home/components/GetStartedSection";
 import OfferCard from "./components/OfferCard";
-import {
-  useCardsByMerchant,
-  useCardsHome,
-} from "@hooks/api/useMokafaatQueries";
+import CategoryCard from "@components/CategoryCard";
+import { useWebCategoryCards } from "@hooks/api/useMokafaatQueries";
 import {
   mapApiHomeCardsToOffers,
   type CardOfferWithCompanyId,
@@ -21,94 +19,96 @@ import { LoadingSpinner } from "@components/LoadingSpinner";
 interface ApiCategory {
   id: number;
   name: string;
+  slug?: string;
   image?: string;
+  parent_id?: number | null;
 }
 
-const MerchantCardsPage = () => {
-  const { merchantSlug: companyId } = useParams<{ merchantSlug: string }>();
+interface ApiCardCountry {
+  id: number;
+  name: string;
+  code?: string;
+  flag?: string;
+  flag_url?: string;
+}
+
+const CategoryCardsPage = () => {
+  const { merchantSlug } = useParams<{ merchantSlug: string }>();
   const navigate = useNavigate();
   const isRTL = useIsRTL();
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
+  const [selectedSubId, setSelectedSubId] = useState<number | "all">("all");
+  const [selectedCountryId, setSelectedCountryId] =
+    useState<number | "all">("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  const { data: merchantResponse, isLoading } = useCardsByMerchant(
-    companyId ?? "",
-    {
+  const params = useMemo(
+    () => ({
+      subcategory_id: selectedSubId !== "all" ? selectedSubId : undefined,
+      card_country_id:
+        selectedCountryId !== "all" ? selectedCountryId : undefined,
+      search: search.trim() || undefined,
+      per_page: 30,
       page: currentPage,
-    },
+    }),
+    [selectedSubId, selectedCountryId, search, currentPage],
   );
-  const { data: cardsHomeResponse } = useCardsHome();
 
-  const categories = useMemo((): ApiCategory[] => {
-    const res = cardsHomeResponse as Record<string, unknown> | undefined;
-    const data = (res?.data as Record<string, unknown>) ?? null;
-    const arr = (data?.categories as ApiCategory[]) ?? [];
-    return Array.isArray(arr) ? arr : [];
-  }, [cardsHomeResponse]);
-
-  const categoryItems = useMemo(
-    () => categories.map((c) => ({ id: c.id, name: c.name, image: c.image })),
-    [categories],
+  const { data: response, isLoading } = useWebCategoryCards(
+    merchantSlug ?? "",
+    params,
   );
 
   const data = useMemo(() => {
-    const res = merchantResponse as Record<string, unknown> | undefined;
+    const res = response as Record<string, unknown> | undefined;
     return (res?.data as Record<string, unknown>) ?? null;
-  }, [merchantResponse]);
+  }, [response]);
 
-  const merchant = useMemo(() => {
-    const m = data?.merchant as Record<string, unknown> | undefined;
-    return m ?? null;
+  const category = useMemo((): ApiCategory | null => {
+    const c = data?.category as ApiCategory | undefined;
+    return c ?? null;
   }, [data]);
 
-  const featuredCards = useMemo((): CardOfferWithCompanyId[] => {
-    const arr = data?.featured_cards as
-      | Array<Record<string, unknown>>
-      | undefined;
-    return mapApiHomeCardsToOffers(Array.isArray(arr) ? arr : []);
+  const subcategories = useMemo((): ApiCategory[] => {
+    const arr = data?.subcategories as ApiCategory[] | undefined;
+    return Array.isArray(arr) ? arr : [];
   }, [data]);
 
-  const apiCards = useMemo((): CardOfferWithCompanyId[] => {
+  const countries = useMemo((): ApiCardCountry[] => {
+    const arr = data?.card_countries as ApiCardCountry[] | undefined;
+    return Array.isArray(arr) ? arr : [];
+  }, [data]);
+
+  const cards = useMemo((): CardOfferWithCompanyId[] => {
     const arr = data?.cards as Array<Record<string, unknown>> | undefined;
     return mapApiHomeCardsToOffers(Array.isArray(arr) ? arr : []);
   }, [data]);
 
-  const totalFromApi = useMemo(() => Number(data?.total ?? 0), [data]);
-  const lastPage = useMemo(() => Number(data?.last_page ?? 1), [data]);
-  const apiCurrentPage = useMemo(() => Number(data?.current_page ?? 1), [data]);
+  const pagination = useMemo(() => {
+    const p = data?.pagination as Record<string, number> | undefined;
+    return {
+      currentPage: Number(p?.current_page ?? 1),
+      lastPage: Number(p?.last_page ?? 1),
+      total: Number(p?.total ?? 0),
+    };
+  }, [data]);
 
   const filteredCards = useMemo(() => {
-    if (!search.trim()) return apiCards;
+    if (!search.trim()) return cards;
     const q = search.toLowerCase();
-    return apiCards.filter(
+    return cards.filter(
       (o) =>
         (o.title?.ar ?? "").toLowerCase().includes(q) ||
-        (o.title?.en ?? "").toLowerCase().includes(q) ||
-        (o.description?.ar ?? "").toLowerCase().includes(q) ||
-        (o.description?.en ?? "").toLowerCase().includes(q),
+        (o.title?.en ?? "").toLowerCase().includes(q),
     );
-  }, [apiCards, search]);
+  }, [cards, search]);
 
-  const merchantName = merchant ? String(merchant.name ?? "") : "";
-  const merchantLogo = merchant ? String(merchant.logo ?? "") : "";
-  const coverImage = merchant ? String(merchant.cover_image ?? "") : "";
-  const followersCount =
-    merchant != null ? Number(merchant.followers_count ?? 0) : 0;
-  const avgRating =
-    merchant != null
-      ? merchant.avg_rating != null
-        ? Number(merchant.avg_rating)
-        : null
-      : null;
-
-  if (isLoading && !merchant) {
+  if (isLoading && !category) {
     return (
       <>
         <Helmet>
-          <title>
-            {isRTL ? "التاجر" : "Merchant"} - {isRTL ? "البطاقات" : "Cards"}
-          </title>
+          <title>{isRTL ? "البطاقات" : "Cards"}</title>
         </Helmet>
         <div className="min-h-screen flex items-center justify-center">
           <LoadingSpinner />
@@ -117,12 +117,12 @@ const MerchantCardsPage = () => {
     );
   }
 
-  if (!companyId || (!isLoading && !merchant)) {
+  if (!merchantSlug || (!isLoading && !category)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            {isRTL ? "التاجر غير موجود" : "Merchant not found"}
+            {isRTL ? "التصنيف غير موجود" : "Category not found"}
           </h2>
           <button
             onClick={() => navigate("/cards")}
@@ -139,20 +139,20 @@ const MerchantCardsPage = () => {
     <>
       <Helmet>
         <title>
-          {merchantName} - {isRTL ? "البطاقات" : "Cards"}
+          {category?.name} - {isRTL ? "البطاقات" : "Cards"}
         </title>
         <link
           rel="canonical"
-          href={`https://mukafaat.com/cards/${companyId}`}
+          href={`https://mukafaat.com/cards/${merchantSlug}`}
         />
       </Helmet>
 
-      {/* Header - مثل صفحة تصنيف العروض */}
+      {/* Header */}
       <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[200px] flex items-center justify-center">
-        {coverImage ? (
+        {category?.image ? (
           <div className="absolute inset-0">
             <img
-              src={coverImage}
+              src={category.image}
               alt=""
               className="w-full h-full object-cover opacity-40"
             />
@@ -164,202 +164,194 @@ const MerchantCardsPage = () => {
         <div className="relative pt-24 pb-10 px-6 mx-auto max-w-screen-xl text-center lg:pt-24 lg:pb-10 lg:px-12 flex flex-col justify-center z-10">
           <button
             onClick={() => navigate("/cards")}
-            className="absolute top-4 left-4 text-white hover:text-purple-300 transition-colors flex items-center gap-2"
+            className={`absolute top-4 ${isRTL ? "right-4" : "left-4"} text-white hover:text-purple-300 transition-colors flex items-center gap-2`}
           >
-            <FiArrowLeft className="text-xl" />
+            <FiArrowLeft className={`text-xl ${isRTL ? "rotate-180" : ""}`} />
             <span className="text-sm">{isRTL ? "العودة" : "Back"}</span>
           </button>
 
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="w-16 h-16 rounded-full overflow-hidden bg-white/20 flex-shrink-0 ring-2 ring-white/30">
-              <img
-                src={merchantLogo}
-                alt={merchantName}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-white">
-              {merchantName}
-            </h1>
-          </div>
-
-          <p className="text-white/80 text-lg mb-4">
-            {isRTL
-              ? `تصفح بطاقات ${merchantName}`
-              : `Browse ${merchantName} cards`}
+          <h1 className="text-white text-3xl md:text-4xl font-bold mb-2">
+            {category?.name}
+          </h1>
+          <p className="text-white/80 text-sm">
+            {pagination.total}{" "}
+            {isRTL ? "بطاقة متاحة" : "cards available"}
           </p>
-
-          <div className="flex items-center justify-center gap-4 text-white/70 mb-4">
-            <span className="px-3 py-1 bg-white/20 rounded-full text-sm">
-              {followersCount} {isRTL ? "متابع" : "followers"}
-            </span>
-            {avgRating != null && (
-              <span className="px-3 py-1 bg-white/20 rounded-full text-sm">
-                ★ {avgRating}
-              </span>
-            )}
-          </div>
-
-          <div className="flex items-center justify-center text-sm md:text-base">
-            <Link
-              to="/"
-              className="text-white hover:text-purple-300 transition-colors cursor-pointer text-xs"
-            >
-              {isRTL ? "الرئيسية" : "Home"}
-            </Link>
-            <span className="text-white text-xs mx-2">|</span>
-            <Link
-              to="/cards"
-              className="text-white hover:text-purple-300 transition-colors cursor-pointer text-xs"
-            >
-              {isRTL ? "البطاقات" : "Cards"}
-            </Link>
-            <span className="text-white text-xs mx-2">|</span>
-            <span className="text-[#fd671a] font-medium text-xs">
-              {merchantName}
-            </span>
-          </div>
-        </div>
-
-        <div className="absolute -bottom-10 transform z-9">
-          <img
-            src={AboutPattern}
-            alt=""
-            className="w-full h-96 animate-float"
-          />
         </div>
       </section>
 
-      <section className="container mx-auto md:py-10 py-6 px-4">
-        {/* Toolbar: عدد النتائج + بحث + عرض شبكة/قائمة */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-          <div className="text-sm text-gray-600">
-            <h2 className="text-[#400198] text-3xl font-bold">
-              {search ? filteredCards.length : totalFromApi}
-            </h2>
-            <span className={isRTL ? "" : "ml-1"}>
-              {isRTL ? "بطاقة" : "cards"}
-            </span>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3">
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setCurrentPage(1);
-              }}
-              placeholder={
-                isRTL
-                  ? `البحث في بطاقات ${merchantName}...`
-                  : `Search ${merchantName} cards...`
-              }
-              className="flex-1 min-w-[200px] max-w-md px-5 py-3 rounded-full font-medium text-sm shadow-md bg-white text-gray-700 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#400198] focus:border-transparent"
-            />
-            <div className="flex bg-white border border-gray-200 rounded-full shadow-md p-1">
-              <button
-                type="button"
-                onClick={() => setViewMode("grid")}
-                className={`p-2 rounded-full transition-all duration-300 ${
-                  viewMode === "grid"
-                    ? "bg-[#400198] text-white shadow-sm"
-                    : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                <FiGrid size={18} />
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewMode("list")}
-                className={`p-2 rounded-full transition-all duration-300 ${
-                  viewMode === "list"
-                    ? "bg-[#400198] text-white shadow-sm"
-                    : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                <FiList size={18} />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* البطاقات المميزة */}
-        {featuredCards.length > 0 && (
-          <div className="mb-10">
-            <h3 className="text-xl font-bold text-[#400198] mb-4">
-              {isRTL ? "بطاقات مميزة" : "Featured Cards"}
-            </h3>
+      {/* Subcategories — same design as main categories on the index page */}
+      {subcategories.length > 0 && (
+        <section className="relative container mx-auto px-4 py-8 z-10">
+          <div
+            className="w-full max-w-6xl mx-auto"
+            style={{ marginTop: "-80px" }}
+          >
             <div
-              className={
-                viewMode === "grid"
-                  ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-                  : "grid grid-cols-1 gap-6"
-              }
+              className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide"
+              style={{
+                direction: isRTL ? "rtl" : "ltr",
+                scrollSnapType: "x mandatory",
+                WebkitOverflowScrolling: "touch",
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
+              }}
             >
-              {featuredCards.map((offer) => (
-                <OfferCard
-                  key={offer.id}
-                  offer={offer}
-                  companyId={offer.companyId}
-                  categories={categoryItems}
+              {/* "All" tile */}
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedSubId("all");
+                  setCurrentPage(1);
+                }}
+                className="flex-shrink-0 w-[150px] md:w-[160px] xl:w-[170px] text-start"
+                style={{ scrollSnapAlign: "start" }}
+              >
+                <CategoryCard
+                  icon={category?.image || ""}
+                  title={isRTL ? "الكل" : "All"}
+                  alt={isRTL ? "الكل" : "All"}
+                  selected={selectedSubId === "all"}
                 />
+              </button>
+
+              {subcategories.map((sub) => (
+                <button
+                  key={sub.id}
+                  type="button"
+                  onClick={() => {
+                    setSelectedSubId(sub.id);
+                    setCurrentPage(1);
+                  }}
+                  className="flex-shrink-0 w-[150px] md:w-[160px] xl:w-[170px] text-start"
+                  style={{ scrollSnapAlign: "start" }}
+                >
+                  <CategoryCard
+                    icon={sub.image || category?.image || ""}
+                    title={sub.name}
+                    alt={sub.name}
+                    selected={selectedSubId === sub.id}
+                  />
+                </button>
               ))}
             </div>
           </div>
-        )}
+        </section>
+      )}
 
-        {/* قائمة البطاقات */}
-        {filteredCards.length > 0 ? (
-          <div
-            className={
-              viewMode === "grid"
-                ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-                : "grid grid-cols-1 gap-6"
-            }
-          >
+      {/* Country flags strip */}
+      {countries.length > 0 && (
+        <section className="container mx-auto px-4 py-6">
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedCountryId("all");
+                setCurrentPage(1);
+              }}
+              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
+                selectedCountryId === "all"
+                  ? "bg-[#400198] text-white border-[#400198]"
+                  : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+              }`}
+            >
+              {isRTL ? "كل الدول" : "All countries"}
+            </button>
+            {countries.map((c) => {
+              const selected = selectedCountryId === c.id;
+              const isEmoji = c.flag && c.flag.length <= 4;
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => {
+                    setSelectedCountryId(c.id);
+                    setCurrentPage(1);
+                  }}
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
+                    selected
+                      ? "bg-[#400198] text-white border-[#400198]"
+                      : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                  }`}
+                >
+                  {isEmoji ? (
+                    <span className="text-lg leading-none">{c.flag}</span>
+                  ) : c.flag_url ? (
+                    <img
+                      src={c.flag_url}
+                      alt={c.name}
+                      className="w-5 h-4 object-cover rounded-sm"
+                    />
+                  ) : null}
+                  <span>{c.name}</span>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* Search */}
+      <section className="container mx-auto px-4 pb-4">
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder={t("cardsPage.searchPlaceholder")}
+          className="w-full md:w-96 px-5 py-3 rounded-full font-medium text-sm shadow-md transition-all duration-300 bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#400198] focus:border-transparent"
+        />
+      </section>
+
+      {/* Cards grid */}
+      <section className="container mx-auto px-4 pb-10">
+        {isLoading ? (
+          <div className="flex justify-center py-10">
+            <LoadingSpinner />
+          </div>
+        ) : filteredCards.length === 0 ? (
+          <div className="text-center py-12 text-gray-500">
+            {isRTL
+              ? "لا توجد بطاقات متاحة حالياً"
+              : "No cards available at the moment"}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {filteredCards.map((offer) => (
               <OfferCard
                 key={offer.id}
                 offer={offer}
                 companyId={offer.companyId}
-                categories={categoryItems}
+                categories={subcategories.map((s) => ({
+                  id: s.id,
+                  name: s.name,
+                  image: s.image,
+                }))}
               />
             ))}
           </div>
-        ) : (
-          <div className="text-center py-20">
-            <p className="text-gray-500 text-xl">
-              {search
-                ? isRTL
-                  ? `لم يتم العثور على بطاقات لـ "${search}"`
-                  : `No cards found for "${search}"`
-                : isRTL
-                  ? "لا توجد بطاقات لهذا التاجر"
-                  : "No cards for this merchant"}
-            </p>
-          </div>
         )}
 
-        {/* Pagination - من الـ API */}
-        {lastPage > 1 && !search && (
-          <div className="flex items-center justify-center gap-2 mt-10">
+        {/* Simple pagination */}
+        {pagination.lastPage > 1 && (
+          <div className="flex justify-center items-center gap-2 mt-8">
             <button
               type="button"
+              disabled={currentPage <= 1}
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              disabled={apiCurrentPage <= 1}
-              className="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isRTL ? "السابق" : "Previous"}
             </button>
-            <span className="px-4 py-2 text-gray-700">
-              {apiCurrentPage} / {lastPage}
+            <span className="text-sm text-gray-700">
+              {currentPage} / {pagination.lastPage}
             </span>
             <button
               type="button"
-              onClick={() => setCurrentPage((p) => Math.min(lastPage, p + 1))}
-              disabled={apiCurrentPage >= lastPage}
-              className="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={currentPage >= pagination.lastPage}
+              onClick={() =>
+                setCurrentPage((p) => Math.min(pagination.lastPage, p + 1))
+              }
+              className="px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isRTL ? "التالي" : "Next"}
             </button>
@@ -372,4 +364,4 @@ const MerchantCardsPage = () => {
   );
 };
 
-export default MerchantCardsPage;
+export default CategoryCardsPage;

@@ -20,6 +20,8 @@ export const locationsApi = {
   regions: (id: string | number) =>
     api.get(API_ENDPOINTS.locations.regions(id)),
   cities: (id: string | number) => api.get(API_ENDPOINTS.locations.cities(id)),
+  citiesByCountry: (id: string | number) =>
+    api.get(API_ENDPOINTS.locations.citiesByCountry(id)),
 };
 
 // ========== Offers ==========
@@ -169,7 +171,8 @@ export const subscriptionApi = {
   subscribe: (
     planId: string | number,
     paymentMethod?: "online" | "cash" | "bank" | "card",
-    useWallet?: boolean
+    useWallet?: boolean,
+    discountCode?: string
   ) =>
     api.post(API_ENDPOINTS.subscription.subscribe, null, {
       params: {
@@ -177,6 +180,7 @@ export const subscriptionApi = {
         // Spec: payment_method مطلوب مثلاً card للدفع عبر ميسر
         ...(paymentMethod && { payment_method: paymentMethod === "online" ? "card" : paymentMethod }),
         ...(useWallet && { use_wallet: true }),
+        ...(discountCode && { discount_code: discountCode }),
       },
     }),
   status: () => api.get(API_ENDPOINTS.subscription.status),
@@ -209,12 +213,40 @@ export const ordersApi = {
     quantity?: number;
     branch_id?: string | number;
     use_wallet?: boolean;
+    /** كود خصم على إجمالي الحجز (DiscountCode) */
+    discount_code?: string;
     /** عند الدفع لطلب مُنشأ مسبقاً (من صفحة الشراء السريع) */
     order_id?: string | number;
   }) => api.post(API_ENDPOINTS.orders, null, { params }),
   cancel: (id: string | number) => api.post(API_ENDPOINTS.orderCancel(id)),
   verifyMerchantCode: (id: string | number, verification_code: string) =>
     api.post(API_ENDPOINTS.orderVerifyMerchantCode(id), { verification_code }),
+};
+
+// ========== Discount Codes (يتطلب توكن) ==========
+export type DiscountCodeScope = "offer" | "card" | "subscription";
+
+export interface DiscountCodeValidateParams {
+  code: string;
+  amount: number;
+  scope: DiscountCodeScope;
+  item_id?: number | string;
+  merchant_id?: number | string;
+}
+
+export interface DiscountCodeResult {
+  code: string;
+  title: string;
+  discount_type: "percentage" | "fixed";
+  discount_value: number;
+  discount_amount: number;
+  original_amount: number;
+  final_amount: number;
+}
+
+export const discountCodesApi = {
+  validate: (body: DiscountCodeValidateParams) =>
+    api.post(API_ENDPOINTS.discountCodes.validate, body),
 };
 
 // ========== Coupons (app - يتطلب توكن للبعض) ==========
@@ -252,6 +284,7 @@ export const webApi = {
     api.get(API_ENDPOINTS.web.cards, { params }),
   cardDetail: (id: string | number) =>
     api.get(API_ENDPOINTS.web.cardDetail(id)),
+  cardCountries: () => api.get(API_ENDPOINTS.web.cardCountries),
   categoriesCards: (platformSlug: string, params?: Record<string, unknown>) =>
     api.get(API_ENDPOINTS.web.categoriesCards(platformSlug), { params }),
   news: (params?: Record<string, unknown>) =>

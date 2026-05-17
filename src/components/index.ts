@@ -40,6 +40,7 @@ import SubscribersOnlyModal from "./SubscribersOnlyModal";
 import PopupAdsModal from "./PopupAdsModal";
 import ShareSheetModal from "./ShareSheetModal";
 import ShareSheetHost from "./ShareSheetHost";
+import DiscountCodeInput from "./DiscountCodeInput";
 
 export {
   Splash,
@@ -84,4 +85,5 @@ export {
   PopupAdsModal,
   ShareSheetModal,
   ShareSheetHost,
+  DiscountCodeInput,
 };

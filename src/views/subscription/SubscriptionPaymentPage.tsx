@@ -10,6 +10,8 @@ import { IoWalletOutline, IoCardOutline } from "react-icons/io5";
 import CurrencyIcon from "@components/CurrencyIcon";
 import { useSubscribe } from "@hooks/api/useMokafaatQueries";
 import { LoadingSpinner } from "@components/LoadingSpinner";
+import DiscountCodeInput from "@components/DiscountCodeInput";
+import type { DiscountCodeResult } from "@network/services/mokafaatService";
 import { AxiosError } from "axios";
 import { initMoyasarPayment } from "@utils/moyasar";
 
@@ -52,6 +54,7 @@ const SubscriptionPaymentPage: React.FC = () => {
     "online" | "cash" | "bank"
   >("online");
   const [useWallet, setUseWallet] = useState(false);
+  const [discount, setDiscount] = useState<DiscountCodeResult | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   /** methods = اختيار الطريقة فقط | card = نموذج ميسر بعد الضغط على إتمام الدفع */
   const [step, setStep] = useState<"methods" | "card">("methods");
@@ -102,6 +105,7 @@ const SubscriptionPaymentPage: React.FC = () => {
         planId: plan.id,
         paymentMethod: useWallet ? undefined : paymentMethod,
         useWallet: useWallet || undefined,
+        discountCode: discount?.code,
       },
       {
         onSuccess: (res: unknown) => {
@@ -276,10 +280,34 @@ const SubscriptionPaymentPage: React.FC = () => {
                     ? t("home.subscription.year")
                     : t("home.subscription.months")}
                 </p>
+                {discount ? (
+                  <div className="space-y-1 mb-2">
+                    <div className="flex items-center justify-between text-white/70 text-sm">
+                      <span>{isRTL ? "السعر الأصلي" : "Original price"}</span>
+                      <span className="line-through">
+                        {price} {isRTL ? "ر.س" : "SAR"}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-emerald-300 text-sm">
+                      <span>{isRTL ? "خصم الكود" : "Discount"}</span>
+                      <span>− {discount.discount_amount} {isRTL ? "ر.س" : "SAR"}</span>
+                    </div>
+                  </div>
+                ) : null}
                 <p className="text-2xl font-bold flex items-center gap-2">
-                  {price}
+                  {discount ? discount.final_amount : price}
                   <CurrencyIcon className="text-white" size={22} />
                 </p>
+              </div>
+
+              <div className="bg-white/10 rounded-2xl p-6 mb-6">
+                <DiscountCodeInput
+                  scope="subscription"
+                  amount={price}
+                  itemId={plan.id}
+                  variant="dark"
+                  onChange={setDiscount}
+                />
               </div>
 
               <div className="bg-white/10 rounded-2xl p-6 mb-6">

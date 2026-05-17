@@ -35,9 +35,13 @@ export interface NormalizedOrder {
   /** رموز البطاقة (لطلبات البطاقات) */
   cardCodes?: string[];
   voucherUrl?: string;
+  invoiceUrl?: string;
   usedAt?: string;
   activatedAt?: string;
   expiresAt?: string;
+  /** يقرر الباك إند ما إذا كان المستخدم يقدر يلغي الطلب الآن (عروض مدفوعة: نافذة 3 أيام). */
+  canCancel?: boolean;
+  cancelDeadline?: string;
   item?: Record<string, unknown>;
   merchant?: Record<string, unknown>;
 }
@@ -151,9 +155,18 @@ function normalizeOrderRow(row: unknown): NormalizedOrder | null {
         : typeof r.voucherUrl === "string"
           ? r.voucherUrl
           : undefined,
+    invoiceUrl:
+      typeof r.invoice_url === "string"
+        ? r.invoice_url
+        : typeof r.invoiceUrl === "string"
+          ? r.invoiceUrl
+          : undefined,
     usedAt: r.used_at != null ? String(r.used_at) : undefined,
     activatedAt: r.activated_at != null ? String(r.activated_at) : undefined,
     expiresAt: r.expires_at != null ? String(r.expires_at) : undefined,
+    canCancel: typeof r.can_cancel === "boolean" ? r.can_cancel : undefined,
+    cancelDeadline:
+      r.cancel_deadline != null ? String(r.cancel_deadline) : undefined,
     item: r.item && typeof r.item === "object" ? (r.item as Record<string, unknown>) : undefined,
     merchant: r.merchant && typeof r.merchant === "object" ? (r.merchant as Record<string, unknown>) : undefined,
   };

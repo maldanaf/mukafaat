@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { useNavigate, useSearchParams } from "@/lib/router-compat";
+import { useLoadMoreOnScroll } from "@hooks/useLoadMoreOnScroll";
 import { useTranslation } from "react-i18next";
 import { Helmet } from "@/lib/helmet-compat";
 import { IoCalendarOutline, IoFlashOutline } from "react-icons/io5";
@@ -247,12 +248,12 @@ const CouponsPage = () => {
       (data.meta as Record<string, unknown> | undefined) ??
       (data as Record<string, unknown>);
     return {
-      currentPage:
-        Number(pg?.current_page ?? pg?.page ?? currentPage) || currentPage,
+      // لا نرجع للحالة المحلية — يجب أن نعرف الصفحة من الـAPI فعلياً
+      currentPage: Number(pg?.current_page ?? pg?.page ?? 0) || 0,
       lastPage: Number(pg?.last_page ?? pg?.pages ?? 1) || 1,
       total: Number(pg?.total ?? 0) || 0,
     };
-  }, [couponsListRes, currentPage]);
+  }, [couponsListRes]);
 
   const couponModels = useMemo(() => {
     const withTitle = (allCouponsRaw as Array<Record<string, unknown>>).map(
@@ -376,8 +377,46 @@ const CouponsPage = () => {
 
   // Server-side filtering & pagination (WEB):
   // listParams includes category_ids + search + sort_by + page/per_page
-  const paginated = apiCouponsAsDisplay;
   const totalPages = Math.max(1, pagination.lastPage);
+
+  // 🔁 Load-more accumulation
+  const [accumulatedCoupons, setAccumulatedCoupons] = useState<CouponDisplay[]>([]);
+  const filterSig = useMemo(
+    () => JSON.stringify(listParams ?? {}),
+    [listParams],
+  );
+  const prevSigRef = useRef<string>("");
+  const lastIncorporatedPageRef = useRef<number>(0);
+  const responsePage = pagination.currentPage || 0;
+  const hasResponse = !!couponsListRes;
+
+  // reset عند تغيير الفلتر
+  useEffect(() => {
+    if (prevSigRef.current !== filterSig) {
+      prevSigRef.current = filterSig;
+      lastIncorporatedPageRef.current = 0;
+      setAccumulatedCoupons([]);
+    }
+  }, [filterSig]);
+
+  // دمج بيانات الصفحة لما تصل
+  useEffect(() => {
+    if (!hasResponse) return;
+    if (responsePage <= lastIncorporatedPageRef.current) return;
+    lastIncorporatedPageRef.current = responsePage;
+    setAccumulatedCoupons((prev) =>
+      responsePage === 1 ? apiCouponsAsDisplay : [...prev, ...apiCouponsAsDisplay],
+    );
+  }, [hasResponse, apiCouponsAsDisplay, responsePage]);
+
+  const paginated = accumulatedCoupons;
+  const hasMore = currentPage < totalPages;
+  const isLoadingMore = currentPage > lastIncorporatedPageRef.current;
+  const loadMoreRef = useLoadMoreOnScroll({
+    hasMore,
+    loading: isLoadingMore,
+    loadMore: () => setCurrentPage((p) => p + 1),
+  });
 
   const openCouponModal = useCallback(
     (displayCoupon: CouponDisplay) => {
@@ -1294,26 +1333,20 @@ const CouponsPage = () => {
               </div>
             )}
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 mt-10">
-                {Array.from({ length: totalPages }).map((_, idx) => {
-                  const page = idx + 1;
-                  const isActive = page === currentPage;
-                  return (
-                    <button
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                      className={`w-8 h-8 rounded-md text-sm ${
-                        isActive
-                          ? "bg-[#400198] text-white"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  );
-                })}
+            {/* Load More + Infinite Scroll */}
+            {hasMore && (
+              <div className="flex flex-col items-center justify-center mt-10 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setCurrentPage((p) => p + 1)}
+                  disabled={isLoadingMore}
+                  className="px-6 py-3 bg-[#400198] text-white rounded-xl font-medium hover:bg-[#54015d] transition-colors disabled:opacity-60"
+                >
+                  {isLoadingMore
+                    ? langBase === "ar" ? "جارٍ التحميل..." : "Loading..."
+                    : langBase === "ar" ? "عرض المزيد" : "Load more"}
+                </button>
+                <div ref={loadMoreRef} className="h-px w-full" aria-hidden="true" />
               </div>
             )}
           </section>

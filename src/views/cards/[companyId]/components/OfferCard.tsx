@@ -69,7 +69,14 @@ const OfferCard: React.FC<OfferCardProps> = ({
   );
   const isRTL = useIsRTL();
   const navigate = useNavigate();
-  const detailPath = `/cards/${(offer as Record<string,unknown>).merchantSlug || companyId}/${(offer as Record<string,unknown>).slug || offer.id}`;
+  const offerRaw = offer as unknown as Record<string, unknown>;
+  const merchantSlugFromOffer =
+    typeof offerRaw.merchantSlug === "string" ? offerRaw.merchantSlug : "";
+  const categoryFromOffer = offerRaw.category as Record<string, unknown> | undefined;
+  const categorySlug =
+    typeof categoryFromOffer?.slug === "string" ? categoryFromOffer.slug : "";
+  const pathSlug = merchantSlugFromOffer || categorySlug || companyId || "cards";
+  const detailPath = `/cards/${pathSlug}/${offerRaw.slug || offer.id}`;
   const { i18n, t } = useTranslation();
   const langBase = i18n.language?.split("-")[0] || "en";
   const isAuthenticated = useUserStore((s) => !!s.token);
@@ -149,7 +156,19 @@ const OfferCard: React.FC<OfferCardProps> = ({
     return v[langBase] ?? v.en ?? v.ar ?? "";
   }, [offer.validity, langBase]);
 
-  const visitButtonText = useMemo(() => t("offerCard.cardDetails"), [t]);
+  // هل العرض مجاني للمستخدم الحالي؟
+  const userObj = useUserStore((s) => s.user) as
+    | (Record<string, unknown> & { has_subscription?: boolean })
+    | null;
+  const isSubscriber = Boolean(userObj?.has_subscription);
+  const offerAny = offer as unknown as { pricingType?: string; requiresSubscription?: boolean };
+  const isFreeForUser =
+    offerAny.pricingType === "free" &&
+    (!offerAny.requiresSubscription || isSubscriber);
+  const visitButtonText = useMemo(
+    () => t(isFreeForUser ? "home.product.viewNow" : "home.product.buyNow"),
+    [t, isFreeForUser],
+  );
 
   const purchaseText = useMemo(
     () => {
@@ -203,11 +222,15 @@ const OfferCard: React.FC<OfferCardProps> = ({
   const priceBefore =
     offer.originalPrice != null ? Number(offer.originalPrice) : 0;
   const showStrikethrough = priceBefore > 0 && priceBefore > priceAfter;
+  const formatPrice = (n: number) => {
+    const rounded = Math.round(Number(n) * 100) / 100;
+    return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(2);
+  };
 
   const cardContent = (
     <>
       {/* Image Section - ارتفاع ثابت */}
-      <div className="relative h-[185px] overflow-hidden flex-shrink-0">
+      <div className="relative h-[160px] overflow-hidden flex-shrink-0">
         <img
           src={getCardImage(offer.image)}
           alt={pickLocalized(offer.title, langBase)}
@@ -244,143 +267,86 @@ const OfferCard: React.FC<OfferCardProps> = ({
           </button>
         </div>
 
-        <div className="absolute top-3 left-3">
-          <div
-            className={`${getOfferTypeColor()} text-white px-2 py-1 rounded text-xs font-medium`}
-          >
-            {getOfferTypeText()}
+        {extendedOffer.category && (
+          <div className="absolute top-3 left-3">
+            <div className="bg-white/95 text-[#400198] px-2 py-1 rounded-full text-[11px] font-semibold shadow-sm flex items-center gap-1">
+              {categoryImage ? (
+                <span className="flex h-4 w-4 flex-shrink-0 items-center justify-center overflow-hidden rounded bg-[#400198]/10">
+                  <img
+                    src={categoryImage}
+                    alt=""
+                    className="h-full w-full object-contain"
+                  />
+                </span>
+              ) : (
+                <FiShoppingBag className="h-3 w-3" />
+              )}
+              <span>{extendedOffer.category.name}</span>
+            </div>
           </div>
-        </div>
-
-        <div className="absolute bottom-3 left-3 bg-white/20 text-white px-2 py-1 rounded text-xs font-medium">
-          {validityText}
-        </div>
+        )}
       </div>
 
       {/* Content Section - flex لارتفاع موحد والسعر يثبت في الأسفل */}
-      <div className="px-4 py-6 flex flex-col flex-1 min-h-[280px]">
+      <div className="px-4 py-4 flex flex-col flex-1 min-h-[180px]">
         <div className="flex flex-col flex-1 min-h-0">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-5 h-5 bg-[#fd671a] rounded-full flex items-center justify-center">
-              {getOfferTypeIcon()}
-            </div>
-            <span className="text-sm text-[#fd671a] font-medium">
-              {getOfferTypeText()}
-            </span>
-          </div>
-
-          <h3 className="text-md font-bold text-gray-900 mb-2 line-clamp-2">
+          <h3 className="text-base font-bold text-gray-900 mb-2 line-clamp-2">
             {pickLocalized(offer.title, langBase)}
           </h3>
 
-          <p className="text-sm text-gray-600 mb-3 line-clamp-2 min-h-[2.5rem]">
-            {stripHtml(pickLocalized(offer.description, langBase))}
-          </p>
-
-          {/* التصنيف والمتجر - مع الصور */}
-          {(extendedOffer.category || extendedOffer.merchant) && (
-            <div className="mb-3 flex flex-wrap items-center gap-1.5 text-xs">
-              {extendedOffer.category && (
-                <span className="flex items-center gap-1.5 text-gray-600 font-medium">
-                  {categoryImage ? (
-                    <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded bg-[#400198]/10">
-                      <img
-                        src={categoryImage}
-                        alt=""
-                        className="h-full w-full object-contain"
-                      />
-                    </span>
-                  ) : (
-                    <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded bg-[#400198]/10">
-                      <FiShoppingBag className="h-3 w-3 text-[#400198]" />
-                    </span>
-                  )}
-                  <span>{extendedOffer.category.name}</span>
-                </span>
-              )}
-              {extendedOffer.category && extendedOffer.merchant && (
-                <span className="text-gray-300">•</span>
-              )}
-              {extendedOffer.merchant && (
-                <span className="flex items-center gap-1.5 text-gray-600 font-medium">
-                  {extendedOffer.merchant.logo ? (
-                    <span className="relative h-5 w-5 flex-shrink-0 overflow-hidden rounded-full bg-gray-100 ring-1 ring-gray-200">
-                      <img
-                        src={extendedOffer.merchant.logo}
-                        alt=""
-                        className="h-full w-full object-cover"
-                      />
-                    </span>
-                  ) : (
-                    <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-[#400198]/10">
-                      <FiShoppingBag className="h-3 w-3 text-[#400198]" />
-                    </span>
-                  )}
-                  <span>{extendedOffer.merchant.name}</span>
-                </span>
-              )}
-            </div>
-          )}
-
-          <div className="mb-4">
-            <div className="flex flex-wrap gap-2">
-              {offer.features.slice(0, 3).map((feature, index) => (
+          <div className="mb-2">
+            <div className="flex flex-wrap gap-1">
+              {offer.features.slice(0, 2).map((feature, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-1 text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full"
+                  className="flex items-center gap-1 text-xs text-gray-600 bg-gray-100 px-2 py-0.5 rounded-full"
                 >
                   <div className="w-1 h-1 bg-purple-500 rounded-full" />
                   <span>{feature}</span>
                 </div>
               ))}
-              {offer.features.length > 3 && (
-                <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+              {offer.features.length > 2 && (
+                <div className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
                   {featuresText}
                 </div>
               )}
             </div>
           </div>
 
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-3">
               <div className="flex items-center gap-1">
                 <FiStar className="w-4 h-4 text-[#B3B3B3]" />
-                <span className="text-sm text-[#B3B3B3]">{offer.rating}</span>
+                <span className="text-xs text-[#B3B3B3]">{offer.rating}</span>
               </div>
               <div className="flex items-center gap-1">
                 <FiEye className="w-4 h-4 text-[#B3B3B3]" />
-                <span className="text-sm text-[#B3B3B3]">{offer.views}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <FiDownload className="w-4 h-4 text-[#B3B3B3]" />
-                <span className="text-sm text-[#B3B3B3]">
-                  {offer.downloads}
-                </span>
+                <span className="text-xs text-[#B3B3B3]">{offer.views}</span>
               </div>
             </div>
             <div className="text-xs text-gray-500">{purchaseText}</div>
           </div>
         </div>
 
-        <hr className="my-4 border-t border-[#e6e6e6] flex-shrink-0" />
+        <hr className="my-2 border-t border-[#e6e6e6] flex-shrink-0" />
 
-        <div className="flex items-center justify-between gap-1 flex-shrink-0">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-lg font-bold text-[#400198] flex items-center gap-1">
-              {priceAfter}
-              <CurrencyIcon className="text-[#400198]" size={16} />
+        <div className="flex items-center justify-between gap-2 flex-shrink-0">
+          <div className="flex items-center gap-1 flex-wrap">
+            <span className="text-base font-bold text-[#400198] flex items-center gap-1">
+              {formatPrice(priceAfter)}
+              <CurrencyIcon className="text-[#400198]" size={14} />
             </span>
             {showStrikethrough && (
-              <span className="text-sm text-gray-500 line-through flex items-center gap-1">
-                {priceBefore}
-                <CurrencyIcon className="text-gray-500" size={12} />
+              <span className="text-xs text-gray-500 line-through flex items-center gap-1">
+                {formatPrice(priceBefore)}
+                <CurrencyIcon className="text-gray-500" size={11} />
               </span>
             )}
           </div>
-          <span className="flex items-center gap-1 text-sm font-semibold text-[#400198] hover:text-[#fd671a] transition-colors">
+          <span className="flex items-center gap-1 text-xs font-semibold text-[#400198] hover:text-[#fd671a] transition-colors">
             {visitButtonText}
             <IoIosArrowRoundForward
-              className={`text-2xl transform ${
+              className={`text-xl transform ${
                 isRTL ? "rotate-[225deg]" : "-rotate-45"
               }`}
             />

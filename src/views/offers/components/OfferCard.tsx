@@ -149,7 +149,17 @@ const OfferCard: React.FC<OfferCardProps> = ({ offer }) => {
     return "bg-purple-500";
   };
 
-  const visitButtonText = t("offerCard.viewDetails");
+  // هل العرض مجاني للمستخدم الحالي؟ (free + no sub required, OR free + user subscribed)
+  const userObj = useUserStore((s) => s.user) as
+    | (Record<string, unknown> & { has_subscription?: boolean })
+    | null;
+  const isSubscriber = Boolean(userObj?.has_subscription);
+  const isFreeForUser =
+    offer.pricingType === "free" &&
+    (!offer.requiresSubscription || isSubscriber);
+  const visitButtonText = isFreeForUser
+    ? t("home.product.viewNow")
+    : t("home.product.buyNow");
   const purchasesCount = Number.isFinite(Number(offer.purchases))
     ? Number(offer.purchases)
     : 0;

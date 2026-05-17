@@ -368,15 +368,13 @@ const OfferDetailPage = () => {
           }
 
           if (!requiresPayment) {
-            try {
-              sessionStorage.setItem("mokafaat_order_success", JSON.stringify({
-                orderId,
-                order: order ?? { id: orderId },
-                offer: { id: offer.id, title: offer.title, image: offer.image },
-                restaurant: { id: restaurant?.id, name: restaurant?.name },
-              }));
-            } catch {}
-            window.location.href = `/offers/${category}/${merchantSlug}/success?offer=${offerSlug}&quantity=${quantity}&order=${orderId ?? ""}`;
+            // Free offer — go directly to order details (activation + PDF)
+            toast.success(t("offerDetail.order_created_success") || (isRTL ? "تم إنشاء طلبك بنجاح" : "Order created successfully"));
+            if (orderId != null) {
+              window.location.href = `/orders/${orderId}`;
+            } else {
+              window.location.href = "/orders";
+            }
             return;
           }
 
@@ -1098,7 +1096,9 @@ const OfferDetailPage = () => {
                     >
                       {createOrder.isPending
                         ? t("offerDetail.creating_order")
-                        : t("offerDetail.quick_buy")}
+                        : isFree
+                          ? t("home.product.viewNow")
+                          : t("offerDetail.quick_buy")}
                     </button>
                   </div>
                 )}
