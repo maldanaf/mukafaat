@@ -241,11 +241,6 @@ const OfferCard: React.FC<OfferCardProps> = ({ offer }) => {
               {offer.discountPercentage}% {t("offerCard.discountOff")}
             </span>
           )}
-          {offer.pricingType === "free" && (
-            <span className="bg-green-500 text-white px-2 py-1 rounded text-xs font-medium">
-              {langBase === "ar" ? "مجاني" : "Free"}
-            </span>
-          )}
           {offer.requiresSubscription && (
             <span className="bg-[#400198] text-white px-2 py-1 rounded text-xs font-medium">
               {langBase === "ar" ? "حصري للمشتركين" : "Subscribers Only"}
@@ -364,33 +359,27 @@ const OfferCard: React.FC<OfferCardProps> = ({ offer }) => {
 
         <hr className="my-4 border-t border-[#e6e6e6]" />
 
-        {/* السعر والزر */}
+        {/* السعر (قبل / بعد / قيمة الخصم) والزر */}
         <div className="flex items-center justify-between gap-1">
           <div className="flex flex-col gap-1">
-            {/* السعر الأصلي مشطوب */}
+            {/* السعر قبل الخصم — مشطوب */}
             {priceBefore > 0 && priceBefore > priceAfter && (
               <span className="text-xs text-gray-400 line-through flex items-center gap-0.5">
-                {priceBefore}
+                {langBase === "ar" ? "قبل" : "Before"}: {priceBefore}
                 <CurrencyIcon className="text-gray-400" size={10} />
               </span>
             )}
             <div className="flex items-center gap-2 flex-wrap">
-              {/* سعر المشتركين */}
-              {offer.subscriberPrice !== undefined && offer.subscriberPrice <= 0 ? (
-                <span className="text-base font-bold text-green-600">
-                  {t("offerCard.free")}
-                </span>
-              ) : (
-                <span className="text-base font-bold text-[#400198] flex items-center gap-0.5">
-                  {offer.subscriberPrice ?? priceAfter}
-                  <CurrencyIcon className="text-[#400198]" size={14} />
-                </span>
-              )}
-              {/* سعر غير المشتركين */}
-              {offer.nonSubscriberPrice != null && offer.nonSubscriberPrice > 0 && (
-                <span className="text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded flex items-center gap-0.5">
-                  {langBase === "ar" ? "بدون اشتراك" : "Non-sub"}: {offer.nonSubscriberPrice}
-                  <CurrencyIcon className="text-gray-500" size={10} />
+              {/* السعر بعد الخصم */}
+              <span className="text-base font-bold text-[#400198] flex items-center gap-0.5">
+                {priceAfter}
+                <CurrencyIcon className="text-[#400198]" size={14} />
+              </span>
+              {/* قيمة الخصم (المبلغ الموفَّر) */}
+              {priceBefore > priceAfter && (
+                <span className="text-xs text-green-700 bg-green-50 px-1.5 py-0.5 rounded flex items-center gap-0.5">
+                  {langBase === "ar" ? "خصم" : "Save"} {priceBefore - priceAfter}
+                  <CurrencyIcon className="text-green-700" size={10} />
                 </span>
               )}
             </div>

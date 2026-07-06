@@ -27,6 +27,7 @@ import {
 } from "@hooks/api/useMokafaatQueries";
 import { useQueryClient } from "@tanstack/react-query";
 import { isUserSubscribed } from "@utils/subscription";
+import CountryCodeSelect from "@components/CountryCodeSelect";
 
 /** تجميع الأرقام بمسافات (مثل 242 325 678 122) */
 function formatDigitsSpaced(raw: string) {
@@ -270,6 +271,8 @@ const ProfilePage: React.FC = () => {
       name: fullName || (user?.name ?? ""),
       email: (userObj.email ?? user?.email ?? "") as string,
       phone: (userObj.phone ?? userObj.mobile ?? user?.phone ?? "") as string,
+      countryCode:
+        (((userObj.country_code as string) ?? "").replace(/^\+/, "") || "966"),
       avatar: (userObj.avatar ?? userObj.image ?? user?.avatar) as
         | string
         | undefined,
@@ -297,6 +300,7 @@ const ProfilePage: React.FC = () => {
     name: user?.name ?? "",
     email: user?.email ?? "",
     phone: user?.phone ?? "",
+    countryCode: "966",
     avatar: user?.avatar,
     createdAt: user?.createdAt,
     isVerified: user?.isVerified,
@@ -373,6 +377,7 @@ const ProfilePage: React.FC = () => {
     name: displayUser.name || "",
     email: displayUser.email || "",
     phone: displayUser.phone || "",
+    countryCode: displayUser.countryCode || "966",
     countryId: initialCountryId as number | null,
     regionId: initialRegionId as number | null,
     cityId: initialCityId as number | null,
@@ -393,6 +398,7 @@ const ProfilePage: React.FC = () => {
         name: displayUser.name || "",
         email: displayUser.email || "",
         phone: displayUser.phone || "",
+        countryCode: displayUser.countryCode || "966",
         countryId: initialCountryId,
         regionId: initialRegionId,
         cityId: initialCityId,
@@ -402,6 +408,7 @@ const ProfilePage: React.FC = () => {
     displayUser.name,
     displayUser.email,
     displayUser.phone,
+    displayUser.countryCode,
     isEditing,
     initialCountryId,
     initialRegionId,
@@ -417,16 +424,23 @@ const ProfilePage: React.FC = () => {
   };
 
   const handleSave = async () => {
+    const phoneDigits = (formData.phone || "").replace(/\D/g, "");
+    if (phoneDigits && phoneDigits.length < 8) {
+      toast.error(t("profile.err_phone_invalid", "رقم الهاتف غير صحيح"));
+      return;
+    }
     setIsLoading(true);
     try {
       const [first, ...rest] = (formData.name || "").trim().split(/\s+/);
       const last = rest.join(" ") || "";
+      const dial = (formData.countryCode || "966").replace(/\D/g, "");
       const res = await profileUpdateMutation.mutateAsync({
         name: formData.name?.trim() || undefined,
         first_name: first || formData.name || undefined,
         last_name: last || undefined,
         email: formData.email?.trim() || undefined,
-        phone: formData.phone?.trim() || undefined,
+        phone: phoneDigits || undefined,
+        country_code: phoneDigits ? `+${dial}` : undefined,
         country_id: formData.countryId ?? undefined,
         region_id: formData.regionId ?? undefined,
         city_id: formData.cityId ?? undefined,
@@ -475,6 +489,7 @@ const ProfilePage: React.FC = () => {
       name: displayUser.name || "",
       email: displayUser.email || "",
       phone: displayUser.phone || "",
+      countryCode: displayUser.countryCode || "966",
       countryId: initialCountryId,
       regionId: initialRegionId,
       cityId: initialCityId,
@@ -739,16 +754,35 @@ const ProfilePage: React.FC = () => {
                       {t("profile.label_phone")}
                     </label>
                     {isEditing ? (
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-[#440798] focus:border-[#440798]"
-                      />
+                      <div
+                        className="flex items-stretch gap-2 bg-white border border-gray-300 rounded-lg px-2 focus-within:ring-1 focus-within:ring-[#440798] focus-within:border-[#440798]"
+                        dir="ltr"
+                      >
+                        <div className="flex items-center border-e border-gray-200">
+                          <CountryCodeSelect
+                            value={formData.countryCode}
+                            onChange={(dial) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                countryCode: dial,
+                              }))
+                            }
+                          />
+                        </div>
+                        <input
+                          type="tel"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleInputChange}
+                          placeholder="5XXXXXXXX"
+                          className="flex-1 px-2 py-2 bg-transparent focus:outline-none"
+                        />
+                      </div>
                     ) : (
-                      <p className="text-gray-900">
-                        {displayUser.phone || t("profile.phone_not_set")}
+                      <p className="text-gray-900" dir="ltr">
+                        {displayUser.phone
+                          ? `+${(displayUser.countryCode || "966").replace(/^\+/, "")} ${displayUser.phone}`
+                          : t("profile.phone_not_set")}
                       </p>
                     )}
                   </div>

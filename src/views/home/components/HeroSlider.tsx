@@ -327,7 +327,7 @@ const HeroSlider = () => {
                       href={linkUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="hover:scale-105 transition-transform duration-300 text-md sm:text-md px-8 sm:px-8 lg:px-8 py-4 sm:py-4 font-semibold rounded-full text-white flex items-center gap-2 inline-flex"
+                      className="hover:scale-105 transition-transform duration-300 text-md sm:text-md px-8 sm:px-8 lg:px-8 py-4 sm:py-4 font-semibold rounded-full text-white !flex items-center gap-2 whitespace-nowrap inline-flex"
                       style={{ backgroundColor: "#fd671a" }}
                       aria-label="View more"
                     >
@@ -341,7 +341,7 @@ const HeroSlider = () => {
                     <button
                       type="button"
                       onClick={() => navigate(linkUrl)}
-                      className="hover:scale-105 transition-transform duration-300 text-md sm:text-md px-8 sm:px-8 lg:px-8 py-4 sm:py-4 font-semibold rounded-full text-white flex items-center gap-2"
+                      className="hover:scale-105 transition-transform duration-300 text-md sm:text-md px-8 sm:px-8 lg:px-8 py-4 sm:py-4 font-semibold rounded-full text-white !flex items-center gap-2 whitespace-nowrap"
                       style={{ backgroundColor: "#fd671a" }}
                       aria-label="View more"
                     >
@@ -354,7 +354,7 @@ const HeroSlider = () => {
                   <button
                     type="button"
                     onClick={() => navigate("/offers")}
-                    className="hover:scale-105 transition-transform duration-300 text-md sm:text-md px-8 sm:px-8 lg:px-8 py-4 sm:py-4 font-semibold rounded-full text-white flex items-center gap-2"
+                    className="hover:scale-105 transition-transform duration-300 text-md sm:text-md px-8 sm:px-8 lg:px-8 py-4 sm:py-4 font-semibold rounded-full text-white !flex items-center gap-2 whitespace-nowrap"
                     style={{ backgroundColor: "#fd671a" }}
                     aria-label="View offers"
                   >

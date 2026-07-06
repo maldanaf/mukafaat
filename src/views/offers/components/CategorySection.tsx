@@ -158,12 +158,11 @@ const CategorySection: React.FC = () => {
 
   const owlCarouselOptions = useMemo(
     () => ({
-      loop: categories.length > 4,
-      margin: 0,
+      loop: false,
+      margin: 12,
       nav: true,
       dots: false,
-      autoplay: true,
-      autoplayTimeout: 4000,
+      autoplay: false,
       autoplayHoverPause: true,
       rtl: isRTL ? "true" : "false",
       responsive: {
@@ -177,12 +176,11 @@ const CategorySection: React.FC = () => {
 
   const loadingCarouselOptions = useMemo(
     () => ({
-      loop: true,
-      margin: 0,
+      loop: false,
+      margin: 12,
       nav: true,
       dots: false,
-      autoplay: true,
-      autoplayTimeout: 4000,
+      autoplay: false,
       autoplayHoverPause: true,
       rtl: isRTL ? "true" : "false",
       responsive: {
@@ -300,9 +298,9 @@ const CategorySection: React.FC = () => {
             </div>
           )}
 
-          {/* Small/medium screens OR (large with 7+ items): استخدم السلايدر */}
+          {/* الديسكتوب فقط (7+ تصنيفات): السلايدر كما هو دون تغيير */}
           <div
-            className={`${shouldUseStaticOnLarge ? "lg:hidden" : ""}`}
+            className={`${shouldUseStaticOnLarge ? "hidden" : "hidden lg:block"}`}
             style={{ direction: isRTL ? "rtl" : "ltr" }}
           >
             <OwlCarousel
@@ -324,6 +322,25 @@ const CategorySection: React.FC = () => {
                 </div>
               ))}
             </OwlCarousel>
+          </div>
+
+          {/* الموبايل: صف تمرير أفقي منظّم وثابت (بدون دوران تلقائي ولا loop) */}
+          <div
+            className="lg:hidden overflow-x-auto pb-2 -mx-1 px-1 [&::-webkit-scrollbar]:hidden"
+            style={{ scrollbarWidth: "none", direction: isRTL ? "rtl" : "ltr" }}
+          >
+            <div className="flex gap-3 w-max">
+              {categories.map((category) => (
+                <div key={category.id} className="w-[120px] flex-shrink-0">
+                  <CategoryCard
+                    icon={category.icon}
+                    title={category.title}
+                    alt={category.alt}
+                    categoryKey={category.key}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

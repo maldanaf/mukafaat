@@ -724,7 +724,7 @@ const PropertyProductPage: React.FC = () => {
                     <button className="w-[45px] h-[45px] min-w-[45px] min-h-[45px] bg-green-500 text-white rounded-full font-semibold flex items-center justify-center gap-2 hover:bg-green-600 transition-colors">
                       <FaWhatsapp className="text-xl" />
                     </button>
-                    <button className="bg-[#400198] h-[45px] w-full justify-center hover:scale-105 transition-transform duration-300 text-sm sm:text-md px-8 sm:px-8 lg:px-8 py-2 sm:py-2 font-semibold rounded-full text-white flex items-center gap-2 cursor-pointer">
+                    <button className="bg-[#400198] h-[45px] w-full justify-center hover:scale-105 transition-transform duration-300 text-sm sm:text-md px-8 sm:px-8 lg:px-8 py-2 sm:py-2 font-semibold rounded-full text-white !flex items-center gap-2 whitespace-nowrap cursor-pointer">
                       <IoChatbubblesOutline className="text-lg" />
                       {isRTL ? "تواصل معنا" : "Get In Touch"}
                     </button>
@@ -806,7 +806,7 @@ const PropertyProductPage: React.FC = () => {
                         }`}
                       />
                     </div>
-                    <button className="bg-[#400198] h-[45px] w-full justify-center hover:scale-105 transition-transform duration-300 text-sm sm:text-md px-8 sm:px-8 lg:px-8 py-2 sm:py-2 font-semibold rounded-full text-white flex items-center gap-2 cursor-pointer">
+                    <button className="bg-[#400198] h-[45px] w-full justify-center hover:scale-105 transition-transform duration-300 text-sm sm:text-md px-8 sm:px-8 lg:px-8 py-2 sm:py-2 font-semibold rounded-full text-white !flex items-center gap-2 whitespace-nowrap cursor-pointer">
                       <LuPhoneCall className="text-lg" />
                       {isRTL ? "اتصل بي" : "Call me"}
                     </button>
@@ -927,7 +927,7 @@ const PropertyProductPage: React.FC = () => {
               <div className="text-center mt-0">
                 <button
                   onClick={() => navigate("/properties")}
-                  className="bg-[#400198] mx-auto hover:scale-105 transition-transform duration-300 text-sm sm:text-md px-8 sm:px-8 lg:px-8 py-2 sm:py-2 font-semibold rounded-full text-white flex items-center gap-2 cursor-pointer"
+                  className="bg-[#400198] mx-auto hover:scale-105 transition-transform duration-300 text-sm sm:text-md px-8 sm:px-8 lg:px-8 py-2 sm:py-2 font-semibold rounded-full text-white !flex items-center gap-2 whitespace-nowrap cursor-pointer"
                   style={{
                     fontFamily: isRTL
                       ? "Readex Pro, sans-serif"

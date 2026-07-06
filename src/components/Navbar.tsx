@@ -167,12 +167,33 @@ const Navbar: React.FC = () => {
             </button>
           </div>
 
+          {/* خلفية معتمة للقائمة على الموبايل فقط (لا تظهر على الديسكتوب) */}
+          {openNavigation && (
+            <div
+              className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[25]"
+              onClick={handleCloseNavigation}
+              aria-hidden="true"
+            />
+          )}
+
           <div
             className={`${
               openNavigation ? openClass : closeClass
-            } lg:flex flex-1 items-center justify-center fixed lg:static top-0 h-full lg:h-auto lg:w-auto transition-all duration-300 ease-in-out bg-white z-20 lg:bg-transparent wow fadeInUp px-6`}
+            } lg:flex flex-1 items-center justify-center fixed lg:static top-0 h-full lg:h-auto lg:w-auto transition-all duration-300 ease-in-out bg-white z-[30] lg:z-20 lg:bg-transparent wow fadeInUp px-6 overflow-y-auto lg:overflow-visible`}
             data-wow-delay="0.2s"
           >
+            {/* رأس القائمة على الموبايل فقط: شعار + زر إغلاق */}
+            <div className="lg:hidden flex items-center justify-between w-full pt-4 pb-2 mb-2 border-b border-gray-100">
+              <img src={Logo} alt="logo" width={120} />
+              <button
+                onClick={handleCloseNavigation}
+                aria-label="close menu"
+                className="text-2xl text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg p-2 transition-colors"
+              >
+                <IoMdClose />
+              </button>
+            </div>
+
             <NavigationLinks
               links={NavLinks}
               t={t}

@@ -1,6 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
+import { COUNTRIES, type Country } from "@data/countries";
+import { api } from "@network/apiClient";
+import { API_ENDPOINTS } from "@network/apiEndpoints";
 
 type CountryMeta = {
   iso: string;
@@ -16,70 +20,81 @@ type Props = {
 };
 
 function isoToFlag(iso: string): string {
+  if (!iso || iso.length !== 2) return "";
   return [...iso.toUpperCase()]
     .map((c) => String.fromCodePoint(0x1f1e6 - 65 + c.charCodeAt(0)))
     .join("");
 }
 
-function buildDial(root?: string, suffixes?: string[]): string | null {
-  const r = (root ?? "").replace(/\D/g, "");
-  const s = (suffixes?.[0] ?? "").replace(/\D/g, "");
-  const dial = `${r}${s}`.replace(/\D/g, "");
-  return dial || null;
-}
-
 export default function CountryCodeSelect({ value, onChange, className }: Props) {
-  const [countries, setCountries] = useState<CountryMeta[]>([]);
+  const { i18n } = useTranslation();
+  const isArabic = (i18n.language || "").toLowerCase().startsWith("ar");
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
+  // القائمة من قاعدة البيانات (يتحكم بها الأدمن). القائمة المحلية fallback فقط.
+  const [source, setSource] = useState<Country[]>(COUNTRIES);
   const containerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Detect user's country and fetch countries list
+  // جلب الدول من الـ API؛ عند الفشل تبقى القائمة المحلية.
   useEffect(() => {
+    let cancelled = false;
     (async () => {
-      // Detect user's country via IP geolocation
-      let detectedIso: string | null = null;
       try {
-        // ip-api.com is free, no API key needed
-        const geoRes = await fetch("http://ip-api.com/json/?fields=countryCode", { signal: AbortSignal.timeout(3000) });
-        if (geoRes.ok) {
-          const geoData = await geoRes.json();
-          const cc = String(geoData?.countryCode ?? "").toUpperCase();
-          if (cc && cc.length === 2) detectedIso = cc;
-        }
+        const res = await api.get(API_ENDPOINTS.phoneCodes);
+        const list = res?.data?.data?.phone_codes;
+        if (cancelled || !Array.isArray(list) || list.length === 0) return;
+        setSource(
+          list.map((c: any) => ({
+            iso: String(c.iso ?? "").toUpperCase(),
+            ar: String(c.name_ar ?? c.name_en ?? ""),
+            en: String(c.name_en ?? c.name_ar ?? ""),
+            dial: String(c.dial_code ?? "").replace(/\D/g, ""),
+          })),
+        );
       } catch {
-        // Silently fail - will use default
+        // نبقى على القائمة المحلية.
       }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
-      const res = await fetch(
-        "https://restcountries.com/v3.1/all?fields=name,cca2,idd"
-      );
-      const data = (await res.json()) as Record<string, unknown>[];
+  // نرتّب حسب اللغة الحالية (الترتيب القادم من الأدمن محفوظ أصلاً في الـ API).
+  const countries = useMemo<CountryMeta[]>(() => {
+    return source.map((c) => ({
+      iso: c.iso,
+      name: isArabic ? c.ar : c.en,
+      dial: c.dial,
+      flag: isoToFlag(c.iso),
+    }));
+  }, [source, isArabic]);
 
-      const list: CountryMeta[] = [];
-      for (const c of data ?? []) {
-        const iso = String((c as any)?.cca2 ?? "").toUpperCase();
-        if (!iso || iso.length !== 2) continue;
-        const dial = buildDial((c as any)?.idd?.root, (c as any)?.idd?.suffixes);
-        if (!dial) continue;
-        const name = String((c as any)?.name?.common ?? "").trim();
-        list.push({ iso, name: name || iso, dial, flag: isoToFlag(iso) });
-      }
-
-      list.sort((a, b) => a.name.localeCompare(b.name, "en"));
-      setCountries(list);
-
-      // Auto-select user's country based on detected ISO code
-      if (detectedIso) {
-        const match = list.find((c) => c.iso === detectedIso);
+  // كشف دولة المستخدم عبر IP لاختيارها افتراضيًا (اختياري — يفشل بصمت).
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        // نستخدم https لتفادي حظر المحتوى المختلط على المواقع الآمنة.
+        const geoRes = await fetch("https://ipapi.co/country/", {
+          signal: AbortSignal.timeout(3000),
+        });
+        if (!geoRes.ok) return;
+        const cc = (await geoRes.text()).trim().toUpperCase();
+        if (cancelled || cc.length !== 2) return;
+        // لا نغيّر اختيار المستخدم إن سبق أن اختار رمزًا يدويًا.
+        if (String(value ?? "").replace(/\D/g, "")) return;
+        const match = COUNTRIES.find((c) => c.iso === cc);
         if (match) onChange(match.dial);
+      } catch {
+        // نتجاهل الفشل — تبقى القائمة كاملة والاختيار الافتراضي السعودية.
       }
-    })().catch(() => {
-      setCountries([
-        { iso: "SA", name: "Saudi Arabia", dial: "966", flag: "🇸🇦" },
-      ]);
-    });
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Close on click outside

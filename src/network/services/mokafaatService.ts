@@ -122,6 +122,7 @@ export const profileApi = {
     name?: string;
     email?: string;
     phone?: string;
+    country_code?: string;
     id_number?: string;
     gender?: string;
     city_id?: string | number;
@@ -132,7 +133,7 @@ export const profileApi = {
     avatar?: File | null;
   }) => {
     const keys = [
-      "first_name", "last_name", "name", "email", "phone", "id_number", "gender",
+      "first_name", "last_name", "name", "email", "phone", "country_code", "id_number", "gender",
       "city_id", "region_id", "country_id", "bank_name", "bank_account",
     ] as const;
     const body: Record<string, string | number> = {};

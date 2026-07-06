@@ -98,11 +98,6 @@ const OfferCardHorizontal: React.FC<Props> = ({ offer }) => {
                 {offer.discountPercentage}% {t("offerCard.discountOff")}
               </span>
             )}
-            {offer.pricingType === "free" && (
-              <span className="bg-green-500 text-white px-2 py-0.5 rounded text-xs font-medium">
-                {langBase === "ar" ? "مجاني" : "Free"}
-              </span>
-            )}
             {offer.requiresSubscription && (
               <span className="bg-[#400198] text-white px-2 py-0.5 rounded text-xs font-medium">
                 {langBase === "ar" ? "للمشتركين" : "Subscribers"}
@@ -166,20 +161,16 @@ const OfferCardHorizontal: React.FC<Props> = ({ offer }) => {
             <div className="flex flex-col">
               {priceBefore > 0 && priceBefore > priceAfter && (
                 <span className="text-xs text-gray-400 line-through flex items-center gap-0.5">
-                  {priceBefore} <CurrencyIcon className="text-gray-400" size={10} />
+                  {langBase === "ar" ? "قبل" : "Before"}: {priceBefore} <CurrencyIcon className="text-gray-400" size={10} />
                 </span>
               )}
               <div className="flex items-center gap-2">
-                {offer.subscriberPrice !== undefined && offer.subscriberPrice <= 0 ? (
-                  <span className="text-base font-bold text-green-600">{langBase === "ar" ? "مجاني" : "Free"}</span>
-                ) : (
-                  <span className="text-base font-bold text-[#400198] flex items-center gap-0.5">
-                    {offer.subscriberPrice ?? priceAfter} <CurrencyIcon className="text-[#400198]" size={14} />
-                  </span>
-                )}
-                {offer.nonSubscriberPrice != null && offer.nonSubscriberPrice > 0 && (
-                  <span className="text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">
-                    {langBase === "ar" ? "بدون اشتراك" : "Non-sub"}: {offer.nonSubscriberPrice}
+                <span className="text-base font-bold text-[#400198] flex items-center gap-0.5">
+                  {priceAfter} <CurrencyIcon className="text-[#400198]" size={14} />
+                </span>
+                {priceBefore > priceAfter && (
+                  <span className="text-xs text-green-700 bg-green-50 px-1.5 py-0.5 rounded flex items-center gap-0.5">
+                    {langBase === "ar" ? "خصم" : "Save"} {priceBefore - priceAfter} <CurrencyIcon className="text-green-700" size={10} />
                   </span>
                 )}
               </div>

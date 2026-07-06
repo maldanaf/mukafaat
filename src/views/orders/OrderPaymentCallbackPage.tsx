@@ -19,6 +19,7 @@ const OrderPaymentCallbackPage: React.FC = () => {
 
   const id = searchParams.get("id");
   const status = searchParams.get("status");
+  const gateway = searchParams.get("gateway");
   const message = searchParams.get("message") ?? "";
   const orderIdFromQuery = searchParams.get("order_id") ?? undefined;
   const typeFromQuery = searchParams.get("type") ?? undefined;
@@ -76,6 +77,14 @@ const OrderPaymentCallbackPage: React.FC = () => {
   );
 
   useEffect(() => {
+    // بوابة الراجحي: الباك-إند فعّل الطلب مسبقاً وأعاد التوجيه بـ status مباشرة
+    if (gateway === "arb") {
+      if (calledRef.current) return;
+      calledRef.current = true;
+      redirectToResult(status?.toLowerCase() === "success");
+      return;
+    }
+
     if (!id || !status) {
       navigate(isSubscription ? "/subscription/plans" : "/orders", {
         replace: true,
@@ -157,6 +166,7 @@ const OrderPaymentCallbackPage: React.FC = () => {
   }, [
     id,
     status,
+    gateway,
     message,
     navigate,
     paymentCallback,

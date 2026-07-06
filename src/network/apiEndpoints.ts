@@ -32,6 +32,7 @@ export const API_ENDPOINTS = {
 
   // ========== General ==========
   categories: `${API}/categories`,
+  phoneCodes: `${API}/phone-codes`,
   locations: {
     countries: `${API}/locations/countries`,
     regions: (id: string | number) => `${API}/locations/regions/${id}`,
@@ -87,6 +88,10 @@ export const API_ENDPOINTS = {
   },
   // ========== Payment (callback after gateway redirect) ==========
   paymentCallback: `${API}/payment/callback`,
+
+  // ========== ARB / NeoLeap (Bank Hosted redirect) ==========
+  arbPay: `${API}/payment/arb/pay`,
+  arbVerify: `${API}/payment/arb/verify`,
 
   // ========== Orders ==========
   orders: `${API}/orders`,

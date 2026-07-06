@@ -45,6 +45,7 @@ import { isUserSubscribed } from "@utils/subscription";
 import { useQueryClient } from "@tanstack/react-query";
 import { mokafaatKeys } from "@hooks/api/useMokafaatQueries";
 import { initMoyasarPayment } from "@utils/moyasar";
+import { startArbPayment } from "@utils/arbPayment";
 import type { CardCompany, CardOffer } from "@data/cards";
 
 function getCardImage(logoName: string) {
@@ -268,6 +269,16 @@ const PaymentPage = () => {
     submitPayment(selectedMethod === "wallet");
   };
 
+  // رابط عودة الراجحي بعد الدفع → صفحة الكول باك في الفرونت
+  const buildCardReturnUrl = (orderId: string | number) =>
+    `${window.location.origin}/orders/callback?` +
+    new URLSearchParams({
+      gateway: "arb",
+      type: "card",
+      order_id: String(orderId),
+      ...(companyId ? { company_id: String(companyId) } : {}),
+    }).toString();
+
   const submitPayment = async (useWalletPayment = false) => {
     if (!offerId || !offer) return;
     setErrorMsg(null);
@@ -324,46 +335,15 @@ const PaymentPage = () => {
       }
     }
 
-    // لو في كود خصم متطبّق، نعدّي على createOrder عشان الـ backend يحدّث الـ payment_info
+    // 💳 بوابة الراجحي + طلب pending موجود → ابدأ الدفع على نفس الطلب
     if (!useWalletPayment && orderIdFromState != null && !discount) {
-      const paymentUrlFromState = (orderFromState?.payment_url ??
-        orderFromState?.redirect_url) as string | undefined;
-      if (paymentUrlFromState && typeof paymentUrlFromState === "string") {
-        window.location.href = paymentUrlFromState;
-        return;
+      const r = await startArbPayment({
+        orderId: orderIdFromState,
+        returnUrl: buildCardReturnUrl(orderIdFromState),
+      });
+      if (!r.ok) {
+        setErrorMsg(r.error || (isRTL ? "تعذّر بدء عملية الدفع" : "Failed to start payment"));
       }
-      const paymentInfoFromState = orderFromState?.payment_info as Record<string, unknown> | undefined;
-      if (paymentInfoFromState && typeof paymentInfoFromState === "object") {
-        const amountHalala = Math.max(100, Math.floor((totalPrice || 0) * 100));
-        const publishableKey = (paymentInfoFromState.publishable_key as string) || "";
-        const callbackUrl =
-          `${window.location.origin}/orders/callback?` +
-          new URLSearchParams({
-            order_id: String(orderIdFromState),
-            type: "card",
-            ...(companyId ? { company_id: String(companyId) } : {}),
-          }).toString();
-        if (publishableKey && amountHalala >= 100) {
-          moyasarConfigRef.current = {
-            amountHalala,
-            currency: (paymentInfoFromState.currency as string) || "SAR",
-            description:
-              (paymentInfoFromState.description as string) ||
-              (isRTL ? "إتمام الدفع للبطاقة" : "Complete card payment"),
-            publishableKey,
-            callbackUrl,
-            metadata: (paymentInfoFromState.metadata as Record<string, unknown>) || {},
-          };
-          moyasarInitedRef.current = false;
-          setShowMoyasarForm(true);
-          return;
-        }
-      }
-      setErrorMsg(
-        isRTL
-          ? "لا تتوفر بيانات الدفع لهذا الطلب. ارجع لصفحة البطاقة واضغط على شراء مرة أخرى."
-          : "Payment info is not available. Go back and click Buy again."
-      );
       return;
     }
 
@@ -395,59 +375,29 @@ const PaymentPage = () => {
           }
           const inner = (root.data ?? root) as Record<string, unknown>;
           const order = (inner?.order ?? root.order) as Record<string, unknown> | undefined;
-          const paymentUrl = (root.payment_url ??
-            inner?.payment_url ??
-            root.redirect_url ??
-            inner?.redirect_url) as string | undefined;
-          if (paymentUrl && typeof paymentUrl === "string") {
-            window.location.href = paymentUrl;
-            return;
-          }
-          const paymentInfo = (order?.payment_info ?? inner?.payment_info) as
-            | Record<string, unknown>
-            | undefined;
-          if (paymentInfo && typeof paymentInfo === "object") {
-            // المبلغ من السيرفر بعد تطبيق الخصم
-            const serverHalala = Number(paymentInfo.amount_halala);
-            const serverAmount = Number(paymentInfo.amount);
-            const fallbackAmount = discount ? Number(discount.final_amount) : (totalPrice || 0);
-            const amountHalala = Number.isFinite(serverHalala) && serverHalala > 0
-              ? Math.floor(serverHalala)
-              : Number.isFinite(serverAmount) && serverAmount > 0
-                ? Math.floor(serverAmount * 100)
-                : Math.max(100, Math.floor(fallbackAmount * 100));
-            const publishableKey = (paymentInfo.publishable_key as string) || "";
-            const callbackUrl =
-              `${window.location.origin}/orders/callback?` +
-              new URLSearchParams({
-                type: "card",
-                ...(companyId ? { company_id: String(companyId) } : {}),
-              }).toString();
-            if (publishableKey && amountHalala >= 100) {
-              moyasarConfigRef.current = {
-                amountHalala,
-                currency: (paymentInfo.currency as string) || "SAR",
-                description:
-                  (paymentInfo.description as string) ||
-                  (isRTL ? "إتمام الدفع للطلب" : "Complete order payment"),
-                publishableKey,
-                callbackUrl,
-                metadata: (paymentInfo.metadata as Record<string, unknown>) || {},
-              };
-              moyasarInitedRef.current = false;
-              setShowMoyasarForm(true);
-              return;
-            }
-          }
           const orderId = (root.order_id ?? inner?.order_id ?? order?.id) as
             | string
             | number
             | undefined;
           const requiresPayment = order?.requires_payment === true;
+
+          // دفع كامل من المحفظة أو مجاني — الأوردر active مباشرة
           if (!requiresPayment && orderId != null) {
             window.location.href = `/orders/${orderId}`;
             return;
           }
+
+          // 💳 يتطلب دفع → ابدأ الدفع عبر بوابة الراجحي
+          if (requiresPayment && orderId != null) {
+            startArbPayment({
+              orderId,
+              returnUrl: buildCardReturnUrl(orderId),
+            }).then((r) => {
+              if (!r.ok) setErrorMsg(r.error || (isRTL ? "تعذّر بدء عملية الدفع" : "Failed to start payment"));
+            });
+            return;
+          }
+
           if (orderId != null) {
             window.location.href = `/orders/${orderId}`;
             return;
@@ -648,7 +598,7 @@ const PaymentPage = () => {
                         </>
                       ) : (
                         <span className="text-green-600">
-                          {isRTL ? "مجاني" : "Free"}
+                          {isRTL ? "بدون رسوم" : "No fees"}
                         </span>
                       )}
                     </span>

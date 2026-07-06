@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useSearchParams, useNavigate, Link } from "@/lib/router-compat";
 import { useTranslation } from "react-i18next";
+import { startArbPayment } from "@utils/arbPayment";
 
 /**
  * صفحة فشل الدفع بعد العودة من ميسر.
@@ -27,12 +28,29 @@ const OrderFailureRedirectPage: React.FC = () => {
   const offerCategory = searchParams.get("category");
   const offerRestaurantId = searchParams.get("restaurant_id");
 
-  const handleRetry = () => {
-    if (type === "offer" && offerCategory && offerRestaurantId) {
-      navigate(`/offers/${offerCategory}/${offerRestaurantId}/payment`, { replace: true });
-    } else {
-      navigate("/orders", { replace: true });
+  const [retrying, setRetrying] = useState(false);
+
+  const handleRetry = async () => {
+    // الطلب بقي pending → أعِد بدء الدفع مباشرة على نفس الطلب
+    if (orderId) {
+      setRetrying(true);
+      const params = new URLSearchParams({
+        gateway: "arb",
+        type: type || "offer",
+        order_id: orderId,
+      });
+      if (offerCategory) params.set("category", offerCategory);
+      if (offerRestaurantId) params.set("restaurant_id", offerRestaurantId);
+      const returnUrl = `${window.location.origin}/orders/callback?${params.toString()}`;
+      const r = await startArbPayment({ orderId, returnUrl });
+      if (!r.ok) {
+        setRetrying(false);
+        // fallback: رجوع لصفحة الطلبات
+        navigate("/orders", { replace: true });
+      }
+      return;
     }
+    navigate("/orders", { replace: true });
   };
 
   return (
@@ -70,9 +88,10 @@ const OrderFailureRedirectPage: React.FC = () => {
         <button
           type="button"
           onClick={handleRetry}
-          className="px-6 py-3 rounded-full bg-white text-gray-900 font-medium hover:bg-gray-100 transition-colors"
+          disabled={retrying}
+          className="px-6 py-3 rounded-full bg-white text-gray-900 font-medium hover:bg-gray-100 transition-colors disabled:opacity-60"
         >
-          {t("orderFailureRedirect.try_again")}
+          {retrying ? "..." : t("orderFailureRedirect.try_again")}
         </button>
         <Link
           to="/orders"

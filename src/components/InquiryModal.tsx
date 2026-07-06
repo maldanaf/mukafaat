@@ -212,7 +212,7 @@ const InquiryModal: React.FC = () => {
           <div className="flex justify-end">
             <button
               type="submit"
-              className="bg-[#400198] hover:scale-105 transition-transform duration-300 text-sm px-8 py-3 font-semibold rounded-full text-white flex items-center gap-2"
+              className="bg-[#400198] hover:scale-105 transition-transform duration-300 text-sm px-8 py-3 font-semibold rounded-full text-white !flex items-center gap-2 whitespace-nowrap"
             >
               <IoPaperPlaneOutline className="text-lg" />
               {isRTL ? "إرسال الرسالة" : "Send Message"}

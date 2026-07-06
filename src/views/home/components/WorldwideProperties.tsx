@@ -219,7 +219,7 @@ const WorldwideProperties: React.FC = () => {
 
             {/* CTA Button */}
             <button
-              className="bg-[#400198] hover:scale-105 transition-transform duration-300 text-sm sm:text-md px-8 sm:px-8 lg:px-8 py-2 sm:py-2 font-semibold rounded-full text-white flex items-center gap-2"
+              className="bg-[#400198] hover:scale-105 transition-transform duration-300 text-sm sm:text-md px-8 sm:px-8 lg:px-8 py-2 sm:py-2 font-semibold rounded-full text-white !flex items-center gap-2 whitespace-nowrap"
               style={{
                 marginTop: "30px",
                 fontFamily: isRTL

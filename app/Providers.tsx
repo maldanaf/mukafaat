@@ -9,6 +9,7 @@ import { LanguageProvider } from "@context/language.context";
 import { InquiryModalProvider } from "@context/InquiryModalContext";
 import InquiryModal from "@components/InquiryModal";
 import AuthApiBootstrap from "@components/AuthApiBootstrap";
+import GeoCountryBootstrap from "@components/GeoCountryBootstrap";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -29,6 +30,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           <LanguageProvider>
             <InquiryModalProvider>
               <AuthApiBootstrap />
+              <GeoCountryBootstrap />
               {children}
               <InquiryModal />
             </InquiryModalProvider>

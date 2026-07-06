@@ -124,7 +124,7 @@ const CardsSections = () => {
             <div className="pt-0">
               <button
                 onClick={() => navigate("/cards")}
-                className="bg-[#400198] lg:mx-auto hover:scale-105 transition-transform duration-300 text-sm sm:text-md px-8 sm:px-8 lg:px-8 py-2 sm:py-2 font-semibold rounded-full text-white flex items-center gap-2"
+                className="bg-[#400198] lg:mx-auto hover:scale-105 transition-transform duration-300 text-sm sm:text-md px-8 sm:px-8 lg:px-8 py-2 sm:py-2 font-semibold rounded-full text-white !flex items-center gap-2 whitespace-nowrap"
                 style={{
                   marginTop: "0px",
                   fontFamily: isRTL
@@ -143,8 +143,17 @@ const CardsSections = () => {
           </div>
         </div>
 
-        {/* Gallery Grid */}
-        <div className="container mx-auto px-4">
+        {/* Gallery Grid — موبايل: شبكة منتظمة بارتفاع موحّد */}
+        <div className="container mx-auto px-4 lg:hidden">
+          <div className="grid grid-cols-2 gap-4">
+            {cardsDisplay.slice(0, 4).map((card) => (
+              <div key={card.id}>{renderCard(card, "aspect-[4/5]")}</div>
+            ))}
+          </div>
+        </div>
+
+        {/* Gallery Grid — ديسكتوب: شبكة bento (كما هي) */}
+        <div className="container mx-auto px-4 hidden lg:block">
           <div className="flex gap-4 max-w-full overflow-hidden">
             {/* Group 1 */}
             <div className="w-full lg:w-1/2">

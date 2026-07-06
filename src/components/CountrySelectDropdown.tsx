@@ -2,12 +2,17 @@
 
 import { t } from "i18next";
 import ReactFlagsSelect from "react-flags-select";
+import { defaultCountryCode } from "@utils/geoCountry";
 
 const CountrySelectDropdown = (props: {
   selectedNationality: string;
   onSelectNationalityChange: (nationality: string) => void;
 }) => {
-  const { selectedNationality = "SA", onSelectNationalityChange } = props;
+  // الافتراضي حسب IP الزائر (وإلا السعودية) عند عدم تمرير قيمة من الأب
+  const {
+    selectedNationality = defaultCountryCode(),
+    onSelectNationalityChange,
+  } = props;
 
   return (
     <div className="input-group wow fadeInUp" data-wow-delay="0.2s">

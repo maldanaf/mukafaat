@@ -14,6 +14,7 @@ import DiscountCodeInput from "@components/DiscountCodeInput";
 import type { DiscountCodeResult } from "@network/services/mokafaatService";
 import { AxiosError } from "axios";
 import { initMoyasarPayment } from "@utils/moyasar";
+import { startArbPayment } from "@utils/arbPayment";
 
 export interface SubscriptionPlanState {
   id: number | string;
@@ -150,58 +151,38 @@ const SubscriptionPaymentPage: React.FC = () => {
             // إذا لم يرسِل الباكند requires_payment لكن أرسل payment_info نفترض أن الدفع مطلوب
             (!!paymentInfo || false);
 
-          // إذا أرسل الباكند معلومات دفع ويتطلب دفع، نستخدم ميسر دائماً لإكمال الدفع
-          if (paymentInfo && requiresPayment) {
-            const amountHalalaRaw =
-              (paymentInfo.amount_halala as number | undefined) ??
-              (typeof paymentInfo.amount === "number"
-                ? (paymentInfo.amount as number) * 100
-                : undefined);
-            const amountHalala = Number.isFinite(amountHalalaRaw as number)
-              ? (amountHalalaRaw as number)
-              : undefined;
+          // يتطلب دفعاً → ابدأ الدفع عبر بوابة الراجحي (Bank Hosted redirect)
+          if (requiresPayment) {
+            const subscriptionId =
+              (subscription?.id as string | number | undefined) ??
+              (inner?.subscription_id as string | number | undefined) ??
+              (data.subscription_id as string | number | undefined);
 
-            const currency =
-              (paymentInfo.currency as string | undefined) || "SAR";
-            const description =
-              (paymentInfo.description as string | undefined) ||
-              planName ||
-              t("home.subscription.paymentTitle");
-            const publishableKey =
-              (paymentInfo.publishable_key as string | undefined) || "";
-            const metadata =
-              (paymentInfo.metadata as Record<string, unknown> | undefined) ||
-              {};
-
-            if (!publishableKey || !amountHalala) {
+            if (subscriptionId == null) {
               setErrorMsg(
                 t("home.subscription.paymentFailed") +
                   " " +
                   (isRTL
-                    ? "(بيانات الدفع غير مكتملة. تواصل مع الدعم.)"
-                    : "(Incomplete payment information. Please contact support.)"),
+                    ? "(تعذر تهيئة بوابة الدفع. تواصل مع الدعم.)"
+                    : "(Could not initialize payment gateway. Please contact support.)"),
               );
               return;
             }
 
-            const callbackUrl = `${window.location.origin}/orders/callback?${new URLSearchParams(
+            const returnUrl = `${window.location.origin}/orders/callback?${new URLSearchParams(
               {
+                gateway: "arb",
                 type: "subscription",
                 plan_id: String(plan.id),
+                subscription_id: String(subscriptionId),
               },
             ).toString()}`;
 
-            moyasarConfigRef.current = {
-              amountHalala,
-              currency,
-              description,
-              publishableKey,
-              callbackUrl,
-              metadata,
-            };
-            moyasarInitedRef.current = false;
-            setMoyasarMountKey((k) => k + 1);
-            setStep("card");
+            startArbPayment({ subscriptionId, returnUrl }).then((r) => {
+              if (!r.ok) {
+                setErrorMsg(r.error || t("home.subscription.paymentFailed"));
+              }
+            });
             return;
           }
 

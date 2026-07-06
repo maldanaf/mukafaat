@@ -1251,8 +1251,8 @@
       "subtitle": "Enjoy the best paid offers"
     },
     "freeOffers": {
-      "title": "Free Offers",
-      "subtitle": "Get great free offers now"
+      "title": "No-Fee Offers",
+      "subtitle": "Get great no-fee offers now"
     },
     "suggestedOffers": {
       "title": "Suggested for You",
@@ -1662,8 +1662,8 @@
     "choose_option": "Choose your option",
     "save_pct": "Save {{pct}}%",
     "cta_price": "Get this offer now for the price below",
-    "cta_free": "Get this offer now for free",
-    "free": "Free",
+    "cta_free": "Get this offer now",
+    "free": "No fees",
     "already_used": "You have already used this offer",
     "offer_ended": "Offer ended",
     "max_purchase": "Maximum quantity: {{max}}",
@@ -1671,6 +1671,7 @@
     "max_purchase_other": "Max quantity: {{max}} units",
     "total": "Total",
     "creating_order": "Creating order...",
+    "order_created_success": "Order created successfully",
     "quick_buy": "Quick Buy",
     "payment_methods": "Payment methods",
     "related_offers": "Related offers",
@@ -1696,7 +1697,7 @@
     "typeOffer": "Offer",
     "discountOff": "OFF",
     "viewDetails": "View Details",
-    "free": "Free",
+    "free": "No fees",
     "purchases_few": "{{count}} purchases",
     "purchases_many": "{{count}} purchases",
     "purchases_two": "{{count}} purchases",

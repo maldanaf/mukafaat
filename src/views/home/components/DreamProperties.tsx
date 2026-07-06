@@ -282,7 +282,7 @@ const DreamProperties: React.FC = () => {
         <div className="text-center mt-0">
           <button
             onClick={() => navigate("/properties")}
-            className="bg-[#400198] mx-auto hover:scale-105 transition-transform duration-300 text-sm sm:text-md px-8 sm:px-8 lg:px-8 py-2 sm:py-2 font-semibold rounded-full text-white flex items-center gap-2 cursor-pointer"
+            className="bg-[#400198] mx-auto hover:scale-105 transition-transform duration-300 text-sm sm:text-md px-8 sm:px-8 lg:px-8 py-2 sm:py-2 font-semibold rounded-full text-white !flex items-center gap-2 whitespace-nowrap cursor-pointer"
             style={{
               marginTop: "0px",
               fontFamily: isRTL ? "Readex Pro, sans-serif" : "Jost, sans-serif",

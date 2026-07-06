@@ -1243,8 +1243,8 @@
       "subtitle": "استفد من أفضل العروض المدفوعة"
     },
     "freeOffers": {
-      "title": "عروض مجانية",
-      "subtitle": "احصل على عروض مجانية مميزة الآن"
+      "title": "عروض بدون رسوم",
+      "subtitle": "احصل على عروض بدون رسوم مميزة الآن"
     },
     "suggestedOffers": {
       "title": "نقترحها عليك",
@@ -1654,8 +1654,8 @@
     "choose_option": "اختر خيارك",
     "save_pct": "وفر {{pct}}٪",
     "cta_price": "احصل على هذا العرض الآن بالسعر أدناه",
-    "cta_free": "احصل على هذا العرض الآن مجاناً",
-    "free": "مجاناً",
+    "cta_free": "احصل على هذا العرض الآن",
+    "free": "بدون رسوم",
     "already_used": "لقد استخدمت هذا العرض مسبقاً",
     "offer_ended": "انتهى العرض",
     "max_purchase": "الحد الأقصى للكمية: {{max}}",
@@ -1663,6 +1663,7 @@
     "max_purchase_other": "الحد الأقصى للكمية: {{max}} وحدات",
     "total": "الإجمالي",
     "creating_order": "جاري إنشاء الطلب...",
+    "order_created_success": "تم إنشاء طلبك بنجاح",
     "quick_buy": "شراء سريع",
     "payment_methods": "طرق الدفع",
     "related_offers": "عروض ذات صلة",
@@ -1692,7 +1693,7 @@
     "typeOffer": "عرض",
     "discountOff": "خصم",
     "viewDetails": "عرض التفاصيل",
-    "free": "مجاناً"
+    "free": "بدون رسوم"
   },
   "couponModal": {
     "removedFromFavorites": "تمت إزالته من المفضلة",

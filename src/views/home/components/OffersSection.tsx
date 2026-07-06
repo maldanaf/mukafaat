@@ -147,7 +147,7 @@ const OffersSection: React.FC = () => {
       },
       {
         key: "free" as const,
-        label: isRTL ? "عروض مجانية" : "Free",
+        label: isRTL ? "بدون رسوم" : "No Fees",
         count: freeOffers.length,
       },
       {
@@ -274,7 +274,7 @@ const OffersSection: React.FC = () => {
           <button
             type="button"
             onClick={() => (window.location.href = "/offers")}
-            className="bg-[#400198] lg:mx-auto hover:scale-105 transition-transform duration-300 text-base sm:text-base px-8 sm:px-8 lg:px-8 py-4 sm:py-4 font-semibold rounded-full text-white flex items-center gap-2"
+            className="bg-[#400198] lg:mx-auto hover:scale-105 transition-transform duration-300 text-base sm:text-base px-8 sm:px-8 lg:px-8 py-4 sm:py-4 font-semibold rounded-full text-white !flex items-center gap-2 whitespace-nowrap"
           >
             {t("home.offers.viewMore")}
           </button>

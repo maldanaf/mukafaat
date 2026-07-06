@@ -204,9 +204,9 @@ const CouponsSection: React.FC = () => {
           </div>
 
           {/* Bottom Section */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2">
             <span
-              className={`px-3 py-1 rounded-full text-xs font-medium ms-12 ${
+              className={`px-3 py-1 rounded-full text-xs font-medium min-w-0 line-clamp-1 ${
                 coupon.reusable
                   ? "bg-orange-100 text-orange-700"
                   : "bg-red-100 text-red-700"
@@ -214,7 +214,7 @@ const CouponsSection: React.FC = () => {
             >
               {coupon.reusableText}
             </span>
-            <span className="text-xs text-gray-400 flex items-center gap-1">
+            <span className="text-xs text-gray-400 flex items-center gap-1 flex-shrink-0 whitespace-nowrap">
               الشروط
               <IoIosArrowRoundForward className="text-xs" />
             </span>
@@ -243,7 +243,7 @@ const CouponsSection: React.FC = () => {
         </div>
 
         {/* Filters */}
-        <div className="flex justify-start mb-8 gap-4 flex-wrap w-[90%]">
+        <div className="flex justify-start mb-8 gap-2 sm:gap-4 flex-wrap w-full lg:w-[90%]">
           {filters.map((filter) => (
             <button
               key={filter.key}
@@ -290,7 +290,7 @@ const CouponsSection: React.FC = () => {
         <div className="text-center">
           <button
             onClick={() => navigate("/coupons")}
-            className="bg-[#400198] hover:scale-105 transition-transform duration-300 text-base px-8 py-4 font-semibold rounded-full text-white flex items-center gap-2 mx-auto"
+            className="bg-[#400198] hover:scale-105 transition-transform duration-300 text-base px-8 py-4 font-semibold rounded-full text-white !flex items-center gap-2 whitespace-nowrap mx-auto"
             style={{
               fontFamily: isRTL ? "Readex Pro, sans-serif" : "Jost, sans-serif",
             }}

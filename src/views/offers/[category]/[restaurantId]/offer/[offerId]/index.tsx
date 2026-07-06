@@ -977,7 +977,7 @@ const OfferDetailPage = () => {
                               </p>
                               {(offer.subscriberPrice ?? 0) <= 0 ? (
                                 <p className="text-lg font-bold text-green-600">
-                                  {langBase === "ar" ? "مجاني" : "Free"}
+                                  {langBase === "ar" ? "مشمول بالاشتراك" : "Included"}
                                 </p>
                               ) : (
                                 <p className="text-lg font-bold text-primary flex items-center gap-1">
