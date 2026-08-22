@@ -13,12 +13,14 @@ const nextConfig = {
     disableStaticImages: true,
     remotePatterns: [
       { protocol: "https", hostname: "mokafat.ivadso.com" },
+      { protocol: "https", hostname: "admin.mukafaat.com.sa" },
+      { protocol: "https", hostname: "mukafaat.com.sa" },
       { protocol: "https", hostname: "mukafaat.com" },
     ],
   },
   async rewrites() {
     const apiBaseUrl =
-      process.env.NEXT_PUBLIC_API_BASE_URL || "https://mokafat.ivadso.com";
+      process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.mukafaat.com.sa";
     return [
       { source: "/api/:path*", destination: `${apiBaseUrl}/api/:path*` },
       { source: "/orders/success", destination: "/orders-success" },

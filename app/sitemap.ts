@@ -23,7 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   try {
     const apiBaseUrl =
-      process.env.NEXT_PUBLIC_API_BASE_URL || "https://mokafat.ivadso.com";
+      process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.mukafaat.com.sa";
 
     // Fetch blog articles
     const blogsRes = await fetch(`${apiBaseUrl}/api/web/news`, {
