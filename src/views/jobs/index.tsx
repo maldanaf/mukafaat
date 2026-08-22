@@ -19,7 +19,7 @@ const JobsHero = () => {
     <>
       <section className="relative w-full bg-[#1D0843]  overflow-hidden min-h-[100px] flex items-center justify-center">
         <div className="absolute inset-0 bg-primary opacity-30"></div>
-        <div className="relative pt-20 pb-16 px-6 mx-auto max-w-screen-xl text-center lg:pt-20 lg:pb-16 lg:px-12 flex flex-col justify-center z-10">
+        <div className="relative pt-20 pb-16 px-6 mx-auto max-w-site text-center lg:pt-20 lg:pb-16 lg:px-12 flex flex-col justify-center z-10">
           <h1
             className={`${titleFontType} mb-4 tracking-tight leading-none text-white wow fadeInUp`}
             data-wow-delay="0.2s"

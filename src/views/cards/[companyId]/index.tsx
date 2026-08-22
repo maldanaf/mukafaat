@@ -161,7 +161,7 @@ const CategoryCardsPage = () => {
         ) : (
           <div className="absolute inset-0 bg-primary opacity-30" />
         )}
-        <div className="relative pt-24 pb-10 px-6 mx-auto max-w-screen-xl text-center lg:pt-24 lg:pb-10 lg:px-12 flex flex-col justify-center z-10">
+        <div className="relative pt-24 pb-10 px-6 mx-auto max-w-site text-center lg:pt-24 lg:pb-10 lg:px-12 flex flex-col justify-center z-10">
           <button
             onClick={() => navigate("/cards")}
             className={`absolute top-4 ${isRTL ? "right-4" : "left-4"} text-white hover:text-purple-300 transition-colors flex items-center gap-2`}
@@ -184,7 +184,7 @@ const CategoryCardsPage = () => {
       {subcategories.length > 0 && (
         <section className="relative container mx-auto px-4 py-8 z-10">
           <div
-            className="w-full max-w-6xl mx-auto"
+            className="w-full max-w-site mx-auto"
             style={{ marginTop: "-80px" }}
           >
             <div

@@ -442,7 +442,7 @@ const PaymentPage = () => {
         {/* Header - نفس صفحة العروض */}
         <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[200px] flex items-center justify-center">
           <div className="absolute inset-0 bg-primary opacity-30" />
-          <div className="relative pt-24 pb-10 px-6 mx-auto max-w-screen-xl text-center lg:pt-24 lg:pb-10 lg:px-12 flex flex-col justify-center z-10">
+          <div className="relative pt-24 pb-10 px-6 mx-auto max-w-site text-center lg:pt-24 lg:pb-10 lg:px-12 flex flex-col justify-center z-10">
             <button
               onClick={() => navigate(`/cards/${companyId}`)}
               className="absolute top-4 left-4 text-white hover:text-purple-300 transition-colors flex items-center gap-2"

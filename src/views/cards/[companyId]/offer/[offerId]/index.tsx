@@ -166,13 +166,13 @@ const CardOfferDetailPage = () => {
       <>
         <section className="relative w-full bg-[#1D0843] overflow-hidden" style={{ minHeight: "200px" }}>
           <div className="absolute inset-0 bg-primary opacity-30" />
-          <div className="relative pt-24 pb-10 px-6 mx-auto max-w-screen-xl w-full text-center">
+          <div className="relative pt-24 pb-10 px-6 mx-auto max-w-site w-full text-center">
             <div className="h-8 w-48 bg-white/20 rounded-lg mx-auto mb-4" />
             <div className="h-4 w-3/4 max-w-md bg-white/15 rounded mx-auto" />
           </div>
         </section>
         <div className="bg-gray-50" style={{ minHeight: "60vh" }}>
-          <div className="container mx-auto px-4 py-8 max-w-7xl">
+          <div className="container mx-auto px-4 py-8 max-w-site">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2 space-y-6">
                 <div className="bg-gray-200 rounded-3xl overflow-hidden" style={{ height: "280px" }} />
@@ -232,7 +232,7 @@ const CardOfferDetailPage = () => {
       {/* هيدر مثل صفحة العرض */}
       <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[200px] flex items-center justify-center">
         <div className="absolute inset-0 bg-primary opacity-30" />
-        <div className="relative pt-24 pb-10 px-6 mx-auto max-w-screen-xl w-full text-center lg:pt-24 lg:pb-10 lg:px-12 flex flex-col justify-center z-10">
+        <div className="relative pt-24 pb-10 px-6 mx-auto max-w-site w-full text-center lg:pt-24 lg:pb-10 lg:px-12 flex flex-col justify-center z-10">
           <div className="flex items-center justify-between absolute top-4 left-4 right-4">
             <button
               onClick={() => navigate(`/cards/${companyId}`)}
@@ -338,7 +338,7 @@ const CardOfferDetailPage = () => {
       </section>
 
       <div className="min-h-screen bg-gray-50" style={{ paddingTop: "0" }}>
-        <div className="container mx-auto px-4 py-8 max-w-7xl -mt-2 relative z-10 pb-20">
+        <div className="container mx-auto px-4 py-8 max-w-site -mt-2 relative z-10 pb-20">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* عمود المحتوى: صورة واحدة أصغر + تابات */}
             <div className="lg:col-span-2 space-y-6">

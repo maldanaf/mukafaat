@@ -41,7 +41,7 @@ const Services = () => {
   return (
     <section
       id="services"
-      className="services max-w-screen-xl flex flex-col mx-auto md:py-10 md:px-4 px-6 py-6"
+      className="services max-w-site flex flex-col mx-auto md:py-10 md:px-4 px-6 py-6"
     >
       <div className="top-info text-center w-full">
         <span

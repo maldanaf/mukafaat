@@ -34,7 +34,7 @@ const Clients = (props: { isRTL: boolean }) => {
   return (
     <section
       id="clients"
-      className="clients py-10 px-10 lg:py-14 lg:px-12 max-w-screen-xl mx-auto"
+      className="clients py-10 px-10 lg:py-14 lg:px-12 max-w-site mx-auto"
     >
       <div className="top-content grid md:grid-cols-2 md:mb-10 mb-10 lg:mb-0 items-start justify-start">
         <h1

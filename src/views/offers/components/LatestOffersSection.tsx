@@ -11,6 +11,7 @@ import { Pattern } from "@assets";
 import { useWebOffers } from "@hooks/api/useMokafaatQueries";
 import { mapApiOffersToModels } from "@network/mappers/offersMapper";
 import { buildWebOffersParams } from "@utils/webFilters";
+import { buildOfferUrl } from "@utils/offerUrl";
 
 function extractOffersArray(res: unknown): Array<Record<string, unknown>> {
   const root = (res as Record<string, unknown>) ?? {};
@@ -72,7 +73,7 @@ const LatestOffersSection: React.FC = () => {
   );
 
   const handleOfferClick = (offer: Offer) => {
-    navigate(`/offers/${offer.category}/${offer.companyId}/offer/${offer.id}`);
+    navigate(buildOfferUrl(offer));
   };
 
   // Skeleton component

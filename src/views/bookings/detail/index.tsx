@@ -160,7 +160,7 @@ export default function BookingDetailPage() {
       {/* Hero */}
       <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[180px] flex items-center justify-center">
         <div className="absolute inset-0 bg-primary opacity-30" />
-        <div className="relative pt-20 pb-8 px-6 mx-auto max-w-screen-xl w-full text-center z-10">
+        <div className="relative pt-20 pb-8 px-6 mx-auto max-w-site w-full text-center z-10">
           <div className="flex items-center justify-center gap-2 mb-3">
             <span className={`${tc?.color || "bg-purple-500"} text-white p-2 rounded-full`}>
               <TypeIcon className="w-5 h-5" />
@@ -184,7 +184,7 @@ export default function BookingDetailPage() {
         </div>
       </section>
 
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div className="container mx-auto px-4 py-8 max-w-site">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* المحتوى الرئيسي */}
           <div className="lg:col-span-2 space-y-6">

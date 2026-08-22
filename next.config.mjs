@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // مؤشر التطوير كان يغطّي تبويبات شريط الموبايل السفلي
+  devIndicators: false,
   reactStrictMode: false,
   eslint: {
     ignoreDuringBuilds: true,

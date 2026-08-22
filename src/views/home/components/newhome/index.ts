@@ -1,0 +1,14 @@
+export { default as HeroSlider } from "./HeroSlider";
+export { default as SearchBar } from "./SearchBar";
+export { default as ServiceCards } from "./ServiceCards";
+export { default as CategoriesBand } from "./CategoriesBand";
+export { default as OffersGrid } from "./OffersGrid";
+export { default as CouponsBand } from "./CouponsBand";
+export { default as NearbySection } from "./NearbySection";
+export { default as TopStores } from "./TopStores";
+export { default as CorporateApp } from "./CorporateApp";
+export { default as RestaurantsBand } from "./RestaurantsBand";
+export { default as BlogBand } from "./BlogBand";
+export { default as Newsletter } from "./Newsletter";
+export { default as StatsBand } from "./StatsBand";
+export { default as SectionHead } from "./SectionHead";

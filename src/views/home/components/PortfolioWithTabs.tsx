@@ -184,7 +184,7 @@ const PortfolioWithTabs = () => {
             ) : currentItems.length > 0 ? (
               <div
                 dir="ltr"
-                className="overflow-hidden py-4 max-w-screen-2xl mx-auto"
+                className="overflow-hidden py-4 max-w-site mx-auto"
               >
                 <OwlCarousel
                   className="owl-theme portfolio-carousel"

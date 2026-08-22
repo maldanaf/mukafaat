@@ -13,7 +13,7 @@ const Features = () => {
     : "font-nenu-condensed-bold text-6xl";
   return (
     <section
-      className="features md:py-6 md:px-10 px-6 py-6 max-w-screen-xl mx-auto
+      className="features md:py-6 md:px-10 px-6 py-6 max-w-site mx-auto
      flex flex-col gap-5"
     >
       <h1

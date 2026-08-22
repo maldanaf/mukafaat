@@ -493,6 +493,13 @@ export function useBookingsByType(
   });
 }
 
+export function useNewsletterSubscribe() {
+  return useMutation({
+    mutationFn: (payload: { email: string; source?: string }) =>
+      webApi.newsletterSubscribe(payload).then((r) => r.data),
+  });
+}
+
 export function useWebPopupAds(screen: string) {
   const lang = useQueryLang();
   return useQuery({

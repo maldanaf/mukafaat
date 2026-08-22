@@ -25,7 +25,7 @@ const LatestProjects = ({ isRTL }: LatestProjectsProps) => {
   return (
     <section
       id="projects"
-      className="projects max-w-screen-xl mx-auto 
+      className="projects max-w-site mx-auto 
   md:py-10 md:px-4 px-6 py-6 flex flex-col gap-4"
     >
       <div className="top-info text-center w-full">

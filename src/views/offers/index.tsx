@@ -10,6 +10,7 @@ import WeeklyDiscountsSection from "./components/WeeklyDiscountsSection";
 import PaidOffersSection from "./components/PaidOffersSection";
 import SuggestedOffersSection from "./components/SuggestedOffersSection";
 import GetStartedSection from "@views/home/components/GetStartedSection";
+import MobileOffers from "./mobile/MobileOffers";
 
 const OffersPage = () => {
   const { t } = useTranslation();
@@ -24,6 +25,11 @@ const OffersPage = () => {
         <link rel="canonical" href="https://mukafaat.com/offers" />
       </Helmet>
 
+      {/* نسخة الموبايل */}
+      <MobileOffers />
+
+      {/* نسخة الديسكتوب */}
+      <div className="hidden lg:block">
       <OffersHero />
 
       {!isSearching && <CategorySection />}
@@ -39,6 +45,7 @@ const OffersPage = () => {
       )}
 
       <GetStartedSection className="mt-16 mb-28" />
+      </div>
     </>
   );
 };

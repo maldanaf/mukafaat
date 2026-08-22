@@ -12,7 +12,7 @@ const OurStaff = (props: { isRTL: boolean; description?: string }) => {
     : "font-nenu-condensed-bold text-7xl";
 
   return (
-    <section className="our-staff flex max-w-screen-xl items-center justify-center mx-auto md:py-10 md:px-4 px-6 py-6">
+    <section className="our-staff flex max-w-site items-center justify-center mx-auto md:py-10 md:px-4 px-6 py-6">
       <div className="justify-center items-center grid lg:grid-cols-2">
         <div
           className="info flex flex-col max-w-lg me-10 ms-5 wow fadeInRight"

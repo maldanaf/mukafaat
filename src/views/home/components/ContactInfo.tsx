@@ -9,7 +9,7 @@ import { MdEmail } from "react-icons/md";
 const ContactInfo = (props: { mobileNumber?: string; email?: string }) => {
   return (
     <section className="contact-info overflow-hidden bg-gradient-to-l from-primary to-secondary py-8 px-6 lg:py-10 lg:px-8">
-      <div className="grid md:grid-cols-3 gap-3 max-w-screen-xl mx-auto">
+      <div className="grid md:grid-cols-3 gap-3 max-w-site mx-auto">
         <ContactCard
           Icon={PiTimerBold}
           FirstText={t("days")}

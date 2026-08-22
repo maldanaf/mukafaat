@@ -18,6 +18,7 @@ import { buildWebCardsParams } from "@utils/webFilters";
 import { FiFilter } from "react-icons/fi";
 import { IoMdClose } from "react-icons/io";
 import CategoryCard from "@components/CategoryCard";
+import MobileCards from "./mobile/MobileCards";
 
 interface ApiCategory {
   id: number;
@@ -150,9 +151,14 @@ const CardsPage = () => {
           <title>{t("cardsPage.pageTitle")}</title>
           <link rel="canonical" href="https://mukafaat.com/cards" />
         </Helmet>
-        <CardsHero />
-        <div className="min-h-[40vh] flex items-center justify-center">
-          <LoadingSpinner />
+        {/* نسخة الموبايل تجلب بياناتها بنفسها */}
+        <MobileCards />
+
+        <div className="hidden lg:block">
+          <CardsHero />
+          <div className="min-h-[40vh] flex items-center justify-center">
+            <LoadingSpinner />
+          </div>
         </div>
       </>
     );
@@ -165,13 +171,18 @@ const CardsPage = () => {
         <link rel="canonical" href="https://mukafaat.com/cards" />
       </Helmet>
 
+      {/* نسخة الموبايل */}
+      <MobileCards />
+
+      {/* نسخة الديسكتوب */}
+      <div className="hidden lg:block">
       <CardsHero />
 
       {/* Main Categories — single-row horizontal scroll */}
       {categoryItems.length > 0 && (
         <section className="relative container mx-auto px-4 py-8 z-10">
           <div
-            className="w-full max-w-6xl mx-auto"
+            className="w-full max-w-site mx-auto"
             style={{ marginTop: "-80px" }}
           >
             <div
@@ -496,6 +507,7 @@ const CardsPage = () => {
       )}
 
       <GetStartedSection className="mt-16 mb-28" />
+      </div>
     </>
   );
 };

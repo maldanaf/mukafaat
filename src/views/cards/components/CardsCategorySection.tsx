@@ -129,7 +129,7 @@ const CardsCategorySection: React.FC<CardsCategorySectionProps> = ({
     return (
       <section className="relative container mx-auto px-4 py-8 z-10">
         <div
-          className="w-full max-w-6xl px-4 z-10 mx-auto"
+          className="w-full max-w-site px-4 z-10 mx-auto"
           style={{ marginTop: "-80px" }}
         >
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-3">
@@ -151,7 +151,7 @@ const CardsCategorySection: React.FC<CardsCategorySectionProps> = ({
   return (
     <section className="relative container mx-auto px-4 py-8 z-10 CardsCategorySection">
       <div
-        className="w-full max-w-6xl px-4 z-10 mx-auto"
+        className="w-full max-w-site px-4 z-10 mx-auto"
         style={{ marginTop: "-80px" }}
       >
         {displayCategories.length >= 7 ? (

@@ -95,6 +95,7 @@ const OfferDetailPage = () => {
   const [subscribersOnlyModalOpen, setSubscribersOnlyModalOpen] =
     useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [brokenImages, setBrokenImages] = useState<Record<number, boolean>>({});
   const [galleryOpen, setGalleryOpen] = useState(false);
   type TabKey = "description" | "terms" | "privacy";
   const [activeTab, setActiveTab] = useState<TabKey>("description");
@@ -400,7 +401,7 @@ const OfferDetailPage = () => {
         {/* سكيلتون الهيدر */}
         <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[200px] flex items-center justify-center">
           <div className="absolute inset-0 bg-primary opacity-30" />
-          <div className="relative pt-24 pb-10 px-6 mx-auto max-w-screen-xl w-full text-center lg:pt-24 lg:pb-10 lg:px-12 flex flex-col justify-center z-10">
+          <div className="relative pt-24 pb-10 px-6 mx-auto max-w-site w-full text-center lg:pt-24 lg:pb-10 lg:px-12 flex flex-col justify-center z-10">
             <div className="flex items-center justify-between absolute top-4 left-4 right-4">
               <div className="h-8 w-20 bg-white/20 rounded-lg animate-pulse" />
               <div className="flex items-center gap-2">
@@ -429,7 +430,7 @@ const OfferDetailPage = () => {
         </section>
 
         <div className="min-h-screen bg-gray-50">
-          <div className="container mx-auto px-4 py-8 max-w-7xl -mt-2 relative z-10">
+          <div className="container mx-auto px-4 py-8 max-w-site -mt-2 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* سكيلتون عمود المحتوى */}
               <div className="lg:col-span-2 space-y-6">
@@ -582,7 +583,7 @@ const OfferDetailPage = () => {
       {/* هيدر: عنوان، تقييم، أيقونات، لوجو */}
       <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[200px] flex items-center justify-center">
         <div className="absolute inset-0 bg-primary opacity-30" />
-        <div className="relative pt-24 pb-10 px-6 mx-auto max-w-screen-xl w-full text-center lg:pt-24 lg:pb-10 lg:px-12 flex flex-col justify-center z-10">
+        <div className="relative pt-24 pb-10 px-6 mx-auto max-w-site w-full text-center lg:pt-24 lg:pb-10 lg:px-12 flex flex-col justify-center z-10">
           <div className="flex items-center justify-between absolute top-4 left-4 right-4">
             <button
               onClick={() => navigate(`/offers/${category}/${merchantSlug}`)}
@@ -733,14 +734,15 @@ const OfferDetailPage = () => {
       </section>
 
       <div className="min-h-screen bg-gray-50" style={{ paddingTop: "0" }}>
-        <div className="container mx-auto px-4 py-8 max-w-7xl -mt-2 relative z-10 pb-20">
+        <div className="container mx-auto px-4 py-8 max-w-site -mt-2 relative z-10 pb-20">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* عمود المحتوى: معرض الصور + التابات */}
             <div className="lg:col-span-2 space-y-6">
-              {/* معرض الصور: صورة رئيسية + شبكة 2x2 مصغرات */}
+              {/* معرض الصور — ديسكتوب: مصغّرات عمودية جانبية · موبايل: مصغّرات أفقية تحت الصورة */}
               <div className="bg-white rounded-3xl shadow-lg overflow-hidden mb-6">
+                {/* ديسكتوب (lg فأعلى) */}
                 <div
-                  className={`flex gap-3 p-4 items-stretch h-[400px] ${isRTL ? "flex-row-reverse" : ""}`}
+                  className={`hidden lg:flex gap-3 p-4 items-stretch h-[400px] ${isRTL ? "flex-row-reverse" : ""}`}
                 >
                   <div className="grid grid-cols-1 grid-rows-4 gap-0 w-32 flex-shrink-0 h-full overflow-hidden rounded-xl">
                     {galleryImages.slice(0, 4).map((src, i) => (
@@ -769,6 +771,48 @@ const OfferDetailPage = () => {
                       className="w-full h-full object-cover"
                     />
                   </button>
+                </div>
+
+                {/* موبايل وتابلت (أقل من lg) */}
+                <div className="flex flex-col gap-3 p-3 lg:hidden">
+                  <button
+                    type="button"
+                    onClick={() => setGalleryOpen(true)}
+                    className="w-full aspect-[16/10] overflow-hidden rounded-2xl bg-gray-100 cursor-zoom-in"
+                  >
+                    <img
+                      src={mainImageSrc}
+                      alt={offerTitle}
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+
+                  {galleryImages.filter((_, i) => !brokenImages[i]).length > 1 && (
+                    <div className="no-scrollbar flex gap-2.5 overflow-x-auto pb-1">
+                      {galleryImages.map((src, i) =>
+                        brokenImages[i] ? null : (
+                          <button
+                            key={i}
+                            type="button"
+                            onClick={() => setSelectedImageIndex(i)}
+                            aria-label={`صورة ${i + 1}`}
+                            className={`h-16 w-20 shrink-0 overflow-hidden rounded-xl border-2 transition-colors ${
+                              selectedImageIndex === i ? "border-primary" : "border-transparent"
+                            }`}
+                          >
+                            <img
+                              src={src}
+                              alt=""
+                              className="h-full w-full object-cover"
+                              onError={() =>
+                                setBrokenImages((current) => ({ ...current, [i]: true }))
+                              }
+                            />
+                          </button>
+                        ),
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 

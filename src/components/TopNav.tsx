@@ -17,7 +17,7 @@ const TopNav = () => {
 
   return (
     <div className="bg-primary w-full text-white hidden md:flex">
-      <div className="container max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center p-2">
+      <div className="container max-w-site mx-auto flex flex-col md:flex-row justify-between items-center p-2">
         <div
           className="flex flex-col md:flex-row items-start md:items-center text-xs space-y-4 md:space-y-0 md:gap-4 wow fadeInUp"
           data-wow-delay="0.2s"

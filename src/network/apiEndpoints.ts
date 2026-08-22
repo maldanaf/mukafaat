@@ -150,6 +150,7 @@ export const API_ENDPOINTS = {
     offers: `${API}/web/offers`,
     offerDetail: (id: string | number) => `${API}/web/offers/${id}`,
     popupAds: `${API}/web/popup-ads`,
+    newsletterSubscribe: `${API}/web/newsletter/subscribe`,
     bookings: `${API}/web/bookings`,
   },
 

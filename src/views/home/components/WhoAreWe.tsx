@@ -20,7 +20,7 @@ const WhoAreWe = (props: { isRTL: boolean; description?: string }) => {
 
   return (
     <section
-      className="who-are-we max-w-screen-xl flex items-center justify-center mx-auto md:py-10 md:px-4 px-6 py-6"
+      className="who-are-we max-w-site flex items-center justify-center mx-auto md:py-10 md:px-4 px-6 py-6"
       style={{ marginTop: "15rem" }}
     >
       <div className="justify-center items-center grid lg:grid-cols-2">

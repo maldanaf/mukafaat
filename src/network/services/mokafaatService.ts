@@ -280,7 +280,8 @@ export const cardsApi = {
 
 // ========== Web (عام - للوحة الويب بدون توكن أو معه) ==========
 export const webApi = {
-  home: () => api.get(API_ENDPOINTS.web.home),
+  home: (params?: Record<string, unknown>) =>
+    api.get(API_ENDPOINTS.web.home, { params }),
   cards: (params?: Record<string, unknown>) =>
     api.get(API_ENDPOINTS.web.cards, { params }),
   cardDetail: (id: string | number) =>
@@ -306,6 +307,8 @@ export const webApi = {
     api.get(API_ENDPOINTS.web.offerDetail(id)),
   popupAds: (params: { screen: string }) =>
     api.get(API_ENDPOINTS.web.popupAds, { params }),
+  newsletterSubscribe: (payload: { email: string; source?: string }) =>
+    api.post(API_ENDPOINTS.web.newsletterSubscribe, payload),
   bookings: () => api.get(API_ENDPOINTS.web.bookings),
   bookingsByType: (type: string, params?: Record<string, unknown>) =>
     api.get(`${API_ENDPOINTS.web.bookings}/${type}`, { params }),

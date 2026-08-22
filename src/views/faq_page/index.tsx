@@ -51,7 +51,7 @@ export default function FaqPage() {
       {/* Hero */}
       <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[220px] flex items-center justify-center">
         <div className="absolute inset-0 bg-primary opacity-30" />
-        <div className="relative pt-20 pb-12 px-6 mx-auto max-w-screen-xl w-full text-center z-10">
+        <div className="relative pt-20 pb-12 px-6 mx-auto max-w-site w-full text-center z-10">
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
             {isRTL ? "الأسئلة المتكررة" : "Frequently Asked Questions"}
           </h1>

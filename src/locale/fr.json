@@ -11,7 +11,16 @@
       "request-our-services": "Demander nos services",
       "upcoming_projects": "Projets à venir",
       "language": "English",
-      "contact": "Contactez-nous"
+      "contact": "Contactez-nous",
+      "brand": "Mukafaat",
+      "choose_city": "Choose your city",
+      "points_balance": "Your points",
+      "saved": "Saved",
+      "orders": "My orders",
+      "wallet": "Wallet",
+      "profile": "My account",
+      "logout": "Log out",
+      "login": "Log in"
     },
     "hero": {
       "slides": {
@@ -216,6 +225,125 @@
       "privacy": "Politique de confidentialité",
       "terms": "Conditions d'utilisation",
       "copyrights": "Tous droits réservés"
+    },
+    "hero_new": {
+      "title": "All your rewards in one place",
+      "body": "Exclusive offers, coupons and discount codes, digital cards and services that save you more every day.",
+      "tag": "Featured offers",
+      "cta": "Explore offers",
+      "app": "Get the app"
+    },
+    "search_new": {
+      "all_cities": "All cities",
+      "placeholder": "Search for a store, restaurant, offer, coupon or card...",
+      "empty": "No results match your search."
+    },
+    "services_new": {
+      "offers": {
+        "title": "Offers & discounts",
+        "body": "Continuous discounts at hundreds of brands.",
+        "cta": "Browse offers"
+      },
+      "coupons": {
+        "title": "Coupons & promo codes",
+        "body": "Updated codes that work on online stores.",
+        "cta": "Browse coupons"
+      },
+      "cards": {
+        "title": "Digital cards",
+        "body": "Gaming, entertainment and shopping cards delivered instantly.",
+        "cta": "Shop cards"
+      },
+      "nearby": {
+        "title": "Near you",
+        "body": "Discover the discounts available around you now.",
+        "cta": "Explore now"
+      }
+    },
+    "categories_new": {
+      "all": "All",
+      "eyebrow": "Quick browse",
+      "title": "Categories",
+      "all_link": "View all categories"
+    },
+    "offers_new": {
+      "eyebrow": "Picked for you",
+      "title": "Latest & best offers",
+      "all_link": "View all offers",
+      "empty": "No offers in this category right now.",
+      "ended": "Ended",
+      "today": "Ends today",
+      "ends_in": "Ends in",
+      "days": "days"
+    },
+    "coupons_new": {
+      "title": "Featured coupons & promo codes",
+      "all_link": "View all coupons",
+      "copy": "Copy code",
+      "copied": "Copied",
+      "discount": "Save",
+      "with_code": "with code",
+      "use_code": "Use the code at checkout to get the discount"
+    },
+    "nearby_new": {
+      "eyebrow": "Around you",
+      "title": "Near you",
+      "map_link": "View on map",
+      "radius": "Places near you",
+      "use_location": "Use my location",
+      "locating": "Locating...",
+      "km": "km",
+      "up_to": "Up to"
+    },
+    "stores_new": {
+      "eyebrow": "Most popular",
+      "title": "Most used",
+      "all_link": "View all stores"
+    },
+    "corporate_new": {
+      "title": "For companies & government",
+      "body": "A tailored benefits program for your employees: exclusive offers, digital cards and monthly usage reports on one platform.",
+      "cta": "Request a quote"
+    },
+    "app_new": {
+      "title": "Download the Mukafaat app",
+      "body": "All your offers, coupons and cards in your pocket, with alerts when a new discount lands near you."
+    },
+    "restaurants_new": {
+      "eyebrow": "Featured restaurants",
+      "title": "Best restaurants",
+      "all_link": "View all restaurants",
+      "discount": "Save",
+      "cuisine": "Restaurants & cafés",
+      "new": "New",
+      "branches": "branches"
+    },
+    "blog_new": {
+      "eyebrow": "Latest updates",
+      "title": "News & blog",
+      "all_link": "View all posts",
+      "tag": "Blog"
+    },
+    "newsletter_new": {
+      "eyebrow": "Newsletter",
+      "title": "Stay tuned for the best offers",
+      "body": "Subscribe for one weekly email with the best coupons and discounts in your city — no spam.",
+      "label": "Your email",
+      "cta": "Subscribe",
+      "done": "Subscribed",
+      "privacy": "By subscribing you agree to the privacy policy. You can unsubscribe anytime.",
+      "error": "Could not complete the subscription, please try again"
+    },
+    "footer_new": {
+      "blog": "Blog",
+      "faq": "FAQ",
+      "services": "Services",
+      "business": "Business & government",
+      "join": "Become a partner",
+      "help": "Help",
+      "about": "The offers, discounts and coupons platform in Saudi Arabia.",
+      "rights": "All rights reserved © Mukafaat",
+      "country": "Saudi Arabia"
     }
   },
   "about": {
@@ -627,8 +755,12 @@
       "placeholder": "Sélectionnez votre type de propriété"
     },
     "bedsBaths": {
-      "label": "Chambres et salles de bain",
-      "placeholder": "Sélectionnez vos chambres et salles de bain"
+      "oneOne": "1 chambre, 1 salle de bain",
+      "twoTwo": "2 chambres, 2 salles de bain",
+      "threeTwo": "3 chambres, 2 salles de bain",
+      "fourPlus": "4+ chambres, 3+ salles de bain",
+      "fivePlus": "5+ chambres, 4+ salles de bain",
+      "studio": "Studio"
     },
     "propertyTypes": {
       "apartment": "Appartement",
@@ -637,14 +769,6 @@
       "land": "Terrain",
       "penthouse": "Penthouse",
       "townhouse": "Maison de ville"
-    },
-    "bedsBaths": {
-      "oneOne": "1 chambre, 1 salle de bain",
-      "twoTwo": "2 chambres, 2 salles de bain",
-      "threeTwo": "3 chambres, 2 salles de bain",
-      "fourPlus": "4+ chambres, 3+ salles de bain",
-      "fivePlus": "5+ chambres, 4+ salles de bain",
-      "studio": "Studio"
     }
   },
   "propertySlider": {

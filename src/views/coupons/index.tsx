@@ -31,6 +31,7 @@ import { toast } from "react-toastify";
 import CategoryCard from "@components/CategoryCard";
 import { buildWebCouponsParams } from "@utils/webFilters";
 import { IoMdClose } from "react-icons/io";
+import MobileCoupons from "./mobile/MobileCoupons";
 
 type CouponDisplay = {
   id: string;
@@ -381,25 +382,43 @@ const CouponsPage = () => {
 
   // 🔁 Load-more accumulation
   const [accumulatedCoupons, setAccumulatedCoupons] = useState<CouponDisplay[]>([]);
+  // نراكم أيضاً نماذج المودال (CouponWithIcon) حتى يفتح "عرض الكوبون" لكل الصفحات.
+  const [accumulatedWithIcons, setAccumulatedWithIcons] = useState<
+    CouponWithIcon[]
+  >([]);
+  // مهم: التوقيع لا يتضمّن رقم الصفحة — نُصفّر التراكم فقط عند تغيّر الفلاتر
+  // الفعلية (تصنيف/بحث/فرز/تجار/نوع/حد الخصم) لا عند "عرض المزيد".
   const filterSig = useMemo(
-    () => JSON.stringify(listParams ?? {}),
-    [listParams],
+    () =>
+      JSON.stringify({
+        category: selectedCategoryId,
+        search,
+        sortBy:
+          appliedCouponFilters.sortBy ??
+          (selectedFilter === "top_used" ? "most_used" : "newest"),
+        merchantIds: appliedCouponFilters.merchantIds,
+        couponTypes: appliedCouponFilters.couponTypes,
+        discountMin: appliedCouponFilters.discountMin,
+      }),
+    [selectedCategoryId, search, selectedFilter, appliedCouponFilters],
   );
   const prevSigRef = useRef<string>("");
   const lastIncorporatedPageRef = useRef<number>(0);
   const responsePage = pagination.currentPage || 0;
   const hasResponse = !!couponsListRes;
 
-  // reset عند تغيير الفلتر
+  // reset عند تغيير الفلتر (وأيضاً الرجوع للصفحة الأولى)
   useEffect(() => {
     if (prevSigRef.current !== filterSig) {
       prevSigRef.current = filterSig;
       lastIncorporatedPageRef.current = 0;
       setAccumulatedCoupons([]);
+      setAccumulatedWithIcons([]);
+      setCurrentPage(1);
     }
   }, [filterSig]);
 
-  // دمج بيانات الصفحة لما تصل
+  // دمج بيانات الصفحة لما تصل (إلحاق append لا استبدال)
   useEffect(() => {
     if (!hasResponse) return;
     if (responsePage <= lastIncorporatedPageRef.current) return;
@@ -407,7 +426,10 @@ const CouponsPage = () => {
     setAccumulatedCoupons((prev) =>
       responsePage === 1 ? apiCouponsAsDisplay : [...prev, ...apiCouponsAsDisplay],
     );
-  }, [hasResponse, apiCouponsAsDisplay, responsePage]);
+    setAccumulatedWithIcons((prev) =>
+      responsePage === 1 ? couponsWithIcons : [...prev, ...couponsWithIcons],
+    );
+  }, [hasResponse, apiCouponsAsDisplay, couponsWithIcons, responsePage]);
 
   const paginated = accumulatedCoupons;
   const hasMore = currentPage < totalPages;
@@ -420,9 +442,13 @@ const CouponsPage = () => {
 
   const openCouponModal = useCallback(
     (displayCoupon: CouponDisplay) => {
-      const withIcon = couponsWithIcons.find(
-        (c) => String(c.id) === String(displayCoupon.id),
-      );
+      const withIcon =
+        accumulatedWithIcons.find(
+          (c) => String(c.id) === String(displayCoupon.id),
+        ) ??
+        couponsWithIcons.find(
+          (c) => String(c.id) === String(displayCoupon.id),
+        );
       if (withIcon) {
         setSelectedCoupon(withIcon);
         // Update URL with coupon ID for sharing
@@ -431,7 +457,7 @@ const CouponsPage = () => {
         window.history.replaceState({}, "", url.toString());
       }
     },
-    [couponsWithIcons],
+    [accumulatedWithIcons, couponsWithIcons],
   );
 
   const closeCouponModal = useCallback(() => {
@@ -445,16 +471,16 @@ const CouponsPage = () => {
   // Auto-open modal if ?coupon=ID is in URL
   useEffect(() => {
     const couponId = searchParams.get("coupon");
-    if (couponId && couponsWithIcons.length > 0 && !selectedCoupon) {
-      const match = couponsWithIcons.find(
-        (c) => String(c.id) === couponId,
-      );
+    const pool =
+      accumulatedWithIcons.length > 0 ? accumulatedWithIcons : couponsWithIcons;
+    if (couponId && pool.length > 0 && !selectedCoupon) {
+      const match = pool.find((c) => String(c.id) === couponId);
       if (match) setSelectedCoupon(match);
     }
-  }, [searchParams, couponsWithIcons, selectedCoupon]);
+  }, [searchParams, accumulatedWithIcons, couponsWithIcons, selectedCoupon]);
 
   const getLogoUrlForModal = (coupon: { id: number }) => {
-    const d = apiCouponsAsDisplay.find(
+    const d = accumulatedCoupons.find(
       (x) => String(x.id) === String(coupon.id),
     );
     return d ? getCouponImage(d.logo) : "";
@@ -467,6 +493,11 @@ const CouponsPage = () => {
         <link rel="canonical" href="https://mukafaat.com/coupons" />
       </Helmet>
 
+      {/* نسخة الموبايل */}
+      <MobileCoupons />
+
+      {/* نسخة الديسكتوب */}
+      <div className="hidden lg:block">
       <CouponsHero />
 
       {isLoadingCoupons ? (
@@ -686,7 +717,7 @@ const CouponsPage = () => {
           {categoriesCarouselItems.length > 0 && (
             <section className="relative container mx-auto px-4 py-8 z-10">
               <div
-                className="w-full max-w-6xl px-4 z-10 mx-auto"
+                className="w-full max-w-site px-4 z-10 mx-auto"
                 style={{ marginTop: "-80px" }}
               >
                 {categoriesCarouselItems.length >= 7 ? (
@@ -1354,6 +1385,7 @@ const CouponsPage = () => {
       )}
 
       <GetStartedSection className="mt-16 mb-28" />
+      </div>
 
       {selectedCoupon && (
         <CouponModal

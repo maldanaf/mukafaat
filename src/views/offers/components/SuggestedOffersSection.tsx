@@ -11,6 +11,7 @@ import { FiEye, FiStar } from "react-icons/fi";
 import { IoLocationOutline } from "react-icons/io5";
 import { useWebHome } from "@hooks/api/useMokafaatQueries";
 import { mapApiOffersToModels } from "@network/mappers/offersMapper";
+import { buildOfferUrl } from "@utils/offerUrl";
 
 const SuggestedOffersSection: React.FC = () => {
   const { t } = useTranslation();
@@ -144,7 +145,7 @@ const SuggestedOffersSection: React.FC = () => {
   };
 
   const handleOfferClick = (offer: Offer) => {
-    navigate(`/offers/${offer.category}/${offer.companyId}/offer/${offer.id}`);
+    navigate(buildOfferUrl(offer));
   };
 
   // Skeleton component

@@ -25,7 +25,7 @@ const Gallery = () => {
     <LoadingSpinner />
   ) : (
     gallery.length > 0 && (
-      <div dir="ltr" className="overflow-hidden py-4 max-w-screen-2xl mx-auto">
+      <div dir="ltr" className="overflow-hidden py-4 max-w-site mx-auto">
         <OwlCarousel
           className="owl-theme"
           loop

@@ -63,13 +63,14 @@ export function mapApiCouponToModel(
         ? String(storeUrlRaw)
         : undefined;
 
-    if (!id || !description) {
-      console.warn("Coupon missing id or description:", apiCoupon);
+    if (!id) {
+      console.warn("Coupon missing id:", apiCoupon);
       return null;
     }
 
-    // Generate title from description if not provided
-    const couponTitle = title || description.substring(0, 50) + "...";
+    // Generate title from description if not provided (وإلا نتركه فارغاً بدل "...")
+    const couponTitle =
+      title || (description ? description.substring(0, 50) + "..." : "");
 
     // Determine color based on discount percentage
     let color = "purple";

@@ -17,7 +17,7 @@ const Hero = (props: { description?: string }) => {
   return (
     <section className="relative w-full bg-hero bg-no-repeat bg-center bg-cover min-h-[480px] flex items-center justify-center">
       <div className="absolute inset-0 bg-gradient-to-t from-black to-secondary opacity-70"></div>
-      <div className="relative py-8 px-6 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-12 flex flex-col justify-center">
+      <div className="relative py-8 px-6 mx-auto max-w-site text-center lg:py-16 lg:px-12 flex flex-col justify-center">
         <h5
           className="text-white capitalize text-lg md:text-2xl wow fadeInUp"
           data-wow-delay="0.1s"

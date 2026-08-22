@@ -48,7 +48,7 @@ const PortfolioDetailsHero = ({ title }: { title: string }) => {
   return (
     <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[140px] flex items-center justify-center">
       <div className="absolute inset-0 bg-primary opacity-30" />
-      <div className="relative pt-20 pb-16 px-6 mx-auto max-w-screen-xl text-center lg:pt-20 lg:pb-16 lg:px-12 flex flex-col justify-center z-10">
+      <div className="relative pt-20 pb-16 px-6 mx-auto max-w-site text-center lg:pt-20 lg:pb-16 lg:px-12 flex flex-col justify-center z-10">
         <h1 className="font-semibold mt-8 text-2xl md:text-2xl lg:text-2xl mb-2 text-white">
           {title}
         </h1>
@@ -100,7 +100,7 @@ const PortfolioDetailsPage = () => {
       <>
         <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[140px] flex items-center justify-center">
           <div className="absolute inset-0 bg-primary opacity-30" />
-          <div className="relative pt-20 pb-16 px-6 mx-auto max-w-screen-xl text-center lg:pt-20 lg:pb-16 lg:px-12 flex flex-col justify-center z-10">
+          <div className="relative pt-20 pb-16 px-6 mx-auto max-w-site text-center lg:pt-20 lg:pb-16 lg:px-12 flex flex-col justify-center z-10">
             <h1 className="font-semibold mt-8 text-2xl md:text-2xl lg:text-2xl mb-2 text-white">
               Loading project details...
             </h1>

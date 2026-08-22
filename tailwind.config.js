@@ -3,7 +3,16 @@ export default {
   content: ["./app/**/*.{js,ts,jsx,tsx}", "./src/**/*.{js,ts,jsx,tsx}"],
   darkMode: "media",
   theme: {
+    // عرض موحّد لكل الموقع — القيمة الفعلية من --site-max-width في index.css
+    container: {
+      center: true,
+      padding: { DEFAULT: "1rem", sm: "1.5rem" },
+      screens: { sm: "100%", md: "100%", lg: "100%", xl: "100%", "2xl": "100%" },
+    },
     extend: {
+      maxWidth: {
+        site: "var(--site-max-width)",
+      },
       colors: {
         primary: "#400198",
         secondary: "#1d0843",

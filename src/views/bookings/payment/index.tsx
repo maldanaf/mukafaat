@@ -295,13 +295,13 @@ const PaymentPage: React.FC = () => {
       {/* Booking Header */}
       <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[200px] flex items-center justify-center">
         <div className="absolute inset-0 bg-primary opacity-30" />
-        <div className="relative pt-24 pb-10 px-6 mx-auto max-w-screen-xl text-center lg:pt-24 lg:pb-10 lg:px-12 flex flex-col justify-center z-10">
+        <div className="relative w-full pt-10 pb-10 px-6 mx-auto max-w-site text-center lg:pt-12 lg:pb-10 lg:px-12 flex flex-col justify-center z-10">
           {/* Back Button */}
           <button
             onClick={() => navigate("/bookings")}
-            className="absolute top-4 left-4 text-white hover:text-purple-300 transition-colors flex items-center gap-2"
+            className="mb-5 inline-flex w-fit items-center gap-2 self-start rounded-full border border-white/25 bg-white/10 px-4 py-2 text-white transition-colors hover:bg-white/20"
           >
-            <FiArrowLeft className="text-xl" />
+            <FiArrowLeft className="text-lg rtl:rotate-180" />
             <span className="text-sm">{isRTL ? "العودة" : "Back"}</span>
           </button>
 

@@ -283,7 +283,7 @@ const SuccessPage: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Success Header */}
       <section className="relative w-full bg-gradient-to-r from-green-600 to-green-700 overflow-hidden min-h-[300px] flex items-center justify-center">
-        <div className="relative pt-24 pb-10 px-6 mx-auto max-w-screen-xl text-center lg:pt-24 lg:pb-10 lg:px-12 flex flex-col justify-center z-10">
+        <div className="relative pt-24 pb-10 px-6 mx-auto max-w-site text-center lg:pt-24 lg:pb-10 lg:px-12 flex flex-col justify-center z-10">
           {/* Success Icon */}
           <div className="w-20 h-20 mx-auto mb-6 bg-white rounded-full flex items-center justify-center shadow-lg">
             <FiCheck className="text-green-600 text-3xl" />

@@ -29,7 +29,7 @@ const Portfolio = () => {
   return (
     <section
       id="portfolio"
-      className="portfolio max-w-screen-xl flex flex-col mx-auto md:py-10 md:px-4 px-6 py-6 overflow-hidden"
+      className="portfolio max-w-site flex flex-col mx-auto md:py-10 md:px-4 px-6 py-6 overflow-hidden"
     >
       <div className="top-info text-center w-full">
         <h1

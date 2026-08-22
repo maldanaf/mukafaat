@@ -49,7 +49,7 @@ const HomeJobs = (props: { isRTL: boolean }) => {
   return (
     <section
       id="jobs"
-      className="jobs max-w-screen-xl mx-auto 
+      className="jobs max-w-site mx-auto 
       md:py-10 md:px-4 px-6 py-6 flex flex-col gap-4"
     >
       <div className="top-info text-center w-full">

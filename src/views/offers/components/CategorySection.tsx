@@ -207,7 +207,7 @@ const CategorySection: React.FC = () => {
     return (
       <section className="relative container mx-auto px-4 py-8 z-10">
         <div
-          className="w-full max-w-6xl px-4 z-10 mx-auto"
+          className="w-full max-w-site px-4 z-10 mx-auto"
           style={{
             marginTop: "-80px",
           }}
@@ -263,7 +263,7 @@ const CategorySection: React.FC = () => {
   return (
     <section className="relative container mx-auto px-4 py-8 z-10">
       <div
-        className="w-full max-w-6xl px-4 z-10 mx-auto"
+        className="w-full max-w-site px-4 z-10 mx-auto"
         style={{
           marginTop: "-80px",
         }}

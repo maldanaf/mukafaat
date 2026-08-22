@@ -8,6 +8,9 @@ import ScrollToTop from "@components/ScrollToTop";
 import ScrollToTopButton from "@components/ScrollToTopButton";
 import WhatsAppButton from "@components/WhatsAppButton";
 import GlobalStyles from "@components/GlobalStyles";
+import CitySync from "@components/CitySync";
+import MobileTopBar from "@components/mobile/MobileTopBar";
+import MobileTabBar from "@components/mobile/MobileTabBar";
 import ShareSheetHost from "@components/ShareSheetHost";
 
 import "primereact/resources/themes/lara-light-cyan/theme.css";
@@ -30,14 +33,32 @@ export default function WithLayout({
   return (
     <div className="content relative min-h-screen">
       <GlobalStyles />
+      <CitySync />
       <Suspense>
-        <Navbar />
+        {/* قشرة الموبايل: شريط علوي + تبويبات سفلية بأسلوب التطبيق */}
+        <MobileTopBar />
+
+        {/* هيدر وفوتر الديسكتوب */}
+        <div className="hidden lg:block">
+          <Navbar />
+        </div>
+
         <ScrollToTop />
-        {children}
+
+        <main className="pb-[76px] lg:pb-0">{children}</main>
+
         <ShareSheetHost />
-        <WhatsAppButton />
-        <ScrollToTopButton />
-        <Footer />
+
+        <div className="hidden lg:block">
+          <WhatsAppButton />
+          <ScrollToTopButton />
+        </div>
+
+        <div className="hidden lg:block">
+          <Footer />
+        </div>
+
+        <MobileTabBar />
         <ToastContainer />
       </Suspense>
     </div>

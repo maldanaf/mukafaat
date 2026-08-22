@@ -491,7 +491,7 @@ const BookingsPage: React.FC = () => {
         {/* Header */}
         <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[140px] flex items-center justify-center">
           <div className="absolute inset-0 bg-primary opacity-30" />
-          <div className="relative pt-20 pb-16 px-6 mx-auto max-w-screen-xl text-center lg:pt-20 lg:pb-16 lg:px-12 flex flex-col justify-center z-10">
+          <div className="relative pt-20 pb-16 px-6 mx-auto max-w-site text-center lg:pt-20 lg:pb-16 lg:px-12 flex flex-col justify-center z-10">
             <h1 className="font-semibold mt-8 text-2xl mb-4 tracking-tight leading-none text-white">
               {isRTL ? "الحجوزات" : "Bookings"}
             </h1>
@@ -567,7 +567,7 @@ const BookingsPage: React.FC = () => {
 
         {/* Results Section */}
         <section className="pb-8 px-4">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-site mx-auto">
             {/* Section Title */}
             <div className="flex items-center gap-3 mb-6">
               {activeTab === "flight" && (
