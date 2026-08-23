@@ -151,30 +151,60 @@ const MobileHome: React.FC<Props> = ({ home }) => {
         </div>
       </section>
 
-      {/* بانرات */}
+      {/* بانرات — الصورة والنصوص من لوحة التحكم، ونوع السلايد يحدد التعتيم */}
       {sliders.length > 0 && (
         <section className="mt-6">
           <div className="no-scrollbar flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-1">
-            {sliders.map((slide) => (
-              <button
-                key={slide.id}
-                onClick={() => navigate("/offers")}
-                className="relative aspect-[16/9] w-[85vw] shrink-0 snap-start overflow-hidden rounded-3xl bg-[#2E1065] text-start"
-              >
-                <BrandImage
-                  src={slide.image}
-                  name={slide.title ?? ""}
-                  variant="name"
-                  className="h-full w-full"
-                  bg="#2E1065"
-                  color="#fff"
-                />
-                <span className="absolute inset-0 bg-[linear-gradient(to_top,rgba(20,8,50,0.85),rgba(20,8,50,0.05))]" />
-                <span className="absolute inset-x-4 bottom-4 text-[15px] font-bold text-white">
-                  {slide.title}
-                </span>
-              </button>
-            ))}
+            {sliders.map((slide) => {
+              const imageOnly = slide.display_type === "image";
+              const href =
+                slide.link_url ||
+                (slide.link_type === "category" && slide.link_id
+                  ? `/offers?category=${slide.link_id}`
+                  : slide.link_type === "none"
+                    ? null
+                    : "/offers");
+
+              return (
+                <button
+                  key={slide.id}
+                  onClick={() => {
+                    if (!href) return;
+                    if (/^https?:\/\//i.test(href)) {
+                      window.open(href, "_blank", "noopener,noreferrer");
+                      return;
+                    }
+                    navigate(href);
+                  }}
+                  className="relative aspect-[16/9] w-[85vw] shrink-0 snap-start overflow-hidden rounded-3xl bg-[#2E1065] text-start"
+                >
+                  <BrandImage
+                    src={slide.image}
+                    name={slide.title ?? ""}
+                    variant="name"
+                    className="h-full w-full"
+                    bg="#2E1065"
+                    color="#fff"
+                  />
+
+                  {!imageOnly && (
+                    <>
+                      <span className="absolute inset-0 bg-[linear-gradient(to_top,rgba(20,8,50,0.85),rgba(20,8,50,0.05))]" />
+                      <span className="absolute inset-x-4 bottom-4 flex flex-col gap-1">
+                        {slide.title && (
+                          <span className="text-[15px] font-bold text-white">{slide.title}</span>
+                        )}
+                        {slide.description && (
+                          <span className="line-clamp-2 text-[11.5px] text-[#E3DCF4]">
+                            {slide.description}
+                          </span>
+                        )}
+                      </span>
+                    </>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </section>
       )}

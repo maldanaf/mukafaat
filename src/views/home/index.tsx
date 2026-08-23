@@ -116,7 +116,7 @@ const HomePage = () => {
 
         {/* نسخة الديسكتوب (lg فأعلى) */}
         <div className="hidden lg:block">
-        <HeroSlider slides={sliders as any} appLink={sections?.app?.google_play} />
+        <HeroSlider slides={sliders as any} />
 
         <SearchBar cities={cities as any} pool={searchPool} />
 
