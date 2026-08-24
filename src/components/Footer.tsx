@@ -3,6 +3,8 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "@/lib/router-compat";
 import {
+  FaPhoneAlt,
+  FaEnvelope,
   FaFacebook,
   FaInstagram,
   FaLinkedin,
@@ -109,23 +111,31 @@ const Footer: React.FC = () => {
               )}
           </p>
 
-          <div className="text-[13px] leading-8">
+          <div className="flex flex-col gap-2 text-[13px]">
             {contact?.phone && (
               <a
                 href={`tel:${contact.phone}`}
-                dir="ltr"
-                className="block text-[#B9B6C2] [unicode-bidi:isolate] hover:text-white"
+                className="group flex items-center gap-2.5 text-[#B9B6C2] transition-colors hover:text-white"
               >
-                {contact.phone}
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-white transition-colors group-hover:bg-[#4C1D95]">
+                  <FaPhoneAlt size={12} />
+                </span>
+                <span dir="ltr" className="[unicode-bidi:isolate]">
+                  {contact.phone}
+                </span>
               </a>
             )}
             {contact?.email && (
               <a
                 href={`mailto:${contact.email}`}
-                dir="ltr"
-                className="block text-[#B9B6C2] [unicode-bidi:isolate] hover:text-white"
+                className="group flex items-center gap-2.5 text-[#B9B6C2] transition-colors hover:text-white"
               >
-                {contact.email}
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-white transition-colors group-hover:bg-[#4C1D95]">
+                  <FaEnvelope size={12} />
+                </span>
+                <span dir="ltr" className="[unicode-bidi:isolate]">
+                  {contact.email}
+                </span>
               </a>
             )}
           </div>
