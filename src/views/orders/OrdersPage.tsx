@@ -17,7 +17,15 @@ import {
 import CurrencyIcon from "@components/CurrencyIcon";
 import { useCancelOrder, useOrders } from "@hooks/api/useMokafaatQueries";
 import { normalizeOrdersList } from "@utils/orders";
-import { LoadingSpinner } from "@components/LoadingSpinner";
+import { EmptyState, ErrorState, SkeletonRows } from "@ui";
+import {
+  PanelHero,
+  Chip,
+  ChipBar,
+  ResultsCount,
+  Ribbon,
+  type RibbonTone,
+} from "@views/offers/components/CatalogKit";
 import { downloadVoucher } from "@utils/voucherDownload";
 import { toast } from "react-toastify";
 import { pickLocalized } from "@utils/pickLocalized";
@@ -82,20 +90,21 @@ const OrdersPage: React.FC = () => {
     }
   };
 
-  const getStatusColor = (status: string) => {
+  /** نغمة شارة الحالة — من نغمات الاتجاه البصري الجديد */
+  const getStatusTone = (status: string): RibbonTone => {
     switch (status) {
       case "pending":
-        return "bg-yellow-100 text-yellow-800";
+        return "ending";
       case "active":
-        return "bg-blue-100 text-blue-800";
+        return "vip";
       case "used":
-        return "bg-green-100 text-green-800";
+        return "new";
       case "expired":
-        return "bg-orange-100 text-orange-800";
+        return "muted";
       case "cancelled":
-        return "bg-red-100 text-red-800";
+        return "hot";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "info";
     }
   };
 
@@ -194,55 +203,45 @@ const OrdersPage: React.FC = () => {
 
   if (!token) {
     return (
-      <div className="min-h-screen bg-gray-50 pt-24 pb-28 flex items-center justify-center" style={{ marginTop: "77px" }}>
-        <div className="text-center bg-white rounded-xl p-8 shadow-sm max-w-md">
-          <IoReceiptOutline className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-gray-900 mb-2">
-            {t("orders.login_required")}
-          </h2>
-          <p className="text-gray-600 mb-6">{t("orders.sign_in_to_view")}</p>
-          <Link to="/login?returnUrl=/orders" className="bg-[#440798] text-white px-6 py-3 rounded-lg hover:bg-[#440798c9] transition-colors inline-block">
-            {t("orders.login_cta")}
-          </Link>
-        </div>
+      <div className="min-h-screen bg-mk-tint3 pt-24 pb-28 flex items-center justify-center px-4" style={{ marginTop: "77px" }}>
+        <EmptyState
+          className="max-w-md"
+          icon={<IoReceiptOutline />}
+          title={t("orders.login_required")}
+          description={t("orders.sign_in_to_view")}
+          actionLabel={t("orders.login_cta")}
+          actionTo="/login?returnUrl=/orders"
+        />
       </div>
     );
   }
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 pt-8 pb-28 flex justify-center items-center" style={{ marginTop: "77px" }}>
-        <LoadingSpinner />
+      <div className="min-h-screen bg-mk-tint3 pt-8 pb-28" style={{ marginTop: "77px" }}>
+        <div className="container mx-auto px-4">
+          <SkeletonRows count={5} />
+        </div>
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="min-h-screen bg-gray-50 pt-8 pb-28 flex items-center justify-center" style={{ marginTop: "77px" }}>
-        <div className="text-center bg-white rounded-xl p-8 shadow-sm max-w-md">
-          <IoCloseCircleOutline className="w-16 h-16 text-red-400 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-gray-900 mb-2">
-            {t("orders.error_title")}
-          </h2>
-          <p className="text-gray-600 mb-6">
-            {String(error?.message || t("orders.load_failed"))}
-          </p>
-          <button
-            type="button"
-            onClick={() => window.location.reload()}
-            className="bg-[#440798] text-white px-6 py-3 rounded-lg hover:bg-[#440798c9] transition-colors"
-          >
-            {t("orders.retry")}
-          </button>
-        </div>
+      <div className="min-h-screen bg-mk-tint3 pt-8 pb-28 flex items-center justify-center px-4" style={{ marginTop: "77px" }}>
+        <ErrorState
+          className="max-w-md"
+          title={t("orders.error_title")}
+          description={String(error?.message || t("orders.load_failed"))}
+          onRetry={() => window.location.reload()}
+        />
       </div>
     );
   }
 
   return (
     <div
-      className="min-h-screen bg-gray-50 pt-8 pb-28"
+      className="min-h-screen bg-mk-tint3 pt-8 pb-28"
       style={{ marginTop: "77px" }}
     >
       <div className="container mx-auto px-4 sm:px-4 lg:px-4">
@@ -255,14 +254,14 @@ const OrdersPage: React.FC = () => {
             aria-labelledby="cancel-order-title"
           >
             <div
-              className="relative bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden"
+              className="relative bg-white rounded-mk-xl shadow-xl max-w-md w-full overflow-hidden"
               onClick={(e) => e.stopPropagation()}
               dir={isRTL ? "rtl" : "ltr"}
             >
               <button
                 type="button"
                 onClick={closeCancelModal}
-                className="absolute top-4 end-4 p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors z-10"
+                className="absolute top-4 end-4 p-2 text-mk-muted hover:text-mk-text-strong hover:bg-mk-tint2 rounded-full transition-colors z-10"
                 aria-label={t("orders.close")}
                 disabled={cancelOrderMutation.isPending}
               >
@@ -270,16 +269,16 @@ const OrdersPage: React.FC = () => {
               </button>
 
               <div className="p-6 text-center">
-                <div className="mx-auto w-14 h-14 rounded-xl bg-red-50 flex items-center justify-center text-red-600 mb-4">
+                <div className="mx-auto w-14 h-14 rounded-mk-md bg-red-50 flex items-center justify-center text-red-600 mb-4">
                   <IoTrashOutline className="w-7 h-7" />
                 </div>
                 <h2
                   id="cancel-order-title"
-                  className="text-xl font-bold text-gray-900 mb-2"
+                  className="text-xl font-bold text-mk-text mb-2"
                 >
                   {t("orders.cancel_modal_title")}
                 </h2>
-                <p className="text-gray-600 text-sm leading-relaxed mb-6">
+                <p className="text-mk-muted text-sm leading-relaxed mb-6">
                   {t("orders.cancel_modal_body")}
                 </p>
 
@@ -288,7 +287,7 @@ const OrdersPage: React.FC = () => {
                     type="button"
                     onClick={closeCancelModal}
                     disabled={cancelOrderMutation.isPending}
-                    className="order-2 sm:order-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-full font-bold hover:bg-gray-50 transition-colors disabled:opacity-60"
+                    className="order-2 sm:order-1 px-6 py-3 border border-mk-border-2 text-mk-text-strong rounded-full font-bold hover:bg-mk-tint3 transition-colors disabled:opacity-60"
                   >
                     {t("orders.back")}
                   </button>
@@ -307,32 +306,21 @@ const OrdersPage: React.FC = () => {
             </div>
           </div>
         )}
-        {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                {t("orders.title")}
-              </h1>
-              <p className="text-gray-600 mt-1">
-                {t("orders.subtitle", { count: orders.length })}
-              </p>
-            </div>
-            {/* <div className="flex items-center space-x-2 space-x-reverse">
-              <IoReceiptOutline className="w-8 h-8 text-[#440798]" />
-              <button
-                onClick={resetStore}
-                className="px-3 py-1 bg-red-500 text-white text-xs rounded-md hover:bg-red-600 transition-colors"
-                title="إعادة تعيين البيانات لعرض الطلبات الجديدة"
-              >
-                إعادة تعيين
-              </button>
-            </div> */}
-          </div>
-        </div>
-
-        {/* Filters */}
-        <div className="flex flex-wrap justify-start mb-8 gap-3 relative z-10">
+        {/* ترويسة الصفحة — تدرّج بنفسجي + وصف + مسار تنقّل */}
+        <PanelHero
+          className="mb-6"
+          eyebrow={t("orders.eyebrow", "مشترياتك")}
+          title={t("orders.title")}
+          subtitle={t("orders.subtitle", { count: orders.length })}
+          crumbs={[
+            { label: t("home.navbar.home", "الرئيسية"), to: "/" },
+            { label: t("orders.title") },
+          ]}
+          icon={<IoReceiptOutline className="h-6 w-6" />}
+        />
+        {/* شريط الفلاتر — شرائح قابلة للتمرير + عدّاد النتائج */}
+        <div className="mb-8 flex flex-col gap-3 rounded-mk-lg border border-mk-border bg-white p-3.5 shadow-mk-card">
+          <ChipBar label={t("ui.filters", "الفلاتر")}>
           {[
             {
               key: "all",
@@ -370,8 +358,10 @@ const OrdersPage: React.FC = () => {
                 .length,
             },
           ].map((filterOption) => (
-            <button
+            <Chip
               key={filterOption.key}
+              active={filter === filterOption.key}
+              count={filterOption.count}
               onClick={() =>
                 setFilter(
                   filterOption.key as
@@ -383,63 +373,63 @@ const OrdersPage: React.FC = () => {
                     | "cancelled"
                 )
               }
-              className={`px-5 py-3 rounded-full font-medium text-sm shadow-md transition-all duration-300 whitespace-nowrap ${
-                filter === filterOption.key
-                  ? "bg-[#400198] text-white shadow-lg"
-                  : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
-              }`}
             >
-              {filterOption.label} ({filterOption.count})
-            </button>
+              {filterOption.label}
+            </Chip>
           ))}
+          </ChipBar>
+          <ResultsCount
+            count={filteredOrders.length}
+            label={t("orders.results_suffix", "طلب")}
+          />
         </div>
 
         {/* Orders Table */}
         {currentOrders.length > 0 ? (
           <>
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+            <div className="overflow-hidden rounded-mk-lg border border-mk-border bg-white shadow-mk-card">
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                <table className="min-w-full divide-y divide-mk-border">
+                  <thead className="bg-[linear-gradient(135deg,#F2EFFA,#EFEAF8)]">
                     <tr>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3.5 text-start text-[11.5px] font-extrabold uppercase tracking-wider text-mk-primary">
                         {t("orders.table.order_number")}
                       </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3.5 text-start text-[11.5px] font-extrabold uppercase tracking-wider text-mk-primary">
                         {t("orders.table.date")}
                       </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3.5 text-start text-[11.5px] font-extrabold uppercase tracking-wider text-mk-primary">
                         {t("orders.table.offer")}
                       </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3.5 text-start text-[11.5px] font-extrabold uppercase tracking-wider text-mk-primary">
                         {t("orders.table.status")}
                       </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3.5 text-start text-[11.5px] font-extrabold uppercase tracking-wider text-mk-primary">
                         {t("orders.table.total")}
                       </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3.5 text-start text-[11.5px] font-extrabold uppercase tracking-wider text-mk-primary">
                         {t("orders.table.payment_method")}
                       </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3.5 text-start text-[11.5px] font-extrabold uppercase tracking-wider text-mk-primary">
                         {t("orders.table.actions")}
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="bg-white divide-y divide-mk-border">
                     {currentOrders.map((order) => (
-                      <tr key={order.id} className="hover:bg-gray-50">
+                      <tr key={order.id} className="hover:bg-mk-tint3">
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">
+                          <div className="text-sm font-medium text-mk-text">
                             #{String(order.id).slice(-8)}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">
+                          <div className="text-sm text-mk-text">
                             {new Date(order.createdAt).toLocaleDateString(
                               dateLocale,
                             )}
                           </div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-mk-muted">
                             {new Date(order.createdAt).toLocaleTimeString(
                               dateLocale,
                               {
@@ -462,15 +452,15 @@ const OrdersPage: React.FC = () => {
                                       )
                                     : ""
                                 }
-                                className="w-10 h-10 rounded-lg object-cover"
+                                className="w-10 h-10 rounded-mk-sm object-cover"
                               />
                             ) : (
-                              <div className="w-10 h-10 rounded-lg bg-gray-200 flex items-center justify-center text-gray-500 text-xs">
+                              <div className="w-10 h-10 rounded-mk-sm bg-mk-border-strong/50 flex items-center justify-center text-mk-muted text-xs">
                                 #
                               </div>
                             )}
                             <div>
-                              <div className="text-sm font-medium text-gray-900">
+                              <div className="text-sm font-medium text-mk-text">
                                 {order.items[0]?.title
                                   ? pickLocalized(
                                       order.items[0].title,
@@ -478,7 +468,7 @@ const OrdersPage: React.FC = () => {
                                     )
                                   : "—"}
                               </div>
-                              <div className="text-sm text-gray-500">
+                              <div className="text-sm text-mk-muted">
                                 {order.items.length > 1 &&
                                   t("orders.more_offers", {
                                     count: order.items.length - 1,
@@ -490,26 +480,22 @@ const OrdersPage: React.FC = () => {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center space-x-2 space-x-reverse">
                             {getStatusIcon(order.status)}
-                            <span
-                              className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                                order.status
-                              )}`}
-                            >
+                            <Ribbon tone={getStatusTone(order.status)}>
                               {getStatusLabel(order.status)}
-                            </span>
+                            </Ribbon>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-bold text-[#440798] flex items-center gap-1">
+                          <div className="text-sm font-bold text-[#400198] flex items-center gap-1">
                             {order.totalAmount}
                             <CurrencyIcon
                               size={14}
-                              className="text-[#440798]"
+                              className="text-[#400198]"
                             />
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">
+                          <div className="text-sm text-mk-text">
                             {order.paymentMethod}
                           </div>
                         </td>
@@ -517,7 +503,7 @@ const OrdersPage: React.FC = () => {
                           <div className="flex space-x-2 space-x-reverse">
                             <Link
                               to={`/orders/${order.id}`}
-                              className="text-[#440798] hover:text-[#440798c9] transition-colors inline-flex items-center gap-1"
+                              className="text-[#400198] hover:text-mk-deep transition-colors inline-flex items-center gap-1"
                             >
                               <IoEyeOutline className="w-4 h-4" />
                               {t("orders.view")}
@@ -540,7 +526,7 @@ const OrdersPage: React.FC = () => {
                                 href={order.invoiceUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-[#400198] hover:text-[#400198c9] transition-colors inline-flex items-center gap-1"
+                                className="text-[#400198] hover:text-mk-deep transition-colors inline-flex items-center gap-1"
                                 title={isRTL ? "تحميل الفاتورة" : "Download invoice"}
                               >
                                 <IoDownloadOutline className="w-4 h-4" />
@@ -573,7 +559,7 @@ const OrdersPage: React.FC = () => {
                 <button
                   onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}
-                  className="px-3 py-2 rounded-md text-sm font-medium bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="min-h-[44px] rounded-full border border-mk-border-2 bg-white px-4 text-[13px] font-bold text-mk-text-strong transition-colors hover:bg-mk-tint3 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {t("pagination.previous")}
                 </button>
@@ -583,10 +569,10 @@ const OrdersPage: React.FC = () => {
                     <button
                       key={page}
                       onClick={() => setCurrentPage(page)}
-                      className={`px-3 py-2 rounded-md text-sm font-medium ${
+                      className={`min-h-[44px] min-w-[44px] rounded-full text-[13px] font-bold transition-colors ${
                         currentPage === page
-                          ? "bg-[#400198] text-white"
-                          : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                          ? "bg-[linear-gradient(135deg,#400198,#6703EB)] text-white shadow-[0_8px_20px_-8px_rgba(64,1,152,0.9)]"
+                          : "border border-mk-border-2 bg-white text-mk-text-strong hover:bg-mk-tint3"
                       }`}
                     >
                       {page}
@@ -599,7 +585,7 @@ const OrdersPage: React.FC = () => {
                     setCurrentPage(Math.min(totalPages, currentPage + 1))
                   }
                   disabled={currentPage === totalPages}
-                  className="px-3 py-2 rounded-md text-sm font-medium bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="min-h-[44px] rounded-full border border-mk-border-2 bg-white px-4 text-[13px] font-bold text-mk-text-strong transition-colors hover:bg-mk-tint3 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {t("pagination.next")}
                 </button>
@@ -607,25 +593,19 @@ const OrdersPage: React.FC = () => {
             )}
           </>
         ) : (
-          <div className="bg-white rounded-lg shadow-sm p-12 text-center">
-            <IoReceiptOutline className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              {filter === "all"
+          <EmptyState
+            icon={<IoReceiptOutline />}
+            title={
+              filter === "all"
                 ? t("orders.empty.title")
                 : t("orders.empty.title_filtered", {
                     status: getStatusLabel(filter),
-                  })}
-            </h3>
-            <p className="text-gray-600 mb-6">
-              {t("orders.empty.description")}
-            </p>
-            <Link
-              to="/offers"
-              className="bg-[#440798] text-white px-6 py-2 rounded-md hover:bg-[#440798c9] transition-colors inline-block"
-            >
-              {t("orders.empty.browse_offers")}
-            </Link>
-          </div>
+                  })
+            }
+            description={t("orders.empty.description")}
+            actionLabel={t("orders.empty.browse_offers")}
+            actionTo="/offers"
+          />
         )}
       </div>
     </div>

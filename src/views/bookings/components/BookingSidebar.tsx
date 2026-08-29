@@ -213,7 +213,7 @@ const BookingSidebar: React.FC<BookingSidebarProps> = ({
                 }}
                 className={`px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
                   (localFilters.airlines || []).includes(airline)
-                    ? "bg-purple-100 text-purple-700 border border-purple-200"
+                    ? "bg-mk-tint text-mk-primary border border-mk-border-strong"
                     : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
                 }`}
               >
@@ -261,7 +261,7 @@ const BookingSidebar: React.FC<BookingSidebarProps> = ({
               onClick={() => handleFilterChange("duration", option.value)}
               className={`w-full px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 localFilters.duration === option.value
-                  ? "bg-purple-100 text-purple-700 border border-purple-200"
+                  ? "bg-mk-tint text-mk-primary border border-mk-border-strong"
                   : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
               }`}
             >
@@ -365,7 +365,7 @@ const BookingSidebar: React.FC<BookingSidebarProps> = ({
               }}
               className={`px-3 py-2 rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 ${
                 (localFilters.starRatings || []).includes(stars)
-                  ? "bg-purple-100 text-purple-700 border border-purple-200"
+                  ? "bg-mk-tint text-mk-primary border border-mk-border-strong"
                   : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
               }`}
             >
@@ -422,7 +422,7 @@ const BookingSidebar: React.FC<BookingSidebarProps> = ({
               }}
               className={`px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
                 (localFilters.amenities || []).includes(amenity.en)
-                  ? "bg-purple-100 text-purple-700 border border-purple-200"
+                  ? "bg-mk-tint text-mk-primary border border-mk-border-strong"
                   : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
               }`}
             >
@@ -532,7 +532,7 @@ const BookingSidebar: React.FC<BookingSidebarProps> = ({
               }}
               className={`px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
                 (localFilters.carTypes || []).includes(carType.en)
-                  ? "bg-purple-100 text-purple-700 border border-purple-200"
+                  ? "bg-mk-tint text-mk-primary border border-mk-border-strong"
                   : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
               }`}
             >
@@ -574,7 +574,7 @@ const BookingSidebar: React.FC<BookingSidebarProps> = ({
               }
               className={`w-full px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 localFilters.transmission === transmission.en
-                  ? "bg-purple-100 text-purple-700 border border-purple-200"
+                  ? "bg-mk-tint text-mk-primary border border-mk-border-strong"
                   : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
               }`}
             >
@@ -641,7 +641,7 @@ const BookingSidebar: React.FC<BookingSidebarProps> = ({
             </button>
             <button
               onClick={handleApplyFilters}
-              className="flex-1 px-4 py-2 bg-[#fd671a] text-white rounded-lg font-medium hover:bg-[#e55a17] transition-colors"
+              className="flex-1 px-4 py-2 bg-[#fd671a] text-white rounded-lg font-medium hover:bg-[#D9500B] transition-colors"
             >
               {isRTL ? "بحث" : "Search"}
             </button>

@@ -63,7 +63,7 @@ const HotelFilters: React.FC<HotelFiltersProps> = ({
               placeholder={isRTL ? "المدينة أو المنطقة" : "City or Area"}
               value={(filters.destination as string) || ""}
               onChange={(e) => handleInputChange("destination", e.target.value)}
-              className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
+              className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-mk-primary-light focus:border-transparent text-sm"
             />
           </div>
         </div>
@@ -330,7 +330,7 @@ const HotelFilters: React.FC<HotelFiltersProps> = ({
             onSearch(filters);
           }}
           disabled={isSearching}
-          className="w-full bg-[#fd671a] hover:bg-[#e55a17] disabled:bg-gray-400 text-white px-4 py-2 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors text-sm"
+          className="w-full bg-[#fd671a] hover:bg-[#D9500B] disabled:bg-gray-400 text-white px-4 py-2 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors text-sm"
         >
           <FiSearch className="text-sm" />
           {isSearching

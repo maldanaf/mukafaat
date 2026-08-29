@@ -2,8 +2,9 @@
 
 import React, { useMemo } from "react";
 import { Link } from "@/lib/router-compat";
-import { FiStar, FiEye, FiShoppingBag } from "react-icons/fi";
-import { BsHeart, BsHeartFill } from "react-icons/bs";
+import { FiStar, FiShoppingBag } from "react-icons/fi";
+import OfferStats from "@components/OfferStats";
+import { HeartIcon } from "@ui";
 import { useIsRTL } from "@hooks";
 import { useTranslation } from "react-i18next";
 import { type Offer, getOfferImage, offerCategories } from "@data/offers";
@@ -16,6 +17,17 @@ import { toast } from "react-toastify";
 import { stripHtml } from "@utils/stripHtml";
 import { pickLocalized } from "@utils/pickLocalized";
 import { useNavigate } from "@/lib/router-compat";
+import { PriceTag, SmartImage, FOCUS } from "@ui";
+import {
+  VIVID_CARD,
+  VIVID_MEDIA,
+  VIVID_SCRIM,
+  DiscountBadge,
+  Ribbon,
+  CornerButton,
+  daysLeft,
+  discountPercentOf,
+} from "./CatalogKit";
 
 interface Props {
   offer: Offer;
@@ -77,109 +89,142 @@ const OfferCardHorizontal: React.FC<Props> = ({ offer }) => {
   const priceAfter = Number(offer.priceAfter ?? offer.discountPrice ?? 0);
   const priceBefore = Number(offer.priceBefore ?? offer.originalPrice ?? 0);
 
+  const discountPercent = discountPercentOf(
+    offer.discountPercentage,
+    priceBefore,
+    priceAfter,
+  );
+  const endsIn = daysLeft(offer.availableUntil);
+  const endingSoon = endsIn !== null && endsIn >= 0 && endsIn <= 3;
+
   return (
     <Link
       to={offerDetailPath}
-      className="block bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg no-underline text-inherit"
+      className={`${VIVID_CARD} !flex-row items-stretch text-inherit no-underline ${FOCUS}`}
       style={{ direction: isRTL ? "rtl" : "ltr" }}
     >
-      <div className={`flex ${isRTL ? "flex-row" : "flex-row"}`} style={{ minHeight: "180px" }}>
-        {/* الصورة */}
-        <div className="relative w-[220px] min-w-[220px] overflow-hidden">
-          <img
+      {/* الصورة — نسبة محفوظة بلا قفزات تخطيط */}
+      <div
+        className={`${VIVID_MEDIA} w-[220px] min-w-[220px] shrink-0 self-stretch border-b-0 border-e border-mk-border`}
+      >
+        <div className="absolute inset-0 [&>*]:h-full [&>*]:w-full">
+          <SmartImage
             src={getOfferImage(offer.image)}
             alt={pickLocalized(offer.title, langBase)}
-            className="w-full h-full object-cover"
+            name={pickLocalized(offer.title, langBase)}
+            variant="name"
           />
-          {/* باجات */}
-          <div className="absolute top-2 start-2 flex flex-col gap-1.5">
-            {offer.discountPercentage > 0 && (
-              <span className="bg-red-500 text-white px-2 py-0.5 rounded text-xs font-medium">
-                {offer.discountPercentage}% {t("offerCard.discountOff")}
-              </span>
-            )}
-            {offer.requiresSubscription && (
-              <span className="bg-[#400198] text-white px-2 py-0.5 rounded text-xs font-medium">
-                {langBase === "ar" ? "للمشتركين" : "Subscribers"}
-              </span>
-            )}
-          </div>
-          {/* زر المفضلة */}
-          <button
-            type="button"
-            onClick={handleFavoriteClick}
-            className="absolute top-2 end-2 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center hover:bg-white transition-all"
-            disabled={toggleFavorite.isPending}
-          >
-            {isFavorite ? <BsHeartFill className="text-sm text-red-500" /> : <BsHeart className="text-sm text-gray-600" />}
-          </button>
+        </div>
+        <span aria-hidden className={VIVID_SCRIM} />
+
+        <DiscountBadge percent={discountPercent} size="md" floating />
+
+        <div className="absolute bottom-2 start-2 z-[2] flex max-w-[90%] flex-wrap gap-1.5">
+          {offer.isNew && <Ribbon tone="new">{t("offerCard.new")}</Ribbon>}
+          {(offer.isBestSeller || offer.isPopular) && (
+            <Ribbon tone="hot">{t("offerCard.bestSeller")}</Ribbon>
+          )}
+          {endingSoon && (
+            <Ribbon tone="ending">
+              {endsIn === 0
+                ? t("offerCard.endsToday", "ينتهي اليوم")
+                : t("offerCard.endsInDays", { days: endsIn as number })}
+            </Ribbon>
+          )}
+          {offer.requiresSubscription && (
+            <Ribbon tone="vip">{t("offerCard.subscribersOnly", "حصري للمشتركين")}</Ribbon>
+          )}
         </div>
 
-        {/* المحتوى */}
-        <div className="flex-1 p-4 flex flex-col justify-between">
-          <div>
-            {/* التصنيف والتاجر */}
-            <div className="flex items-center gap-2 mb-2 text-xs text-gray-500">
-              {displayMerchantName && (
-                <span className="flex items-center gap-1">
-                  {storeImageUrl ? (
-                    <img src={storeImageUrl} alt="" className="w-4 h-4 rounded-full object-cover" />
-                  ) : (
-                    <FiShoppingBag className="w-3 h-3" />
-                  )}
-                  {displayMerchantName}
+        <CornerButton
+          className="absolute end-2 top-2 z-[2] hover:text-mk-red"
+          label={t("offerCard.favorites", "المفضلة")}
+          pressed={isFavorite}
+          disabled={toggleFavorite.isPending}
+          onClick={handleFavoriteClick}
+        >
+          <HeartIcon size={15} filled={isFavorite} className={isFavorite ? "text-mk-red" : ""} />
+        </CornerButton>
+      </div>
+
+      {/* المحتوى */}
+      <div className="flex min-h-[200px] min-w-0 flex-1 flex-col justify-between gap-3 p-4">
+        <div className="min-w-0">
+          {/* التصنيف والتاجر */}
+          <div className="mb-2 flex flex-wrap items-center gap-2 text-[11.5px] text-mk-muted">
+            {displayMerchantName && (
+              <span className="flex items-center gap-1.5 font-semibold text-mk-text-strong">
+                {storeImageUrl ? (
+                  <img
+                    src={storeImageUrl}
+                    alt=""
+                    className="h-5 w-5 rounded-full object-cover ring-1 ring-mk-border"
+                  />
+                ) : (
+                  <FiShoppingBag className="h-3.5 w-3.5" />
+                )}
+                {displayMerchantName}
+              </span>
+            )}
+            {displayCategoryName && displayMerchantName && (
+              <span aria-hidden className="text-mk-faint">
+                •
+              </span>
+            )}
+            {displayCategoryName && <span>{displayCategoryName}</span>}
+          </div>
+
+          <h3 className="mk-clamp-1 m-0 mb-1.5 text-[16px] font-extrabold text-mk-text">
+            {pickLocalized(offer.title, langBase)}
+          </h3>
+
+          <p className="mk-clamp-2 m-0 mb-3 text-[13px] leading-relaxed text-mk-muted">
+            {stripHtml(pickLocalized(offer.description, langBase))}
+          </p>
+
+          {offer.features.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {offer.features.slice(0, 4).map((f, i) => (
+                <span
+                  key={i}
+                  className="rounded-full bg-mk-tint2 px-2 py-1 text-[11px] text-mk-text-strong"
+                >
+                  {f}
                 </span>
-              )}
-              {displayCategoryName && displayMerchantName && <span className="text-gray-300">•</span>}
-              {displayCategoryName && <span>{displayCategoryName}</span>}
+              ))}
             </div>
+          )}
+        </div>
 
-            {/* العنوان */}
-            <h3 className="text-base font-bold text-gray-900 mb-1.5 line-clamp-1">
-              {pickLocalized(offer.title, langBase)}
-            </h3>
-
-            {/* الوصف */}
-            <p className="text-sm text-gray-500 mb-3 line-clamp-2">
-              {stripHtml(pickLocalized(offer.description, langBase))}
-            </p>
-
-            {/* المميزات */}
-            {offer.features.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mb-3">
-                {offer.features.slice(0, 4).map((f, i) => (
-                  <span key={i} className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
-                    {f}
-                  </span>
-                ))}
-              </div>
+        {/* السعر والإحصائيات */}
+        <div className="flex flex-wrap items-end justify-between gap-3 border-t border-mk-divider pt-3">
+          <div className="flex flex-col gap-1">
+            <PriceTag price={priceAfter} priceBefore={priceBefore} size="lg" stacked />
+            {priceBefore > priceAfter && (
+              <span className="inline-flex w-fit items-center gap-0.5 rounded bg-[#E4F6EF] px-1.5 py-0.5 text-[11px] font-semibold text-mk-green">
+                {t("offerCard.save", langBase === "ar" ? "توفير" : "Save")}{" "}
+                {priceBefore - priceAfter}
+                <CurrencyIcon className="text-mk-green" size={10} />
+              </span>
             )}
           </div>
 
-          {/* السعر والإحصائيات */}
-          <div className="flex items-center justify-between">
-            <div className="flex flex-col">
-              {priceBefore > 0 && priceBefore > priceAfter && (
-                <span className="text-xs text-gray-400 line-through flex items-center gap-0.5">
-                  {langBase === "ar" ? "قبل" : "Before"}: {priceBefore} <CurrencyIcon className="text-gray-400" size={10} />
-                </span>
-              )}
-              <div className="flex items-center gap-2">
-                <span className="text-base font-bold text-[#400198] flex items-center gap-0.5">
-                  {priceAfter} <CurrencyIcon className="text-[#400198]" size={14} />
-                </span>
-                {priceBefore > priceAfter && (
-                  <span className="text-xs text-green-700 bg-green-50 px-1.5 py-0.5 rounded flex items-center gap-0.5">
-                    {langBase === "ar" ? "خصم" : "Save"} {priceBefore - priceAfter} <CurrencyIcon className="text-green-700" size={10} />
-                  </span>
-                )}
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 text-xs text-gray-400">
-              <span className="flex items-center gap-0.5"><FiStar className="w-3.5 h-3.5" /> {offer.rating}</span>
-              <span className="flex items-center gap-0.5"><FiEye className="w-3.5 h-3.5" /> {offer.views}</span>
-            </div>
+          <div className="flex items-center gap-3 text-[11.5px] text-mk-faint">
+            {Number(offer.rating) > 0 && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#FDF4DE] px-2 py-1 font-bold text-[#8A6209]">
+                <FiStar className="h-3.5 w-3.5" aria-hidden /> {offer.rating}
+              </span>
+            )}
+            {/* مشاهدات / مفضلة / مشاركات */}
+            <OfferStats
+              views={offer.views}
+              favorites={offer.favoritesCount}
+              shares={offer.sharesCount}
+              className="text-mk-faint"
+              iconSize="w-3.5 h-3.5"
+              textSize="text-xs"
+              gap="gap-3"
+            />
           </div>
         </div>
       </div>

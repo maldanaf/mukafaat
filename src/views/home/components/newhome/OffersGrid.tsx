@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "@/lib/router-compat";
 import { LuChevronRight, LuChevronLeft } from "react-icons/lu";
 import { t } from "i18next";
-import { CONTAINER, pick } from "./tokens";
+import { CONTAINER } from "./tokens";
 import SectionHead from "./SectionHead";
-import BrandImage from "./BrandImage";
-import { buildOfferUrl } from "@utils/offerUrl";
+import Reveal from "./Reveal";
+import { EmptyState, OfferTile, FOCUS, type OfferTileData } from "@ui";
 import type { CategoryItem } from "./CategoriesBand";
 
 interface Offer {
@@ -21,9 +20,17 @@ interface Offer {
   end_date?: string | null;
   category?: { id: number; name: string } | null;
   merchant?: { id: number; name: string; logo?: string | null } | null;
+  /** إحصائيات العرض — تُعرض عند توفرها في مخرجات الـ API */
+  views_count?: number | null;
+  favorites_count?: number | null;
+  shares_count?: number | null;
 }
 
 interface Props {
+  /** عنوان القسم من لوحة التحكم «بناء واجهة الموقع» (فارغ = العنوان الافتراضي) */
+  title?: string;
+  /** إظهار رابط «عرض الكل» — يتحكم فيه الأدمن */
+  showViewAll?: boolean;
   offers: Offer[];
   categories: CategoryItem[];
   activeCategory: number | string | null;
@@ -32,31 +39,21 @@ interface Props {
 
 const PER_PAGE = 5;
 
-const percentOf = (offer: Offer): number => {
-  const raw = Number(offer.discount_percent ?? 0);
-  if (raw > 0) return Math.round(raw);
-  const before = Number(offer.price_before ?? 0);
-  const after = Number(offer.price_after ?? 0);
-  if (before > 0 && after > 0 && after < before) {
-    return Math.round(((before - after) / before) * 100);
-  }
-  return 0;
-};
-
-const expiryLabel = (endDate?: string | null): string => {
-  if (!endDate) return "";
-  const days = Math.ceil((new Date(endDate).getTime() - Date.now()) / 86400000);
-  if (Number.isNaN(days)) return "";
-  if (days < 0) return t("home.offers_new.ended", "انتهى");
-  if (days === 0) return t("home.offers_new.today", "ينتهي اليوم");
-  return `${t("home.offers_new.ends_in", "ينتهي بعد")} ${days} ${t("home.offers_new.days", "يوم")}`;
-};
-
 /** أحدث وأقوى العروض — تبويبات التصنيف + شبكة بطاقات */
-const OffersGrid: React.FC<Props> = ({ offers, categories, activeCategory, onSelect }) => {
+const OffersGrid: React.FC<Props> = ({
+  offers,
+  categories,
+  activeCategory,
+  onSelect,
+  title,
+  showViewAll = true,
+}) => {
   const [page, setPage] = useState(0);
 
-  const tabs = [{ id: null, name: t("home.categories_new.all", "الكل") }, ...categories.slice(0, 5).map((c) => ({ id: c.id, name: c.name }))];
+  const tabs = [
+    { id: null, name: t("home.categories_new.all", "الكل") },
+    ...categories.slice(0, 5).map((c) => ({ id: c.id, name: c.name })),
+  ];
 
   /** كل عروض التصنيف الحالي مقسّمة إلى بلوكات من ٥ */
   const pages = useMemo(() => {
@@ -77,27 +74,35 @@ const OffersGrid: React.FC<Props> = ({ offers, categories, activeCategory, onSel
   const current = Math.min(page, Math.max(pages.length - 1, 0));
   const filtered = pages[current] ?? [];
 
+  const ARROW = `flex h-11 w-11 items-center justify-center rounded-full border border-[#ECE9F5] bg-white text-[#400198] shadow-[0_4px_14px_rgba(46,16,101,0.08)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#C9BCEC] hover:bg-[#F2EFFA] ${FOCUS}`;
+
   return (
-    <section className={`${CONTAINER} pt-11`}>
+    <section className={`${CONTAINER} pt-12 sm:pt-14`} id="offers">
       <SectionHead
         eyebrow={t("home.offers_new.eyebrow", "مختارة لك")}
-        title={t("home.offers_new.title", "أحدث وأقوى العروض")}
-        linkLabel={t("home.offers_new.all_link", "عرض جميع العروض")}
-        linkTo="/offers"
+        title={title || t("home.offers_new.title", "أحدث وأقوى العروض")}
+        subtitle={t(
+          "home.offers_new.subtitle",
+          "أقوى الخصومات المتاحة الآن لدى شركائنا — محدّثة يومياً.",
+        )}
+        linkLabel={showViewAll ? t("home.offers_new.all_link", "عرض جميع العروض") : undefined}
+        linkTo={showViewAll ? "/offers" : undefined}
+        className="!mb-6"
       />
 
-      <div className="mb-[18px] flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap gap-2">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <div className="mk-scroll-x -mx-1 flex-1 gap-2 px-1 py-1">
           {tabs.map((tab) => {
             const active = activeCategory === tab.id;
             return (
               <button
                 key={String(tab.id ?? "all")}
                 onClick={() => onSelect(tab.id as number | string | null)}
-                className={`h-[38px] rounded-full border px-[18px] text-[13px] font-semibold transition-colors ${
+                aria-pressed={active}
+                className={`h-11 rounded-full border px-5 text-[13.5px] font-extrabold transition-all duration-200 ease-out ${FOCUS} ${
                   active
-                    ? "border-[#4C1D95] bg-[#4C1D95] text-white"
-                    : "border-[#E9E4F5] bg-white text-[#4A4459] hover:border-[#C9BCEC]"
+                    ? "border-transparent bg-grad-brand text-white shadow-mk-glow"
+                    : "border-[#ECE9F5] bg-white text-[#4A4A63] hover:-translate-y-0.5 hover:border-[#C9BCEC] hover:text-[#400198] hover:shadow-[0_10px_22px_-14px_rgba(46,16,101,0.6)]"
                 }`}
               >
                 {tab.name}
@@ -107,76 +112,46 @@ const OffersGrid: React.FC<Props> = ({ offers, categories, activeCategory, onSel
         </div>
 
         {pages.length > 1 && (
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             <button
               onClick={() => setPage((p) => (p + pages.length - 1) % pages.length)}
-              aria-label="prev-offers"
-              className="flex h-[38px] w-[38px] items-center justify-center rounded-full border border-[#E9E4F5] bg-white text-[#4C1D95] transition-all hover:border-[#C9BCEC] hover:bg-[#F6F3FC]"
+              aria-label={t("home.common.prev", "السابق")}
+              className={ARROW}
             >
-              <LuChevronRight size={18} />
+              <LuChevronLeft size={18} className="rtl:-scale-x-100" aria-hidden />
             </button>
-            <span className="min-w-[42px] text-center text-[12.5px] font-semibold text-[#8B84A0]" dir="ltr">
+            <span
+              className="min-w-[46px] text-center text-[12.5px] font-bold text-[#9A99B0]"
+              dir="ltr"
+            >
               {current + 1} / {pages.length}
             </span>
             <button
               onClick={() => setPage((p) => (p + 1) % pages.length)}
-              aria-label="next-offers"
-              className="flex h-[38px] w-[38px] items-center justify-center rounded-full border border-[#E9E4F5] bg-white text-[#4C1D95] transition-all hover:border-[#C9BCEC] hover:bg-[#F6F3FC]"
+              aria-label={t("home.common.next", "التالي")}
+              className={ARROW}
             >
-              <LuChevronLeft size={18} />
+              <LuChevronRight size={18} className="rtl:-scale-x-100" aria-hidden />
             </button>
           </div>
         )}
       </div>
 
       {filtered.length === 0 ? (
-        <p className="rounded-[18px] border border-[#EDE9F7] bg-white p-8 text-center text-[14px] text-[#6B6480]">
-          {t("home.offers_new.empty", "لا توجد عروض في هذا التصنيف حالياً.")}
-        </p>
+        <EmptyState
+          title={t("ui.empty.offers", "لا توجد عروض مطابقة حالياً.")}
+          description=""
+          actionLabel={t("home.offers_new.all_link", "عرض جميع العروض")}
+          actionTo="/offers"
+          compact
+        />
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-          {filtered.map((offer, i) => {
-            const color = pick(i + 1);
-            const percent = percentOf(offer);
-            return (
-              <Link
-                key={offer.id}
-                to={buildOfferUrl(offer)}
-                className="overflow-hidden rounded-[18px] border border-[#EDE9F7] bg-white transition-shadow hover:shadow-[0_12px_30px_rgba(46,16,101,0.10)]"
-              >
-                <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-[#EDE9F7] bg-[#F6F3FC]">
-                  <BrandImage
-                    src={offer.image}
-                    name={offer.name ?? ""}
-                    variant="name"
-                    className="h-full w-full text-[26px]"
-                    bg="#F6F3FC"
-                  />
-                  {offer.merchant?.name && (
-                    <span className="absolute bottom-2 start-2 rounded-lg bg-white/95 px-2.5 py-1 text-[12px] font-bold text-[#2E1065]">
-                      {offer.merchant.name}
-                    </span>
-                  )}
-                </div>
-                <div className="flex flex-col gap-2 p-3.5">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="line-clamp-1 text-[14px] font-semibold text-[#17122A]">
-                      {offer.name}
-                    </span>
-                    {percent > 0 && (
-                      <span className="text-[20px] font-bold" style={{ color: color.c }}>
-                        {percent}%
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex items-center justify-between gap-2 text-[12px] text-[#8B84A0]">
-                    <span className="line-clamp-1">{offer.category?.name ?? ""}</span>
-                    <span className="shrink-0">{expiryLabel(offer.end_date)}</span>
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
+          {filtered.map((offer, i) => (
+            <Reveal key={offer.id} delay={i * 60} className="h-full">
+              <OfferTile offer={offer as OfferTileData} highlight />
+            </Reveal>
+          ))}
         </div>
       )}
     </section>

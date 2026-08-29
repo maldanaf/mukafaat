@@ -143,7 +143,7 @@ const CouponsSection: React.FC = () => {
       case "orange":
         return "bg-orange-500";
       case "purple":
-        return "bg-purple-600";
+        return "bg-mk-primary";
       default:
         return "bg-gray-600";
     }

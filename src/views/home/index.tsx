@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { t } from "i18next";
 import { Helmet } from "@/lib/helmet-compat";
@@ -22,21 +22,50 @@ import {
   BlogBand,
   Newsletter,
   StatsBand,
+  PromoBand,
+  CardsBand,
+  HomeSkeleton,
 } from "./components/newhome";
+import {
+  CategoryOffersSection,
+  LayoutPromoBanner,
+  readLayout,
+  type LayoutSection,
+} from "@components/home_builder";
+import { CONTAINER, ErrorState, type PromoConfig } from "@ui";
 import MobileHome from "./mobile/MobileHome";
 
 type Dict = Record<string, any>;
 
+/** ترتيب الأقسام الاحتياطي حين لا يرسل الخادم `layout` (لا تُكسر الصفحة) */
+const FALLBACK_ORDER: string[] = [
+  "hero",
+  "search_bar",
+  "service_cards",
+  "categories",
+  "offers_grid",
+  "coupons",
+  "nearby",
+  "top_stores",
+  "promo",
+  "corporate_app",
+  "restaurants",
+  "blog",
+  "newsletter",
+  "stats",
+];
+
 /**
  * الصفحة الرئيسية — تصميم design_handoff_mukafaat_homepage.
- * كل البيانات من GET /api/web/home (طلب واحد)، والنصوص القابلة للتحرير من الإعدادات.
+ * كل البيانات من GET /api/web/home (طلب واحد)، وترتيب الأقسام وعناوينها
+ * وإظهارها من لوحة التحكم → «بناء واجهة الموقع» (`data.layout`).
  */
 const HomePage = () => {
   const { currentLanguage: lang } = useLanguage();
   const [activeCategory, setActiveCategory] = useState<number | string | null>(null);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
 
-  const { data } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["mokafaat", "web-home", lang, coords?.lat ?? null, coords?.lng ?? null],
     queryFn: () =>
       webApi
@@ -58,7 +87,10 @@ const HomePage = () => {
   const restaurants: Dict[] = home.restaurants ?? [];
   const nearby: Dict[] = home.nearby ?? [];
   const stats: Dict[] = home.stats ?? [];
+  const giftCards: Dict[] = home.cards ?? [];
   const sections: Dict = home.sections ?? {};
+  /** الأقسام الترويجية المُدارة من اللوحة: بانر VIP + جديد مكافآت */
+  const homeSections = (home.home_sections ?? null) as Record<string, PromoConfig> | null;
 
   /** مجمّع العروض المعروضة: أحدث العروض ثم عروض اليوم ثم الأكثر مبيعاً بدون تكرار */
   const offers = useMemo(() => {
@@ -92,6 +124,135 @@ const HomePage = () => {
     [offers, coupons, merchants],
   );
 
+  /**
+   * رسم قسم جاهز واحد بمفتاحه — العنوان و«عرض الكل» من اللوحة إن وُجدا.
+   * `prevKey` مفتاح القسم السابق في التخطيط: يُستخدم ليُرفَع شريط البحث
+   * فوق حدّ الهيرو فقط عندما يأتي مباشرةً بعده.
+   */
+  const renderBuiltin = (key: string, section?: LayoutSection, prevKey?: string) => {
+    const title = section?.title ?? undefined;
+    const showViewAll = section?.show_view_all ?? true;
+
+    switch (key) {
+      case "hero":
+        return <HeroSlider slides={sliders as any} />;
+      case "search_bar":
+        return (
+          <SearchBar cities={cities as any} pool={searchPool} overlap={prevKey === "hero"} />
+        );
+      case "service_cards":
+        return <ServiceCards />;
+      case "categories":
+        return (
+          <CategoriesBand
+            categories={categories as any}
+            title={title}
+            showViewAll={showViewAll}
+          />
+        );
+      case "offers_grid":
+        return (
+          <OffersGrid
+            offers={offers as any}
+            categories={categories as any}
+            activeCategory={activeCategory}
+            onSelect={setActiveCategory}
+            title={title}
+            showViewAll={showViewAll}
+          />
+        );
+      case "coupons":
+        return <CouponsBand coupons={coupons as any} title={title} showViewAll={showViewAll} />;
+      case "nearby":
+        return (
+          <NearbySection
+            places={nearby as any}
+            onUseMyLocation={setCoords}
+            title={title}
+            showViewAll={showViewAll}
+          />
+        );
+      case "top_stores":
+        return <TopStores stores={merchants as any} title={title} showViewAll={showViewAll} />;
+      case "promo":
+        // بانر VIP + جديد مكافآت (من home_sections في اللوحة)
+        return <PromoBand sections={homeSections} />;
+      case "corporate_app":
+        return <CorporateApp corporate={sections?.corporate} app={sections?.app} />;
+      case "restaurants":
+        return (
+          <RestaurantsBand
+            restaurants={restaurants as any}
+            title={title}
+            showViewAll={showViewAll}
+          />
+        );
+      case "cards":
+        return <CardsBand cards={giftCards as any} title={title} showViewAll={showViewAll} />;
+      case "blog":
+        return <BlogBand posts={news as any} title={title} showViewAll={showViewAll} />;
+      case "newsletter":
+        return (
+          <Newsletter
+            title={title ?? sections?.newsletter?.title}
+            description={sections?.newsletter?.description}
+          />
+        );
+      case "stats":
+        return <StatsBand stats={stats as any} />;
+      default:
+        return null;
+    }
+  };
+
+  /** الأقسام النهائية: تخطيط اللوحة، أو الترتيب الاحتياطي إن غاب المفتاح */
+  const renderedSections = useMemo(() => {
+    const layout = readLayout(home);
+
+    if (!layout) {
+      return FALLBACK_ORDER.map((key, i) => (
+        <Fragment key={key}>{renderBuiltin(key, undefined, FALLBACK_ORDER[i - 1])}</Fragment>
+      ));
+    }
+
+    return layout.map((section, i) => {
+      if (section.type === "category_offers") {
+        return <CategoryOffersSection key={`cat-${section.id}`} section={section} />;
+      }
+      if (section.type === "promo_banner") {
+        return <LayoutPromoBanner key={`banner-${section.id}`} section={section} />;
+      }
+      const previous = layout[i - 1];
+      return (
+        <Fragment key={`builtin-${section.id}`}>
+          {renderBuiltin(
+            section.key,
+            section,
+            previous?.type === "builtin" ? previous.key : undefined,
+          )}
+        </Fragment>
+      );
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    home,
+    sliders,
+    categories,
+    offers,
+    coupons,
+    nearby,
+    merchants,
+    restaurants,
+    news,
+    stats,
+    giftCards,
+    cities,
+    searchPool,
+    homeSections,
+    sections,
+    activeCategory,
+  ]);
+
   return (
     <>
       <Helmet>
@@ -108,47 +269,29 @@ const HomePage = () => {
         />
       </Helmet>
 
-      <div className="home bg-white text-[#17122A]">
+      <div className="home bg-white text-[#1A1A2E]">
         <PopupAdsModal screen="home" />
 
+        {/* حالة الخطأ — رسالة واحدة مع إعادة المحاولة بدل صفحة فارغة */}
+        {isError && !isLoading && (
+          <div className={`${CONTAINER} py-14`}>
+            <ErrorState onRetry={() => refetch()} />
+          </div>
+        )}
+
+        {/* حالة التحميل — هيكل بنفس أبعاد الأقسام */}
+        {isLoading && (
+          <div className="hidden lg:block">
+            <HomeSkeleton />
+          </div>
+        )}
+
         {/* نسخة الموبايل (أقل من lg) */}
-        <MobileHome home={home} />
+        {!isError && <MobileHome home={home} isLoading={isLoading} />}
 
-        {/* نسخة الديسكتوب (lg فأعلى) */}
-        <div className="hidden lg:block">
-        <HeroSlider slides={sliders as any} />
-
-        <SearchBar cities={cities as any} pool={searchPool} />
-
-        <ServiceCards />
-
-        <CategoriesBand categories={categories as any} />
-
-        <OffersGrid
-          offers={offers as any}
-          categories={categories as any}
-          activeCategory={activeCategory}
-          onSelect={setActiveCategory}
-        />
-
-        <CouponsBand coupons={coupons as any} />
-
-        <NearbySection places={nearby as any} onUseMyLocation={setCoords} />
-
-        <TopStores stores={merchants as any} />
-
-        <CorporateApp corporate={sections?.corporate} app={sections?.app} />
-
-        <RestaurantsBand restaurants={restaurants as any} />
-
-        <BlogBand posts={news as any} />
-
-        <Newsletter
-          title={sections?.newsletter?.title}
-          description={sections?.newsletter?.description}
-        />
-
-        <StatsBand stats={stats as any} />
+        {/* نسخة الديسكتوب (lg فأعلى) — مبنية من تخطيط لوحة التحكم */}
+        <div className={isLoading || isError ? "hidden" : "hidden lg:block"}>
+          {renderedSections}
         </div>
       </div>
     </>

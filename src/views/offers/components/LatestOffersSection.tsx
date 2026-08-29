@@ -6,6 +6,8 @@ import { useNavigate, useSearchParams } from "@/lib/router-compat";
 import { useIsRTL } from "@hooks";
 import { type Offer } from "@data/offers";
 import OfferCard from "./OfferCard";
+import { EmptyState } from "@ui";
+import { SectionTitle } from "./CatalogKit";
 import OwlCarousel from "@components/DynamicOwlCarousel";
 import { Pattern } from "@assets";
 import { useWebOffers } from "@hooks/api/useMokafaatQueries";
@@ -78,26 +80,26 @@ const LatestOffersSection: React.FC = () => {
 
   // Skeleton component
   const SkeletonCard = () => (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden animate-pulse">
-      <div className="h-48 bg-gray-200"></div>
+    <div className="bg-white rounded-mk-md shadow-mk-raised overflow-hidden animate-pulse">
+      <div className="h-48 bg-mk-border-strong/50"></div>
       <div className="p-4">
-        <div className="h-6 bg-gray-200 rounded mb-2"></div>
-        <div className="h-4 bg-gray-200 rounded mb-3 w-3/4"></div>
+        <div className="h-6 bg-mk-border-strong/50 rounded mb-2"></div>
+        <div className="h-4 bg-mk-border-strong/50 rounded mb-3 w-3/4"></div>
         <div className="flex gap-1 mb-4">
-          <div className="h-6 bg-gray-200 rounded-full w-16"></div>
-          <div className="h-6 bg-gray-200 rounded-full w-20"></div>
+          <div className="h-6 bg-mk-border-strong/50 rounded-full w-16"></div>
+          <div className="h-6 bg-mk-border-strong/50 rounded-full w-20"></div>
         </div>
-        <div className="h-4 bg-gray-200 rounded mb-4 w-1/2"></div>
+        <div className="h-4 bg-mk-border-strong/50 rounded mb-4 w-1/2"></div>
         <div className="flex justify-between items-center">
-          <div className="h-6 bg-gray-200 rounded w-20"></div>
-          <div className="h-6 bg-gray-200 rounded w-24"></div>
+          <div className="h-6 bg-mk-border-strong/50 rounded w-20"></div>
+          <div className="h-6 bg-mk-border-strong/50 rounded w-24"></div>
         </div>
       </div>
     </div>
   );
 
   return (
-    <section className="container mx-auto px-4 py-10 relative  z-1">
+    <section className="container relative z-[1] mx-auto overflow-hidden px-4 py-10">
       <div
         className={`absolute -top-20 w-1/2 sm:w-1/1 ${
           isRTL ? "-left-10" : "-right-10"
@@ -110,18 +112,22 @@ const LatestOffersSection: React.FC = () => {
           className="h-auto animate-float"
         />
       </div>
-      <div className="text-start mb-4">
-        <h2 className="text-[#400198] text-3xl font-bold">
-          {searchQuery
-            ? (isRTL ? `نتائج البحث عن "${searchQuery}"` : `Search results for "${searchQuery}"`)
-            : t("offersPage.latestOffers.title")}
-        </h2>
-        <p className="text-md text-gray-700 leading-relaxed">
-          {searchQuery
-            ? (isRTL ? `${offers.length} نتيجة` : `${offers.length} result(s)`)
-            : t("offersPage.latestOffers.subtitle")}
-        </p>
-      </div>
+      <SectionTitle
+        title={
+          searchQuery
+            ? isRTL
+              ? `نتائج البحث عن "${searchQuery}"`
+              : `Search results for "${searchQuery}"`
+            : t("offersPage.latestOffers.title")
+        }
+        subtitle={
+          searchQuery
+            ? isRTL
+              ? `${offers.length} نتيجة`
+              : `${offers.length} result(s)`
+            : t("offersPage.latestOffers.subtitle")
+        }
+      />
 
       <div
         className="relative OffersCarousel PropertiesCarousel"
@@ -135,10 +141,10 @@ const LatestOffersSection: React.FC = () => {
               <SkeletonCard key={index} />
             ))}
           </div>
-        ) : isRTL && offers.length < 4 ? (
+        ) : searchQuery || (isRTL && offers.length < 4) ? (
           <div
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-            style={{ direction: "rtl" }}
+            style={{ direction: isRTL ? "rtl" : "ltr" }}
           >
             {offers.map((offer) => (
               <OfferCard
@@ -172,9 +178,17 @@ const LatestOffersSection: React.FC = () => {
           )
         )}
         {!apiLoading && offers.length === 0 && (
-          <div className="text-center py-12 text-gray-500">
-            {t("offersPage.latestOffers.empty")}
-          </div>
+          <EmptyState
+            title={
+              searchQuery
+                ? t("ui.empty.search", "لا نتائج لبحثك.")
+                : t("offersPage.latestOffers.empty")
+            }
+            description=""
+            actionLabel={searchQuery ? t("offerDetail.back_to_offers", "كل العروض") : undefined}
+            actionTo={searchQuery ? "/offers" : undefined}
+            compact
+          />
         )}
       </div>
     </section>

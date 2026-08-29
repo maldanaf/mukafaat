@@ -71,8 +71,8 @@ const BusinessRegistrationServices = ({
               }}
               className={`group rounded-lg relative p-10 text-left bg-[#F7F8FB] border transition-all ${
                 isActive
-                  ? "border-purple-600 shadow-md"
-                  : "border-gray-200 hover:border-purple-300"
+                  ? "border-mk-primary shadow-md"
+                  : "border-gray-200 hover:border-mk-lilac"
               }`}
             >
               <div className="flex items-center justify-between mb-16">

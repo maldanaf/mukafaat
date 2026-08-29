@@ -99,7 +99,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
             {/* Content Section - Left */}
             <div className="flex-1 px-4 h-32 py-3 flex flex-col justify-center">
               <div>
-                <h3 className="text-xl font-bold text-purple-800 mb-2">
+                <h3 className="text-xl font-bold text-mk-deep mb-2">
                   {data.name[isRTL ? "ar" : "en"]}
                 </h3>
                 <p className="text-gray-700 text-sm mb-3 line-clamp-2">
@@ -127,7 +127,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="text-right">
-                      <div className="text-lg font-bold text-purple-600">
+                      <div className="text-lg font-bold text-mk-primary">
                         ${data.price}
                       </div>
                       <div className="text-xs text-gray-600">
@@ -191,7 +191,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
         <div className="p-6">
           <div className="flex items-start justify-between mb-3">
             <div>
-              <h3 className="text-lg font-semibold text-purple-800 mb-1">
+              <h3 className="text-lg font-semibold text-mk-deep mb-1">
                 {data.name[isRTL ? "ar" : "en"]}
               </h3>
               <p className="text-sm text-gray-700 mb-2">
@@ -211,7 +211,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
               </div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-purple-600 mb-1">
+              <div className="text-2xl font-bold text-mk-primary mb-1">
                 ${data.price}
               </div>
               <div className="text-sm text-gray-600">
@@ -296,7 +296,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
             {/* Content Section - Left */}
             <div className="flex-1 px-4 h-32 py-3 flex flex-col justify-center">
               <div>
-                <h3 className="text-xl font-bold text-purple-800 mb-2">
+                <h3 className="text-xl font-bold text-mk-deep mb-2">
                   {data.name[isRTL ? "ar" : "en"]}
                 </h3>
                 <p className="text-gray-700 text-sm mb-3 line-clamp-2">
@@ -323,7 +323,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="text-right">
-                      <div className="text-lg font-bold text-purple-600">
+                      <div className="text-lg font-bold text-mk-primary">
                         ${data.price}
                       </div>
                       <div className="text-xs text-gray-600">
@@ -397,7 +397,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
         <div className="p-6">
           <div className="flex items-start justify-between mb-3">
             <div>
-              <h3 className="text-lg font-semibold text-purple-800 mb-1">
+              <h3 className="text-lg font-semibold text-mk-deep mb-1">
                 {data.name[isRTL ? "ar" : "en"]}
               </h3>
               <p className="text-sm text-gray-700 mb-2">
@@ -424,7 +424,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
               </div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-purple-600 mb-1">
+              <div className="text-2xl font-bold text-mk-primary mb-1">
                 ${data.price}
               </div>
               <div className="text-sm text-gray-600">
@@ -497,7 +497,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
             {/* Content Section - Left */}
             <div className="flex-1 px-4 h-32 py-3 flex flex-col justify-center">
               <div>
-                <h3 className="text-xl font-bold text-purple-800 mb-2">
+                <h3 className="text-xl font-bold text-mk-deep mb-2">
                   {data.name[isRTL ? "ar" : "en"]}
                 </h3>
                 <p className="text-gray-700 text-sm mb-3 line-clamp-2">
@@ -524,7 +524,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="text-right">
-                      <div className="text-lg font-bold text-purple-600">
+                      <div className="text-lg font-bold text-mk-primary">
                         ${data.price}
                       </div>
                       <div className="text-xs text-gray-600">
@@ -588,7 +588,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
         <div className="p-6">
           <div className="flex items-start justify-between mb-3">
             <div>
-              <h3 className="text-lg font-semibold text-purple-800 mb-1">
+              <h3 className="text-lg font-semibold text-mk-deep mb-1">
                 {data.name[isRTL ? "ar" : "en"]}
               </h3>
               <p className="text-sm text-gray-700 mb-2">
@@ -610,7 +610,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
               </div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-purple-600 mb-1">
+              <div className="text-2xl font-bold text-mk-primary mb-1">
                 ${data.price}
               </div>
               <div className="text-sm text-gray-600">

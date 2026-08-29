@@ -164,7 +164,7 @@ const BookingsPage: React.FC = () => {
 
       {/* Content */}
       <div className="p-5">
-        <h3 className="text-lg font-semibold text-purple-800 mb-2 line-clamp-1">
+        <h3 className="text-lg font-semibold text-mk-deep mb-2 line-clamp-1">
           {listing.title}
         </h3>
 
@@ -188,7 +188,7 @@ const BookingsPage: React.FC = () => {
         {/* Price */}
         {formatPrice(listing) && (
           <div className="flex items-center gap-1 text-sm mb-3">
-            <span className="text-lg font-bold text-purple-600">
+            <span className="text-lg font-bold text-mk-primary">
               {formatPrice(listing)}
             </span>
           </div>
@@ -274,7 +274,7 @@ const BookingsPage: React.FC = () => {
 
       {/* Content */}
       <div className="p-5">
-        <h3 className="text-lg font-semibold text-purple-800 mb-2 line-clamp-1">
+        <h3 className="text-lg font-semibold text-mk-deep mb-2 line-clamp-1">
           {listing.title}
         </h3>
 
@@ -289,7 +289,7 @@ const BookingsPage: React.FC = () => {
         {/* Price */}
         {formatPrice(listing) && (
           <div className="flex items-center gap-1 text-sm mb-3">
-            <span className="text-lg font-bold text-purple-600">
+            <span className="text-lg font-bold text-mk-primary">
               {formatPrice(listing)}
             </span>
             <span className="text-xs text-gray-500">
@@ -362,7 +362,7 @@ const BookingsPage: React.FC = () => {
 
       {/* Content */}
       <div className="p-5">
-        <h3 className="text-lg font-semibold text-purple-800 mb-2 line-clamp-1">
+        <h3 className="text-lg font-semibold text-mk-deep mb-2 line-clamp-1">
           {listing.title}
         </h3>
 
@@ -385,7 +385,7 @@ const BookingsPage: React.FC = () => {
         {/* Price */}
         {formatPrice(listing) && (
           <div className="flex items-center gap-1 text-sm mb-3">
-            <span className="text-lg font-bold text-purple-600">
+            <span className="text-lg font-bold text-mk-primary">
               {formatPrice(listing)}
             </span>
             <span className="text-xs text-gray-500">
@@ -489,7 +489,7 @@ const BookingsPage: React.FC = () => {
 
       <section className="min-h-screen bg-gray-50">
         {/* Header */}
-        <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[140px] flex items-center justify-center">
+        <section className="relative w-full bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] overflow-hidden min-h-[140px] flex items-center justify-center">
           <div className="absolute inset-0 bg-primary opacity-30" />
           <div className="relative pt-20 pb-16 px-6 mx-auto max-w-site text-center lg:pt-20 lg:pb-16 lg:px-12 flex flex-col justify-center z-10">
             <h1 className="font-semibold mt-8 text-2xl mb-4 tracking-tight leading-none text-white">
@@ -497,7 +497,7 @@ const BookingsPage: React.FC = () => {
             </h1>
 
             <div className="flex items-center justify-center text-sm md:text-base mb-8">
-              <span className="text-white hover:text-purple-300 transition-colors cursor-pointer text-xs">
+              <span className="text-white hover:text-mk-lilac transition-colors cursor-pointer text-xs">
                 {isRTL ? "الرئيسية" : "Home"}
               </span>
               <span className="text-white text-xs mx-2">|</span>
@@ -535,10 +535,10 @@ const BookingsPage: React.FC = () => {
                 >
                   <div className="flex flex-col items-center text-center">
                     <div
-                      className={`w-14 h-14 mb-4 flex items-center justify-center rounded-full group-hover:from-purple-100 group-hover:to-purple-200 transition-all duration-300 ${
+                      className={`w-14 h-14 mb-4 flex items-center justify-center rounded-full group-hover:from-mk-tint group-hover:to-mk-border-strong transition-all duration-300 ${
                         activeTab === tab.key
-                          ? "bg-[#440798c9] text-white"
-                          : "bg-gradient-to-br from-purple-50 to-purple-100 text-[#440798c9]"
+                          ? "bg-[#400198c9] text-white"
+                          : "bg-gradient-to-br from-mk-tint3 to-mk-tint text-[#400198c9]"
                       }`}
                     >
                       {tab.icon === "plane" && (

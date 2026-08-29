@@ -25,7 +25,7 @@ interface Props {
 const CorporateApp: React.FC<Props> = ({ corporate, app }) => (
   <section className={`${CONTAINER} pt-11`}>
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-      <div className="relative flex flex-col items-start gap-3.5 overflow-hidden rounded-[20px] bg-[#2E1065] p-8">
+      <div className="relative flex flex-col items-start gap-3.5 overflow-hidden rounded-mk-2xl bg-grad-night p-8 shadow-[0_22px_50px_-24px_rgba(27,17,80,0.9)]">
         {corporate?.image && (
           <img
             src={corporate.image}
@@ -46,15 +46,15 @@ const CorporateApp: React.FC<Props> = ({ corporate, app }) => (
         </p>
         <Link
           to={corporate?.cta_link || "/contact"}
-          className="relative flex h-11 items-center rounded-[11px] bg-white px-5 text-[13px] font-semibold text-[#2E1065] transition-colors hover:bg-[#EDE9FE]"
+          className="relative flex h-11 items-center rounded-full bg-white px-6 text-[13.5px] font-extrabold text-[#2B1B5E] shadow-[0_12px_28px_-14px_rgba(0,0,0,0.8)] transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-[#EDE9FE]"
         >
           {corporate?.cta_label || t("home.corporate_new.cta", "اطلب عرض سعر")}
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 items-center gap-5 rounded-[20px] border border-[#EDE9F7] bg-[#F6F3FC] p-8 sm:grid-cols-[1.2fr_0.8fr]">
+      <div className="grid grid-cols-1 items-center gap-5 rounded-mk-2xl border border-[#EFEDF7] bg-grad-mist p-8 shadow-mk-card sm:grid-cols-[1.2fr_0.8fr]">
         <div className="flex flex-col items-start gap-3">
-          <h3 className="m-0 text-[20px] sm:text-[22px] font-bold text-[#17122A]">
+          <h3 className="m-0 text-[20px] sm:text-[22px] font-bold text-[#1A1A2E]">
             {app?.title || t("home.app_new.title", "حمّل تطبيق مكافآت")}
           </h3>
           <p className="m-0 text-[14px] leading-[1.8] text-[#5A536D]">
@@ -69,7 +69,7 @@ const CorporateApp: React.FC<Props> = ({ corporate, app }) => (
               href={app?.app_store || "/download-app"}
               target={app?.app_store ? "_blank" : undefined}
               rel="noopener noreferrer"
-              className="flex h-[42px] items-center rounded-[10px] bg-[#2E1065] px-4 text-[12px] font-semibold text-white"
+              className="flex h-[42px] items-center rounded-full bg-grad-brand px-5 text-[12.5px] font-extrabold text-white shadow-mk-glow transition-all duration-200 ease-out hover:-translate-y-0.5"
             >
               App Store
             </a>
@@ -77,7 +77,7 @@ const CorporateApp: React.FC<Props> = ({ corporate, app }) => (
               href={app?.google_play || "/download-app"}
               target={app?.google_play ? "_blank" : undefined}
               rel="noopener noreferrer"
-              className="flex h-[42px] items-center rounded-[10px] border border-[#C9BCEC] bg-white px-4 text-[12px] font-semibold text-[#2E1065]"
+              className="flex h-[42px] items-center rounded-full border-[1.5px] border-[#C9BCEC] bg-white px-5 text-[12.5px] font-extrabold text-[#2B1B5E] transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-[#400198]"
             >
               Google Play
             </a>
@@ -87,7 +87,7 @@ const CorporateApp: React.FC<Props> = ({ corporate, app }) => (
           <img
             src={app.image}
             alt=""
-            className="h-[170px] w-full rounded-[16px] object-cover"
+            className="h-[170px] w-full rounded-mk-xl object-cover shadow-mk-raised"
           />
         )}
       </div>

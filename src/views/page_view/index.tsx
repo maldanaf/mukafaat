@@ -63,7 +63,7 @@ export default function PageView() {
       </Helmet>
 
       {/* Hero */}
-      <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[180px] flex items-center justify-center">
+      <section className="relative w-full bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] overflow-hidden min-h-[180px] flex items-center justify-center">
         <div className="absolute inset-0 bg-primary opacity-30" />
         <div className="relative pt-20 pb-10 px-6 mx-auto max-w-site w-full text-center z-10">
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">{title}</h1>

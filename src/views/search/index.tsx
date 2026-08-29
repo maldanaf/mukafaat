@@ -139,7 +139,7 @@ const SearchPage: React.FC = () => {
         />
       </Helmet>
 
-      <div className="min-h-screen bg-gray-50" style={{ paddingTop: "72px" }}>
+      <div className="min-h-screen bg-mk-tint3" style={{ paddingTop: "72px" }}>
         {/* Top Filter Bar */}
         <div className="bg-white shadow-2xl">
           <div className="container mx-auto px-4 lg:px-0 py-8 filtering-container">
@@ -153,7 +153,7 @@ const SearchPage: React.FC = () => {
             >
               {/* Location */}
               <div className="space-y-3">
-                <label className="text-sm font-semibold text-gray-800">
+                <label className="text-sm font-semibold text-mk-text">
                   {isRTL ? "الموقع" : "Location"}
                 </label>
                 <div className="relative">
@@ -164,7 +164,7 @@ const SearchPage: React.FC = () => {
                     }
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                    className="w-full border border-gray-200 transition-all duration-300 hover:shadow-lg focus:shadow-xl h-[48px]"
+                    className="w-full border border-mk-border transition-all duration-300 hover:shadow-mk-raised focus:shadow-xl h-[48px]"
                     style={{
                       padding: "10px",
                       fontSize: "13px",
@@ -174,14 +174,14 @@ const SearchPage: React.FC = () => {
                   <IoLocationOutline
                     className={`absolute ${
                       isRTL ? "left-5" : "right-5"
-                    } top-1/2 transform -translate-y-1/2 text-gray-500 text-xl`}
+                    } top-1/2 transform -translate-y-1/2 text-mk-muted text-xl`}
                   />
                 </div>
               </div>
 
               {/* Property Type */}
               <div className="space-y-3">
-                <label className="text-sm font-semibold text-gray-800">
+                <label className="text-sm font-semibold text-mk-text">
                   {isRTL ? "نوع العقار" : "Property Type"}
                 </label>
                 <Select
@@ -211,7 +211,7 @@ const SearchPage: React.FC = () => {
 
               {/* Amenities */}
               <div className="space-y-3">
-                <label className="text-sm font-semibold text-gray-800">
+                <label className="text-sm font-semibold text-mk-text">
                   {isRTL ? "المرافق" : "Amenities"}
                 </label>
                 <Select
@@ -252,7 +252,7 @@ const SearchPage: React.FC = () => {
 
               {/* Price */}
               <div className="space-y-3">
-                <label className="text-sm font-semibold text-gray-800">
+                <label className="text-sm font-semibold text-mk-text">
                   {isRTL ? "السعر" : "Price"}
                 </label>
                 <Select
@@ -273,7 +273,7 @@ const SearchPage: React.FC = () => {
 
               {/* Advanced Filter */}
               <div className="space-y-3">
-                <label className="text-sm font-semibold text-gray-800">
+                <label className="text-sm font-semibold text-mk-text">
                   {isRTL ? "فلتر متقدم" : "Advanced Filter"}
                 </label>
                 <Select
@@ -342,7 +342,7 @@ const SearchPage: React.FC = () => {
                     ? "العقارات للإيجار في إسطنبول"
                     : "Properties for Rent in Istanbul"}
                 </h1>
-                <p className="text-gray-600 text-sm">
+                <p className="text-mk-muted text-sm">
                   {isRTL
                     ? "اكتشف أفضل العقارات، تصفح قوائمنا المحدثة للعثور على منزلك المثالي أو فرصة الاستثمار اليوم."
                     : "Explore the best properties, Browse our updated listings to find your ideal home or investment opportunity today."}
@@ -418,7 +418,7 @@ const SearchPage: React.FC = () => {
                 className={`px-6 py-3 rounded-t-lg font-medium transition-colors ${
                   activeTab === "programs"
                     ? "bg-[#400198] text-white"
-                    : "bg-gray-100 hover:text-gray-700 text-[#000]"
+                    : "bg-mk-tint2 hover:text-mk-text-strong text-[#000]"
                 }`}
               >
                 {isRTL ? "البرامج والتخصصات" : "Programs and specializations"}
@@ -428,7 +428,7 @@ const SearchPage: React.FC = () => {
                 className={`px-6 py-3 rounded-t-lg font-medium transition-colors ${
                   activeTab === "overview"
                     ? "bg-[#400198] text-white"
-                    : "bg-gray-100 hover:text-gray-700 text-[#000]"
+                    : "bg-mk-tint2 hover:text-mk-text-strong text-[#000]"
                 }`}
               >
                 {isRTL ? "نظرة عامة" : "Overview"}
@@ -444,10 +444,10 @@ const SearchPage: React.FC = () => {
                     {/* All Button - Active by default */}
                     <button
                       onClick={() => handleFilterChange("all")}
-                      className={`px-6 py-3 rounded-full text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-300 border border-[#E5E5E5] ${
+                      className={`px-6 py-3 rounded-full text-sm font-semibold shadow-mk-raised hover:shadow-mk-raised transition-all duration-300 border border-[#E5E5E5] ${
                         activeFilter === "all"
                           ? "bg-[#400198] text-white"
-                          : "bg-white text-gray-700 hover:bg-gray-50"
+                          : "bg-white text-mk-text-strong hover:bg-mk-tint3"
                       }`}
                     >
                       {isRTL ? "الكل" : "All"}{" "}
@@ -466,10 +466,10 @@ const SearchPage: React.FC = () => {
                       <button
                         key={filter.id}
                         onClick={() => handleFilterChange(filter.id)}
-                        className={`px-6 py-3 rounded-full text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-300 border border-[#E5E5E5] ${
+                        className={`px-6 py-3 rounded-full text-sm font-semibold shadow-mk-raised hover:shadow-mk-raised transition-all duration-300 border border-[#E5E5E5] ${
                           activeFilter === filter.id
                             ? "bg-[#400198] text-white"
-                            : "bg-white text-gray-700 hover:bg-gray-50"
+                            : "bg-white text-mk-text-strong hover:bg-mk-tint3"
                         }`}
                       >
                         {isRTL ? filter.nameAr : filter.name}{" "}
@@ -486,7 +486,7 @@ const SearchPage: React.FC = () => {
                     ))}
                     <button
                       onClick={() => setShowMoreTags(!showMoreTags)}
-                      className={`px-6 py-3 rounded-full text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-300 border border-[#E5E5E5] ${
+                      className={`px-6 py-3 rounded-full text-sm font-semibold shadow-mk-raised hover:shadow-mk-raised transition-all duration-300 border border-[#E5E5E5] ${
                         showMoreTags
                           ? "bg-[#006EA9] text-white"
                           : "bg-white text-[#006EA9] hover:bg-blue-50"
@@ -511,19 +511,19 @@ const SearchPage: React.FC = () => {
                         {[...Array(8)].map((_, index) => (
                           <div
                             key={index}
-                            className="bg-white rounded-xl shadow-md overflow-hidden animate-pulse"
+                            className="bg-white rounded-mk-md shadow-mk-raised overflow-hidden animate-pulse"
                           >
-                            <div className="h-[180px] bg-gray-200"></div>
+                            <div className="h-[180px] bg-mk-border-strong/50"></div>
                             <div className="p-4 space-y-3">
                               <div className="flex items-center justify-between">
-                                <div className="h-4 bg-gray-200 rounded w-20"></div>
-                                <div className="h-4 bg-gray-200 rounded w-16"></div>
+                                <div className="h-4 bg-mk-border-strong/50 rounded w-20"></div>
+                                <div className="h-4 bg-mk-border-strong/50 rounded w-16"></div>
                               </div>
-                              <div className="h-5 bg-gray-200 rounded w-32"></div>
-                              <div className="h-4 bg-gray-200 rounded w-24"></div>
-                              <div className="h-4 bg-gray-200 rounded w-28"></div>
-                              <div className="h-4 bg-gray-200 rounded w-20"></div>
-                              <div className="h-4 bg-gray-200 rounded w-16"></div>
+                              <div className="h-5 bg-mk-border-strong/50 rounded w-32"></div>
+                              <div className="h-4 bg-mk-border-strong/50 rounded w-24"></div>
+                              <div className="h-4 bg-mk-border-strong/50 rounded w-28"></div>
+                              <div className="h-4 bg-mk-border-strong/50 rounded w-20"></div>
+                              <div className="h-4 bg-mk-border-strong/50 rounded w-16"></div>
                             </div>
                           </div>
                         ))}

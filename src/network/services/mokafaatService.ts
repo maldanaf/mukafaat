@@ -71,6 +71,24 @@ export const settingsApi = {
     api.post(API_ENDPOINTS.settingsUpdate, null, {
       params,
     }),
+  /** GET /api/settings/notifications — إعدادات الإشعارات التفصيلية */
+  getNotifications: () => api.get(API_ENDPOINTS.settingsNotifications),
+  /** POST /api/settings/notifications — تحديث مفتاح واحد أو أكثر */
+  updateNotifications: (body: Record<string, boolean>) =>
+    api.post(API_ENDPOINTS.settingsNotifications, body),
+};
+
+// ========== Notifications (يتطلب توكن) ==========
+export const notificationsApi = {
+  list: (page = 1) =>
+    api.get(API_ENDPOINTS.notifications.index, { params: { page } }),
+  unreadCount: () => api.get(API_ENDPOINTS.notifications.unreadCount),
+  markRead: (id: string | number) =>
+    api.post(API_ENDPOINTS.notifications.markRead(id)),
+  markAllRead: () => api.post(API_ENDPOINTS.notifications.markAllRead),
+  remove: (id: string | number) =>
+    api.delete(API_ENDPOINTS.notifications.remove(id)),
+  removeAll: () => api.delete(API_ENDPOINTS.notifications.removeAll),
 };
 
 // ========== App Config (GET - عام) ==========
@@ -107,7 +125,13 @@ export const pointsApi = {
 export const walletApi = {
   get: () => api.get(API_ENDPOINTS.wallet),
   balance: () => api.get(API_ENDPOINTS.walletBalance),
-  history: () => api.get(API_ENDPOINTS.walletHistory),
+  history: (params?: Record<string, unknown>) =>
+    api.get(API_ENDPOINTS.walletHistory, { params }),
+  /** GET /api/wallet/topup-options — مبالغ الشحن السريعة والحدود */
+  topupOptions: () => api.get(API_ENDPOINTS.walletTopupOptions),
+  /** POST /api/wallet/topup — يرجّع payment_info لبوابة الدفع */
+  topup: (amount: number) =>
+    api.post(API_ENDPOINTS.walletTopup, { amount }),
   myTransactions: (params?: Record<string, unknown>) =>
     api.get(API_ENDPOINTS.myTransactions, { params }),
 };
@@ -151,6 +175,9 @@ export const profileApi = {
     }
     return api.post(API_ENDPOINTS.profileUpdate, body);
   },
+  /** POST /api/profile/delete — حذف الحساب نهائياً (سبب اختياري) */
+  remove: (reason?: string) =>
+    api.post(API_ENDPOINTS.profileDelete, reason ? { reason } : {}),
 };
 
 // ========== Subscription (يتطلب توكن) - مطابق لـ Postman: Subscriptions ==========
@@ -163,6 +190,10 @@ export type SubscribeForOtherBody = {
   country_id?: number;
   city_id?: number;
   gender?: "male" | "female";
+  /** كوبون خصم على الاشتراك المُهدى (يستفيد منه الدافع) */
+  coupon_code?: string;
+  /** كود خصم على الاشتراك المُهدى (يستفيد منه الدافع) */
+  discount_code?: string;
 };
 
 export const subscriptionApi = {
@@ -173,7 +204,9 @@ export const subscriptionApi = {
     planId: string | number,
     paymentMethod?: "online" | "cash" | "bank" | "card",
     useWallet?: boolean,
-    discountCode?: string
+    discountCode?: string,
+    /** كوبون خصم (يُطبَّق قبل كود الخصم على الخادم) */
+    couponCode?: string
   ) =>
     api.post(API_ENDPOINTS.subscription.subscribe, null, {
       params: {
@@ -181,11 +214,74 @@ export const subscriptionApi = {
         // Spec: payment_method مطلوب مثلاً card للدفع عبر ميسر
         ...(paymentMethod && { payment_method: paymentMethod === "online" ? "card" : paymentMethod }),
         ...(useWallet && { use_wallet: true }),
+        ...(couponCode && { coupon_code: couponCode }),
         ...(discountCode && { discount_code: discountCode }),
       },
     }),
   status: () => api.get(API_ENDPOINTS.subscription.status),
   history: () => api.get(API_ENDPOINTS.subscription.history),
+  /** باقات الإهداء بأسعارها الحقيقية بعد خصم المستوى والكوبون */
+  giftPlans: (params?: { coupon_code?: string; discount_code?: string }) =>
+    api.get(API_ENDPOINTS.subscription.giftPlans, { params }),
+  /** الاشتراكات التي أهديتها لآخرين */
+  gifts: () => api.get(API_ENDPOINTS.subscription.gifts),
+  /** فاتورة اشتراك أهديته */
+  giftInvoice: (id: string | number) =>
+    api.get(API_ENDPOINTS.subscription.giftInvoice(id)),
+};
+
+// ========== Referrals — شارك واربح (يتطلب توكن) ==========
+export const referralsApi = {
+  get: () => api.get(API_ENDPOINTS.referrals.index),
+  rewards: () => api.get(API_ENDPOINTS.referrals.rewards),
+  attach: (code: string) => api.post(API_ENDPOINTS.referrals.attach, { code }),
+};
+
+// ========== Family — أفراد العائلة (يتطلب توكن) ==========
+export type FamilyInviteBody = {
+  phone: string;
+  country_code?: string;
+  name?: string;
+  relation?: string;
+  notify_sms?: boolean;
+  notify_whatsapp?: boolean;
+};
+
+export const familyApi = {
+  get: () => api.get(API_ENDPOINTS.family.index),
+  invite: (body: FamilyInviteBody) =>
+    api.post(API_ENDPOINTS.family.invite, body),
+  removeMember: (id: string | number) =>
+    api.delete(API_ENDPOINTS.family.removeMember(id)),
+  invitations: () => api.get(API_ENDPOINTS.family.invitations),
+  acceptInvitation: (id: string | number) =>
+    api.post(API_ENDPOINTS.family.acceptInvitation(id)),
+};
+
+// ========== Store Requests — طلب انضمام متجر / اقتراح متجر (عام) ==========
+export type StoreRequestBody = {
+  type: "join" | "suggest";
+  store_name: string;
+  contact_name?: string;
+  contact_phone?: string;
+  email?: string;
+  country_id?: number;
+  city_id?: number;
+  country_name?: string;
+  city_name?: string;
+  notes?: string;
+  source?: string;
+};
+
+export const storeRequestsApi = {
+  create: (body: StoreRequestBody) =>
+    api.post(API_ENDPOINTS.storeRequests, { source: "web", ...body }),
+};
+
+// ========== Geo — الدولة الافتراضية والدول المفعّلة (عام) ==========
+export const geoApi = {
+  country: () => api.get(API_ENDPOINTS.geo.country),
+  countries: () => api.get(API_ENDPOINTS.geo.countries),
 };
 
 // ========== Membership verify (عام — بدون توكن، للتحقق من العضوية عند مسح QR) ==========
@@ -245,6 +341,26 @@ export interface DiscountCodeResult {
   final_amount: number;
 }
 
+/** كوبون الخصم — نفس نطاقات كود الخصم */
+export interface CouponValidateParams {
+  code: string;
+  scope: DiscountCodeScope;
+  item_id?: number | string;
+}
+
+export interface CouponValidateResult {
+  coupon_id: number | string;
+  coupon_code: string;
+  original_amount: number;
+  discount: number;
+  final_amount: number;
+}
+
+export const couponValidateApi = {
+  validate: (body: CouponValidateParams) =>
+    api.post(API_ENDPOINTS.coupons.validate, body),
+};
+
 export const discountCodesApi = {
   validate: (body: DiscountCodeValidateParams) =>
     api.post(API_ENDPOINTS.discountCodes.validate, body),
@@ -299,6 +415,9 @@ export const webApi = {
     api.get(API_ENDPOINTS.web.coupons, { params }),
   couponDetail: (id: string | number) =>
     api.get(API_ENDPOINTS.web.couponDetail(id)),
+  /** تسجيل نسخة كود الكوبون (fire-and-forget) */
+  couponCopy: (id: string | number) =>
+    api.post(API_ENDPOINTS.web.couponCopy(id)),
   categoryCoupons: (categorySlug: string) =>
     api.get(API_ENDPOINTS.web.categoryCoupons(categorySlug)),
   offers: (params?: Record<string, unknown>) =>

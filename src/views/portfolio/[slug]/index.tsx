@@ -46,22 +46,22 @@ interface Tag {
 const PortfolioDetailsHero = ({ title }: { title: string }) => {
   // const isRTL = useIsRTL();
   return (
-    <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[140px] flex items-center justify-center">
+    <section className="relative w-full bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] overflow-hidden min-h-[140px] flex items-center justify-center">
       <div className="absolute inset-0 bg-primary opacity-30" />
       <div className="relative pt-20 pb-16 px-6 mx-auto max-w-site text-center lg:pt-20 lg:pb-16 lg:px-12 flex flex-col justify-center z-10">
         <h1 className="font-semibold mt-8 text-2xl md:text-2xl lg:text-2xl mb-2 text-white">
           {title}
         </h1>
         <div className="flex items-center justify-center space-x-2 text-xs">
-          <Link to="/" className="text-white hover:text-purple-300">
+          <Link to="/" className="text-white hover:text-mk-lilac">
             {t("home.navbar.home")}
           </Link>
           <span className="text-white">|</span>
-          <Link to="/portfolio" className="text-white hover:text-purple-300">
+          <Link to="/portfolio" className="text-white hover:text-mk-lilac">
             {t("home.navbar.portfolio")}
           </Link>
           <span className="text-white">|</span>
-          <span className="text-purple-300">{title}</span>
+          <span className="text-mk-lilac">{title}</span>
         </div>
       </div>
       <div className="absolute -bottom-10 transform z-9">
@@ -98,25 +98,25 @@ const PortfolioDetailsPage = () => {
   if (isProjectLoading) {
     return (
       <>
-        <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[140px] flex items-center justify-center">
+        <section className="relative w-full bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] overflow-hidden min-h-[140px] flex items-center justify-center">
           <div className="absolute inset-0 bg-primary opacity-30" />
           <div className="relative pt-20 pb-16 px-6 mx-auto max-w-site text-center lg:pt-20 lg:pb-16 lg:px-12 flex flex-col justify-center z-10">
             <h1 className="font-semibold mt-8 text-2xl md:text-2xl lg:text-2xl mb-2 text-white">
               Loading project details...
             </h1>
             <div className="flex items-center justify-center space-x-2 text-xs">
-              <Link to="/" className="text-white hover:text-purple-300">
+              <Link to="/" className="text-white hover:text-mk-lilac">
                 {t("home.navbar.home")}
               </Link>
               <span className="text-white">|</span>
               <Link
                 to="/portfolio"
-                className="text-white hover:text-purple-300"
+                className="text-white hover:text-mk-lilac"
               >
                 {t("home.navbar.portfolio")}
               </Link>
               <span className="text-white">|</span>
-              <span className="text-purple-300">
+              <span className="text-mk-lilac">
                 Loading project details...
               </span>
             </div>

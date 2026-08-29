@@ -139,7 +139,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ url, title, onClose }) => {
           {/* Copy link */}
           <div
             onClick={copyLink}
-            className="flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-xl border border-gray-200 cursor-pointer hover:border-[#440798] hover:bg-purple-50/50 transition-colors"
+            className="flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-xl border border-gray-200 cursor-pointer hover:border-[#400198] hover:bg-mk-tint3/50 transition-colors"
           >
             <div className="flex-1 min-w-0">
               <p className="text-xs text-gray-400 mb-0.5">
@@ -153,7 +153,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ url, title, onClose }) => {
               className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
                 copied
                   ? "bg-green-100 text-green-600"
-                  : "bg-[#440798]/10 text-[#440798]"
+                  : "bg-[#400198]/10 text-[#400198]"
               }`}
             >
               {copied ? (

@@ -111,12 +111,12 @@ const OrderActivatePage: React.FC = () => {
   if (!token) {
     return (
       <div className="min-h-screen pt-10 pb-10 flex items-center justify-center"
-        style={{ background: "linear-gradient(to bottom, #521A93, #33005D)" }}>
-        <div className="text-center bg-white/10 rounded-2xl p-8 max-w-md mx-4">
+        style={{ background: "linear-gradient(150deg, #1B1150 0%, #400198 55%, #6703EB 100%)" }}>
+        <div className="text-center bg-white/10 rounded-mk-xl p-8 max-w-md mx-4">
           <h2 className="text-xl font-bold text-white mb-4">
             {isRTL ? "تسجيل الدخول مطلوب" : "Login required"}
           </h2>
-          <Link to="/login" className="bg-white text-[#1D0843] px-6 py-3 rounded-xl font-medium">
+          <Link to="/login" className="bg-white text-mk-primary px-6 py-3 rounded-mk-md font-medium">
             {isRTL ? "تسجيل الدخول" : "Login"}
           </Link>
         </div>
@@ -127,8 +127,8 @@ const OrderActivatePage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen flex justify-center items-center"
-        style={{ background: "linear-gradient(to bottom, #521A93, #33005D)" }}>
-        <LoadingSpinner />
+        style={{ background: "linear-gradient(150deg, #1B1150 0%, #400198 55%, #6703EB 100%)" }}>
+        <LoadingSpinner onDark />
       </div>
     );
   }
@@ -136,25 +136,25 @@ const OrderActivatePage: React.FC = () => {
   if (!orderData || orderData.status === "used") {
     return (
       <div className="min-h-screen pt-10 pb-10 flex items-center justify-center px-4"
-        style={{ background: "linear-gradient(to bottom, #521A93, #33005D)" }}>
-        <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 text-center">
+        style={{ background: "linear-gradient(150deg, #1B1150 0%, #400198 55%, #6703EB 100%)" }}>
+        <div className="w-full max-w-md bg-white rounded-mk-xl shadow-xl p-8 text-center">
           {orderData?.status === "used" ? (
             <>
               <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <IoCheckmarkCircle className="w-12 h-12 text-green-500" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              <h2 className="text-2xl font-bold text-mk-text mb-2">
                 {isRTL ? "تم تفعيل هذا العرض مسبقاً" : "This offer is already activated"}
               </h2>
               {orderData.item?.name && (
-                <p className="text-gray-600 mb-1">{orderData.item.name}</p>
+                <p className="text-mk-muted mb-1">{orderData.item.name}</p>
               )}
               {orderData.merchant?.name && (
-                <p className="text-sm text-gray-500 mb-6">
+                <p className="text-sm text-mk-muted mb-6">
                   {isRTL ? "لدى" : "at"} {orderData.merchant.name}
                 </p>
               )}
-              <p className="text-sm text-green-600 bg-green-50 rounded-lg p-3 mb-6">
+              <p className="text-sm text-green-600 bg-green-50 rounded-mk-sm p-3 mb-6">
                 {isRTL
                   ? "تم استخدام هذا العرض بنجاح. يمكنك مراجعة تفاصيل الطلب أو تصفح عروض أخرى."
                   : "This offer has been used successfully. You can view order details or browse other offers."}
@@ -165,18 +165,18 @@ const OrderActivatePage: React.FC = () => {
               <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <IoArrowBackOutline className="w-10 h-10 text-red-500" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              <h2 className="text-2xl font-bold text-mk-text mb-4">
                 {isRTL ? "الطلب غير موجود" : "Order not found"}
               </h2>
             </>
           )}
           <div className="flex gap-3">
             <button onClick={() => navigate(`/orders/${orderId}`)}
-              className="flex-1 py-3 rounded-xl bg-[#400198] text-white font-medium hover:bg-[#33007a] transition-colors">
+              className="flex-1 py-3 rounded-mk-md bg-[#400198] text-white font-medium hover:bg-[#33007a] transition-colors">
               {isRTL ? "تفاصيل الطلب" : "Order Details"}
             </button>
             <button onClick={() => navigate("/offers")}
-              className="flex-1 py-3 rounded-xl border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors">
+              className="flex-1 py-3 rounded-mk-md border border-mk-border-2 text-mk-text-strong font-medium hover:bg-mk-tint3 transition-colors">
               {isRTL ? "تصفح العروض" : "Browse Offers"}
             </button>
           </div>
@@ -193,34 +193,34 @@ const OrderActivatePage: React.FC = () => {
           <title>{isRTL ? "تم التفعيل" : "Activated"} | Mokafaat</title>
         </Helmet>
         <div className="min-h-screen pt-10 pb-10 flex items-center justify-center px-4"
-          style={{ background: "linear-gradient(to bottom, #521A93, #33005D)" }}>
-          <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 text-center">
+          style={{ background: "linear-gradient(150deg, #1B1150 0%, #400198 55%, #6703EB 100%)" }}>
+          <div className="w-full max-w-md bg-white rounded-mk-xl shadow-xl p-8 text-center">
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <IoCheckmarkCircle className="w-12 h-12 text-green-500" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="text-2xl font-bold text-mk-text mb-2">
               {isRTL ? "تم تفعيل العرض بنجاح!" : "Offer Activated Successfully!"}
             </h2>
-            <p className="text-gray-600 mb-2">
+            <p className="text-mk-muted mb-2">
               {orderData.item?.name || ""}
             </p>
             {orderData.merchant?.name && (
-              <p className="text-sm text-gray-500 mb-6">
+              <p className="text-sm text-mk-muted mb-6">
                 {isRTL ? "لدى" : "at"} {orderData.merchant.name}
               </p>
             )}
-            <p className="text-sm text-green-600 bg-green-50 rounded-lg p-3 mb-6">
+            <p className="text-sm text-green-600 bg-green-50 rounded-mk-sm p-3 mb-6">
               {isRTL
                 ? "استمتع بعرضك! يمكنك مراجعة تفاصيل الطلب من صفحة طلباتي."
                 : "Enjoy your offer! You can review order details from My Orders."}
             </p>
             <div className="flex gap-3">
               <button onClick={() => navigate(`/orders/${orderId}`)}
-                className="flex-1 py-3 rounded-xl bg-[#400198] text-white font-medium hover:bg-[#33007a] transition-colors">
+                className="flex-1 py-3 rounded-mk-md bg-[#400198] text-white font-medium hover:bg-[#33007a] transition-colors">
                 {isRTL ? "تفاصيل الطلب" : "Order Details"}
               </button>
               <button onClick={() => navigate("/offers")}
-                className="flex-1 py-3 rounded-xl border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors">
+                className="flex-1 py-3 rounded-mk-md border border-mk-border-2 text-mk-text-strong font-medium hover:bg-mk-tint3 transition-colors">
                 {isRTL ? "تصفح العروض" : "Browse Offers"}
               </button>
             </div>
@@ -237,7 +237,7 @@ const OrderActivatePage: React.FC = () => {
       </Helmet>
 
       <div className="min-h-screen pt-10 pb-10 flex flex-col items-center px-4"
-        style={{ background: "linear-gradient(to bottom, #521A93, #33005D)" }}>
+        style={{ background: "linear-gradient(150deg, #1B1150 0%, #400198 55%, #6703EB 100%)" }}>
 
         {/* زر العودة */}
         <div className="w-full max-w-md flex items-center mb-6">
@@ -249,13 +249,13 @@ const OrderActivatePage: React.FC = () => {
         </div>
 
         {/* كارد التفعيل */}
-        <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+        <div className="w-full max-w-md bg-white rounded-mk-xl shadow-xl p-8">
           {/* أيقونة */}
           <div className="w-16 h-16 bg-[#400198]/10 rounded-full flex items-center justify-center mx-auto mb-6">
             <FiShield className="w-8 h-8 text-[#400198]" />
           </div>
 
-          <h2 className="text-xl font-bold text-gray-900 text-center mb-2">
+          <h2 className="text-xl font-bold text-mk-text text-center mb-2">
             {isRTL ? "تفعيل العرض عند التاجر" : "Activate Offer at Merchant"}
           </h2>
 
@@ -263,15 +263,15 @@ const OrderActivatePage: React.FC = () => {
           {(orderData.item?.name || orderData.merchant?.name) && (
             <div className="text-center mb-6">
               {orderData.item?.name && (
-                <p className="text-gray-700 font-medium">{orderData.item.name}</p>
+                <p className="text-mk-text-strong font-medium">{orderData.item.name}</p>
               )}
               {orderData.merchant?.name && (
-                <p className="text-sm text-gray-500">{orderData.merchant.name}</p>
+                <p className="text-sm text-mk-muted">{orderData.merchant.name}</p>
               )}
             </div>
           )}
 
-          <p className="text-gray-600 text-center text-sm mb-6">
+          <p className="text-mk-muted text-center text-sm mb-6">
             {isRTL
               ? "اطلب من التاجر كود التفعيل المكوّن من 4 أرقام وأدخله هنا"
               : "Ask the merchant for the 4-digit activation code and enter it below"}
@@ -289,8 +289,8 @@ const OrderActivatePage: React.FC = () => {
                 value={digit}
                 onChange={(e) => handleCodeChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
-                className={`w-14 h-16 text-center text-2xl font-bold rounded-xl border-2 transition-colors outline-none
-                  ${errorMsg ? "border-red-400 bg-red-50" : digit ? "border-[#400198] bg-[#400198]/5" : "border-gray-300"}
+                className={`w-14 h-16 text-center text-2xl font-bold rounded-mk-md border-2 transition-colors outline-none
+                  ${errorMsg ? "border-red-400 bg-red-50" : digit ? "border-[#400198] bg-[#400198]/5" : "border-mk-border-2"}
                   focus:border-[#400198] focus:bg-[#400198]/5`}
               />
             ))}
@@ -306,7 +306,7 @@ const OrderActivatePage: React.FC = () => {
             type="button"
             onClick={handleSubmit}
             disabled={code.join("").length !== 4 || verifyCode.isPending}
-            className="w-full py-3.5 rounded-xl bg-[#400198] text-white font-medium hover:bg-[#33007a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+            className="w-full py-3.5 rounded-mk-md bg-[#400198] text-white font-medium hover:bg-[#33007a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-2"
           >
             {verifyCode.isPending
               ? (isRTL ? "جاري التحقق..." : "Verifying...")
@@ -314,7 +314,7 @@ const OrderActivatePage: React.FC = () => {
           </button>
 
           {/* ملاحظة */}
-          <p className="text-xs text-gray-400 text-center mt-4">
+          <p className="text-xs text-mk-faint text-center mt-4">
             {isRTL
               ? "كود التفعيل خاص بالتاجر ويُستخدم للتأكد من استلامك للعرض"
               : "The activation code is merchant-specific and confirms you received the offer"}

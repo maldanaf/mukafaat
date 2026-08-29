@@ -84,7 +84,7 @@ export function CardNumberInput({
         onBlur={handleBlur}
         maxLength={22}
         dir="ltr"
-        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-left ${showError ? "border-red-500" : "border-gray-300"} ${className}`}
+        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-mk-primary-light focus:border-transparent text-left ${showError ? "border-red-500" : "border-gray-300"} ${className}`}
         style={{ direction: "ltr" }}
         aria-invalid={!!showError}
         aria-describedby={showError ? "card-number-error" : undefined}
@@ -152,7 +152,7 @@ export function ExpiryInput({
         onBlur={handleBlur}
         maxLength={5}
         dir="ltr"
-        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-left ${showError ? "border-red-500" : "border-gray-300"} ${className}`}
+        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-mk-primary-light focus:border-transparent text-left ${showError ? "border-red-500" : "border-gray-300"} ${className}`}
         style={{ direction: "ltr" }}
         aria-invalid={!!showError}
         aria-describedby={showError ? "expiry-error" : undefined}
@@ -220,7 +220,7 @@ export function CVVInput({
         onBlur={handleBlur}
         maxLength={4}
         dir="ltr"
-        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-left ${showError ? "border-red-500" : "border-gray-300"} ${className}`}
+        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-mk-primary-light focus:border-transparent text-left ${showError ? "border-red-500" : "border-gray-300"} ${className}`}
         style={{ direction: "ltr" }}
         aria-invalid={!!showError}
         aria-describedby={showError ? "cvv-error" : undefined}
@@ -286,7 +286,7 @@ export function CardholderNameInput({
         value={value}
         onChange={handleChange}
         onBlur={handleBlur}
-        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${showError ? "border-red-500" : "border-gray-300"} ${className}`}
+        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-mk-primary-light focus:border-transparent ${showError ? "border-red-500" : "border-gray-300"} ${className}`}
         aria-invalid={!!showError}
         aria-describedby={showError ? "cardholder-error" : undefined}
       />

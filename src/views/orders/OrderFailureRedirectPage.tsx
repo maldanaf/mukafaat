@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useSearchParams, useNavigate, Link } from "@/lib/router-compat";
 import { useTranslation } from "react-i18next";
 import { startArbPayment } from "@utils/arbPayment";
+import { getPaymentGateway } from "@utils/paymentGateway";
 
 /**
  * صفحة فشل الدفع بعد العودة من ميسر.
@@ -31,9 +32,16 @@ const OrderFailureRedirectPage: React.FC = () => {
   const [retrying, setRetrying] = useState(false);
 
   const handleRetry = async () => {
-    // الطلب بقي pending → أعِد بدء الدفع مباشرة على نفس الطلب
-    if (orderId) {
-      setRetrying(true);
+    if (!orderId) {
+      navigate("/orders", { replace: true });
+      return;
+    }
+
+    setRetrying(true);
+    const gateway = await getPaymentGateway();
+
+    // الراجحي: الطلب بقي pending → أعِد بدء الدفع مباشرة على نفس الطلب
+    if (gateway === "arb") {
       const params = new URLSearchParams({
         gateway: "arb",
         type: type || "offer",
@@ -50,11 +58,19 @@ const OrderFailureRedirectPage: React.FC = () => {
       }
       return;
     }
+
+    // ميسر: نموذج البطاقة يُعرض في صفحة الدفع نفسها
+    if (type === "offer" && offerCategory && offerRestaurantId) {
+      navigate(`/offers/${offerCategory}/${offerRestaurantId}/payment`, {
+        replace: true,
+      });
+      return;
+    }
     navigate("/orders", { replace: true });
   };
 
   return (
-    <div className="min-h-screen bg-[#1D0843] flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] flex flex-col items-center justify-center px-4 py-12">
       <div
         className="w-20 h-20 rounded-full bg-red-500/20 flex items-center justify-center mb-6"
         aria-hidden
@@ -89,7 +105,7 @@ const OrderFailureRedirectPage: React.FC = () => {
           type="button"
           onClick={handleRetry}
           disabled={retrying}
-          className="px-6 py-3 rounded-full bg-white text-gray-900 font-medium hover:bg-gray-100 transition-colors disabled:opacity-60"
+          className="px-6 py-3 rounded-full bg-white text-mk-text font-medium hover:bg-mk-tint2 transition-colors disabled:opacity-60"
         >
           {retrying ? "..." : t("orderFailureRedirect.try_again")}
         </button>

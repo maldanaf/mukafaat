@@ -2,7 +2,7 @@
 
 import React, { useMemo } from "react";
 import { IoIosArrowRoundForward } from "react-icons/io";
-import { BsShare, BsHeart } from "react-icons/bs";
+import { ShareIcon, HeartIcon } from "@ui";
 import { FiEye } from "react-icons/fi";
 import { useIsRTL } from "../hooks";
 import { useTranslation } from "react-i18next";
@@ -112,7 +112,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             }}
             className="w-8 h-8 bg-white bg-opacity-90 rounded-full flex items-center justify-center text-gray-700 hover:bg-opacity-100 transition-all duration-200"
           >
-            <BsShare className="text-sm" />
+            <ShareIcon size={14} />
           </button>
           <button
             onClick={(e) => {
@@ -121,7 +121,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             }}
             className="w-8 h-8 bg-white bg-opacity-90 rounded-full flex items-center justify-center text-gray-700 hover:bg-opacity-100 transition-all duration-200"
           >
-            <BsHeart className="text-sm" />
+            <HeartIcon size={14} />
           </button>
         </div>
 
@@ -140,7 +140,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             </span>
           )}
           {isBestSeller && (
-            <span className="bg-purple-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
+            <span className="bg-mk-primary-light text-white text-xs px-2 py-1 rounded-full font-semibold">
               {t("home.product.bestseller")}
             </span>
           )}

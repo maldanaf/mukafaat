@@ -151,13 +151,13 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             : "-left-full -translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between py-4 px-6 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-800">
+        <div className="flex items-center justify-between py-4 px-6 border-b border-mk-border">
+          <h2 className="text-lg font-semibold text-mk-text">
             {isRTL ? "تصفية العروض" : "Filter Offers"}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors duration-200 bg-gray-100 rounded-full p-2"
+            className="text-mk-faint hover:text-mk-muted transition-colors duration-200 bg-mk-tint2 rounded-full p-2"
           >
             <IoMdClose size={20} />
           </button>
@@ -190,10 +190,10 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                         <button
                           key={opt.key}
                           onClick={() => handleSortChange(opt.key)}
-                          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                          className={`px-4 py-2 rounded-mk-sm text-sm font-medium transition-colors ${
                             filters.sortBy === opt.key
-                              ? "bg-purple-100 text-purple-700 border border-purple-200"
-                              : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
+                              ? "bg-mk-tint text-mk-primary border border-mk-border-strong"
+                              : "bg-white text-mk-text-strong border border-mk-border hover:bg-mk-tint3"
                           }`}
                         >
                           {opt.name}
@@ -201,7 +201,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                       ))}
                     </div>
                   </div>
-                  <div className="border-t border-gray-200" />
+                  <div className="border-t border-mk-border" />
                 </>
               )}
 
@@ -225,10 +225,10 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                         <button
                           key={sub.id}
                           onClick={() => handleToggleIds(sub.id, "subcategoryIds")}
-                          className={`w-full px-4 py-2 rounded-lg text-sm font-medium transition-colors text-start ${
+                          className={`w-full px-4 py-2 rounded-mk-sm text-sm font-medium transition-colors text-start ${
                             filters.subcategoryIds.includes(sub.id)
-                              ? "bg-purple-100 text-purple-700 border border-purple-200"
-                              : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
+                              ? "bg-mk-tint text-mk-primary border border-mk-border-strong"
+                              : "bg-white text-mk-text-strong border border-mk-border hover:bg-mk-tint3"
                           }`}
                         >
                           {sub.name}
@@ -236,7 +236,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                       ))}
                     </div>
                   </div>
-                  <div className="border-t border-gray-200" />
+                  <div className="border-t border-mk-border" />
                 </>
               )}
 
@@ -260,10 +260,10 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                         <button
                           key={ot.id}
                           onClick={() => handleToggleIds(ot.id, "offerTypeIds")}
-                          className={`px-3 py-2 rounded-lg text-xs font-medium transition-colors text-center ${
+                          className={`px-3 py-2 rounded-mk-sm text-xs font-medium transition-colors text-center ${
                             filters.offerTypeIds.includes(ot.id)
-                              ? "bg-purple-100 text-purple-700 border border-purple-200"
-                              : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
+                              ? "bg-mk-tint text-mk-primary border border-mk-border-strong"
+                              : "bg-white text-mk-text-strong border border-mk-border hover:bg-mk-tint3"
                           }`}
                         >
                           {ot.name}
@@ -271,7 +271,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                       ))}
                     </div>
                   </div>
-                  <div className="border-t border-gray-200" />
+                  <div className="border-t border-mk-border" />
                 </>
               )}
 
@@ -295,10 +295,10 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                         <button
                           key={brand.id}
                           onClick={() => handleToggleIds(brand.id, "brandIds")}
-                          className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors border ${
+                          className={`flex items-center gap-2 px-3 py-2 rounded-mk-sm text-sm font-medium transition-colors border ${
                             filters.brandIds.includes(brand.id)
-                              ? "bg-purple-100 text-purple-700 border-purple-200"
-                              : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                              ? "bg-mk-tint text-mk-primary border-mk-border-strong"
+                              : "bg-white text-mk-text-strong border-mk-border hover:bg-mk-tint3"
                           }`}
                         >
                           {brand.logo && (
@@ -313,7 +313,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                       ))}
                     </div>
                   </div>
-                  <div className="border-t border-gray-200" />
+                  <div className="border-t border-mk-border" />
                 </>
               )}
 
@@ -334,7 +334,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                   <div className="px-1">
                     <div className="relative pt-2 pb-4">
                       {/* Track background */}
-                      <div className="h-2 rounded-full bg-gray-200 relative">
+                      <div className="h-2 rounded-full bg-mk-border-strong/50 relative">
                         {/* Active track between thumbs */}
                         <div
                           className="absolute h-full rounded-full bg-[#400198]"
@@ -363,7 +363,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                         className="absolute w-full h-2 top-2 left-0 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#400198] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-[#400198] [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow [&::-moz-range-thumb]:cursor-pointer z-[2]"
                       />
                     </div>
-                    <div className="flex justify-between text-sm text-gray-600 mt-1">
+                    <div className="flex justify-between text-sm text-mk-muted mt-1">
                       <span>
                         {t("offerFilterSidebar.price_sar", {
                           value: priceMinVal,
@@ -382,17 +382,17 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
           )}
         </div>
 
-        <div className="border-t border-gray-200 p-6">
+        <div className="border-t border-mk-border p-6">
           <div className="flex gap-3">
             <button
               onClick={handleResetFilters}
-              className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+              className="flex-1 px-4 py-2 bg-mk-tint2 text-mk-text-strong rounded-mk-sm font-medium hover:bg-mk-border-strong/60 transition-colors"
             >
               {t("offerFilterSidebar.reset")}
             </button>
             <button
               onClick={handleApplyFilters}
-              className="flex-1 px-4 py-2 bg-[#fd671a] text-white rounded-lg font-medium hover:bg-[#e55a17] transition-colors"
+              className="flex-1 px-4 py-2 bg-[#fd671a] text-white rounded-mk-sm font-medium hover:bg-[#D9500B] transition-colors"
             >
               {t("offerFilterSidebar.apply")}
             </button>

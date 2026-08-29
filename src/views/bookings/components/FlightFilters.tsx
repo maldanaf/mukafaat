@@ -64,7 +64,7 @@ const FlightFilters: React.FC<FlightFiltersProps> = ({
               placeholder={isRTL ? "المدينة أو المطار" : "City or Airport"}
               value={(filters.from as string) || ""}
               onChange={(e) => handleInputChange("from", e.target.value)}
-              className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
+              className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-mk-primary-light focus:border-transparent text-sm"
             />
           </div>
         </div>
@@ -81,7 +81,7 @@ const FlightFilters: React.FC<FlightFiltersProps> = ({
               placeholder={isRTL ? "المدينة أو المطار" : "City or Airport"}
               value={(filters.to as string) || ""}
               onChange={(e) => handleInputChange("to", e.target.value)}
-              className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
+              className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-mk-primary-light focus:border-transparent text-sm"
             />
           </div>
         </div>
@@ -359,7 +359,7 @@ const FlightFilters: React.FC<FlightFiltersProps> = ({
             onSearch(filters);
           }}
           disabled={isSearching}
-          className="w-full bg-[#fd671a] hover:bg-[#e55a17] disabled:bg-gray-400 text-white px-4 py-2 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors text-sm"
+          className="w-full bg-[#fd671a] hover:bg-[#D9500B] disabled:bg-gray-400 text-white px-4 py-2 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors text-sm"
         >
           <FiSearch className="text-sm" />
           {isSearching

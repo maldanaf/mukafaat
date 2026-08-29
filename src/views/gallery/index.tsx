@@ -171,7 +171,7 @@ const GalleryPage = () => {
           {/* Loading State */}
           {isLoading ? (
             <div className="text-center py-20">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-mk-primary"></div>
               <p className="text-gray-500 mt-4 text-lg">Loading gallery...</p>
             </div>
           ) : galleryItems.length > 0 ? (
@@ -200,7 +200,7 @@ const GalleryPage = () => {
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                   currentPage === 1
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "bg-[#fd671a] text-white hover:bg-purple-700"
+                    : "bg-[#fd671a] text-white hover:bg-mk-primary"
                 }`}
               >
                 {isRTL ? "السابق" : "Previous"}
@@ -234,7 +234,7 @@ const GalleryPage = () => {
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                   currentPage === totalPages
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "bg-[#fd671a] text-white hover:bg-purple-700"
+                    : "bg-[#fd671a] text-white hover:bg-mk-primary"
                 }`}
               >
                 {isRTL ? "التالي" : "Next"}

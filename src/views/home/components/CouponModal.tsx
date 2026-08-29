@@ -1,23 +1,23 @@
 "use client";
 
-import React, { useCallback, useMemo, useState, lazy, Suspense } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@/lib/router-compat";
 import { useIsRTL } from "@hooks";
 import { useTranslation } from "react-i18next";
 import { IoMdClose } from "react-icons/io";
 import {
   FiCheck,
-  FiBookmark,
   FiShare2,
   FiExternalLink,
-  FiEye,
+  FiUsers,
 } from "react-icons/fi";
 import { FaRegCopy } from "react-icons/fa";
-import { BsHeart, BsHeartFill } from "react-icons/bs";
+import { HeartIcon } from "@ui";
 import type { CouponModel } from "@network/mappers/couponsMapper";
 import { stripHtml } from "@utils/stripHtml";
 import { useUserStore } from "@stores/userStore";
 import {
+  useCouponCopy,
   useCouponVote,
   useFavorites,
   useFavoriteToggle,
@@ -25,6 +25,8 @@ import {
 import { normalizeFavoritesList } from "@utils/favorites";
 import { toast } from "react-toastify";
 import ShareModal from "@components/ShareModal";
+import { Badge, StatChips } from "@ui";
+import { usedCountText } from "@utils/usedCount";
 
 export type CouponWithIcon = CouponModel & { icon: React.ReactNode };
 
@@ -55,6 +57,14 @@ const CouponModal: React.FC<CouponModalProps> = ({
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const couponCopy = useCouponCopy();
+  // عدّاد النسخ — يبدأ من قيمة الـAPI ويزداد تفاؤلياً عند النسخ
+  const [copiesCount, setCopiesCount] = useState<number>(
+    coupon.copiesCount ?? 0,
+  );
+  useEffect(() => {
+    setCopiesCount(coupon.copiesCount ?? 0);
+  }, [coupon.id, coupon.copiesCount]);
   const isAuthenticated = useUserStore((s) => !!s.token);
   const couponVote = useCouponVote();
   const [voteState, setVoteState] = useState<{
@@ -115,11 +125,23 @@ const CouponModal: React.FC<CouponModalProps> = ({
       : `CPN${String(coupon.id).padStart(4, "0")}`;
 
   const copyCode = useCallback(() => {
-    navigator.clipboard?.writeText(code).then(() => {
+    const markCopied = () => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+    };
+
+    // زيادة تفاؤلية فورية ثم تسجيل النسخة في الخادم (fire-and-forget)
+    setCopiesCount((c) => c + 1);
+    couponCopy.mutate(coupon.id, {
+      onSuccess: (serverCount) => {
+        if (typeof serverCount === "number") setCopiesCount(serverCount);
+      },
     });
-  }, [code]);
+
+    const done = navigator.clipboard?.writeText(code);
+    if (done) done.then(markCopied).catch(markCopied);
+    else markCopied();
+  }, [code, coupon.id, couponCopy]);
 
   const couponShareUrl = typeof window !== "undefined"
     ? `${window.location.origin}/coupons?coupon=${coupon.id}`
@@ -252,25 +274,32 @@ const CouponModal: React.FC<CouponModalProps> = ({
               >
                 {stripHtml(coupon.title)}
               </h2>
-              <div
-                className={`flex items-center gap-4 mt-1 text-sm text-gray-500 `}
-              >
-                <span className="flex items-center gap-1">
-                  <FiShare2 className="w-4 h-4" /> {coupon.sharesCount ?? 0}
-                </span>
-                <span className="flex items-center gap-1">
-                  <FiEye className="w-4 h-4" /> {coupon.viewsCount ?? 0}
-                </span>
-                <span className="flex items-center gap-1">★ {coupon.rating ?? 5}</span>
+              {/* عدّادات موحّدة: مشاهدات / مشاركات / نسخ */}
+              <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                <StatChips
+                  compact
+                  views={coupon.viewsCount}
+                  shares={coupon.sharesCount}
+                  copies={copiesCount}
+                />
+                {Number(coupon.rating) > 0 && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-[#FDF4DE] px-2 py-0.5 text-[10.5px] font-bold text-[#8A6209]">
+                    ★ {coupon.rating}
+                  </span>
+                )}
               </div>
             </div>
           </div>
 
-          {/* Title + subtitle */}
-          <h3 className="text-xl font-bold text-gray-900 mb-3">
-            {coupon.dealText}
-            {coupon.discountPercentage ? ` ${coupon.discountPercentage}%` : ""}
-          </h3>
+          {/* Title + شارة الخصم */}
+          <div className="mb-3 flex flex-wrap items-center gap-2">
+            <h3 className="m-0 text-xl font-bold text-gray-900">
+              {coupon.dealText}
+            </h3>
+            {coupon.discountPercentage ? (
+              <Badge tone="solid-accent">{`${coupon.discountPercentage}%`}</Badge>
+            ) : null}
+          </div>
           {/* <p className="text-base font-semibold text-gray-700 mb-2">
             {coupon.dealSubtext}
           </p> */}
@@ -337,9 +366,9 @@ const CouponModal: React.FC<CouponModalProps> = ({
                 className={`w-12 h-12 rounded-full flex items-center justify-center ${isFavorite ? "bg-red-100 text-red-600" : "bg-gray-100"}`}
               >
                 {isFavorite ? (
-                  <BsHeartFill className="w-5 h-5" />
+                  <HeartIcon size={20} filled />
                 ) : (
-                  <BsHeart className="w-5 h-5" />
+                  <HeartIcon size={20} />
                 )}
               </div>
               <span className="text-xs font-medium">
@@ -382,7 +411,7 @@ const CouponModal: React.FC<CouponModalProps> = ({
           {/* Coupon code box */}
           <div
             onClick={copyCode}
-            className="flex items-center justify-between gap-3 py-4 px-5 mb-3 border-2 border-dashed border-gray-300 rounded-2xl cursor-pointer hover:border-[#400198] hover:bg-purple-50/50 transition-colors"
+            className="flex items-center justify-between gap-3 py-4 px-5 mb-3 border-2 border-dashed border-gray-300 rounded-2xl cursor-pointer hover:border-[#400198] hover:bg-mk-tint3/50 transition-colors"
           >
             <span className="text-xl font-bold text-gray-900 tracking-wider">
               {code}
@@ -398,7 +427,7 @@ const CouponModal: React.FC<CouponModalProps> = ({
           </div>
 
           {/* Expiry (من end_date إن وُجد) */}
-          <p className="text-sm text-gray-500 mb-6">
+          <p className="text-sm text-gray-500">
             {coupon.endDate
               ? (() => {
                   const d = new Date(coupon.endDate as string);
@@ -416,11 +445,19 @@ const CouponModal: React.FC<CouponModalProps> = ({
               : t("couponModal.noExpiryDate")}
           </p>
 
+          {/* عدّاد الاستخدام (عدد مرات نسخ الكود) — يُخفى عند الصفر */}
+          {copiesCount > 0 && (
+            <p className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-gray-400">
+              <FiUsers className="w-3.5 h-3.5 flex-shrink-0" />
+              <span>{usedCountText(copiesCount)}</span>
+            </p>
+          )}
+
           {/* CTA - الذهاب إلى متجر الكوبون (إن وجد) */}
           <button
             type="button"
             onClick={goToStore}
-            className="block w-full py-4 rounded-2xl bg-[#fd671a] text-white text-center font-bold text-lg hover:opacity-95 transition-opacity"
+            className="block w-full mt-6 py-4 rounded-2xl bg-[#fd671a] text-white text-center font-bold text-lg hover:opacity-95 transition-opacity"
           >
             {t("couponModal.goToStore")}
           </button>

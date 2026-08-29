@@ -10,6 +10,7 @@ import { InquiryModalProvider } from "@context/InquiryModalContext";
 import InquiryModal from "@components/InquiryModal";
 import AuthApiBootstrap from "@components/AuthApiBootstrap";
 import GeoCountryBootstrap from "@components/GeoCountryBootstrap";
+import ReferralBootstrap from "@components/ReferralBootstrap";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -31,6 +32,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             <InquiryModalProvider>
               <AuthApiBootstrap />
               <GeoCountryBootstrap />
+              <ReferralBootstrap />
               {children}
               <InquiryModal />
             </InquiryModalProvider>

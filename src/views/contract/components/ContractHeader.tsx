@@ -5,7 +5,7 @@ import moment from "moment";
 
 const ContractHeader = () => {
   return (
-    <section className="relative w-full bg-[#1D0843]  overflow-hidden min-h-[300px] flex items-center justify-center">
+    <section className="relative w-full bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)]  overflow-hidden min-h-[300px] flex items-center justify-center">
       <div className="absolute inset-0 bg-primary opacity-30"></div>
       <div className="container relative pt-[100px] pb-8 px-2 mx-auto w-full text-center lg:pt-[100px] lg:pb-8 flex flex-col justify-center z-10">
         <div className="header grid lg:grid-cols-2 gap-4 text-white">

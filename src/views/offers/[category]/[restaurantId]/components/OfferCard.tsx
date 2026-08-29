@@ -7,8 +7,17 @@ import { useTranslation } from "react-i18next";
 import { type Offer } from "@data/offers";
 import { Pro1, Pro2, Pro3, Pro4, Pro5, Pro6, Pro7, Pro8 } from "@assets";
 import CurrencyIcon from "@components/CurrencyIcon";
-import { FiDownload, FiEye } from "react-icons/fi";
-import { BsHeart, BsHeartFill } from "react-icons/bs";
+import OfferStats from "@components/OfferStats";
+import { HeartIcon, PriceTag, SmartImage, Ratio, FOCUS } from "@ui";
+import {
+  VIVID_CARD,
+  VIVID_MEDIA,
+  VIVID_SCRIM,
+  DiscountBadge,
+  Ribbon,
+  CornerButton,
+  discountPercentOf,
+} from "@views/offers/components/CatalogKit";
 import { stripHtml } from "@utils/stripHtml";
 import { useUserStore } from "@stores/userStore";
 import { useFavorites, useFavoriteToggle } from "@hooks/api/useMokafaatQueries";
@@ -104,124 +113,121 @@ const OfferCard: React.FC<OfferCardProps> = ({ offer, onOfferClick }) => {
     }
   };
 
+  const title = offer.title[isRTL ? "ar" : "en"];
+  const priceAfter = Number(offer.priceAfter ?? offer.discountPrice ?? 0);
+  const priceBefore = Number(offer.priceBefore ?? offer.originalPrice ?? 0);
+  const discountPercent = discountPercentOf(
+    offer.discountPercentage,
+    priceBefore,
+    priceAfter,
+  );
+
   return (
     <div
-      className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl cursor-pointer"
+      role="button"
+      tabIndex={0}
+      className={`${VIVID_CARD} cursor-pointer ${FOCUS}`}
       onClick={() => onOfferClick(offer)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onOfferClick(offer);
+        }
+      }}
     >
-      {/* Image Section */}
-      <div className="relative h-48 overflow-hidden">
-        <img
-          src={getOfferImage(offer.image)}
-          alt={offer.title[isRTL ? "ar" : "en"]}
-          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-        />
+      {/* الصورة — نسبة محفوظة بلا قفزات تخطيط */}
+      <div className={VIVID_MEDIA}>
+        <Ratio ratio="aspect-[16/10]">
+          <SmartImage
+            src={getOfferImage(offer.image)}
+            alt={title}
+            name={title}
+            variant="name"
+          />
+        </Ratio>
 
-        <div className="absolute top-3 right-3 flex gap-2">
-          <button
-            type="button"
-            onClick={handleFavoriteClick}
-            className="w-8 h-8 bg-white bg-opacity-90 rounded-full flex items-center justify-center text-gray-700 hover:bg-opacity-100 transition-all disabled:opacity-50"
-            disabled={toggleFavorite.isPending}
-          >
-            {isFavorite ? (
-              <BsHeartFill className="text-sm text-red-500" />
-            ) : (
-              <BsHeart className="text-sm" />
-            )}
-          </button>
-          <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold self-center">
-            {offer.discountPercentage}% {isRTL ? "خصم" : "OFF"}
-          </span>
-        </div>
+        <span aria-hidden className={VIVID_SCRIM} />
 
-        {/* Status Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-2">
-          {offer.isNew && (
-            <span className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium">
-              {isRTL ? "جديد" : "NEW"}
-            </span>
+        <DiscountBadge percent={discountPercent} size="lg" floating />
+
+        <CornerButton
+          className="absolute end-2 top-2 z-[2] hover:text-mk-red"
+          label={t("offerCard.favorites", "المفضلة")}
+          pressed={isFavorite}
+          disabled={toggleFavorite.isPending}
+          onClick={handleFavoriteClick}
+        >
+          <HeartIcon size={15} filled={isFavorite} className={isFavorite ? "text-mk-red" : ""} />
+        </CornerButton>
+
+        {/* شارات الحالة ومدّة الصلاحية */}
+        <div className="absolute bottom-2 start-2 z-[2] flex max-w-[88%] flex-wrap gap-1.5">
+          {offer.isNew && <Ribbon tone="new">{t("offerCard.new")}</Ribbon>}
+          {offer.isBestSeller && <Ribbon tone="hot">{t("offerCard.bestSeller")}</Ribbon>}
+          {offer.validity[isRTL ? "ar" : "en"] && (
+            <Ribbon tone="info">{offer.validity[isRTL ? "ar" : "en"]}</Ribbon>
           )}
-          {offer.isBestSeller && (
-            <span className="bg-purple-500 text-white px-2 py-1 rounded-full text-xs font-medium">
-              {isRTL ? "الأكثر مبيعاً" : "BEST SELLER"}
-            </span>
-          )}
-        </div>
-
-        {/* Validity */}
-        <div className="absolute bottom-3 left-3 bg-black/50 text-white px-2 py-1 rounded-full text-xs">
-          {offer.validity[isRTL ? "ar" : "en"]}
         </div>
       </div>
 
-      {/* Content Section */}
-      <div className="p-4">
-        <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-2">
-          {offer.title[isRTL ? "ar" : "en"]}
+      {/* المحتوى */}
+      <div className="flex flex-1 flex-col gap-2.5 p-4">
+        <h3 className="mk-clamp-2 m-0 text-[15px] font-extrabold leading-snug text-mk-text">
+          {title}
         </h3>
 
-        <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+        <p className="mk-clamp-2 m-0 text-[12.5px] leading-relaxed text-mk-muted">
           {stripHtml(offer.description[isRTL ? "ar" : "en"])}
         </p>
 
-        {/* Features */}
-        <div className="mb-4">
-          <div className="flex flex-wrap gap-1">
+        {offer.features.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
             {offer.features.slice(0, 3).map((feature, index) => (
               <span
                 key={index}
-                className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full"
+                className="flex items-center gap-1 rounded-full bg-mk-tint2 px-2 py-1 text-[11px] text-mk-text-strong"
               >
+                <span aria-hidden className="h-1 w-1 rounded-full bg-mk-primary" />
                 {feature}
               </span>
             ))}
             {offer.features.length > 3 && (
-              <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                +{offer.features.length - 3} {isRTL ? "أخرى" : "more"}
+              <span className="rounded-full bg-mk-tint2 px-2 py-1 text-[11px] text-mk-faint">
+                +{offer.features.length - 3}
               </span>
             )}
           </div>
-        </div>
+        )}
 
-        {/* Stats */}
-        <div className="flex items-center justify-between mb-4 text-sm text-gray-500">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1">
-              <span className="text-yellow-500">★</span>
-              <span>{offer.rating}</span>
-              <span>({offer.reviewsCount})</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <FiEye />
-              <span>{offer.views}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <FiDownload />
-              <span>{offer.purchases}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Price — price_after / price_before من الموديل (من الـ API) */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-bold text-orange-500 flex items-center gap-1">
-              {offer.priceAfter ?? offer.discountPrice}
-              <CurrencyIcon className="text-orange-500" size={16} />
+        {/* التقييم والعدّادات */}
+        <div className="flex flex-wrap items-center gap-2 text-[11.5px] text-mk-muted">
+          {Number(offer.rating) > 0 && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-[#FDF4DE] px-2 py-1 font-bold text-[#8A6209]">
+              <span aria-hidden>★</span>
+              {offer.rating}
+              {offer.reviewsCount ? ` (${offer.reviewsCount})` : ""}
             </span>
-            {(offer.priceBefore ?? offer.originalPrice) >
-              (offer.priceAfter ?? offer.discountPrice) && (
-              <span className="text-sm text-gray-500 line-through flex items-center gap-1">
-                {offer.priceBefore ?? offer.originalPrice}
-                <CurrencyIcon className="text-gray-500" size={12} />
-              </span>
-            )}
-          </div>
+          )}
+          {/* مشاهدات / مفضلة / مشاركات */}
+          <OfferStats
+            views={offer.views}
+            favorites={offer.favoritesCount}
+            shares={offer.sharesCount}
+            className="text-mk-muted"
+            iconSize="w-3.5 h-3.5"
+            textSize="text-xs"
+          />
+        </div>
 
-          <button className="text-orange-500 font-semibold text-sm hover:text-orange-600 transition-colors">
+        {/* السعر والزر */}
+        <div className="mt-auto flex flex-wrap items-end justify-between gap-2 border-t border-mk-divider pt-3">
+          <PriceTag price={priceAfter} priceBefore={priceBefore} size="lg" stacked />
+          <span className="inline-flex items-center gap-1 rounded-full bg-mk-tint px-3.5 py-2 text-[12.5px] font-extrabold text-mk-primary transition-colors group-hover/vivid:bg-mk-primary group-hover/vivid:text-white">
             {t(isFreeForUser ? "home.product.viewNow" : "home.product.buyNow")}
-          </button>
+            <span aria-hidden className="rtl:-scale-x-100">
+              &#8594;
+            </span>
+          </span>
         </div>
       </div>
     </div>

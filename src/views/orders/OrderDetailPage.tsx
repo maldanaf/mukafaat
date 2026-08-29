@@ -148,15 +148,15 @@ const OrderDetailPage: React.FC = () => {
     return (
       <div
         className="min-h-screen pt-24 pb-28 flex items-center justify-center"
-        style={{ background: "linear-gradient(to bottom, #521A93, #33005D)" }}
+        style={{ background: "linear-gradient(150deg, #1B1150 0%, #400198 55%, #6703EB 100%)" }}
       >
-        <div className="text-center bg-white/10 rounded-2xl p-8 max-w-md mx-4">
+        <div className="text-center bg-white/10 rounded-mk-xl p-8 max-w-md mx-4">
           <h2 className="text-xl font-bold text-white mb-4">
             {isRTL ? "تسجيل الدخول مطلوب" : "Login required"}
           </h2>
           <Link
             to="/login?returnUrl=/orders"
-            className="bg-white text-[#1D0843] px-6 py-3 rounded-xl font-medium hover:bg-white/90 transition-colors inline-block"
+            className="bg-white text-mk-primary px-6 py-3 rounded-mk-md font-medium hover:bg-white/90 transition-colors inline-block"
           >
             {isRTL ? "تسجيل الدخول" : "Login"}
           </Link>
@@ -169,9 +169,9 @@ const OrderDetailPage: React.FC = () => {
     return (
       <div
         className="min-h-screen flex justify-center items-center"
-        style={{ background: "linear-gradient(to bottom, #521A93, #33005D)" }}
+        style={{ background: "linear-gradient(150deg, #1B1150 0%, #400198 55%, #6703EB 100%)" }}
       >
-        <LoadingSpinner />
+        <LoadingSpinner onDark />
       </div>
     );
   }
@@ -180,9 +180,9 @@ const OrderDetailPage: React.FC = () => {
     return (
       <div
         className="min-h-screen flex items-center justify-center p-4 pb-24"
-        style={{ background: "linear-gradient(to bottom, #521A93, #33005D)" }}
+        style={{ background: "linear-gradient(150deg, #1B1150 0%, #400198 55%, #6703EB 100%)" }}
       >
-        <div className="text-center bg-white/10 rounded-2xl p-8 max-w-md">
+        <div className="text-center bg-white/10 rounded-mk-xl p-8 max-w-md">
           <h2 className="text-xl font-bold text-white mb-2">
             {isRTL ? "الطلب غير موجود" : "Order not found"}
           </h2>
@@ -190,7 +190,7 @@ const OrderDetailPage: React.FC = () => {
           <button
             type="button"
             onClick={() => navigate("/orders")}
-            className="bg-white text-[#1D0843] px-6 py-3 rounded-xl font-medium hover:bg-white/90 transition-colors"
+            className="bg-white text-mk-primary px-6 py-3 rounded-mk-md font-medium hover:bg-white/90 transition-colors"
           >
             {isRTL ? "العودة للطلبات" : "Back to Orders"}
           </button>
@@ -237,7 +237,7 @@ const OrderDetailPage: React.FC = () => {
       <div
         className="min-h-screen px-4 flex flex-col items-center pt-10 pb-10"
         style={{
-          background: "linear-gradient(to bottom, #521A93, #33005D)",
+          background: "linear-gradient(150deg, #1B1150 0%, #400198 55%, #6703EB 100%)",
         }}
       >
         {/* زر العودة فوق الكارد */}
@@ -255,7 +255,7 @@ const OrderDetailPage: React.FC = () => {
         </div>
 
         {/* كارد في منتصف الشاشة */}
-        <div className="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden flex-shrink-0">
+        <div className="w-full max-w-md bg-white rounded-mk-xl shadow-xl overflow-hidden flex-shrink-0">
           <div className="pt-6 pb-8 px-5">
             <div className="flex justify-between items-center mb-4">
               {/* بادج الحالة */}
@@ -278,7 +278,7 @@ const OrderDetailPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => navigate("/orders")}
-                className="w-10 h-10 flex items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 transition-colors"
+                className="w-10 h-10 flex items-center justify-center rounded-full text-mk-muted hover:bg-mk-tint2 transition-colors"
                 aria-label={isRTL ? "إغلاق" : "Close"}
               >
                 <IoClose className="w-6 h-6" />
@@ -289,10 +289,10 @@ const OrderDetailPage: React.FC = () => {
             {isCardOrder && cardCodes.length > 0 && (
               <div className="mb-6">
                 <div className="text-center mb-4">
-                  <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <div className="w-16 h-16 bg-mk-tint rounded-full flex items-center justify-center mx-auto mb-3">
                     <span className="text-2xl">🎫</span>
                   </div>
-                  <p className="text-sm font-medium text-gray-600">
+                  <p className="text-sm font-medium text-mk-muted">
                     {isRTL ? "رموز البطاقة" : "Card Code(s)"}
                   </p>
                 </div>
@@ -300,9 +300,9 @@ const OrderDetailPage: React.FC = () => {
                   {cardCodes.map((code, i) => (
                     <div
                       key={i}
-                      className="flex items-center justify-between bg-gradient-to-r from-purple-50 to-white border border-purple-200 rounded-xl py-3 px-4"
+                      className="flex items-center justify-between bg-gradient-to-r from-mk-tint3 to-white border border-mk-border-strong rounded-mk-md py-3 px-4"
                     >
-                      <span className="font-mono font-bold text-lg text-gray-900 tracking-wider">{code}</span>
+                      <span className="font-mono font-bold text-lg text-mk-text tracking-wider">{code}</span>
                       <button
                         type="button"
                         onClick={() => {
@@ -311,7 +311,7 @@ const OrderDetailPage: React.FC = () => {
                             toast.success(isRTL ? "تم النسخ" : "Copied!")
                           );
                         }}
-                        className="text-xs text-purple-600 hover:text-purple-800 font-medium bg-purple-100 hover:bg-purple-200 px-3 py-1.5 rounded-lg transition-colors"
+                        className="text-xs text-mk-primary hover:text-mk-deep font-medium bg-mk-tint hover:bg-mk-border-strong px-3 py-1.5 rounded-mk-sm transition-colors"
                       >
                         {isRTL ? "نسخ" : "Copy"}
                       </button>
@@ -334,10 +334,10 @@ const OrderDetailPage: React.FC = () => {
 
             {!isCardOrder && voucherNumber && (
               <div className="text-center mb-2">
-                <p className="text-2xl font-bold text-gray-900 tracking-widest font-mono">
+                <p className="text-2xl font-bold text-mk-text tracking-widest font-mono">
                   {formatVoucherNumber(voucherNumber)}
                 </p>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-mk-muted mt-1">
                   {isRTL ? "رقم القسيمة" : "Voucher Number"}
                 </p>
               </div>
@@ -346,14 +346,14 @@ const OrderDetailPage: React.FC = () => {
             {/* رموز بطاقة إضافية (لطلبات العروض اللي فيها card_codes) */}
             {!isCardOrder && cardCodes.length > 0 && (
               <div className="mb-6">
-                <p className="text-sm text-gray-500 mb-2">
+                <p className="text-sm text-mk-muted mb-2">
                   {isRTL ? "رموز البطاقة" : "Card Code(s)"}
                 </p>
                 <ul className="space-y-1">
                   {cardCodes.map((code, i) => (
                     <li
                       key={i}
-                      className="text-center font-mono font-semibold text-gray-900 bg-gray-50 py-2 px-3 rounded-lg"
+                      className="text-center font-mono font-semibold text-mk-text bg-mk-tint3 py-2 px-3 rounded-mk-sm"
                     >
                       {code}
                     </li>
@@ -367,13 +367,13 @@ const OrderDetailPage: React.FC = () => {
               <div
                 className={`flex justify-between items-center text-sm gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
               >
-                <span className="text-gray-900 font-medium">
+                <span className="text-mk-text font-medium">
                   {formatOrderDate(
                     rawOrderData?.created_at ?? order.createdAt,
                     isRTL,
                   )}
                 </span>
-                <span className="text-gray-500">
+                <span className="text-mk-muted">
                   {isRTL ? "تاريخ الشراء" : "Purchase Date"}
                 </span>
               </div>
@@ -381,10 +381,10 @@ const OrderDetailPage: React.FC = () => {
                 <div
                   className={`flex justify-between items-center text-sm gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
                 >
-                  <span className="text-gray-900 font-medium">
+                  <span className="text-mk-text font-medium">
                     {formatOrderDate(rawOrderData?.expires_at, isRTL)}
                   </span>
-                  <span className="text-gray-500">
+                  <span className="text-mk-muted">
                     {isRTL ? "انتهاء الكوبون" : "Coupon Expiry"}
                   </span>
                 </div>
@@ -393,10 +393,10 @@ const OrderDetailPage: React.FC = () => {
                 <div
                   className={`flex justify-between items-center text-sm gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
                 >
-                  <span className="text-gray-900 font-medium">
+                  <span className="text-mk-text font-medium">
                     {order.items[0].title[isRTL ? "ar" : "en"]}
                   </span>
-                  <span className="text-gray-500">
+                  <span className="text-mk-muted">
                     {isCardOrder
                       ? isRTL
                         ? "البطاقة"
@@ -411,10 +411,10 @@ const OrderDetailPage: React.FC = () => {
                 <div
                   className={`flex justify-between items-center text-sm gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
                 >
-                  <span className="text-gray-900 font-medium">
+                  <span className="text-mk-text font-medium">
                     {rawOrderData.item.name}
                   </span>
-                  <span className="text-gray-500">
+                  <span className="text-mk-muted">
                     {isCardOrder
                       ? isRTL
                         ? "البطاقة"
@@ -430,7 +430,7 @@ const OrderDetailPage: React.FC = () => {
                 <div
                   className={`flex justify-between items-center text-sm gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
                 >
-                  <span className="text-gray-900 font-medium flex items-center gap-2">
+                  <span className="text-mk-text font-medium flex items-center gap-2">
                     {(orderMerchant as { logo?: string }).logo && (
                       <img
                         src={(orderMerchant as { logo?: string }).logo}
@@ -440,7 +440,7 @@ const OrderDetailPage: React.FC = () => {
                     )}
                     {(orderMerchant as { name?: string }).name}
                   </span>
-                  <span className="text-gray-500">
+                  <span className="text-mk-muted">
                     {isRTL ? "التاجر" : "Merchant"}
                   </span>
                 </div>
@@ -449,10 +449,10 @@ const OrderDetailPage: React.FC = () => {
                 <div
                   className={`flex justify-between items-center text-sm gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
                 >
-                  <span className="text-gray-900 font-medium">
+                  <span className="text-mk-text font-medium">
                     {formatOrderDate(rawOrderData.activated_at, isRTL)}
                   </span>
-                  <span className="text-gray-500">
+                  <span className="text-mk-muted">
                     {isRTL ? "تاريخ التفعيل" : "Activated At"}
                   </span>
                 </div>
@@ -461,10 +461,10 @@ const OrderDetailPage: React.FC = () => {
                 <div
                   className={`flex justify-between items-center text-sm gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
                 >
-                  <span className="text-gray-900 font-medium">
+                  <span className="text-mk-text font-medium">
                     {formatOrderDate(rawOrderData.expires_at, isRTL)}
                   </span>
-                  <span className="text-gray-500">
+                  <span className="text-mk-muted">
                     {isRTL ? "انتهاء الصلاحية" : "Expires At"}
                   </span>
                 </div>
@@ -472,12 +472,12 @@ const OrderDetailPage: React.FC = () => {
               <div
                 className={`flex justify-between items-center text-sm gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
               >
-                <span className="text-gray-900 font-medium">
+                <span className="text-mk-text font-medium">
                   {order.items?.reduce((s, i) => s + i.quantity, 0) ??
                     rawOrderData?.quantity ??
                     1}
                 </span>
-                <span className="text-gray-500">
+                <span className="text-mk-muted">
                   {isCardOrder
                     ? isRTL
                       ? "الكمية"
@@ -492,7 +492,7 @@ const OrderDetailPage: React.FC = () => {
                 <div
                   className={`flex justify-between items-center text-sm gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
                 >
-                  <span className="text-gray-900 font-medium">
+                  <span className="text-mk-text font-medium">
                     {orderItem.validity_type === "annual"
                       ? isRTL
                         ? "سنوي"
@@ -507,7 +507,7 @@ const OrderDetailPage: React.FC = () => {
                             : "Quarterly"
                           : orderItem.validity_type}
                   </span>
-                  <span className="text-gray-500">
+                  <span className="text-mk-muted">
                     {isRTL ? "نوع الصلاحية" : "Validity"}
                   </span>
                 </div>
@@ -515,7 +515,7 @@ const OrderDetailPage: React.FC = () => {
             </div>
 
             {/* خط متقطع ثم السعر الإجمالي */}
-            <div className="border-t border-dashed border-gray-200 mt-6 pt-6">
+            <div className="border-t border-dashed border-mk-border mt-6 pt-6">
               <div
                 className={`flex justify-between items-center gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
               >
@@ -523,7 +523,7 @@ const OrderDetailPage: React.FC = () => {
                   {totalPrice}
                   <CurrencyIcon size={20} className="text-[#fd671a]" />
                 </span>
-                <span className="text-gray-500">
+                <span className="text-mk-muted">
                   {isRTL ? "السعر الإجمالي" : "Total Price"}
                 </span>
               </div>
@@ -536,7 +536,7 @@ const OrderDetailPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setTermsOpen(true)}
-                    className="text-sm text-gray-500 hover:text-[#fd671a] transition-colors inline-flex items-center gap-1"
+                    className="text-sm text-mk-muted hover:text-[#fd671a] transition-colors inline-flex items-center gap-1"
                   >
                     {isRTL ? "الشروط والأحكام" : "Terms & Conditions"}
                     <span className="rtl:rotate-180" aria-hidden>→</span>
@@ -546,7 +546,7 @@ const OrderDetailPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setPrivacyOpen(true)}
-                    className="text-sm text-gray-500 hover:text-[#fd671a] transition-colors inline-flex items-center gap-1"
+                    className="text-sm text-mk-muted hover:text-[#fd671a] transition-colors inline-flex items-center gap-1"
                   >
                     {isRTL ? "سياسة الخصوصية" : "Privacy Policy"}
                     <span className="rtl:rotate-180" aria-hidden>→</span>
@@ -556,12 +556,12 @@ const OrderDetailPage: React.FC = () => {
             )}
 
             {/* أزرار الإجراءات */}
-            <div className="border-t border-dashed border-gray-200 mt-6 pt-6 space-y-3">
+            <div className="border-t border-dashed border-mk-border mt-6 pt-6 space-y-3">
               {showActivateDealButton && (
                 <button
                   type="button"
                   onClick={() => navigate(`/orders/${orderId}/activate`)}
-                  className="w-full py-3 px-4 rounded-xl bg-[#400198] text-white font-medium hover:bg-[#33007a] transition-colors"
+                  className="w-full py-3 px-4 rounded-mk-md bg-[#400198] text-white font-medium hover:bg-[#33007a] transition-colors"
                 >
                   {isRTL ? "تفعيل العرض عند التاجر" : "Activate Offer at Merchant"}
                 </button>
@@ -571,7 +571,7 @@ const OrderDetailPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleDownloadVoucher}
-                    className="flex-1 py-3 px-4 rounded-xl bg-[#fd671a] text-white font-medium hover:bg-[#e55c18] transition-colors flex items-center justify-center gap-2"
+                    className="flex-1 py-3 px-4 rounded-mk-md bg-[#fd671a] text-white font-medium hover:bg-[#D9500B] transition-colors flex items-center justify-center gap-2"
                   >
                     <IoDownloadOutline className="w-5 h-5" />
                     {isRTL ? "تنزيل PDF" : "Download PDF"}
@@ -580,7 +580,7 @@ const OrderDetailPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => navigate("/orders")}
-                  className="flex-1 py-3 px-4 rounded-xl border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                  className="flex-1 py-3 px-4 rounded-mk-md border border-mk-border-2 text-mk-text-strong font-medium hover:bg-mk-tint3 transition-colors"
                 >
                   {isRTL ? "طلباتي" : "My Orders"}
                 </button>
@@ -635,11 +635,11 @@ const InfoModal: React.FC<InfoModalProps> = ({ title, content, onClose, isRTL })
       aria-modal="true"
     >
       <div
-        className="relative bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[85vh] overflow-hidden flex flex-col"
+        className="relative bg-white rounded-mk-xl shadow-xl max-w-2xl w-full max-h-[85vh] overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
         dir={isRTL ? "rtl" : "ltr"}
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-[#400198] to-[#6b2bb8]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-mk-border bg-gradient-to-r from-[#400198] to-[#6703EB]">
           <h3 className="text-lg font-bold text-white">{title}</h3>
           <button
             type="button"
@@ -650,10 +650,10 @@ const InfoModal: React.FC<InfoModalProps> = ({ title, content, onClose, isRTL })
             <IoClose className="w-6 h-6" />
           </button>
         </div>
-        <div className="p-6 overflow-y-auto flex-1 text-gray-700 leading-relaxed text-sm whitespace-pre-wrap">
+        <div className="p-6 overflow-y-auto flex-1 text-mk-text-strong leading-relaxed text-sm whitespace-pre-wrap">
           {text}
         </div>
-        <div className="px-6 py-3 border-t border-gray-200 bg-gray-50 text-end">
+        <div className="px-6 py-3 border-t border-mk-border bg-mk-tint3 text-end">
           <button
             type="button"
             onClick={onClose}

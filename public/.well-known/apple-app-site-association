@@ -1,0 +1,25 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appIDs": ["<APPLE_TEAM_ID>.com.application.mukafatClients"],
+        "appID": "<APPLE_TEAM_ID>.com.application.mukafatClients",
+        "paths": ["/qr", "/qr/*"],
+        "components": [
+          {
+            "/": "/qr",
+            "comment": "صفحة الـQR الدعائي الموحّد"
+          },
+          {
+            "/": "/qr/*",
+            "comment": "أي مسار فرعي تحت الـQR الدعائي"
+          }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["<APPLE_TEAM_ID>.com.application.mukafatClients"]
+  }
+}

@@ -23,6 +23,463 @@
   }
 }
 
+/* ===== نظام تصميم «مكافآت» — نفس توكنات التطبيق (src/ui/tokens.ts) =====
+   المرجع: mokafat-flutter-client/lib/core/config/theme/app_colors.dart (HomeTokens) */
+:root {
+  --mk-primary: #400198;
+  --mk-primary-light: #6703eb;
+  --mk-accent: #fd671a;
+  --mk-deep: #2b1b5e;
+  --mk-deepest: #1b1150;
+  --mk-gold: #f7b62c;
+  --mk-red: #e8384f;
+  --mk-green: #12a06a;
+  --mk-info: #1d4ed8;
+  --mk-bg: #f5f4fa;
+  --mk-tint: #efeaf8;
+  --mk-tint-2: #f2effa;
+  --mk-border: #efedf7;
+  --mk-border-2: #ece9f5;
+  --mk-divider: #eceaf4;
+  --mk-text: #1a1a2e;
+  --mk-text-strong: #4a4a63;
+  --mk-muted: #6b6b85;
+  --mk-faint: #9a99b0;
+
+  --mk-radius-sm: 10px;
+  --mk-radius-md: 14px;
+  --mk-radius-lg: 18px;
+  --mk-radius-xl: 20px;
+
+  --mk-shadow-card: 0 2px 8px rgba(64, 1, 152, 0.04);
+  --mk-shadow-raised: 0 3px 10px rgba(64, 1, 152, 0.06);
+  --mk-shadow-hover: 0 12px 30px rgba(46, 16, 101, 0.1);
+
+  /* ===== الاتجاه «الحيوي التجاري»: تدرّجات وتوهّج ===== */
+  --mk-accent-light: #ffa23a;
+  --mk-hot: #e01f3d;
+  --mk-hot-pink: #ff4d6d;
+  --mk-warm-bg: #fff7f1;
+
+  --mk-grad-brand: linear-gradient(135deg, #400198 0%, #6703eb 100%);
+  --mk-grad-brand-deep: linear-gradient(135deg, #1b1150 0%, #400198 52%, #6703eb 100%);
+  --mk-grad-accent: linear-gradient(135deg, #ffa23a 0%, #fd671a 45%, #e01f3d 100%);
+  --mk-grad-accent-tight: linear-gradient(135deg, #fd671a 0%, #e2560d 100%);
+  --mk-grad-hot: linear-gradient(135deg, #ff4d6d 0%, #c2185b 100%);
+  --mk-grad-gold: linear-gradient(135deg, #f7b62c 0%, #e08a0b 100%);
+  --mk-grad-success: linear-gradient(135deg, #22c55e 0%, #12a06a 100%);
+  --mk-grad-night: linear-gradient(160deg, #1b1150 0%, #2b1b5e 45%, #43167f 100%);
+  --mk-grad-mist: linear-gradient(180deg, #ffffff 0%, #f7f5fc 22%, #f4f1fc 100%);
+  --mk-grad-warm: linear-gradient(180deg, #ffffff 0%, #fff7f1 24%, #fff1e6 100%);
+
+  --mk-shadow-glow: 0 14px 32px -10px rgba(64, 1, 152, 0.55);
+  --mk-shadow-glow-accent: 0 14px 32px -10px rgba(226, 86, 13, 0.65);
+  --mk-shadow-pop: 0 22px 48px -18px rgba(46, 16, 101, 0.42);
+
+  --mk-t-fast: 150ms;
+  --mk-t-base: 200ms;
+  --mk-t-slow: 250ms;
+  --mk-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ===== أدوات التدرّج الجاهزة ===== */
+.mk-grad-brand {
+  background-image: var(--mk-grad-brand);
+}
+.mk-grad-brand-deep {
+  background-image: var(--mk-grad-brand-deep);
+}
+.mk-grad-accent {
+  background-image: var(--mk-grad-accent);
+}
+.mk-grad-hot {
+  background-image: var(--mk-grad-hot);
+}
+.mk-grad-night {
+  background-image: var(--mk-grad-night);
+}
+.mk-grad-mist {
+  background-image: var(--mk-grad-mist);
+}
+.mk-grad-warm {
+  background-image: var(--mk-grad-warm);
+}
+
+/* نص بتدرّج الهوية (عناوين الأقسام البارزة) */
+.mk-grad-text {
+  background-image: var(--mk-grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* تركيز لوحة مفاتيح مرئي في كل الموقع (إتاحة) */
+.mk-focusable:focus-visible,
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--mk-primary);
+  outline-offset: 2px;
+}
+
+/* هيكل تحميل موحّد (skeleton) */
+.mk-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--mk-tint) 0%,
+    #f8f6fd 50%,
+    var(--mk-tint) 100%
+  );
+  background-size: 200% 100%;
+  animation: mk-skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes mk-skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mk-skeleton {
+    animation: none;
+  }
+}
+
+/* صور بأبعاد محفوظة — لا قفزات تخطيط */
+.mk-ratio {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.mk-ratio > img,
+.mk-ratio > picture > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* شرائح أفقية قابلة للتمرير بلا شريط ظاهر (RTL آمن) */
+.mk-scroll-x {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.mk-scroll-x::-webkit-scrollbar {
+  display: none;
+}
+
+.mk-scroll-x > * {
+  scroll-snap-align: start;
+  flex: 0 0 auto;
+}
+
+
+/* ===== حركة الرئيسية — ظهور تدريجي عند التمرير + انتقالات الهيرو ===== */
+
+/* عنصر ينتظر الظهور في نافذة العرض (IntersectionObserver في Reveal.tsx) */
+.mk-reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.55s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.mk-reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* تلاشٍ متقاطع بين شرائح الهيرو */
+.mk-slide-fade {
+  opacity: 0;
+  transform: scale(1.04);
+  transition:
+    opacity 0.7s ease,
+    transform 1.2s ease;
+  pointer-events: none;
+}
+
+.mk-slide-fade.is-active {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+/* دخول ناعم لنصوص الهيرو بعد تبديل الشريحة */
+@keyframes mk-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.mk-rise {
+  animation: mk-rise-in 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+/* شريط تقدّم مؤشر الشريحة النشطة */
+@keyframes mk-slide-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.mk-slide-progress {
+  transform-origin: left center;
+  animation: mk-slide-progress linear both;
+}
+
+/* نبض ناعم لعلامة الموقع على الخريطة */
+@keyframes mk-ping-soft {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.55;
+  }
+  70% {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+}
+
+.mk-ping {
+  animation: mk-ping-soft 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* دخول الإعلان المنبثق */
+@keyframes mk-pop-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -46%) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.mk-pop-in {
+  animation: mk-pop-in 0.32s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+@keyframes mk-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.mk-fade-in {
+  animation: mk-fade-in 0.28s ease both;
+}
+
+/* نبض شارة «ينتهي اليوم / الأكثر طلباً» */
+@keyframes mk-badge-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.06);
+    filter: brightness(1.12);
+  }
+}
+
+.mk-badge-pulse {
+  animation: mk-badge-pulse 1.8s ease-in-out infinite;
+}
+
+/* لمعة تمرّ فوق الشارات والأزرار المتدرّجة عند المرور */
+@keyframes mk-shine-sweep {
+  0% {
+    transform: translateX(-140%) skewX(-18deg);
+  }
+  100% {
+    transform: translateX(260%) skewX(-18deg);
+  }
+}
+
+/* داخل طبقة components حتى تتغلّب عليها أدوات Tailwind
+   (وإلا كسر `position: relative` كل شارة `absolute` تحمل الصنف). */
+@layer components {
+  .mk-shine {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+}
+
+.mk-shine::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 45%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.45),
+    transparent
+  );
+  transform: translateX(-140%) skewX(-18deg);
+  pointer-events: none;
+}
+
+.mk-shine:hover::after,
+.group:hover .mk-shine::after {
+  animation: mk-shine-sweep 0.85s var(--mk-ease);
+}
+
+/* شريط عدّاد تنازلي للعروض المحدودة */
+.mk-countdown-track {
+  height: 5px;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(226, 86, 13, 0.16);
+}
+
+.mk-countdown-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background-image: var(--mk-grad-accent);
+  transition: width 400ms var(--mk-ease);
+}
+
+/* رفع موحّد للكروت التفاعلية */
+.mk-lift {
+  transition:
+    transform var(--mk-t-slow) var(--mk-ease),
+    box-shadow var(--mk-t-slow) var(--mk-ease),
+    border-color var(--mk-t-base) var(--mk-ease);
+}
+
+.mk-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--mk-shadow-pop);
+}
+
+/* تكبير ناعم للصورة داخل كرت عند المرور */
+.mk-zoom img {
+  transition: transform 500ms var(--mk-ease);
+}
+
+.group:hover .mk-zoom img,
+.mk-zoom:hover img {
+  transform: scale(1.07);
+}
+
+/* شريط العروض العلوي — تمرير أفقي بطيء للنص */
+@keyframes mk-ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.mk-ticker {
+  animation: mk-ticker 34s linear infinite;
+}
+
+.mk-ticker-wrap:hover .mk-ticker {
+  animation-play-state: paused;
+}
+
+/* احترام تفضيل تقليل الحركة */
+@media (prefers-reduced-motion: reduce) {
+  .mk-badge-pulse,
+  .mk-ticker {
+    animation: none !important;
+  }
+
+  .mk-shine::after {
+    display: none;
+  }
+
+  .mk-lift,
+  .mk-zoom img,
+  .mk-countdown-fill {
+    transition: none;
+  }
+
+  .mk-lift:hover {
+    transform: none;
+  }
+
+  .group:hover .mk-zoom img,
+  .mk-zoom:hover img {
+    transform: none;
+  }
+
+  .mk-reveal,
+  .mk-slide-fade {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .mk-rise,
+  .mk-slide-progress,
+  .mk-ping,
+  .mk-pop-in,
+  .mk-fade-in {
+    animation: none;
+  }
+}
+
+/* قطع النص على عدد أسطر */
+.mk-clamp-1,
+.mk-clamp-2,
+.mk-clamp-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.mk-clamp-1 {
+  -webkit-line-clamp: 1;
+}
+
+.mk-clamp-2 {
+  -webkit-line-clamp: 2;
+}
+
+.mk-clamp-3 {
+  -webkit-line-clamp: 3;
+}
+
 .container,
 .site-container {
   width: 100%;
@@ -569,6 +1026,9 @@ html[lang="ar"] .bg-cover {
   /* transform: scaleX(-1); */
 }
 
+/* شبكة أمان وحيدة ضد الفيض الأفقي — تنتقل إلى إطار العرض،
+   فلا تتحوّل body إلى حاوية تمرير. لا يعتمد عليها تخطيط الموبايل:
+   قيس بلا قصّ عبر تعطيل هذه القاعدة مؤقتاً. */
 body {
   overflow-x: hidden;
 }
@@ -1337,9 +1797,8 @@ html[lang="ar"]
     --tw-scale-x: 2.5;
     --tw-scale-y: 2.5;
   }
-  html {
-    overflow-x: hidden;
-  }
+  /* لا نكرّر قصّ المحور الأفقي على <html>: قاعدة body وحدها تنتقل إلى إطار العرض،
+     أما تفعيلها هنا فيحوّل body إلى حاوية تمرير مستقلة ويكسر sticky/التمرير باللمس. */
   .px-0.py-4.pading-mobile {
     padding-right: 1rem;
     padding-left: 1rem;

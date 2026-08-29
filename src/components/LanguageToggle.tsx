@@ -6,8 +6,9 @@ import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { EnglishUS, SaudiRoundFlag, UrduFlag, HindiFlag } from "@assets";
 import { IoGlobeOutline } from "react-icons/io5";
-import { useAppConfig } from "@hooks/api/useMokafaatQueries";
+import { useAppConfig, useGeoCountries } from "@hooks/api/useMokafaatQueries";
 import { API_BASE_URL } from "@config/api";
+import { parseGeoCountries } from "@utils/geo";
 
 interface LanguageToggleProps {
   handleCloseNavigation: () => void;
@@ -81,10 +82,17 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
       };
     };
   };
+  // الدول المفعّلة مع علامة «دولة واحدة» (نفضّلها على app-config لأنها المرجع)
+  const { data: geoData } = useGeoCountries();
+  const geo = parseGeoCountries(geoData);
+
   const apiCountries = appConfig?.data?.config?.countries ?? [];
-  const countries = apiCountries.map((c) => ({
+  const rawCountries = geo.countries.length
+    ? geo.countries
+    : apiCountries;
+  const countries = rawCountries.map((c) => ({
     id: c.id,
-    code: c.code,
+    code: c.code ?? undefined,
     name: c.name,
     image: c.flag
       ? c.flag.startsWith("http")
@@ -92,6 +100,18 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
         : `${API_BASE_URL}/storage/${c.flag}`
       : undefined,
   }));
+
+  /**
+   * بند «الدولة الواحدة»: عند دولة مفعّلة واحدة فقط لا نعرض تاب اختيار الدولة
+   * إطلاقاً — المدن تُعرض مباشرة من منتقي المدينة في الهيدر.
+   */
+  const showCountriesTab = !(geo.loaded && geo.singleCountry);
+
+  useEffect(() => {
+    if (!showCountriesTab && activeTab === "countries") {
+      setActiveTab("languages");
+    }
+  }, [showCountriesTab, activeTab]);
 
   const currentLang =
     languages.find((lang) => lang.code === currentLanguage) || languages[0];
@@ -214,23 +234,25 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
                 {t("languageToggle.languagesTab")}
               </span>
             </button>
-            <button
-              onClick={() => handleTabChange("countries")}
-              className={`flex-1 px-4 py-2 text-center transition-colors rounded-full ${
-                activeTab === "countries"
-                  ? "bg-white text-gray-800"
-                  : "text-gray-500 hover:bg-gray-50"
-              }`}
-            >
-              <span className="font-medium text-sm">
-                {t("languageToggle.countryTab")}
-              </span>
-            </button>
+            {showCountriesTab && (
+              <button
+                onClick={() => handleTabChange("countries")}
+                className={`flex-1 px-4 py-2 text-center transition-colors rounded-full ${
+                  activeTab === "countries"
+                    ? "bg-white text-gray-800"
+                    : "text-gray-500 hover:bg-gray-50"
+                }`}
+              >
+                <span className="font-medium text-sm">
+                  {t("languageToggle.countryTab")}
+                </span>
+              </button>
+            )}
           </div>
 
           {/* Content based on active tab */}
           <div className="max-h-80 overflow-y-auto">
-            {activeTab === "languages" ? (
+            {activeTab === "languages" || !showCountriesTab ? (
               // Languages List
               languages.map((language) => (
                 <button

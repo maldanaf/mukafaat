@@ -70,7 +70,7 @@ export default function RouteLoadingIndicator() {
   return (
     <div className="fixed top-0 left-0 right-0 z-[99999] pointer-events-none">
       <div
-        className="h-[3px] bg-gradient-to-r from-[#440798] via-[#fd671a] to-[#440798] transition-all duration-300 ease-out"
+        className="h-[3px] bg-gradient-to-r from-[#400198] via-[#fd671a] to-[#400198] transition-all duration-300 ease-out"
         style={{
           width: `${progress}%`,
           opacity: progress >= 100 ? 0 : 1,

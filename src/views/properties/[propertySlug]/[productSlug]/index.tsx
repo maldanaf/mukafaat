@@ -4,8 +4,9 @@ import React, { useMemo, useState, useRef } from "react";
 import { Helmet } from "@/lib/helmet-compat";
 import { useParams, useNavigate } from "@/lib/router-compat";
 import { IoLocationOutline, IoChatbubblesOutline } from "react-icons/io5";
-import { BsShare, BsChevronDown } from "react-icons/bs";
-import { FaHeart, FaWhatsapp, FaPlay } from "react-icons/fa";
+import { BsChevronDown } from "react-icons/bs";
+import { ShareIcon, HeartIcon } from "@ui";
+import { FaWhatsapp, FaPlay } from "react-icons/fa";
 import { FaCircleCheck } from "react-icons/fa6";
 import { HiOutlineHome } from "react-icons/hi";
 import { LuBath } from "react-icons/lu";
@@ -343,10 +344,10 @@ const PropertyProductPage: React.FC = () => {
                           onClick={() => handleShareClick(propertyProduct.id)}
                           className="w-10 h-10 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-700 hover:bg-gray-50 transition-all duration-200"
                         >
-                          <BsShare className="text-lg" />
+                          <ShareIcon size={18} />
                         </button>
                         <button className="w-10 h-10 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-700 hover:bg-gray-50 transition-all duration-200">
-                          <FaHeart className="text-lg" />
+                          <HeartIcon size={18} filled />
                         </button>
                       </div>
                     </div>
@@ -692,7 +693,7 @@ const PropertyProductPage: React.FC = () => {
                             aria-label="Play video"
                             type="button"
                           >
-                            <div className="w-20 h-20 bg-[#fd671a] hover:bg-purple-700 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110">
+                            <div className="w-20 h-20 bg-[#fd671a] hover:bg-mk-primary rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110">
                               <FaPlay className="text-white text-2xl ml-1" />
                             </div>
                           </button>

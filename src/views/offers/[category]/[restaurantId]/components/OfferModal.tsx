@@ -75,13 +75,13 @@ const OfferModal = ({
       onClick={handleBackdropClick}
     >
       <div
-        className="bg-white rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-6"
+        className="bg-white rounded-mk-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-6"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-xl overflow-hidden">
+            <div className="w-16 h-16 rounded-mk-md overflow-hidden">
               <img
                 src={getOfferImage(restaurant.logo)}
                 alt={restaurant.name[isRTL ? "ar" : "en"]}
@@ -89,10 +89,10 @@ const OfferModal = ({
               />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-800">
+              <h2 className="text-xl font-bold text-mk-text">
                 {offer.title[isRTL ? "ar" : "en"]}
               </h2>
-              <div className="flex items-center gap-2 text-sm text-gray-600">
+              <div className="flex items-center gap-2 text-sm text-mk-muted">
                 <div className="flex items-center gap-1">
                   <FiStar className="text-yellow-400" />
                   <span>{offer.rating}</span>
@@ -106,9 +106,9 @@ const OfferModal = ({
               </div>
             </div>
           </div>
-          <div className="text-3xl font-bold text-gray-800 flex items-center gap-1">
+          <div className="text-3xl font-bold text-mk-text flex items-center gap-1">
             {totalPrice}
-            <CurrencyIcon className="text-gray-800" size={24} />
+            <CurrencyIcon className="text-mk-text" size={24} />
           </div>
         </div>
 
@@ -119,40 +119,40 @@ const OfferModal = ({
             <img
               src={getOfferImage(offer.image)}
               alt={offer.title[isRTL ? "ar" : "en"]}
-              className="w-full h-48 object-cover rounded-lg"
+              className="w-full h-48 object-cover rounded-mk-sm"
             />
           </div>
 
           {/* Offer Details */}
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+            <h3 className="text-lg font-semibold text-mk-text mb-4">
               {isRTL ? "تفاصيل العرض" : "Offer Details"}
             </h3>
 
             <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="bg-gray-100 p-3 rounded-lg flex items-center justify-between">
-                <div className="text-sm text-gray-600">
+              <div className="bg-mk-tint2 p-3 rounded-mk-sm flex items-center justify-between">
+                <div className="text-sm text-mk-muted">
                   {isRTL ? "صلاحية العرض" : "Offer Validity"}
                 </div>
-                <div className="font-medium text-gray-800">
+                <div className="font-medium text-mk-text">
                   {offer.validity[isRTL ? "ar" : "en"]}
                 </div>
               </div>
-              <div className="bg-gray-100 p-3 rounded-lg flex items-center justify-between">
-                <div className="text-sm text-gray-600">
+              <div className="bg-mk-tint2 p-3 rounded-mk-sm flex items-center justify-between">
+                <div className="text-sm text-mk-muted">
                   {isRTL ? "الخصم" : "Discount"}
                 </div>
-                <div className="font-medium text-gray-800">
+                <div className="font-medium text-mk-text">
                   {offer.discountPercentage}%
                 </div>
               </div>
             </div>
 
-            <div className="bg-gray-100 p-4 rounded-lg">
-              <h4 className="font-medium text-gray-800 mb-2">
+            <div className="bg-mk-tint2 p-4 rounded-mk-sm">
+              <h4 className="font-medium text-mk-text mb-2">
                 {isRTL ? "وصف العرض" : "Offer Description"}
               </h4>
-              <p className="text-gray-600 text-sm">
+              <p className="text-mk-muted text-sm">
                 {stripHtml(offer.description[isRTL ? "ar" : "en"])}
               </p>
             </div>
@@ -160,16 +160,16 @@ const OfferModal = ({
 
           {/* Features List */}
           <div className="mb-6">
-            <h4 className="font-medium text-gray-800 mb-3">
+            <h4 className="font-medium text-mk-text mb-3">
               {isRTL ? "المميزات" : "Features"}
             </h4>
             <div className="flex flex-wrap gap-2">
               {offer.features.map((feature, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-1 text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full"
+                  className="flex items-center gap-1 text-xs text-mk-muted bg-mk-tint2 px-2 py-1 rounded-full"
                 >
-                  <div className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
+                  <div className="w-1.5 h-1.5 bg-mk-primary-light rounded-full"></div>
                   <span>{feature}</span>
                 </div>
               ))}
@@ -178,10 +178,10 @@ const OfferModal = ({
 
           {/* Terms */}
           <div className="mb-6">
-            <h4 className="font-medium text-gray-800 mb-2">
+            <h4 className="font-medium text-mk-text mb-2">
               {isRTL ? "الشروط والأحكام" : "Terms & Conditions"}
             </h4>
-            <p className="text-gray-600 text-sm">
+            <p className="text-mk-muted text-sm">
               {stripHtml(offer.terms[isRTL ? "ar" : "en"])}
             </p>
           </div>
@@ -191,11 +191,11 @@ const OfferModal = ({
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="w-10 h-10 rounded-full bg-[#A0A5BA] flex items-center justify-center hover:bg-gray-200 transition-colors"
+                className="w-10 h-10 rounded-full bg-[#A0A5BA] flex items-center justify-center hover:bg-mk-border-strong/60 transition-colors"
               >
                 <FiMinus className="text-white" />
               </button>
-              <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center font-medium">
+              <div className="w-12 h-12 bg-mk-tint2 rounded-full flex items-center justify-center font-medium">
                 {quantity}
               </div>
               <button
@@ -219,7 +219,7 @@ const OfferModal = ({
             </button>
             <button
               onClick={handlePurchase}
-              className="py-3 px-10 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition-colors"
+              className="py-3 px-10 border border-mk-border-2 text-mk-text-strong rounded-full hover:bg-mk-tint3 transition-colors"
             >
               Apple Pay
             </button>

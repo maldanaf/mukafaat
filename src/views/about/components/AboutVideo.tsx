@@ -102,7 +102,7 @@ const AboutVideo = ({
                     aria-label="Play video"
                     type="button"
                   >
-                    <div className="w-20 h-20 bg-[#fd671a] hover:bg-purple-700 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110">
+                    <div className="w-20 h-20 bg-[#fd671a] hover:bg-mk-primary rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110">
                       <FaPlay className="text-white text-2xl ml-1" />
                     </div>
                   </button>

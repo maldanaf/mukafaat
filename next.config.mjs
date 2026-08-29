@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // يسمح بتشغيل أكثر من خادم تطوير على نفس المشروع دون تضارب على .next
+  // (الافتراضي كما هو؛ يُضبط بـ NEXT_DIST_DIR عند الحاجة فقط)
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   // مؤشر التطوير كان يغطّي تبويبات شريط الموبايل السفلي
   devIndicators: false,
   reactStrictMode: false,
@@ -17,6 +20,15 @@ const nextConfig = {
       { protocol: "https", hostname: "mukafaat.com.sa" },
       { protocol: "https", hostname: "mukafaat.com" },
     ],
+  },
+  // ملف ربط تطبيق iOS بلا امتداد — لا بدّ أن يُخدم بنوع application/json
+  async headers() {
+    return [
+      {
+        source: "/.well-known/apple-app-site-association",
+        headers: [{ key: "Content-Type", value: "application/json" }],
+      },
+    ];
   },
   async rewrites() {
     const apiBaseUrl =

@@ -26,6 +26,10 @@ const OrderPaymentCallbackPage: React.FC = () => {
   const categoryFromQuery = searchParams.get("category") ?? undefined;
   const restaurantIdFromQuery = searchParams.get("restaurant_id") ?? undefined;
   const planIdFromQuery = searchParams.get("plan_id") ?? undefined;
+  // إهداء اشتراك: نمرّر مصدر العملية ومعرّف الاشتراك لصفحة النجاح (لعرض الفاتورة)
+  const fromFromQuery = searchParams.get("from") ?? undefined;
+  const subscriptionIdFromQuery =
+    searchParams.get("subscription_id") ?? undefined;
 
   const isSubscription = typeFromQuery === "subscription";
 
@@ -40,6 +44,9 @@ const OrderPaymentCallbackPage: React.FC = () => {
     if (restaurantIdFromQuery)
       params.set("restaurant_id", restaurantIdFromQuery);
     if (planIdFromQuery) params.set("plan_id", planIdFromQuery);
+    if (fromFromQuery) params.set("from", fromFromQuery);
+    if (subscriptionIdFromQuery)
+      params.set("subscription_id", subscriptionIdFromQuery);
     return params;
   }, [
     id,
@@ -50,6 +57,8 @@ const OrderPaymentCallbackPage: React.FC = () => {
     categoryFromQuery,
     restaurantIdFromQuery,
     planIdFromQuery,
+    fromFromQuery,
+    subscriptionIdFromQuery,
   ]);
 
   const redirectToResult = React.useCallback(
@@ -135,6 +144,10 @@ const OrderPaymentCallbackPage: React.FC = () => {
         if (category) params.set("category", category);
         if (restaurantId) params.set("restaurant_id", restaurantId);
         if (planId) params.set("plan_id", planId);
+        // مصدر العملية ومعرّف الاشتراك يجب أن يصلا لصفحة النجاح (فاتورة الهدية)
+        if (fromFromQuery) params.set("from", fromFromQuery);
+        if (subscriptionIdFromQuery)
+          params.set("subscription_id", subscriptionIdFromQuery);
 
         redirectedRef.current = true;
         window.clearTimeout(timeoutId);
@@ -177,10 +190,12 @@ const OrderPaymentCallbackPage: React.FC = () => {
     categoryFromQuery,
     restaurantIdFromQuery,
     planIdFromQuery,
+    fromFromQuery,
+    subscriptionIdFromQuery,
   ]);
 
   return (
-    <div className="min-h-screen bg-[#1D0843] flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] flex flex-col items-center justify-center px-4">
       <div className="flex flex-col items-center gap-4">
         <span className="inline-block w-10 h-10 border-4 border-white/30 border-t-white rounded-full animate-spin" />
         <p className="text-white/90 text-lg">

@@ -61,7 +61,7 @@ const PopularCountries: React.FC = () => {
     {
       id: 1,
       name: "bookings",
-      icon: <FaCalendarAlt className="text-4xl text-purple-600" />,
+      icon: <FaCalendarAlt className="text-4xl text-mk-primary" />,
       title: t("home.serviceCards.bookings.title"),
       path: "/bookings",
     },
@@ -180,23 +180,23 @@ const PopularCountries: React.FC = () => {
                   onClick={() => handleCardClick(card.path)}
                 >
                   {/* Background Gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-orange-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-mk-tint3 via-white to-orange-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
                   {/* Card Content */}
                   <div className="flex flex-col items-center h-full relative z-10">
                     {/* Card Icon Container */}
                     <div className="mb-4 flex-1 flex items-center justify-center relative">
-                      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-100 to-orange-100 flex items-center justify-center group-hover:from-purple-200 group-hover:to-orange-200 transition-all duration-500 shadow-lg">
+                      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-mk-tint to-orange-100 flex items-center justify-center group-hover:from-mk-border-strong group-hover:to-orange-200 transition-all duration-500 shadow-lg">
                         <div className="group-hover:scale-110 transition-transform duration-500">
                           {card.icon}
                         </div>
                       </div>
-                      <div className="absolute -top-2 -right-2 w-4 h-4 bg-purple-400 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-700 delay-100 animate-pulse"></div>
+                      <div className="absolute -top-2 -right-2 w-4 h-4 bg-mk-primary-soft rounded-full opacity-0 group-hover:opacity-100 transition-all duration-700 delay-100 animate-pulse"></div>
                       <div className="absolute -bottom-1 -left-2 w-3 h-3 bg-orange-400 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-700 delay-200 animate-pulse"></div>
                     </div>
 
                     <h3
-                      className="text-base font-bold text-gray-800 text-center leading-tight group-hover:text-purple-700 transition-colors duration-300"
+                      className="text-base font-bold text-gray-800 text-center leading-tight group-hover:text-mk-primary transition-colors duration-300"
                       style={{
                         fontFamily: isRTL
                           ? "Readex Pro, sans-serif"
@@ -206,10 +206,10 @@ const PopularCountries: React.FC = () => {
                       {card.title}
                     </h3>
 
-                    <div className="w-8 h-1 bg-gradient-to-r from-purple-400 to-orange-400 rounded-full mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div className="w-8 h-1 bg-gradient-to-r from-mk-primary-soft to-orange-400 rounded-full mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   </div>
 
-                  <div className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-purple-200 transition-colors duration-500"></div>
+                  <div className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-mk-border-strong transition-colors duration-500"></div>
                 </div>
               ))}
             </div>

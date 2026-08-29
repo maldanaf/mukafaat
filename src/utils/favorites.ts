@@ -18,6 +18,10 @@ export interface NormalizedFavorite {
   itemSlug?: string;
   merchantSlug?: string;
   bookingType?: string;
+  /** عدّادات موحّدة — تُعرض فقط إن أرجعها الـAPI (وأحدها > 0) */
+  viewsCount?: number;
+  favoritesCount?: number;
+  sharesCount?: number;
 }
 
 export function normalizeFavoritesList(data: unknown): NormalizedFavorite[] {
@@ -57,8 +61,15 @@ function normalizeFavoriteItem(row: unknown): NormalizedFavorite | null {
   const merchantSlug = merchant?.slug as string | undefined;
   const categorySlug = (r.category_slug ?? favorable?.category_slug) as string | undefined;
   const bookingType = (r.booking_type ?? favorable?.booking_type ?? r.type) as string | undefined;
+  const num = (value: unknown): number | undefined => {
+    if (value === null || value === undefined || value === "") return undefined;
+    const n = Number(value);
+    return Number.isFinite(n) ? n : undefined;
+  };
   return {
-    id: String(r.id ?? `fav_${favorableType}_${favorableId}`),
+    // المعرّف في /api/favorites هو معرّف العنصر نفسه — نضيف النوع حتى لا
+    // يتصادم مفتاح React بين عرض وكوبون يحملان نفس الرقم.
+    id: `fav_${favorableType}_${favorableId}`,
     type: favorableType as NormalizedFavorite["type"],
     favorable_type: favorableType,
     favorable_id: favorableId as string | number,
@@ -73,5 +84,8 @@ function normalizeFavoriteItem(row: unknown): NormalizedFavorite | null {
     itemSlug: typeof itemSlug === "string" ? itemSlug : undefined,
     merchantSlug: typeof merchantSlug === "string" ? merchantSlug : undefined,
     bookingType: favorableType === "booking" && typeof bookingType === "string" ? bookingType : undefined,
+    viewsCount: num(r.views_count ?? favorable?.views_count),
+    favoritesCount: num(r.favorites_count ?? favorable?.favorites_count),
+    sharesCount: num(r.shares_count ?? favorable?.shares_count),
   };
 }

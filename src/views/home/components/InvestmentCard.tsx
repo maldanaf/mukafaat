@@ -2,7 +2,7 @@
 
 import React, { useMemo } from "react";
 import { useIsRTL } from "@hooks";
-import { BsHeart, BsHeartFill, BsShare } from "react-icons/bs";
+import { ShareIcon, HeartIcon } from "@ui";
 import { IoStar } from "react-icons/io5";
 import { useNavigate } from "@/lib/router-compat";
 import { useFavorites, useFavoriteToggle } from "@hooks/api/useMokafaatQueries";
@@ -104,7 +104,7 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({
             }}
             className="w-8 h-8 bg-white bg-opacity-90 rounded-full flex items-center justify-center text-gray-700 hover:bg-opacity-100 transition-all duration-200"
           >
-            <BsShare className="text-sm" />
+            <ShareIcon size={14} />
           </button>
           <button
             onClick={handleFavorite}
@@ -113,7 +113,7 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({
             }`}
             aria-label="favorite"
           >
-            {isFavorite ? <BsHeartFill className="text-sm" /> : <BsHeart className="text-sm" />}
+            <HeartIcon size={14} filled={isFavorite} />
           </button>
         </div>
 

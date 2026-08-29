@@ -22,6 +22,8 @@ export interface CouponModel {
   endDate?: string;
   viewsCount?: number;
   sharesCount?: number;
+  /** عدد مرات نسخ كود الكوبون (copies_count) */
+  copiesCount?: number;
   rating?: number;
 }
 
@@ -119,6 +121,7 @@ export function mapApiCouponToModel(
       endDate,
       viewsCount: Number(apiCoupon.views_count ?? 0),
       sharesCount: Number(apiCoupon.shares_count ?? 0),
+      copiesCount: Number(apiCoupon.copies_count ?? 0) || 0,
       rating: Number(apiCoupon.rating ?? 5),
     };
   } catch (error) {

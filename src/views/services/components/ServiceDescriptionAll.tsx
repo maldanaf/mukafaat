@@ -417,7 +417,7 @@ const ServiceDescriptionAll = () => {
         title: t("home.serviceCards.cards.title"),
         description: t("home.serviceCards.cards.description"),
         icon: "💳",
-        color: "from-blue-500 to-purple-600",
+        color: "from-blue-500 to-mk-primary",
       },
       {
         id: 2,
@@ -438,7 +438,7 @@ const ServiceDescriptionAll = () => {
         title: t("home.serviceCards.discounts.title"),
         description: t("home.serviceCards.discounts.description"),
         icon: "🏷️",
-        color: "from-pink-500 to-purple-600",
+        color: "from-pink-500 to-mk-primary",
       },
     ],
     [t]

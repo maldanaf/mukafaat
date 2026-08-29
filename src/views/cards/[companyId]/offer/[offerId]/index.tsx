@@ -10,7 +10,7 @@ import {
   FiTag,
   FiEye,
 } from "react-icons/fi";
-import { BsHeart, BsHeartFill, BsShare } from "react-icons/bs";
+import { ShareIcon, HeartIcon } from "@ui";
 import CurrencyIcon from "@components/CurrencyIcon";
 import QuantitySelector from "@components/QuantitySelector";
 import { stripHtml } from "@utils/stripHtml";
@@ -164,32 +164,32 @@ const CardOfferDetailPage = () => {
   if (isLoading) {
     return (
       <>
-        <section className="relative w-full bg-[#1D0843] overflow-hidden" style={{ minHeight: "200px" }}>
+        <section className="relative w-full bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] overflow-hidden" style={{ minHeight: "200px" }}>
           <div className="absolute inset-0 bg-primary opacity-30" />
           <div className="relative pt-24 pb-10 px-6 mx-auto max-w-site w-full text-center">
-            <div className="h-8 w-48 bg-white/20 rounded-lg mx-auto mb-4" />
+            <div className="h-8 w-48 bg-white/20 rounded-mk-sm mx-auto mb-4" />
             <div className="h-4 w-3/4 max-w-md bg-white/15 rounded mx-auto" />
           </div>
         </section>
-        <div className="bg-gray-50" style={{ minHeight: "60vh" }}>
+        <div className="bg-mk-tint3" style={{ minHeight: "60vh" }}>
           <div className="container mx-auto px-4 py-8 max-w-site">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2 space-y-6">
-                <div className="bg-gray-200 rounded-3xl overflow-hidden" style={{ height: "280px" }} />
-                <div className="bg-white rounded-3xl shadow-sm p-6">
-                  <div className="h-4 w-1/3 bg-gray-200 rounded mb-4" />
-                  <div className="h-3 w-full bg-gray-100 rounded mb-2" />
-                  <div className="h-3 w-5/6 bg-gray-100 rounded mb-2" />
-                  <div className="h-3 w-2/3 bg-gray-100 rounded" />
+                <div className="bg-mk-border-strong/50 rounded-mk-2xl overflow-hidden" style={{ height: "280px" }} />
+                <div className="bg-white rounded-mk-2xl shadow-mk-card p-6">
+                  <div className="h-4 w-1/3 bg-mk-border-strong/50 rounded mb-4" />
+                  <div className="h-3 w-full bg-mk-tint2 rounded mb-2" />
+                  <div className="h-3 w-5/6 bg-mk-tint2 rounded mb-2" />
+                  <div className="h-3 w-2/3 bg-mk-tint2 rounded" />
                 </div>
               </div>
               <div className="lg:col-span-1">
-                <div className="bg-white rounded-3xl shadow-sm p-6">
-                  <div className="h-5 w-2/3 bg-gray-200 rounded mb-4" />
-                  <div className="h-8 w-1/2 bg-gray-200 rounded mb-6" />
-                  <div className="h-3 w-full bg-gray-100 rounded mb-2" />
-                  <div className="h-3 w-4/5 bg-gray-100 rounded mb-6" />
-                  <div className="h-12 w-full bg-gray-200 rounded-xl" />
+                <div className="bg-white rounded-mk-2xl shadow-mk-card p-6">
+                  <div className="h-5 w-2/3 bg-mk-border-strong/50 rounded mb-4" />
+                  <div className="h-8 w-1/2 bg-mk-border-strong/50 rounded mb-6" />
+                  <div className="h-3 w-full bg-mk-tint2 rounded mb-2" />
+                  <div className="h-3 w-4/5 bg-mk-tint2 rounded mb-6" />
+                  <div className="h-12 w-full bg-mk-border-strong/50 rounded-mk-md" />
                 </div>
               </div>
             </div>
@@ -203,12 +203,12 @@ const CardOfferDetailPage = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+          <h2 className="text-2xl font-bold text-mk-text mb-4">
             {t("cardOfferDetail.not_found")}
           </h2>
           <button
             onClick={() => navigate("/cards")}
-            className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+            className="bg-mk-primary text-white px-6 py-2 rounded-mk-sm hover:bg-mk-primary transition-colors"
           >
             {t("cardOfferDetail.back_to_cards")}
           </button>
@@ -230,13 +230,13 @@ const CardOfferDetailPage = () => {
       </Helmet>
 
       {/* هيدر مثل صفحة العرض */}
-      <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[200px] flex items-center justify-center">
+      <section className="relative w-full bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] overflow-hidden min-h-[200px] flex items-center justify-center">
         <div className="absolute inset-0 bg-primary opacity-30" />
         <div className="relative pt-24 pb-10 px-6 mx-auto max-w-site w-full text-center lg:pt-24 lg:pb-10 lg:px-12 flex flex-col justify-center z-10">
           <div className="flex items-center justify-between absolute top-4 left-4 right-4">
             <button
               onClick={() => navigate(`/cards/${companyId}`)}
-              className={`text-white hover:text-purple-300 transition-colors flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""}`}
+              className={`text-white hover:text-mk-lilac transition-colors flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""}`}
             >
               <FiArrowLeft className="text-xl" />
               <span className="text-sm">{t("cardOfferDetail.back")}</span>
@@ -253,7 +253,7 @@ const CardOfferDetailPage = () => {
                 className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
                 aria-label={t("offerDetail.aria_share")}
               >
-                <BsShare className="text-lg" />
+                <ShareIcon size={18} />
               </button>
               <button
                 type="button"
@@ -262,9 +262,9 @@ const CardOfferDetailPage = () => {
                 disabled={toggleFavorite.isPending}
               >
                 {isCardFavorite ? (
-                  <BsHeartFill className="text-lg text-red-300" />
+                  <HeartIcon size={18} filled className="text-[#FCA5A5]" />
                 ) : (
-                  <BsHeart className="text-lg" />
+                  <HeartIcon size={18} />
                 )}
               </button>
             </div>
@@ -337,22 +337,22 @@ const CardOfferDetailPage = () => {
         </div>
       </section>
 
-      <div className="min-h-screen bg-gray-50" style={{ paddingTop: "0" }}>
+      <div className="min-h-screen bg-mk-tint3" style={{ paddingTop: "0" }}>
         <div className="container mx-auto px-4 py-8 max-w-site -mt-2 relative z-10 pb-20">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* عمود المحتوى: صورة واحدة أصغر + تابات */}
             <div className="lg:col-span-2 space-y-6">
-              <div className="bg-white rounded-3xl shadow-lg overflow-hidden">
-                <div className="p-4 flex items-center justify-center bg-gray-50">
+              <div className="bg-white rounded-mk-2xl shadow-mk-raised overflow-hidden">
+                <div className="p-4 flex items-center justify-center bg-mk-tint3">
                   <img
                     src={imageUrl}
                     alt={cardName}
-                    className="max-h-[280px] w-auto object-contain rounded-xl"
+                    className="max-h-[280px] w-auto object-contain rounded-mk-md"
                   />
                 </div>
               </div>
 
-              <div className="bg-white rounded-3xl shadow-lg overflow-hidden">
+              <div className="bg-white rounded-mk-2xl shadow-mk-raised overflow-hidden">
                 <div className="flex border-b">
                   {[
                     {
@@ -372,7 +372,7 @@ const CardOfferDetailPage = () => {
                       key={tab.key}
                       type="button"
                       onClick={() => setActiveTab(tab.key)}
-                      className={`px-6 py-4 font-medium border-b-2 transition-colors ${activeTab === tab.key ? "border-primary text-primary" : "border-transparent text-gray-600 hover:text-gray-800"}`}
+                      className={`px-6 py-4 font-medium border-b-2 transition-colors ${activeTab === tab.key ? "border-primary text-primary" : "border-transparent text-mk-muted hover:text-mk-text"}`}
                     >
                       {tab.label}
                     </button>
@@ -383,11 +383,11 @@ const CardOfferDetailPage = () => {
                     <>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                         {validityType && (
-                          <div className="bg-gray-100 p-3 rounded-lg">
-                            <div className="text-sm text-gray-600">
+                          <div className="bg-mk-tint2 p-3 rounded-mk-sm">
+                            <div className="text-sm text-mk-muted">
                               {t("cardOfferDetail.validity_type")}
                             </div>
-                            <div className="font-medium text-gray-800">
+                            <div className="font-medium text-mk-text">
                               {(() => {
                                 const vk = validityType.toLowerCase();
                                 return [
@@ -402,32 +402,32 @@ const CardOfferDetailPage = () => {
                             </div>
                           </div>
                         )}
-                        <div className="bg-gray-100 p-3 rounded-lg">
-                          <div className="text-sm text-gray-600">
+                        <div className="bg-mk-tint2 p-3 rounded-mk-sm">
+                          <div className="text-sm text-mk-muted">
                             {t("cardOfferDetail.renewable")}
                           </div>
-                          <div className="font-medium text-gray-800">
+                          <div className="font-medium text-mk-text">
                             {isRenewable
                               ? t("cardOfferDetail.yes")
                               : t("cardOfferDetail.no")}
                           </div>
                         </div>
                         {deliveryType && (
-                          <div className="bg-gray-100 p-3 rounded-lg">
-                            <div className="text-sm text-gray-600">
+                          <div className="bg-mk-tint2 p-3 rounded-mk-sm">
+                            <div className="text-sm text-mk-muted">
                               {t("cardOfferDetail.delivery")}
                             </div>
-                            <div className="font-medium text-gray-800">{deliveryType}</div>
+                            <div className="font-medium text-mk-text">{deliveryType}</div>
                           </div>
                         )}
                       </div>
-                      <p className="text-gray-600 text-sm whitespace-pre-wrap">
+                      <p className="text-mk-muted text-sm whitespace-pre-wrap">
                         {stripHtml(cardDescription) || "—"}
                       </p>
                     </>
                   )}
                   {activeTab === "terms" && (
-                    <p className="text-gray-600 text-sm whitespace-pre-wrap">
+                    <p className="text-mk-muted text-sm whitespace-pre-wrap">
                       {stripHtml(cardTerms) || t("cardOfferDetail.no_terms")}
                     </p>
                   )}
@@ -435,13 +435,13 @@ const CardOfferDetailPage = () => {
                     <div className="space-y-2">
                       {cardFeatures.length > 0 ? (
                         cardFeatures.map((f, i) => (
-                          <div key={i} className="flex items-center gap-2 text-gray-700">
-                            <div className="w-1.5 h-1.5 bg-purple-500 rounded-full flex-shrink-0" />
+                          <div key={i} className="flex items-center gap-2 text-mk-text-strong">
+                            <div className="w-1.5 h-1.5 bg-mk-primary-light rounded-full flex-shrink-0" />
                             <span>{f}</span>
                           </div>
                         ))
                       ) : (
-                        <p className="text-gray-500 text-sm">
+                        <p className="text-mk-muted text-sm">
                           {stripHtml(String(card.features ?? "")) ||
                             t("cardOfferDetail.no_features")}
                         </p>
@@ -454,7 +454,7 @@ const CardOfferDetailPage = () => {
 
             {/* الشريط الجانبي */}
             <div className="lg:col-span-1">
-              <div className="lg:sticky lg:top-6 bg-white rounded-3xl shadow-lg p-6 space-y-6">
+              <div className="lg:sticky lg:top-6 bg-white rounded-mk-2xl shadow-mk-raised p-6 space-y-6">
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
@@ -464,9 +464,9 @@ const CardOfferDetailPage = () => {
                       const url = `${window.location.origin}/cards/${companyId}/${offerId}`;
                       openShare({ title, url });
                     }}
-                    className="flex-1 py-2.5 rounded-xl border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
+                    className="flex-1 py-2.5 rounded-mk-md border border-mk-border bg-white text-mk-text hover:bg-mk-tint3 transition-colors flex items-center justify-center gap-2"
                   >
-                    <BsShare className="text-base" />
+                    <ShareIcon size={16} />
                     <span className="text-sm font-medium">
                       {t("cardOfferDetail.share")}
                     </span>
@@ -475,13 +475,13 @@ const CardOfferDetailPage = () => {
                   <button
                     type="button"
                     onClick={handleFavoriteClick}
-                    className="flex-1 py-2.5 rounded-xl border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
+                    className="flex-1 py-2.5 rounded-mk-md border border-mk-border bg-white text-mk-text hover:bg-mk-tint3 transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
                     disabled={toggleFavorite.isPending}
                   >
                     {isCardFavorite ? (
-                      <BsHeartFill className="text-base text-red-500" />
+                      <HeartIcon size={16} filled className="text-mk-red" />
                     ) : (
-                      <BsHeart className="text-base" />
+                      <HeartIcon size={16} />
                     )}
                     <span className="text-sm font-medium">
                       {t("cardOfferDetail.favorites")}
@@ -491,25 +491,25 @@ const CardOfferDetailPage = () => {
 
                 <div className="flex flex-wrap gap-2">
                   {categoryName && (
-                    <span className="inline-flex items-center gap-1 text-sm text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">
+                    <span className="inline-flex items-center gap-1 text-sm text-mk-muted bg-mk-tint2 px-3 py-1.5 rounded-full">
                       <FiTag className="text-base" /> {categoryName}
                     </span>
                   )}
-                  <span className="inline-flex items-center gap-1 text-sm text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">
+                  <span className="inline-flex items-center gap-1 text-sm text-mk-muted bg-mk-tint2 px-3 py-1.5 rounded-full">
                     {purchaseCount} {t("cardOfferDetail.sold_badge")}
                   </span>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800">
+                <h3 className="text-lg font-semibold text-mk-text">
                   {t("cardOfferDetail.choose_quantity")}
                 </h3>
-                <div className="border border-gray-200 rounded-xl p-4 space-y-3">
-                  <p className="text-gray-800 font-medium mb-2">{cardName}</p>
+                <div className="border border-mk-border rounded-mk-md p-4 space-y-3">
+                  <p className="text-mk-text font-medium mb-2">{cardName}</p>
                   <div className="flex items-center gap-2 flex-wrap">
                     {oldPrice != null && oldPrice > unitPrice && (
-                      <span className="text-gray-400 line-through text-sm">{oldPrice}</span>
+                      <span className="text-mk-faint line-through text-sm">{oldPrice}</span>
                     )}
-                    <span className="text-xl font-bold text-gray-900">{unitPrice}</span>
-                    <CurrencyIcon className="text-gray-700" size={20} />
+                    <span className="text-xl font-bold text-mk-text">{unitPrice}</span>
+                    <CurrencyIcon className="text-mk-text-strong" size={20} />
                     {discountPercentage != null && discountPercentage > 0 && (
                       <span className="text-green-600 text-sm font-medium bg-green-50 px-2 py-0.5 rounded-full">
                         {t("cardOfferDetail.save_pct", {
@@ -519,7 +519,7 @@ const CardOfferDetailPage = () => {
                     )}
                   </div>
                   {!inStock && (
-                    <p className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-sm">
+                    <p className="p-3 bg-amber-50 border border-amber-200 rounded-mk-sm text-amber-800 text-sm">
                       {t("cardOfferDetail.out_of_stock")}
                     </p>
                   )}
@@ -531,7 +531,7 @@ const CardOfferDetailPage = () => {
                           onQuantityChange={handleQuantityChange}
                         />
                       </div>
-                      <p className="text-sm font-medium text-gray-700 mt-2">
+                      <p className="text-sm font-medium text-mk-text-strong mt-2">
                         {t("cardOfferDetail.total")}: {totalPrice}{" "}
                         <CurrencyIcon className="inline" size={14} />
                       </p>
@@ -541,16 +541,16 @@ const CardOfferDetailPage = () => {
                 {inStock && (
                   <button
                     onClick={handlePurchase}
-                    className="w-full py-3 px-6 bg-primary text-white rounded-xl font-medium hover:opacity-90 transition-opacity disabled:opacity-70 disabled:cursor-not-allowed"
+                    className="w-full py-3 px-6 bg-primary text-white rounded-mk-md font-medium hover:opacity-90 transition-opacity disabled:opacity-70 disabled:cursor-not-allowed"
                   >
                     {t("cardOfferDetail.quick_buy")}
                   </button>
                 )}
                 <div>
-                  <p className="text-sm text-gray-600 mb-2">
+                  <p className="text-sm text-mk-muted mb-2">
                     {t("cardOfferDetail.payment_methods")}
                   </p>
-                  <div className="flex items-center gap-2 text-gray-500 text-xs font-medium">
+                  <div className="flex items-center gap-2 text-mk-muted text-xs font-medium">
                     <span>VISA</span>
                     <span>MasterCard</span>
                     <span>Mada</span>
@@ -563,7 +563,7 @@ const CardOfferDetailPage = () => {
 
           {relatedCards.length > 0 && (
             <section className="mt-12">
-              <h2 className="text-xl font-bold text-gray-800 mb-6">
+              <h2 className="text-xl font-bold text-mk-text mb-6">
                 {t("cardOfferDetail.related_cards")}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">

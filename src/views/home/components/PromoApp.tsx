@@ -297,7 +297,7 @@ const PromoApp = () => {
           onClick={prevSlide}
           className={`absolute ${
             isRTL ? "right-2 sm:right-4" : "left-2 sm:left-4"
-          } top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 sm:p-3 rounded-full transition-all duration-300 z-10 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500`}
+          } top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 sm:p-3 rounded-full transition-all duration-300 z-10 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-mk-primary-light`}
           aria-label="Previous slide"
         >
           {isRTL ? (
@@ -311,7 +311,7 @@ const PromoApp = () => {
           onClick={nextSlide}
           className={`absolute ${
             isRTL ? "left-2 sm:left-4" : "right-2 sm:right-4"
-          } top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 sm:p-3 rounded-full transition-all duration-300 z-10 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500`}
+          } top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 sm:p-3 rounded-full transition-all duration-300 z-10 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-mk-primary-light`}
           aria-label="Next slide"
         >
           {isRTL ? (

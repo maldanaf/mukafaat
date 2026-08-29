@@ -46,6 +46,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { mokafaatKeys } from "@hooks/api/useMokafaatQueries";
 import { initMoyasarPayment } from "@utils/moyasar";
 import { startArbPayment } from "@utils/arbPayment";
+import { getPaymentGateway, gatewayFromPaymentInfo } from "@utils/paymentGateway";
 import type { CardCompany, CardOffer } from "@data/cards";
 
 function getCardImage(logoName: string) {
@@ -216,7 +217,7 @@ const PaymentPage = () => {
 
   if (isCardDetailLoading && !companyAndOffer) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-mk-tint3 flex items-center justify-center">
         <LoadingSpinner />
       </div>
     );
@@ -224,14 +225,14 @@ const PaymentPage = () => {
 
   if (!company || !offer || !companyId || !offerId) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-mk-tint3 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">
+          <h1 className="text-2xl font-bold text-mk-text mb-4">
             {isRTL ? "البطاقة غير موجودة" : "Card not found"}
           </h1>
           <button
             onClick={() => navigate("/cards")}
-            className="px-6 py-3 bg-[#400198] text-white rounded-lg hover:bg-[#54015d] transition-colors"
+            className="px-6 py-3 bg-[#400198] text-white rounded-mk-sm hover:bg-[#54015d] transition-colors"
           >
             {isRTL ? "العودة للبطاقات" : "Back to Cards"}
           </button>
@@ -268,6 +269,15 @@ const PaymentPage = () => {
     if (!selectedMethod) return;
     submitPayment(selectedMethod === "wallet");
   };
+
+  // رابط كول باك ميسر → صفحة الكول باك في الفرونت (ميسر يضيف id و status)
+  const buildMoyasarCallbackUrl = (orderId?: string | number) =>
+    `${window.location.origin}/orders/callback?` +
+    new URLSearchParams({
+      type: "card",
+      ...(orderId != null ? { order_id: String(orderId) } : {}),
+      ...(companyId ? { company_id: String(companyId) } : {}),
+    }).toString();
 
   // رابط عودة الراجحي بعد الدفع → صفحة الكول باك في الفرونت
   const buildCardReturnUrl = (orderId: string | number) =>
@@ -335,15 +345,56 @@ const PaymentPage = () => {
       }
     }
 
-    // 💳 بوابة الراجحي + طلب pending موجود → ابدأ الدفع على نفس الطلب
+    // 💳 طلب pending موجود → ادفع عليه مباشرة بالبوابة الفعّالة
     if (!useWalletPayment && orderIdFromState != null && !discount) {
-      const r = await startArbPayment({
-        orderId: orderIdFromState,
-        returnUrl: buildCardReturnUrl(orderIdFromState),
-      });
-      if (!r.ok) {
-        setErrorMsg(r.error || (isRTL ? "تعذّر بدء عملية الدفع" : "Failed to start payment"));
+      const paymentInfoFromState = orderFromState?.payment_info as
+        | Record<string, unknown>
+        | undefined;
+      const gateway =
+        gatewayFromPaymentInfo(paymentInfoFromState) ?? (await getPaymentGateway());
+
+      if (gateway === "arb") {
+        const r = await startArbPayment({
+          orderId: orderIdFromState,
+          returnUrl: buildCardReturnUrl(orderIdFromState),
+        });
+        if (!r.ok) {
+          setErrorMsg(r.error || (isRTL ? "تعذّر بدء عملية الدفع" : "Failed to start payment"));
+        }
+        return;
       }
+
+      // ميسر: نموذج البطاقة داخل الصفحة
+      const paymentUrlFromState = (orderFromState?.payment_url ??
+        orderFromState?.redirect_url) as string | undefined;
+      if (paymentUrlFromState && typeof paymentUrlFromState === "string") {
+        window.location.href = paymentUrlFromState;
+        return;
+      }
+      if (paymentInfoFromState && typeof paymentInfoFromState === "object") {
+        const amountHalala = Math.max(100, Math.floor((totalPrice || 0) * 100));
+        const publishableKey = (paymentInfoFromState.publishable_key as string) || "";
+        if (publishableKey && amountHalala >= 100) {
+          moyasarConfigRef.current = {
+            amountHalala,
+            currency: (paymentInfoFromState.currency as string) || "SAR",
+            description:
+              (paymentInfoFromState.description as string) ||
+              (isRTL ? "إتمام الدفع للبطاقة" : "Complete card payment"),
+            publishableKey,
+            callbackUrl: buildMoyasarCallbackUrl(orderIdFromState),
+            metadata: (paymentInfoFromState.metadata as Record<string, unknown>) || {},
+          };
+          moyasarInitedRef.current = false;
+          setShowMoyasarForm(true);
+          return;
+        }
+      }
+      setErrorMsg(
+        isRTL
+          ? "لا تتوفر بيانات الدفع لهذا الطلب. ارجع لصفحة البطاقة واضغط على شراء مرة أخرى."
+          : "Payment info is not available. Go back and click Buy again.",
+      );
       return;
     }
 
@@ -387,13 +438,67 @@ const PaymentPage = () => {
             return;
           }
 
-          // 💳 يتطلب دفع → ابدأ الدفع عبر بوابة الراجحي
+          // 💳 يتطلب دفع → ابدأ الدفع بالبوابة الفعّالة
           if (requiresPayment && orderId != null) {
-            startArbPayment({
-              orderId,
-              returnUrl: buildCardReturnUrl(orderId),
-            }).then((r) => {
-              if (!r.ok) setErrorMsg(r.error || (isRTL ? "تعذّر بدء عملية الدفع" : "Failed to start payment"));
+            const paymentInfo = (order?.payment_info ?? inner?.payment_info) as
+              | Record<string, unknown>
+              | undefined;
+            const gatewayFromOrder = gatewayFromPaymentInfo(paymentInfo);
+
+            const startArb = () => {
+              startArbPayment({
+                orderId,
+                returnUrl: buildCardReturnUrl(orderId),
+              }).then((r) => {
+                if (!r.ok) setErrorMsg(r.error || (isRTL ? "تعذّر بدء عملية الدفع" : "Failed to start payment"));
+              });
+            };
+
+            const startMoyasar = () => {
+              // المبلغ من السيرفر بعد الخصم (fallback على الحساب المحلي)
+              const serverHalala = Number(paymentInfo?.amount_halala);
+              const serverAmount = Number(paymentInfo?.amount);
+              const fallbackAmount = discount ? Number(discount.final_amount) : (totalPrice || 0);
+              const amountHalala =
+                Number.isFinite(serverHalala) && serverHalala > 0
+                  ? Math.floor(serverHalala)
+                  : Number.isFinite(serverAmount) && serverAmount > 0
+                    ? Math.floor(serverAmount * 100)
+                    : Math.max(100, Math.floor(fallbackAmount * 100));
+              const publishableKey = (paymentInfo?.publishable_key as string) || "";
+              if (!publishableKey || amountHalala < 100) {
+                setErrorMsg(
+                  isRTL
+                    ? "بيانات الدفع غير مكتملة. تواصل مع الدعم."
+                    : "Incomplete payment information. Please contact support.",
+                );
+                return;
+              }
+              moyasarConfigRef.current = {
+                amountHalala,
+                currency: (paymentInfo?.currency as string) || "SAR",
+                description:
+                  (paymentInfo?.description as string) ||
+                  (isRTL ? "إتمام الدفع للطلب" : "Complete order payment"),
+                publishableKey,
+                callbackUrl: buildMoyasarCallbackUrl(orderId),
+                metadata: (paymentInfo?.metadata as Record<string, unknown>) || {},
+              };
+              moyasarInitedRef.current = false;
+              setShowMoyasarForm(true);
+            };
+
+            if (gatewayFromOrder === "arb") {
+              startArb();
+              return;
+            }
+            if (gatewayFromOrder === "moyasar") {
+              startMoyasar();
+              return;
+            }
+            getPaymentGateway().then((gateway) => {
+              if (gateway === "arb") startArb();
+              else startMoyasar();
             });
             return;
           }
@@ -438,14 +543,14 @@ const PaymentPage = () => {
         <link rel="canonical" href={`https://mukafaat.com/cards/${companyId}/payment`} />
       </Helmet>
 
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-mk-tint3">
         {/* Header - نفس صفحة العروض */}
-        <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[200px] flex items-center justify-center">
+        <section className="relative w-full bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] overflow-hidden min-h-[200px] flex items-center justify-center">
           <div className="absolute inset-0 bg-primary opacity-30" />
           <div className="relative pt-24 pb-10 px-6 mx-auto max-w-site text-center lg:pt-24 lg:pb-10 lg:px-12 flex flex-col justify-center z-10">
             <button
               onClick={() => navigate(`/cards/${companyId}`)}
-              className="absolute top-4 left-4 text-white hover:text-purple-300 transition-colors flex items-center gap-2"
+              className="absolute top-4 left-4 text-white hover:text-mk-lilac transition-colors flex items-center gap-2"
             >
               <FiArrowLeft className="text-xl" />
               <span className="text-sm">{isRTL ? "العودة" : "Back"}</span>
@@ -468,17 +573,17 @@ const PaymentPage = () => {
             </p>
 
             <div className="flex items-center justify-center text-sm md:text-base">
-              <Link to="/" className="text-white hover:text-purple-300 transition-colors cursor-pointer text-xs">
+              <Link to="/" className="text-white hover:text-mk-lilac transition-colors cursor-pointer text-xs">
                 {isRTL ? "الرئيسية" : "Home"}
               </Link>
               <span className="text-white text-xs mx-2">|</span>
-              <Link to="/cards" className="text-white hover:text-purple-300 transition-colors cursor-pointer text-xs">
+              <Link to="/cards" className="text-white hover:text-mk-lilac transition-colors cursor-pointer text-xs">
                 {isRTL ? "البطاقات" : "Cards"}
               </Link>
               <span className="text-white text-xs mx-2">|</span>
               <Link
                 to={`/cards/${companyId}`}
-                className="text-white hover:text-purple-300 transition-colors cursor-pointer text-xs"
+                className="text-white hover:text-mk-lilac transition-colors cursor-pointer text-xs"
               >
                 {company.name[isRTL ? "ar" : "en"]}
               </Link>
@@ -498,13 +603,13 @@ const PaymentPage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* ملخص الطلب - نفس تخطيط العروض */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-xl p-6 sticky top-8">
-                <h2 className="text-lg font-semibold text-gray-800 mb-4">
+              <div className="bg-white rounded-mk-md p-6 sticky top-8">
+                <h2 className="text-lg font-semibold text-mk-text mb-4">
                   {isRTL ? "ملخص الطلب" : "Order Summary"}
                 </h2>
 
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-lg overflow-hidden">
+                  <div className="w-12 h-12 rounded-mk-sm overflow-hidden">
                     <img
                       src={getCardImage(company.logo)}
                       alt={company.name[isRTL ? "ar" : "en"]}
@@ -512,17 +617,17 @@ const PaymentPage = () => {
                     />
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-800">
+                    <h3 className="font-medium text-mk-text">
                       {company.name[isRTL ? "ar" : "en"]}
                     </h3>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-mk-muted">
                       {company.category[isRTL ? "ar" : "en"]}
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-16 h-16 rounded-lg overflow-hidden">
+                  <div className="w-16 h-16 rounded-mk-sm overflow-hidden">
                     <img
                       src={getCardImage(offer.image)}
                       alt={offer.title[isRTL ? "ar" : "en"]}
@@ -530,10 +635,10 @@ const PaymentPage = () => {
                     />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-medium text-gray-800 text-sm">
+                    <h3 className="font-medium text-mk-text text-sm">
                       {offer.title[isRTL ? "ar" : "en"]}
                     </h3>
-                    <p className="text-gray-600 text-xs">
+                    <p className="text-mk-muted text-xs">
                       {isRTL ? `الكمية: ${quantity}` : `Quantity: ${quantity}`}
                     </p>
                   </div>
@@ -542,7 +647,7 @@ const PaymentPage = () => {
                 <div className="space-y-2 mb-4">
                   {offer.originalPrice != null && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">
+                      <span className="text-mk-muted">
                         {isRTL ? "السعر الأصلي" : "Original Price"}
                       </span>
                       <span className="flex items-center gap-1">
@@ -552,7 +657,7 @@ const PaymentPage = () => {
                     </div>
                   )}
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">
+                    <span className="text-mk-muted">
                       {isRTL ? "سعر البطاقة" : "Card Price"}
                     </span>
                     <span className="flex items-center gap-1">
@@ -576,7 +681,7 @@ const PaymentPage = () => {
                 <div className="border-t pt-4">
                   {discount ? (
                     <div className="space-y-1 mb-2">
-                      <div className="flex justify-between text-sm text-gray-600">
+                      <div className="flex justify-between text-sm text-mk-muted">
                         <span>{isRTL ? "المجموع قبل الكود" : "Subtotal"}</span>
                         <span className="line-through">{totalPrice} {isRTL ? "ر.س" : "SAR"}</span>
                       </div>
@@ -587,7 +692,7 @@ const PaymentPage = () => {
                     </div>
                   ) : null}
                   <div className="flex justify-between items-center">
-                    <span className="font-semibold text-gray-800">
+                    <span className="font-semibold text-mk-text">
                       {isRTL ? "المجموع" : "Total"}
                     </span>
                     <span className="text-xl font-bold text-[#400198] flex items-center gap-1">
@@ -609,18 +714,18 @@ const PaymentPage = () => {
 
             {/* طرق الدفع / نموذج ميسر */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-xl p-6">
+              <div className="bg-white rounded-mk-md p-6">
                 {showMoyasarForm ? (
                   <>
-                    <h2 className="text-lg font-semibold text-gray-800 mb-6">
+                    <h2 className="text-lg font-semibold text-mk-text mb-6">
                       {isRTL ? "إتمام الدفع عبر ميسر" : "Complete payment via Moyasar"}
                     </h2>
                     {errorMsg && (
-                      <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                      <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-mk-sm text-red-700 text-sm">
                         {errorMsg}
                       </div>
                     )}
-                    <p className="text-gray-600 mb-4">
+                    <p className="text-mk-muted mb-4">
                       {isRTL ? "أدخل بيانات البطاقة أدناه:" : "Enter your card details below:"}
                     </p>
                     <div className="mysr-form-card min-h-[200px]" />
@@ -632,19 +737,19 @@ const PaymentPage = () => {
                         moyasarConfigRef.current = null;
                         setErrorMsg(null);
                       }}
-                      className="mt-4 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                      className="mt-4 px-4 py-2 border border-mk-border-2 text-mk-text-strong rounded-mk-sm hover:bg-mk-tint3"
                     >
                       {isRTL ? "العودة لاختيار طريقة الدفع" : "Back to payment methods"}
                     </button>
                   </>
                 ) : (
                   <>
-                    <h2 className="text-lg font-semibold text-gray-800 mb-6">
+                    <h2 className="text-lg font-semibold text-mk-text mb-6">
                       {isRTL ? "اختر طريقة الدفع" : "Choose Payment Method"}
                     </h2>
 
                     {errorMsg && (
-                      <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                      <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-mk-sm text-red-700 text-sm">
                         {errorMsg}
                         {!isSubscribed && (
                           <button
@@ -666,11 +771,11 @@ const PaymentPage = () => {
                       {paymentMethods.map((method) => (
                         <label
                           key={method.id}
-                          className={`flex items-center justify-between p-4 border-2 rounded-xl transition-all cursor-pointer ${
-                            method.disabled ? "opacity-40 cursor-not-allowed bg-gray-50" :
-                            selectedMethod === method.id ? "border-[#400198] bg-purple-50 shadow-sm" :
-                            createOrder.isPending ? "opacity-60 pointer-events-none border-gray-200" :
-                            "border-gray-200 hover:border-purple-300 hover:bg-purple-50/50"
+                          className={`flex items-center justify-between p-4 border-2 rounded-mk-md transition-all cursor-pointer ${
+                            method.disabled ? "opacity-40 cursor-not-allowed bg-mk-tint3" :
+                            selectedMethod === method.id ? "border-[#400198] bg-mk-tint3 shadow-mk-card" :
+                            createOrder.isPending ? "opacity-60 pointer-events-none border-mk-border" :
+                            "border-mk-border hover:border-mk-lilac hover:bg-mk-tint3/50"
                           }`}
                         >
                           <div className="flex items-center gap-3">
@@ -681,14 +786,14 @@ const PaymentPage = () => {
                               checked={selectedMethod === method.id}
                               onChange={() => !method.disabled && handlePaymentMethodSelect(method.id)}
                               disabled={createOrder.isPending || method.disabled}
-                              className="w-5 h-5 text-purple-600 border-gray-300 focus:ring-purple-500"
+                              className="w-5 h-5 text-mk-primary border-mk-border-2 focus:ring-mk-primary-light"
                             />
                             <div>
-                              <span className="font-medium text-gray-800 block">
+                              <span className="font-medium text-mk-text block">
                                 {method.name[isRTL ? "ar" : "en"]}
                               </span>
                               {method.id === "wallet" && walletPartial && (
-                                <span className="text-xs text-gray-500">
+                                <span className="text-xs text-mk-muted">
                                   {isRTL ? `${walletBalance} ر.س محفظة + ${remainingAfterWallet.toFixed(2)} ر.س بطاقة` : `${walletBalance} SAR wallet + ${remainingAfterWallet.toFixed(2)} SAR card`}
                                 </span>
                               )}
@@ -710,7 +815,7 @@ const PaymentPage = () => {
                     </div>
                     {selectedMethod && !createOrder.isPending && (
                       <button type="button" onClick={handleConfirmPayment}
-                        className="w-full py-3.5 bg-[#400198] text-white rounded-xl font-medium hover:bg-[#33007a] transition-colors mb-4">
+                        className="w-full py-3.5 bg-[#400198] text-white rounded-mk-md font-medium hover:bg-[#33007a] transition-colors mb-4">
                         {selectedMethod === "wallet" && walletCoversAll
                           ? (isRTL ? `ادفع ${effectivePrice} ر.س من المحفظة` : `Pay ${effectivePrice} SAR from wallet`)
                           : selectedMethod === "wallet" && walletPartial
@@ -719,7 +824,7 @@ const PaymentPage = () => {
                       </button>
                     )}
                     {createOrder.isPending && (
-                      <div className="flex items-center justify-center gap-2 text-gray-600 py-4">
+                      <div className="flex items-center justify-center gap-2 text-mk-muted py-4">
                         <LoadingSpinner />
                         <span>{isRTL ? "جاري معالجة الدفع..." : "Processing payment..."}</span>
                       </div>

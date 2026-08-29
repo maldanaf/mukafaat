@@ -17,7 +17,7 @@ const JobsHero = () => {
 
   return (
     <>
-      <section className="relative w-full bg-[#1D0843]  overflow-hidden min-h-[100px] flex items-center justify-center">
+      <section className="relative w-full bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)]  overflow-hidden min-h-[100px] flex items-center justify-center">
         <div className="absolute inset-0 bg-primary opacity-30"></div>
         <div className="relative pt-20 pb-16 px-6 mx-auto max-w-site text-center lg:pt-20 lg:pb-16 lg:px-12 flex flex-col justify-center z-10">
           <h1
@@ -31,11 +31,11 @@ const JobsHero = () => {
             className="flex items-center justify-center space-x-2 text-sm md:text-base wow fadeInUp"
             data-wow-delay="0.3s"
           >
-            <Link to="/" className="text-white hover:text-purple-300 text-xs">
+            <Link to="/" className="text-white hover:text-mk-lilac text-xs">
               {t("home.navbar.home")}
             </Link>
             <span className="text-white text-xs">|</span>
-            <span className="text-purple-300 font-medium text-xs">
+            <span className="text-mk-lilac font-medium text-xs">
               {t("careers.title", { defaultValue: "Jobs" })}
             </span>
           </div>
@@ -348,7 +348,7 @@ const JobsPage = () => {
           <div className="text-center py-20 px-6">
             <div className="max-w-md mx-auto">
               {/* Icon */}
-              <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center">
+              <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-mk-tint to-pink-100 rounded-full flex items-center justify-center">
                 <svg
                   className="w-12 h-12 text-[#fd671a]"
                   fill="none"
@@ -401,7 +401,7 @@ const JobsPage = () => {
 
                 <Link
                   to="/contact"
-                  className="px-6 py-3 border-2 border-purple-600 text-[#fd671a] font-semibold rounded-md hover:bg-[#fd671a] hover:text-white transition-all duration-300 flex items-center justify-center gap-2"
+                  className="px-6 py-3 border-2 border-mk-primary text-[#fd671a] font-semibold rounded-md hover:bg-[#fd671a] hover:text-white transition-all duration-300 flex items-center justify-center gap-2"
                 >
                   <svg
                     className="w-4 h-4"
@@ -421,8 +421,8 @@ const JobsPage = () => {
               </div>
 
               {/* Additional Info */}
-              <div className="mt-8 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-100">
-                <p className="text-sm text-purple-700">
+              <div className="mt-8 p-4 bg-gradient-to-r from-mk-tint3 to-pink-50 rounded-lg border border-mk-tint">
+                <p className="text-sm text-mk-primary">
                   {isRTL
                     ? "💡 نصيحة: يمكنك أيضاً متابعة صفحتنا على LinkedIn للحصول على آخر التحديثات حول الوظائف المتاحة."
                     : "💡 Tip: You can also follow our LinkedIn page for the latest updates on available job opportunities."}
@@ -436,7 +436,7 @@ const JobsPage = () => {
               <select
                 value={pendingCountry}
                 onChange={(e) => setPendingCountry(e.target.value)}
-                className="w-full h-12 bg-gray-100 rounded-md pl-5 pr-10 text-gray-600 appearance-none focus:outline-none focus:ring-2 focus:ring-purple-300"
+                className="w-full h-12 bg-gray-100 rounded-md pl-5 pr-10 text-gray-600 appearance-none focus:outline-none focus:ring-2 focus:ring-mk-lilac"
               >
                 <option value={allOption}>
                   {t("company-application.country", {
@@ -473,7 +473,7 @@ const JobsPage = () => {
               <select
                 value={pendingType}
                 onChange={(e) => setPendingType(e.target.value)}
-                className="w-full h-12 bg-gray-100 rounded-md pl-5 pr-10 text-gray-600 appearance-none focus:outline-none focus:ring-2 focus:ring-purple-300"
+                className="w-full h-12 bg-gray-100 rounded-md pl-5 pr-10 text-gray-600 appearance-none focus:outline-none focus:ring-2 focus:ring-mk-lilac"
               >
                 <option value={allOption}>
                   {t("careers.workType", { defaultValue: "Work Type" })}
@@ -557,7 +557,7 @@ const JobsPage = () => {
                         state: { title: job.title, titleAr: job.titleAr },
                       })
                     }
-                    className="px-6 py-3 rounded-md bg-[#fd671a] text-white hover:bg-purple-700 text-sm font-semibold"
+                    className="px-6 py-3 rounded-md bg-[#fd671a] text-white hover:bg-mk-primary text-sm font-semibold"
                   >
                     {t("careers.ad.apply", { defaultValue: "Apply Now" })}
                   </button>
@@ -568,7 +568,7 @@ const JobsPage = () => {
           ) : (
             <div className="text-center py-20 px-6">
               <div className="max-w-md mx-auto">
-                <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center">
+                <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-mk-tint to-pink-100 rounded-full flex items-center justify-center">
                   <svg
                     className="w-12 h-12 text-[#fd671a]"
                     fill="none"
@@ -618,7 +618,7 @@ const JobsPage = () => {
 
                   <Link
                     to="/contact"
-                    className="px-6 py-3 border-2 border-purple-600 text-[#fd671a] font-semibold rounded-md hover:bg-[#fd671a] hover:text-white transition-all duration-300 flex items-center justify-center gap-2"
+                    className="px-6 py-3 border-2 border-mk-primary text-[#fd671a] font-semibold rounded-md hover:bg-[#fd671a] hover:text-white transition-all duration-300 flex items-center justify-center gap-2"
                   >
                     <svg
                       className="w-4 h-4"
@@ -637,8 +637,8 @@ const JobsPage = () => {
                   </Link>
                 </div>
 
-                <div className="mt-8 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-100">
-                  <p className="text-sm text-purple-700">
+                <div className="mt-8 p-4 bg-gradient-to-r from-mk-tint3 to-pink-50 rounded-lg border border-mk-tint">
+                  <p className="text-sm text-mk-primary">
                     {isRTL
                       ? "💡 نصيحة: يمكنك أيضاً متابعة صفحتنا على LinkedIn للحصول على آخر التحديثات حول الوظائف المتاحة."
                       : "💡 Tip: You can also follow our LinkedIn page for the latest updates on available job opportunities."}

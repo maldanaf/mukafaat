@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
+import { POINTS_ENABLED } from "@config/features";
 import { useParams, Link, useNavigate } from "@/lib/router-compat";
 import { Helmet } from "@/lib/helmet-compat";
 import { useIsRTL } from "@hooks";
@@ -21,7 +22,7 @@ import { toast } from "react-toastify";
 
 const typeConfig = {
   flight: { icon: MdOutlineFlight, color: "bg-blue-500", label: { ar: "طيران", en: "Flight" } },
-  hotel: { icon: RiHotelLine, color: "bg-purple-500", label: { ar: "فندق", en: "Hotel" } },
+  hotel: { icon: RiHotelLine, color: "bg-mk-primary-light", label: { ar: "فندق", en: "Hotel" } },
   car: { icon: FaCar, color: "bg-orange-500", label: { ar: "سيارة", en: "Car" } },
 };
 
@@ -158,11 +159,11 @@ export default function BookingDetailPage() {
       </Helmet>
 
       {/* Hero */}
-      <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[180px] flex items-center justify-center">
+      <section className="relative w-full bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] overflow-hidden min-h-[180px] flex items-center justify-center">
         <div className="absolute inset-0 bg-primary opacity-30" />
         <div className="relative pt-20 pb-8 px-6 mx-auto max-w-site w-full text-center z-10">
           <div className="flex items-center justify-center gap-2 mb-3">
-            <span className={`${tc?.color || "bg-purple-500"} text-white p-2 rounded-full`}>
+            <span className={`${tc?.color || "bg-mk-primary-light"} text-white p-2 rounded-full`}>
               <TypeIcon className="w-5 h-5" />
             </span>
             <span className="text-white/80 text-sm">{tc?.label[isRTL ? "ar" : "en"]}</span>
@@ -236,7 +237,7 @@ export default function BookingDetailPage() {
                   )}
                   {hotelCity && (
                     <div className="flex items-center gap-2 text-gray-600">
-                      <FiMapPin className="text-purple-500" />
+                      <FiMapPin className="text-mk-primary-light" />
                       <span className="font-medium">{isRTL ? "المدينة:" : "City:"}</span>
                       <span>{hotelCity}</span>
                     </div>
@@ -360,10 +361,13 @@ export default function BookingDetailPage() {
                     <span className="text-green-500 mt-0.5">✓</span>
                     {isRTL ? "أسعار حصرية ومخفضة" : "Exclusive discounted prices"}
                   </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-500 mt-0.5">✓</span>
-                    {isRTL ? "اكسب نقاط مع كل حجز" : "Earn points with every booking"}
-                  </li>
+                  {/* نظام النقاط مخفي — POINTS_ENABLED */}
+                  {POINTS_ENABLED && (
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-500 mt-0.5">✓</span>
+                      {isRTL ? "اكسب نقاط مع كل حجز" : "Earn points with every booking"}
+                    </li>
+                  )}
                   <li className="flex items-start gap-2">
                     <span className="text-green-500 mt-0.5">✓</span>
                     {isRTL ? "دعم فني على مدار الساعة" : "24/7 customer support"}

@@ -24,6 +24,18 @@ export const API_ENDPOINTS = {
   appConfig: `${API}/app-config`,
   settingsUpdateLanguage: `${API}/settings/update-language`,
   settingsUpdate: `${API}/settings/update`,
+  /** إعدادات الإشعارات التفصيلية (GET للقراءة، POST للتحديث) */
+  settingsNotifications: `${API}/settings/notifications`,
+
+  // ========== Notifications (تتطلب توكن) ==========
+  notifications: {
+    index: `${API}/notifications`,
+    unreadCount: `${API}/notifications/unread-count`,
+    markRead: (id: string | number) => `${API}/notifications/${id}/read`,
+    markAllRead: `${API}/notifications/mark-all-read`,
+    remove: (id: string | number) => `${API}/notifications/${id}`,
+    removeAll: `${API}/notifications/delete-all`,
+  },
 
   // ========== Pages (refund-policy, terms, etc.) ==========
   pages: `${API}/pages`,
@@ -66,11 +78,17 @@ export const API_ENDPOINTS = {
   wallet: `${API}/wallet`,
   walletBalance: `${API}/wallet/balance`,
   walletHistory: `${API}/wallet/history`,
+  /** مبالغ الشحن السريعة وحدّا الأدنى/الأعلى (تُضبط من لوحة التحكم) */
+  walletTopupOptions: `${API}/wallet/topup-options`,
+  /** بدء شحن الرصيد — يرجّع payment_info لبوابة الدفع */
+  walletTopup: `${API}/wallet/topup`,
   myTransactions: `${API}/my-transactions`,
 
   // ========== Profile ==========
   profile: `${API}/profile`,
   profileUpdate: `${API}/profile/update`,
+  /** حذف الحساب نهائياً */
+  profileDelete: `${API}/profile/delete`,
 
   // ========== Subscription ==========
   subscription: {
@@ -79,6 +97,39 @@ export const API_ENDPOINTS = {
     subscribeForOther: `${API}/subscription/subscribe-for-other`,
     status: `${API}/subscription/status`,
     history: `${API}/subscription/history`,
+    checkPayment: `${API}/subscription/check-payment`,
+    /** باقات الإهداء بأسعارها بعد خصم المستوى والكوبون */
+    giftPlans: `${API}/subscription/gift/plans`,
+    /** الاشتراكات التي أهديتها لآخرين */
+    gifts: `${API}/subscription/gifts`,
+    /** فاتورة اشتراك أهديته (تُعرض للمُهدي فقط) */
+    giftInvoice: (id: string | number) => `${API}/subscription/gift/${id}/invoice`,
+  },
+
+  // ========== Referrals (شارك واربح) ==========
+  referrals: {
+    index: `${API}/referrals`,
+    rewards: `${API}/referrals/rewards`,
+    attach: `${API}/referrals/attach`,
+  },
+
+  // ========== Family (أفراد العائلة) ==========
+  family: {
+    index: `${API}/family`,
+    invite: `${API}/family/invite`,
+    removeMember: (id: string | number) => `${API}/family/members/${id}`,
+    invitations: `${API}/family/invitations`,
+    acceptInvitation: (id: string | number) =>
+      `${API}/family/invitations/${id}/accept`,
+  },
+
+  // ========== Store Requests (انضمام متجر / اقتراح متجر) — عام ==========
+  storeRequests: `${API}/store-requests`,
+
+  // ========== Geo (الدولة الافتراضية + الدول المفعّلة مع single_country) ==========
+  geo: {
+    country: `${API}/geo/country`,
+    countries: `${API}/geo/countries`,
   },
 
   // ========== Membership (تحقق من العضوية — عام، بدون توكن) ==========
@@ -117,6 +168,8 @@ export const API_ENDPOINTS = {
     detail: (id: string | number) => `${API}/coupons/${id}`,
     use: (id: string | number) => `${API}/coupons/${id}/use`,
     vote: (id: string | number) => `${API}/coupons/${id}/vote`,
+    /** التحقق من كوبون خصم قبل الدفع (subscription | offer | card) */
+    validate: `${API}/coupons/validate`,
   },
 
   // ========== Cards (app) ==========
@@ -145,6 +198,8 @@ export const API_ENDPOINTS = {
     couponsHome: `${API}/web/coupons/home`,
     coupons: `${API}/web/coupons`,
     couponDetail: (id: string | number) => `${API}/web/coupons/${id}`,
+    /** تسجيل نسخة كود كوبون (عام بدون توثيق) — يرجع copies_count المحدّث */
+    couponCopy: (id: string | number) => `${API}/web/coupons/${id}/copy`,
     categoryCoupons: (categorySlug: string) =>
       `${API}/web/categories/${categorySlug}/coupons`,
     offers: `${API}/web/offers`,

@@ -1,89 +1,96 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useNavigate, useLocation } from "@/lib/router-compat";
 import { Helmet } from "@/lib/helmet-compat";
 import { useTranslation } from "react-i18next";
 import { useIsRTL } from "@hooks";
-import { useSubscriptionPlans } from "@hooks/api/useMokafaatQueries";
-import { IoClose } from "react-icons/io5";
+import {
+  useSubscriptionPlans,
+  useProfile,
+  useSubscriptionStatus,
+} from "@hooks/api/useMokafaatQueries";
+import {
+  IoClose,
+  IoCheckmarkCircle,
+  IoPeopleOutline,
+  IoShieldCheckmark,
+  IoTimeOutline,
+  IoAlertCircleOutline,
+  IoLogInOutline,
+} from "react-icons/io5";
 import { TbPackage } from "react-icons/tb";
 import { AxiosError } from "axios";
+import { Button, Skeleton, EmptyState, ErrorState, FOCUS } from "@ui";
 import CurrencyIcon from "@components/CurrencyIcon";
-import { LoadingSpinner } from "@components/LoadingSpinner";
+import MembershipTierCard from "@components/MembershipTierCard";
+import { useUserStore } from "@stores/userStore";
+import {
+  parseCurrentSubscription,
+  isCurrentPlan,
+  needsRenewal,
+  formatEndDate,
+  type CurrentSubscription,
+} from "./currentSubscription";
+import {
+  formatPrice,
+  getDiscountPercent,
+  getPlanDurationLabel,
+  getPlanFamilySeats,
+  getPlanFeatures,
+  getPlanName,
+  getPlanPricing,
+  parseMembershipTier,
+  parsePlansList,
+  type RawPlan,
+} from "@utils/subscriptionPricing";
 
-/** Plan as returned from API - structure from mokafat.ivadso.com */
-interface PlanItem {
-  id: number | string;
-  name?: string;
-  name_ar?: string;
-  name_en?: string;
-  type?: string;
-  price?: number | string;
-  duration?: string;
-  duration_months?: number;
-  duration_days?: number;
-  description?: string | null;
-  features?: string[] | { ar?: string; en?: string }[];
-  [key: string]: unknown;
-}
-
-function getPlanName(plan: PlanItem, isRTL: boolean): string {
-  const name = (plan.name as string) ?? (isRTL ? plan.name_ar ?? plan.name_en : plan.name_en ?? plan.name_ar);
-  return name || "";
-}
-
-/** Duration from API: "monthly" | "yearly" or numeric fields */
-function getDurationMonths(plan: PlanItem): number {
-  if (plan.duration_months != null) return Number(plan.duration_months);
-  if (plan.duration_days != null) return Math.round(Number(plan.duration_days) / 30);
-  const d = (plan.duration as string) || "";
-  if (d.toLowerCase() === "monthly") return 1;
-  if (d.toLowerCase() === "yearly" || d.toLowerCase() === "annual") return 12;
-  return 0;
-}
-
-function getPlanFeatures(plan: PlanItem, isRTL: boolean): string[] {
-  const raw = plan.features;
-  if (!Array.isArray(raw)) return [];
-  return raw.map((f) => (typeof f === "string" ? f : (isRTL ? (f as { ar?: string }).ar : (f as { en?: string }).en) || ""));
-}
+/**
+ * صفحة الباقات — مطابقة لكرت الباقة في التطبيق
+ * (`choose_package_view.dart`): الاسم + شارة المدة، ثم السعر النهائي
+ * والسعر القديم مشطوباً مع شارة نسبة الخصم، ثم عدد أفراد العائلة المسموح،
+ * ثم المزايا المشتقّة من الوصف.
+ *
+ * الرؤية (`visibility`) وسعر الموقع (`price_web`) يعالجهما الخادم تلقائياً
+ * عبر رأس `X-Platform: web` المضبوط في `apiClient.ts`.
+ */
+type PlanItem = RawPlan;
 
 const SubscriptionPlansPage: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const isRTL = useIsRTL();
 
-  const handleClose = () => {
-    // Check query param ?from= first, then referrer, then fallback
-    const params = new URLSearchParams(location.search);
-    const from = params.get("from");
-    if (from) {
-      navigate(from, { replace: true });
-      return;
-    }
-    // Fallback to a safe page
-    navigate("/profile", { replace: true });
-  };
   const [subscribeErrorMsg, setSubscribeErrorMsg] = useState<string | null>(null);
 
+  const token = useUserStore((s) => s.token);
   const { data: plansData, isLoading, isError, error, refetch } = useSubscriptionPlans();
+  const { data: profileData } = useProfile();
+  const { data: statusData, isLoading: statusLoading } = useSubscriptionStatus(!!token);
+  const tier = useMemo(() => parseMembershipTier(profileData), [profileData]);
 
-  const isUnauthorized = isError && error instanceof AxiosError && error.response?.status === 401;
+  /** اشتراك المستخدم الحالي (إن وُجد) — يميّز كرت باقته في القائمة */
+  const currentSubscription = useMemo(
+    () => (token ? parseCurrentSubscription(statusData) : null),
+    [token, statusData],
+  );
 
-  const plans: PlanItem[] = (() => {
-    const raw = plansData as Record<string, unknown> | undefined;
-    if (!raw) return [];
-    const data = raw.data as Record<string, unknown> | undefined;
-    const list = data?.plans ?? raw.plans ?? raw.data ?? raw;
-    return Array.isArray(list) ? (list as PlanItem[]) : [];
-  })();
+  const isUnauthorized =
+    isError && error instanceof AxiosError && error.response?.status === 401;
+
+  const plans: PlanItem[] = useMemo(() => parsePlansList(plansData), [plansData]);
+
+  const handleClose = () => {
+    const params = new URLSearchParams(location.search);
+    const from = params.get("from");
+    navigate(from || "/profile", { replace: true });
+  };
 
   const handleBuy = (plan: PlanItem) => {
     setSubscribeErrorMsg(null);
-    // Store plan in sessionStorage since Next.js doesn't support navigation state
     if (typeof window !== "undefined") {
+      // Next.js لا يدعم navigation state — نمرّر الباقة عبر sessionStorage
       sessionStorage.setItem("subscription_plan", JSON.stringify(plan));
     }
     navigate(`/subscription/payment?plan_id=${plan.id}`);
@@ -92,140 +99,314 @@ const SubscriptionPlansPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>
-          {t("home.subscription.choosePlan")} | Mokafaat
-        </title>
+        <title>{t("home.subscription.choosePlan")} | Mokafaat</title>
       </Helmet>
 
-      <section className="min-h-screen bg-[#1D0843] pt-24 pb-12 px-4">
-        <div className="max-w-4xl mx-auto">
+      <section className="min-h-screen bg-[linear-gradient(165deg,#1B1150_0%,#400198_60%,#6703EB_100%)] px-4 pb-14 pt-24">
+        <div className="mx-auto max-w-5xl">
           <button
             type="button"
             onClick={handleClose}
-            className={`absolute top-4 ${isRTL ? "right-4" : "left-4"} text-white hover:text-purple-300 flex items-center gap-2`}
+            className={`absolute top-4 ${isRTL ? "right-4" : "left-4"} flex min-h-[44px] items-center gap-2 rounded-mk-md px-3 text-white transition-colors hover:bg-white/10 ${FOCUS}`}
           >
             <IoClose className="text-2xl" />
-            <span>{isRTL ? "إغلاق" : "Close"}</span>
+            <span>{t("subscription.close")}</span>
           </button>
 
-          <div className="text-center mb-8">
+          <div className="mb-8 text-center">
             <div
-              className="w-16 h-16 rounded-xl bg-white/10 mx-auto mb-4 flex items-center justify-center shadow-inner border border-white/10"
+              className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-mk-md border border-white/10 bg-white/10 shadow-inner"
               aria-hidden
             >
-              <TbPackage
-                className="w-9 h-9 text-[#fd671a]"
-                strokeWidth={1.75}
-                aria-hidden
-              />
+              <TbPackage className="h-9 w-9 text-mk-accent" strokeWidth={1.75} />
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
+            <h1 className="mb-2 text-2xl font-bold text-white md:text-3xl">
               {t("home.subscription.choosePlan")}
             </h1>
-            <p className="text-white/80 text-sm max-w-xl mx-auto">
+            <p className="mx-auto max-w-xl text-sm text-white/80">
               {t("home.subscription.choosePlanDesc")}
             </p>
           </div>
 
           {isLoading && (
-            <div className="flex justify-center py-12">
-              <LoadingSpinner />
+            <div
+              className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+              role="status"
+              aria-label={t("home.subscription.loading")}
+            >
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="rounded-mk-xl bg-white p-6">
+                  <Skeleton className="h-6 w-32" />
+                  <Skeleton className="mt-3 h-4 w-24" />
+                  <Skeleton className="mt-5 h-9 w-28" />
+                  <Skeleton className="mt-6 h-3 w-full" />
+                  <Skeleton className="mt-2 h-3 w-5/6" />
+                  <Skeleton className="mt-6 h-12 w-full rounded-full" />
+                </div>
+              ))}
             </div>
           )}
 
           {isUnauthorized && (
-            <div className="bg-amber-500/20 border border-amber-500/50 rounded-xl p-6 text-center text-white space-y-4">
+            <div className="space-y-4 rounded-mk-md border border-amber-500/50 bg-amber-500/20 p-6 text-center text-white">
               <p>{t("home.subscription.loginRequiredToViewPlans")}</p>
-              <button
-                type="button"
+              <Button
+                variant="accent"
+                size="lg"
+                className="rounded-full"
                 onClick={() => navigate("/login?returnUrl=/subscription/plans")}
-                className="px-6 py-3 rounded-full bg-[#fd671a] text-white font-medium hover:bg-[#e55c18] transition-colors"
               >
                 {t("home.subscription.goToLogin")}
-              </button>
+              </Button>
             </div>
           )}
 
           {isError && !isUnauthorized && (
-            <div className="bg-red-500/20 border border-red-500/50 rounded-xl p-6 text-center text-white space-y-4">
-              <p>{t("home.subscription.errorLoadingPlans")}</p>
-              <button
-                type="button"
-                onClick={() => refetch()}
-                className="px-6 py-3 rounded-full border border-white/50 text-white font-medium hover:bg-white/10 transition-colors"
-              >
-                {t("home.subscription.tryAgain")}
-              </button>
+            <div className="rounded-mk-xl bg-white p-2">
+              <ErrorState
+                title={t("home.subscription.errorLoadingPlans")}
+                onRetry={() => refetch()}
+              />
             </div>
           )}
 
           {subscribeErrorMsg && (
-            <div className="bg-amber-500/20 border border-amber-500/50 rounded-xl p-4 text-center text-white mb-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <div className="mb-6 flex flex-col items-center justify-center gap-3 rounded-mk-md border border-amber-500/50 bg-amber-500/20 p-4 text-center text-white sm:flex-row">
               <p className="flex-1">{subscribeErrorMsg}</p>
               <button
                 type="button"
                 onClick={() => setSubscribeErrorMsg(null)}
-                className="px-4 py-2 rounded-full border border-white/50 text-white text-sm font-medium hover:bg-white/10 transition-colors"
+                className={`min-h-[44px] rounded-full border border-white/50 px-4 text-sm font-medium text-white transition-colors hover:bg-white/10 ${FOCUS}`}
               >
                 {t("home.subscription.ok")}
               </button>
             </div>
           )}
 
+          {!isLoading && !isError && tier && (
+            <div className="mb-8">
+              <MembershipTierCard tier={tier} />
+            </div>
+          )}
+
+          {/* زائر بلا جلسة — لا نصمت، بل ندعوه لتسجيل الدخول ليرى اشتراكه */}
+          {!isLoading && !isError && !isUnauthorized && !token && (
+            <div className="mb-6 flex flex-col items-center gap-3 rounded-mk-md border border-white/25 bg-white/10 p-4 text-center text-white sm:flex-row sm:text-start">
+              <IoLogInOutline className="h-6 w-6 shrink-0 text-mk-gold" aria-hidden />
+              <p className="flex-1 text-sm">
+                {t("subscription.guestSubscriptionHint")}
+              </p>
+              <Button
+                variant="gold"
+                size="md"
+                className="rounded-full"
+                onClick={() => navigate("/login?returnUrl=/subscription/plans")}
+              >
+                {t("subscription.guestLogin")}
+              </Button>
+            </div>
+          )}
+
           {!isLoading && !isError && plans.length > 0 && (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid items-start gap-6 md:grid-cols-2 lg:grid-cols-3">
               {plans.map((plan) => {
-                const id = plan.id;
-                const name = getPlanName(plan, !!isRTL);
-                const price = Number(plan.price) ?? 0;
-                const durationMonths = getDurationMonths(plan);
-                const features = getPlanFeatures(plan, !!isRTL);
+                const isCurrent = isCurrentPlan(plan, currentSubscription);
                 return (
-                  <div
-                    key={String(id)}
-                    className="bg-white rounded-2xl shadow-lg p-6 flex flex-col"
-                  >
-                    <h2 className="text-xl font-bold text-gray-900 mb-1">
-                      {name}
-                    </h2>
-                    <p className="text-gray-500 text-sm mb-4">
-                      {t("home.subscription.subscriptionDuration")} {durationMonths} {durationMonths === 12 ? t("home.subscription.year") : t("home.subscription.months")}
-                    </p>
-                    <p className="text-3xl font-bold text-gray-900 mb-4 flex items-center gap-1">
-                      {price}
-                      <CurrencyIcon className="text-gray-800" size={24} />
-                    </p>
-                    {features.length > 0 && (
-                      <ul className="space-y-2 mb-6 flex-1">
-                        {(features.length ? features : [t("home.subscription.featurePlaceholder")]).slice(0, 3).map((f, i) => (
-                          <li key={i} className="flex items-center gap-2 text-gray-600 text-sm">
-                            <span className="w-4 h-4 rounded border border-gray-400 flex-shrink-0" />
-                            {f}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => handleBuy(plan)}
-                      className="w-full py-3 rounded-full bg-[#fd671a] text-white font-medium hover:bg-[#e55c18] transition-colors"
-                    >
-                      {t("home.subscription.buy")}
-                    </button>
-                  </div>
+                  <PlanCard
+                    key={String(plan.id)}
+                    plan={plan}
+                    isRTL={!!isRTL}
+                    lang={i18n.language || "ar"}
+                    current={isCurrent ? currentSubscription : null}
+                    statusLoading={!!token && statusLoading}
+                    onBuy={() => handleBuy(plan)}
+                  />
                 );
               })}
             </div>
           )}
 
           {!isLoading && !isError && plans.length === 0 && (
-            <p className="text-center text-white/80">
-              {t("home.subscription.noPlansAvailable")}
-            </p>
+            <div className="rounded-mk-xl bg-white p-2">
+              <EmptyState title={t("home.subscription.noPlansAvailable")} description="" />
+            </div>
           )}
         </div>
       </section>
     </>
+  );
+};
+
+/** كرت باقة واحد — نفس ترتيب عناصر التطبيق */
+const PlanCard: React.FC<{
+  plan: RawPlan;
+  isRTL: boolean;
+  lang: string;
+  /** غير null فقط إن كانت هذه هي باقة المستخدم الحالية */
+  current: CurrentSubscription | null;
+  statusLoading: boolean;
+  onBuy: () => void;
+}> = ({ plan, isRTL, lang, current, statusLoading, onBuy }) => {
+  const { t } = useTranslation();
+  const name = getPlanName(plan, isRTL);
+  const pricing = getPlanPricing(plan);
+  const durationLabel = getPlanDurationLabel(plan, t);
+  const seats = getPlanFamilySeats(plan);
+  const features = getPlanFeatures(plan, isRTL);
+  const percent = getDiscountPercent(pricing);
+
+  const isCurrent = !!current;
+  const showRenew = isCurrent && needsRenewal(current);
+  const isExpired = isCurrent && !current.isActive;
+  const days = current?.daysRemaining ?? null;
+  const endDateLabel = current?.endDate ? formatEndDate(current.endDate, lang) : null;
+
+  return (
+    <div
+      className={
+        isCurrent
+          ? isExpired
+            ? "relative flex flex-col rounded-mk-xl border-2 border-mk-red bg-[#fef5f6] p-6 pt-8 shadow-mk-hover ring-4 ring-mk-red/15"
+            : "relative flex flex-col rounded-mk-xl border-2 border-mk-green bg-[#f2fbf7] p-6 pt-8 shadow-mk-hover ring-4 ring-mk-green/15"
+          : "relative flex flex-col rounded-mk-xl border border-mk-border bg-white p-6 shadow-mk-raised transition-shadow hover:shadow-mk-hover"
+      }
+    >
+      {isCurrent && (
+        <span
+          className={`absolute -top-3 flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold text-white shadow-mk-raised ${
+            isRTL ? "right-5" : "left-5"
+          } ${isExpired ? "bg-mk-red" : "bg-mk-green"}`}
+        >
+          <IoShieldCheckmark className="h-3.5 w-3.5" aria-hidden />
+          {isExpired
+            ? t("subscription.previousPlanBadge")
+            : t("subscription.currentPlanBadge")}
+        </span>
+      )}
+
+      <div className="flex items-start gap-2">
+        <h2 className="min-w-0 flex-1 text-xl font-bold leading-snug text-mk-text">
+          {name}
+        </h2>
+        {durationLabel && (
+          <span className="shrink-0 rounded-full bg-mk-tint px-3 py-1 text-xs font-bold text-mk-primary">
+            {durationLabel}
+          </span>
+        )}
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2">
+        <span className="flex items-center gap-1.5 text-[32px] font-bold leading-none text-mk-primary">
+          {formatPrice(pricing.final)}
+          <CurrencyIcon size={19} className="text-mk-primary" />
+        </span>
+        {pricing.hasDiscount && (
+          <>
+            <span className="text-[17px] font-semibold text-mk-muted line-through decoration-2">
+              {formatPrice(pricing.original)}
+            </span>
+            {percent > 0 && (
+              <span className="rounded-full bg-mk-accent/10 px-2.5 py-1 text-xs font-bold text-mk-accent">
+                {t("subscription.discountBadge").replace("{{percent}}", String(percent))}
+              </span>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* سطر حالة الاشتراك الحالي */}
+      {isCurrent && (endDateLabel || days !== null) && (
+        <div
+          className={`mt-4 space-y-1.5 rounded-mk-md border px-3 py-2.5 ${
+            isExpired
+              ? "border-mk-red/25 bg-mk-red/10"
+              : showRenew
+                ? "border-mk-gold/40 bg-mk-gold/10"
+                : "border-mk-green/25 bg-mk-green/10"
+          }`}
+        >
+          {endDateLabel && (
+            <p
+              className={`flex items-center gap-2 text-[13px] font-bold ${
+                isExpired ? "text-mk-red" : "text-mk-green"
+              }`}
+            >
+              <IoTimeOutline className="h-4 w-4 shrink-0" aria-hidden />
+              {(isExpired
+                ? t("subscription.subscriptionEndedOn")
+                : t("subscription.activeUntil")
+              ).replace("{{date}}", endDateLabel)}
+            </p>
+          )}
+          {!isExpired && days !== null && days >= 0 && (
+            <p
+              className={`flex items-center gap-2 text-[13px] font-semibold ${
+                showRenew ? "text-mk-amber" : "text-mk-text-strong"
+              }`}
+            >
+              <IoAlertCircleOutline className="h-4 w-4 shrink-0" aria-hidden />
+              {t("subscription.daysRemaining").replace("{{count}}", String(days))}
+              {showRenew ? ` — ${t("subscription.expiringSoon")}` : ""}
+            </p>
+          )}
+        </div>
+      )}
+
+      {seats > 0 && (
+        <div className="mt-4 flex items-center gap-2 rounded-mk-md border border-mk-accent/25 bg-mk-accent/10 px-3 py-2.5">
+          <IoPeopleOutline className="h-[18px] w-[18px] shrink-0 text-mk-accent" aria-hidden />
+          <span className="text-[13px] font-bold text-mk-accent">
+            {t("subscription.familyMembersUpTo").replace("{{count}}", String(seats))}
+          </span>
+        </div>
+      )}
+
+      {features.length > 0 && (
+        <div className="mt-4 flex-1 border-t border-mk-divider pt-3">
+          <p className="mb-2 text-[13px] font-bold text-mk-muted">
+            {t("subscription.features")}
+          </p>
+          <ul className="space-y-2">
+            {features.map((f, i) => (
+              <li
+                key={i}
+                className="flex items-start gap-2 text-[13px] leading-relaxed text-mk-text-strong"
+              >
+                <IoCheckmarkCircle
+                  aria-hidden
+                  className="mt-0.5 h-4 w-4 shrink-0 text-mk-green"
+                />
+                {f}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {isCurrent && !showRenew ? (
+        <Button
+          variant="soft"
+          size="lg"
+          block
+          disabled
+          icon={<IoShieldCheckmark className="h-4 w-4" aria-hidden />}
+          className="mt-6 rounded-full !bg-mk-green/15 !text-mk-green"
+        >
+          {t("subscription.currentPlanBadge")}
+        </Button>
+      ) : (
+        <Button
+          variant="accent"
+          size="lg"
+          block
+          loading={statusLoading}
+          className="mt-6 rounded-full"
+          onClick={onBuy}
+        >
+          {showRenew ? t("subscription.renewSubscription") : t("home.subscription.buy")}
+        </Button>
+      )}
+    </div>
   );
 };
 

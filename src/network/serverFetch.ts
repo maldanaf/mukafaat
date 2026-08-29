@@ -15,6 +15,8 @@ export async function serverFetch(
       headers: {
         "Accept-Language": lang,
         Accept: "application/json",
+        // قناة الطلب — السيرفر يختار سعر الموقع ويخفي باقات لوحة التحكم
+        "X-Platform": "web",
       },
       next: { revalidate: 60 },
     });

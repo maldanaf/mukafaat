@@ -1,76 +1,120 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@/lib/router-compat";
 import { Helmet } from "@/lib/helmet-compat";
 import { useTranslation } from "react-i18next";
 import { useIsRTL } from "@hooks";
 import { FiArrowLeft } from "react-icons/fi";
-import { IoWalletOutline, IoCardOutline } from "react-icons/io5";
-import CurrencyIcon from "@components/CurrencyIcon";
-import { useSubscribe } from "@hooks/api/useMokafaatQueries";
-import { LoadingSpinner } from "@components/LoadingSpinner";
-import DiscountCodeInput from "@components/DiscountCodeInput";
-import type { DiscountCodeResult } from "@network/services/mokafaatService";
+import { IoPeopleOutline } from "react-icons/io5";
 import { AxiosError } from "axios";
-import { initMoyasarPayment } from "@utils/moyasar";
+import CurrencyIcon from "@components/CurrencyIcon";
+import { LoadingSpinner } from "@components/LoadingSpinner";
+import PromoCodeInput from "@components/payment/PromoCodeInput";
+import PaymentMethodSelector, {
+  type PaymentMethodType,
+} from "@components/payment/PaymentMethodSelector";
+import { useSubscribe, useWalletBalance } from "@hooks/api/useMokafaatQueries";
+import type {
+  CouponValidateResult,
+  DiscountCodeResult,
+} from "@network/services/mokafaatService";
+import {
+  formatPrice,
+  getPlanDurationLabel,
+  getPlanFamilySeats,
+  getPlanName,
+  getPlanPricing,
+  type RawPlan,
+} from "@utils/subscriptionPricing";
+import { initMoyasarPayment, isApplePayAvailable } from "@utils/moyasar";
 import { startArbPayment } from "@utils/arbPayment";
+import { getPaymentGateway, gatewayFromPaymentInfo } from "@utils/paymentGateway";
+import { Button, FOCUS } from "@ui";
 
-export interface SubscriptionPlanState {
-  id: number | string;
-  name?: string;
-  name_ar?: string;
-  name_en?: string;
-  price?: number | string;
-  duration?: string;
-  duration_months?: number;
-  duration_days?: number;
-  features?: string[] | { ar?: string; en?: string }[];
+/** الباقة كما وصلت من /api/subscription/plans (تشمل حقول خصم المستوى) */
+export type SubscriptionPlanState = RawPlan;
+
+interface MoyasarConfig {
+  amountHalala: number;
+  currency: string;
+  description: string;
+  publishableKey: string;
+  callbackUrl: string;
+  metadata: Record<string, unknown>;
+  methods: string[];
+  supportedNetworks?: string[];
 }
 
-function getPlanName(plan: SubscriptionPlanState, isRTL: boolean): string {
-  const name =
-    (plan.name as string) ??
-    (isRTL ? (plan.name_ar ?? plan.name_en) : (plan.name_en ?? plan.name_ar));
-  return name || "";
+function num(value: unknown, fallback = 0): number {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : fallback;
 }
 
+/**
+ * صفحة الدفع — نفس ترتيب شاشة «طريقة الدفع» في التطبيق
+ * (`subscription_payment_method_view.dart`): ملخص الباقة، كوبون خصم وكود خصم
+ * بإعادة حساب الإجمالي من الخادم، ثم وسائل الدفع (مدى / Apple Pay /
+ * بطاقة ائتمانية-مدى / الدفع من النقاط)، ثم نموذج ميسر.
+ */
 const SubscriptionPaymentPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const isRTL = useIsRTL();
 
-  // Read plan from sessionStorage (Next.js doesn't support navigation state)
-  const plan: SubscriptionPlanState | undefined = (() => {
+  // الباقة تُمرَّر عبر sessionStorage (Next.js بلا navigation state)
+  const plan: SubscriptionPlanState | undefined = useMemo(() => {
     if (typeof window === "undefined") return undefined;
     try {
       const stored = sessionStorage.getItem("subscription_plan");
-      return stored ? JSON.parse(stored) : undefined;
+      return stored ? (JSON.parse(stored) as SubscriptionPlanState) : undefined;
     } catch {
       return undefined;
     }
-  })();
+  }, []);
 
-  const [paymentMethod, setPaymentMethod] = useState<
-    "online" | "cash" | "bank"
-  >("online");
-  const [useWallet, setUseWallet] = useState(false);
+  const [method, setMethod] = useState<PaymentMethodType>("mada");
+  const [coupon, setCoupon] = useState<CouponValidateResult | null>(null);
   const [discount, setDiscount] = useState<DiscountCodeResult | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  /** methods = اختيار الطريقة فقط | card = نموذج ميسر بعد الضغط على إتمام الدفع */
+  /** methods = اختيار الوسيلة | card = نموذج ميسر بعد الضغط على إتمام الدفع */
   const [step, setStep] = useState<"methods" | "card">("methods");
-  const moyasarConfigRef = useRef<{
-    amountHalala: number;
-    currency: string;
-    description: string;
-    publishableKey: string;
-    callbackUrl: string;
-    metadata: Record<string, unknown>;
-  } | null>(null);
+
+  const moyasarConfigRef = useRef<MoyasarConfig | null>(null);
   const moyasarInitedRef = useRef(false);
   const [moyasarMountKey, setMoyasarMountKey] = useState(0);
 
   const subscribeMutation = useSubscribe();
+  const { data: walletData } = useWalletBalance();
+
+  const walletBalance = useMemo(() => {
+    const root = (walletData as Record<string, unknown>)?.data ?? walletData;
+    const wallet =
+      ((root as Record<string, unknown>)?.wallet as Record<string, unknown>) ??
+      (root as Record<string, unknown>) ??
+      {};
+    return num(wallet.total_balance ?? wallet.balance ?? 0);
+  }, [walletData]);
+
+  const applePaySupported = useMemo(() => isApplePayAvailable(), []);
+
+  const planName = plan ? getPlanName(plan, !!isRTL) : "";
+  const pricing = useMemo(() => getPlanPricing(plan), [plan]);
+  const durationLabel = plan ? getPlanDurationLabel(plan, t) : "";
+  const seats = getPlanFamilySeats(plan);
+
+  /** الأساس = السعر بعد خصم مستوى العضوية (الخادم يطبّقه أولاً) */
+  const baseAmount = pricing.final;
+  const couponAmount = Math.min(num(coupon?.discount), baseAmount);
+  const afterCoupon = Math.max(Math.round((baseAmount - couponAmount) * 100) / 100, 0);
+  const codeAmount = Math.min(num(discount?.discount_amount), afterCoupon);
+  const total = Math.max(Math.round((afterCoupon - codeAmount) * 100) / 100, 0);
+
+  // كود الخصم يُحتسب على المبلغ بعد الكوبون — نُلغيه عند تغيّر الكوبون
+  const onCouponChange = useCallback((c: CouponValidateResult | null) => {
+    setCoupon(c);
+    setDiscount(null);
+  }, []);
 
   useEffect(() => {
     if (step !== "card" || !moyasarConfigRef.current || moyasarInitedRef.current)
@@ -80,131 +124,180 @@ const SubscriptionPaymentPage: React.FC = () => {
     void initMoyasarPayment({
       ...cfg,
       elementSelector: ".mysr-form-subscription",
-      methods: ["creditcard"],
+      applePay: { country: "SA", label: cfg.description },
     }).catch(() => {
       moyasarInitedRef.current = false;
-      setErrorMsg(
-        t("home.subscription.paymentFailed") +
-          " " +
-          (isRTL
-            ? "(تعذر تحميل بوابة الدفع.)"
-            : "(Failed to load payment gateway.)"),
-      );
+      setErrorMsg(t("payment.gatewayLoadFailed"));
       setStep("methods");
     });
-  }, [step, moyasarMountKey, t, isRTL]);
+  }, [step, moyasarMountKey, t]);
 
   useEffect(() => {
     if (!plan?.id) navigate("/subscription/plans", { replace: true });
   }, [plan, navigate]);
 
+  const backToMethods = useCallback(() => {
+    moyasarInitedRef.current = false;
+    moyasarConfigRef.current = null;
+    setErrorMsg(null);
+    setStep("methods");
+    setMoyasarMountKey((k) => k + 1);
+  }, []);
+
   const handleConfirmPayment = () => {
     if (!plan?.id) return;
     setErrorMsg(null);
+
+    if (method === "applePay" && !applePaySupported) {
+      setErrorMsg(t("payment.applePayUnavailable"));
+      return;
+    }
+
     subscribeMutation.mutate(
       {
         planId: plan.id,
-        paymentMethod: useWallet ? undefined : paymentMethod,
-        useWallet: useWallet || undefined,
+        paymentMethod: method === "wallet" ? undefined : "card",
+        useWallet: method === "wallet" || undefined,
+        couponCode: coupon?.coupon_code,
         discountCode: discount?.code,
       },
       {
         onSuccess: (res: unknown) => {
           const response = res as { data?: unknown };
-          const data = (response?.data ?? res) as
-            | Record<string, unknown>
-            | undefined;
+          const data = (response?.data ?? res) as Record<string, unknown> | undefined;
           if (!data) {
             navigate("/subscription/success", { replace: true });
             return;
           }
           if (data.status === false) {
-            const msg =
-              (data.msg as string) || t("home.subscription.paymentFailed");
+            const msg = (data.msg as string) || t("home.subscription.paymentFailed");
             const errNum = data.errNum as string | undefined;
-            if (
-              errNum === "E006" ||
-              (msg && String(msg).includes("اشتراك فعال"))
-            ) {
+            if (errNum === "E006" || String(msg).includes("اشتراك فعال")) {
               setErrorMsg(t("home.subscription.alreadyHaveActiveSubscription"));
               return;
             }
             setErrorMsg(msg);
             return;
           }
-          const inner = (data.data ?? data) as
-            | Record<string, unknown>
-            | undefined;
+
+          const inner = (data.data ?? data) as Record<string, unknown> | undefined;
           const subscription =
             (inner?.subscription as Record<string, unknown> | undefined) ??
             (data.subscription as Record<string, unknown> | undefined);
           const paymentInfo =
-            (subscription?.payment_info as
-              | Record<string, unknown>
-              | undefined) ??
+            (subscription?.payment_info as Record<string, unknown> | undefined) ??
             (inner?.payment_info as Record<string, unknown> | undefined) ??
             (data.payment_info as Record<string, unknown> | undefined);
           const requiresPayment =
             (subscription?.requires_payment as boolean | undefined) ??
             (inner?.requires_payment as boolean | undefined) ??
             (data.requires_payment as boolean | undefined) ??
-            // إذا لم يرسِل الباكند requires_payment لكن أرسل payment_info نفترض أن الدفع مطلوب
-            (!!paymentInfo || false);
+            !!paymentInfo;
+          const subscriptionId =
+            (subscription?.id as string | number | undefined) ??
+            (inner?.subscription_id as string | number | undefined) ??
+            (data.subscription_id as string | number | undefined);
 
-          // يتطلب دفعاً → ابدأ الدفع عبر بوابة الراجحي (Bank Hosted redirect)
-          if (requiresPayment) {
-            const subscriptionId =
-              (subscription?.id as string | number | undefined) ??
-              (inner?.subscription_id as string | number | undefined) ??
-              (data.subscription_id as string | number | undefined);
+          // مدفوع بالكامل (مجاني/نقاط/خصومات) — لا حاجة لبوابة الدفع
+          if (!requiresPayment && !paymentInfo) {
+            const params = new URLSearchParams({ type: "subscription" });
+            if (subscriptionId != null)
+              params.set("subscription_id", String(subscriptionId));
+            navigate(`/subscription/success?${params.toString()}`, { replace: true });
+            return;
+          }
 
+          if (!requiresPayment) {
+            setErrorMsg(t("payment.gatewayInitFailed"));
+            return;
+          }
+
+          const successParams = {
+            type: "subscription",
+            plan_id: String(plan.id),
+            ...(subscriptionId != null
+              ? { subscription_id: String(subscriptionId) }
+              : {}),
+          };
+
+          // الراجحي: تحويل لصفحة البنك ثم العودة
+          const startArb = () => {
             if (subscriptionId == null) {
-              setErrorMsg(
-                t("home.subscription.paymentFailed") +
-                  " " +
-                  (isRTL
-                    ? "(تعذر تهيئة بوابة الدفع. تواصل مع الدعم.)"
-                    : "(Could not initialize payment gateway. Please contact support.)"),
-              );
+              setErrorMsg(t("payment.gatewayInitFailed"));
+              return;
+            }
+            const returnUrl = `${window.location.origin}/orders/callback?${new URLSearchParams(
+              { gateway: "arb", ...successParams },
+            ).toString()}`;
+            startArbPayment({ subscriptionId, returnUrl }).then((r) => {
+              if (!r.ok) setErrorMsg(r.error || t("home.subscription.paymentFailed"));
+            });
+          };
+
+          // ميسر: نموذج الدفع داخل الصفحة
+          const startMoyasar = () => {
+            const amountHalalaRaw =
+              (paymentInfo?.amount_halala as number | undefined) ??
+              (typeof paymentInfo?.amount === "number"
+                ? (paymentInfo.amount as number) * 100
+                : undefined);
+            const amountHalala = Number.isFinite(amountHalalaRaw as number)
+              ? (amountHalalaRaw as number)
+              : undefined;
+            const publishableKey =
+              (paymentInfo?.publishable_key as string | undefined) || "";
+
+            if (!publishableKey || !amountHalala) {
+              setErrorMsg(t("payment.paymentDataIncomplete"));
               return;
             }
 
-            const returnUrl = `${window.location.origin}/orders/callback?${new URLSearchParams(
-              {
-                gateway: "arb",
-                type: "subscription",
-                plan_id: String(plan.id),
-                subscription_id: String(subscriptionId),
-              },
+            const callbackUrl = `${window.location.origin}/orders/callback?${new URLSearchParams(
+              successParams,
             ).toString()}`;
 
-            startArbPayment({ subscriptionId, returnUrl }).then((r) => {
-              if (!r.ok) {
-                setErrorMsg(r.error || t("home.subscription.paymentFailed"));
-              }
-            });
+            moyasarConfigRef.current = {
+              amountHalala,
+              currency: (paymentInfo?.currency as string | undefined) || "SAR",
+              description:
+                (paymentInfo?.description as string | undefined) ||
+                planName ||
+                t("home.subscription.paymentTitle"),
+              publishableKey,
+              callbackUrl,
+              metadata:
+                (paymentInfo?.metadata as Record<string, unknown> | undefined) || {},
+              methods: method === "applePay" ? ["applepay"] : ["creditcard"],
+              supportedNetworks:
+                method === "mada" ? ["mada"] : ["visa", "mastercard", "mada"],
+            };
+            moyasarInitedRef.current = false;
+            setMoyasarMountKey((k) => k + 1);
+            setStep("card");
+          };
+
+          const gatewayFromServer = gatewayFromPaymentInfo(paymentInfo);
+          if (gatewayFromServer === "arb") {
+            startArb();
             return;
           }
-
-          // إذا كان الاشتراك لا يتطلب دفعاً (خطة مجانية أو تم تغطية المبلغ من المحفظة)
-          // ولا توجد بيانات payment_info لبوابة الدفع، نذهب مباشرة لصفحة النجاح
-          if (!requiresPayment && !paymentInfo) {
-            navigate("/subscription/success", { replace: true });
+          if (gatewayFromServer === "moyasar") {
+            startMoyasar();
             return;
           }
-
-          // حالة غير متوقعة: يتطلب دفعاً لكن لم نَستخرج payment_info
-          setErrorMsg(
-            t("home.subscription.paymentFailed") +
-              " " +
-              (isRTL
-                ? "(تعذر تهيئة بوابة الدفع. تواصل مع الدعم.)"
-                : "(Could not initialize payment gateway. Please contact support.)"),
-          );
+          getPaymentGateway().then((gateway) => {
+            if (gateway === "arb") startArb();
+            else startMoyasar();
+          });
         },
         onError: (err) => {
-          if (err instanceof AxiosError && err.response?.status === 401) {
-            setErrorMsg(t("home.subscription.loginRequiredToViewPlans"));
+          if (err instanceof AxiosError) {
+            if (err.response?.status === 401) {
+              setErrorMsg(t("home.subscription.loginRequiredToViewPlans"));
+              return;
+            }
+            const msg = (err.response?.data as { msg?: string } | undefined)?.msg;
+            setErrorMsg(msg || t("home.subscription.paymentFailed"));
             return;
           }
           setErrorMsg(t("home.subscription.paymentFailed"));
@@ -215,17 +308,22 @@ const SubscriptionPaymentPage: React.FC = () => {
 
   if (!plan?.id) {
     return (
-      <div className="min-h-screen bg-[#1D0843] flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)]">
         <LoadingSpinner />
       </div>
     );
   }
 
-  const planName = getPlanName(plan, !!isRTL);
-  const price = Number(plan.price) ?? 0;
-  const durationMonths =
-    plan.duration_months ??
-    (plan.duration === "yearly" || plan.duration === "annual" ? 12 : 1);
+  const row = (label: string, value: React.ReactNode, tone?: "muted" | "green") => (
+    <div
+      className={`flex items-center justify-between text-sm ${
+        tone === "green" ? "text-mk-green" : "text-mk-muted"
+      }`}
+    >
+      <span>{label}</span>
+      <span className="font-semibold">{value}</span>
+    </div>
+  );
 
   return (
     <>
@@ -233,189 +331,157 @@ const SubscriptionPaymentPage: React.FC = () => {
         <title>{t("home.subscription.paymentTitle")} | Mokafaat</title>
       </Helmet>
 
-      <section className="min-h-screen bg-[#1D0843] pt-24 pb-12 px-4 relative">
-        <div className="max-w-lg mx-auto">
+      <section className="min-h-screen bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] px-4 pb-14 pt-20">
+        <div className="mx-auto max-w-lg">
+          <button
+            type="button"
+            onClick={() =>
+              step === "card" ? backToMethods() : navigate("/subscription/plans")
+            }
+            className={`mb-5 flex min-h-[44px] items-center gap-2 rounded-mk-md px-2 text-white transition-colors hover:bg-white/10 ${FOCUS}`}
+          >
+            <FiArrowLeft className={`text-2xl ${isRTL ? "" : "rotate-180"}`} />
+            <span>{t("subscription.back")}</span>
+          </button>
+
+          <h1 className="mb-1 text-center text-2xl font-bold text-white">
+            {step === "card"
+              ? t("payment.completePayment")
+              : t("home.subscription.paymentTitle")}
+          </h1>
+          <p className="mb-6 text-center text-sm text-white/80">
+            {step === "card"
+              ? t("payment.completePaymentDesc")
+              : t("home.subscription.paymentDesc")}
+          </p>
+
+          {errorMsg && (
+            <div
+              role="alert"
+              className="mb-5 rounded-mk-md border border-red-400/50 bg-red-500/20 p-4 text-sm text-white"
+            >
+              {errorMsg}
+            </div>
+          )}
+
           {step === "methods" && (
             <>
-              <button
-                type="button"
-                onClick={() => navigate("/subscription/plans")}
-                className={`absolute top-4 ${isRTL ? "right-4" : "left-4"} text-white hover:text-purple-300 flex items-center gap-2 z-10`}
-              >
-                <FiArrowLeft className="text-2xl" />
-                <span>{isRTL ? "العودة" : "Back"}</span>
-              </button>
+              {/* ملخص الباقة والسعر */}
+              <div className="mb-5 rounded-mk-xl border border-mk-border bg-white p-5 shadow-mk-card">
+                <div className="flex items-start gap-2">
+                  <h2 className="min-w-0 flex-1 text-lg font-bold text-mk-text">
+                    {planName}
+                  </h2>
+                  {durationLabel && (
+                    <span className="shrink-0 rounded-full bg-mk-tint px-3 py-1 text-xs font-bold text-mk-primary">
+                      {durationLabel}
+                    </span>
+                  )}
+                </div>
 
-              <h1 className="text-2xl font-bold text-white text-center mb-2">
-                {t("home.subscription.paymentTitle")}
-              </h1>
-              <p className="text-white/80 text-sm text-center mb-8">
-                {t("home.subscription.paymentDesc")}
-              </p>
-
-              <div className="bg-white/10 rounded-2xl p-6 mb-6 text-white">
-                <h2 className="text-lg font-bold mb-1">{planName}</h2>
-                <p className="text-white/80 text-sm mb-3">
-                  {durationMonths}{" "}
-                  {durationMonths === 12
-                    ? t("home.subscription.year")
-                    : t("home.subscription.months")}
-                </p>
-                {discount ? (
-                  <div className="space-y-1 mb-2">
-                    <div className="flex items-center justify-between text-white/70 text-sm">
-                      <span>{isRTL ? "السعر الأصلي" : "Original price"}</span>
-                      <span className="line-through">
-                        {price} {isRTL ? "ر.س" : "SAR"}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between text-emerald-300 text-sm">
-                      <span>{isRTL ? "خصم الكود" : "Discount"}</span>
-                      <span>− {discount.discount_amount} {isRTL ? "ر.س" : "SAR"}</span>
-                    </div>
+                {seats > 0 && (
+                  <div className="mt-3 flex items-center gap-2 rounded-mk-md border border-mk-accent/25 bg-mk-accent/10 px-3 py-2">
+                    <IoPeopleOutline
+                      className="h-[18px] w-[18px] shrink-0 text-mk-accent"
+                      aria-hidden
+                    />
+                    <span className="text-[13px] font-bold text-mk-accent">
+                      {t("subscription.familyMembersUpTo").replace(
+                        "{{count}}",
+                        String(seats),
+                      )}
+                    </span>
                   </div>
-                ) : null}
-                <p className="text-2xl font-bold flex items-center gap-2">
-                  {discount ? discount.final_amount : price}
-                  <CurrencyIcon className="text-white" size={22} />
-                </p>
+                )}
+
+                <div className="mt-4 space-y-1.5 border-t border-mk-divider pt-3">
+                  {row(
+                    t("home.subscription.originalPrice"),
+                    <span className={pricing.hasDiscount ? "line-through" : ""}>
+                      {formatPrice(pricing.original)}
+                    </span>,
+                  )}
+                  {pricing.tierAmount > 0 &&
+                    row(
+                      `${
+                        pricing.tierType === "renewal"
+                          ? t("home.subscription.tierDiscountRenewal")
+                          : t("home.subscription.tierDiscountNew")
+                      }${pricing.tierPercent > 0 ? ` (${formatPrice(pricing.tierPercent)}%)` : ""}`,
+                      `− ${formatPrice(pricing.tierAmount)}`,
+                      "green",
+                    )}
+                  {couponAmount > 0 &&
+                    row(
+                      `${t("payment.couponLabel")} · ${coupon?.coupon_code ?? ""}`,
+                      `− ${formatPrice(couponAmount)}`,
+                      "green",
+                    )}
+                  {codeAmount > 0 &&
+                    row(
+                      `${t("payment.discountCodeLabel")} · ${discount?.code ?? ""}`,
+                      `− ${formatPrice(codeAmount)}`,
+                      "green",
+                    )}
+                </div>
+
+                <div className="mt-3 flex items-center justify-between border-t border-mk-divider pt-3">
+                  <span className="text-sm font-bold text-mk-text-strong">
+                    {t("payment.total")}
+                  </span>
+                  <span className="flex items-center gap-1.5 text-2xl font-bold text-mk-primary">
+                    {formatPrice(total)}
+                    <CurrencyIcon size={18} className="text-mk-primary" />
+                  </span>
+                </div>
               </div>
 
-              <div className="bg-white/10 rounded-2xl p-6 mb-6">
-                <DiscountCodeInput
+              {/* حقل واحد لكود الخصم أو الكوبون — كان حقلين يبدوان مكرّرين */}
+              <div className="mb-5 rounded-mk-xl border border-mk-border bg-white p-5 shadow-mk-card">
+                <PromoCodeInput
                   scope="subscription"
-                  amount={price}
+                  amount={afterCoupon}
                   itemId={plan.id}
-                  variant="dark"
-                  onChange={setDiscount}
+                  onCouponChange={onCouponChange}
+                  onDiscountChange={setDiscount}
                 />
               </div>
 
-              <div className="bg-white/10 rounded-2xl p-6 mb-6">
-                <h3 className="text-white font-semibold mb-4 text-center">
-                  {t("home.subscription.choosePaymentMethod")}
-                </h3>
-
-                <label className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/20 mb-3 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="payment"
-                    checked={!useWallet && paymentMethod === "online"}
-                    onChange={() => {
-                      setUseWallet(false);
-                      setPaymentMethod("online");
-                    }}
-                    className="w-4 h-4 text-[#fd671a]"
-                  />
-                  <IoCardOutline className="w-6 h-6 text-white shrink-0" />
-                  <span className="text-white">
-                    {t("home.subscription.paymentOnline")}
-                  </span>
-                </label>
-
-                <label className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/20 mb-3 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="payment"
-                    checked={!useWallet && paymentMethod === "cash"}
-                    onChange={() => {
-                      setUseWallet(false);
-                      setPaymentMethod("cash");
-                    }}
-                    className="w-4 h-4 text-[#fd671a]"
-                  />
-                  <span className="text-white">
-                    {t("home.subscription.paymentCash")}
-                  </span>
-                </label>
-
-                <label className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/20 mb-3 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="payment"
-                    checked={!useWallet && paymentMethod === "bank"}
-                    onChange={() => {
-                      setUseWallet(false);
-                      setPaymentMethod("bank");
-                    }}
-                    className="w-4 h-4 text-[#fd671a]"
-                  />
-                  <span className="text-white">
-                    {t("home.subscription.paymentBank")}
-                  </span>
-                </label>
-
-                <label className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/20 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="payment"
-                    checked={useWallet}
-                    onChange={() => {
-                      setUseWallet(true);
-                      setPaymentMethod("online");
-                    }}
-                    className="w-4 h-4 text-[#fd671a]"
-                  />
-                  <IoWalletOutline className="w-6 h-6 text-white shrink-0" />
-                  <span className="text-white">
-                    {t("home.subscription.paymentWallet")}
-                  </span>
-                </label>
+              {/* وسائل الدفع */}
+              <div className="mb-5 rounded-mk-xl border border-mk-border bg-white p-5 shadow-mk-card">
+                <PaymentMethodSelector
+                  value={method}
+                  onChange={setMethod}
+                  walletBalance={walletBalance}
+                  walletDisabled={walletBalance <= 0}
+                />
+                {method === "applePay" && !applePaySupported && (
+                  <p className="rounded-mk-sm bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                    {t("payment.applePayUnavailable")}
+                  </p>
+                )}
               </div>
 
-              {errorMsg && (
-                <div className="bg-red-500/20 border border-red-500/50 rounded-xl p-4 text-white mb-6 text-sm">
-                  {errorMsg}
-                </div>
-              )}
-
-              <button
-                type="button"
+              <Button
+                variant="accent"
+                size="lg"
+                block
+                className="rounded-full"
                 disabled={subscribeMutation.isPending}
                 onClick={handleConfirmPayment}
-                className="w-full py-4 rounded-full bg-[#fd671a] text-white font-bold text-lg hover:bg-[#e55c18] disabled:opacity-70 transition-colors flex items-center justify-center gap-2"
               >
-                {subscribeMutation.isPending ? (
-                  t("home.subscription.loading")
-                ) : (
-                  t("home.subscription.confirmPayment")
-                )}
-              </button>
+                {subscribeMutation.isPending
+                  ? t("home.subscription.loading")
+                  : `${t("home.subscription.confirmPayment")} · ${formatPrice(total)} ${t("payment.currency")}`}
+              </Button>
             </>
           )}
 
           {step === "card" && (
-            <div className="flex flex-col min-h-[60vh]">
-              <button
-                type="button"
-                onClick={() => {
-                  moyasarInitedRef.current = false;
-                  moyasarConfigRef.current = null;
-                  setStep("methods");
-                  setMoyasarMountKey((k) => k + 1);
-                }}
-                className={`self-start mb-6 flex items-center gap-2 text-white hover:text-purple-300 ${
-                  isRTL ? "flex-row" : "flex-row-reverse"
-                }`}
-              >
-                <FiArrowLeft
-                  className={`text-2xl ${isRTL ? "" : "rotate-180"}`}
-                />
-                <span className="font-medium">
-                  {isRTL ? "رجوع" : "Back"}
-                </span>
-              </button>
-              <h1 className="text-xl sm:text-2xl font-bold text-white text-center mb-6">
-                {isRTL ? "إتمام الدفع" : "Complete payment"}
-              </h1>
-              {errorMsg && (
-                <div className="bg-red-500/20 border border-red-500/50 rounded-xl p-4 text-white mb-4 text-sm">
-                  {errorMsg}
-                </div>
-              )}
+            <div className="rounded-mk-xl border border-mk-border bg-white p-4 shadow-mk-card">
               <div
                 key={moyasarMountKey}
-                className="mysr-form-subscription rounded-2xl overflow-hidden bg-white/5 p-2"
+                className="mysr-form-subscription min-h-[220px]"
               />
             </div>
           )}

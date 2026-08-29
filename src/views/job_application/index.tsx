@@ -53,7 +53,7 @@ const JobApplicationHero = ({ jobTitle }: { jobTitle: string }) => {
     : " font-semibold mt-8 text-2xl md:text-2xl lg:text-2xl";
 
   return (
-    <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[100px] flex items-center justify-center">
+    <section className="relative w-full bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] overflow-hidden min-h-[100px] flex items-center justify-center">
       <div className="absolute inset-0 bg-primary opacity-30"></div>
       <div className="relative pt-20 pb-16 px-6 mx-auto max-w-site text-center lg:pt-20 lg:pb-16 lg:px-12 flex flex-col justify-center z-10">
         <h1
@@ -67,18 +67,18 @@ const JobApplicationHero = ({ jobTitle }: { jobTitle: string }) => {
           className="flex items-center justify-center space-x-2 text-sm md:text-base wow fadeInUp"
           data-wow-delay="0.3s"
         >
-          <Link to="/" className="text-white hover:text-purple-300 text-xs">
+          <Link to="/" className="text-white hover:text-mk-lilac text-xs">
             {t("home.navbar.home")}
           </Link>
           <span className="text-white text-xs">|</span>
           <Link
             to={"/jobs"}
-            className="text-white hover:text-purple-300 text-xs"
+            className="text-white hover:text-mk-lilac text-xs"
           >
             {t("careers.title", { defaultValue: "Jobs" })}
           </Link>
           <span className="text-white text-xs">|</span>
-          <span className="text-purple-300 font-medium text-xs">
+          <span className="text-mk-lilac font-medium text-xs">
             {jobTitle}
           </span>
         </div>
@@ -626,7 +626,7 @@ const JobApplication = () => {
                 <div className="flex items-center gap-4 mt-2">
                   <button
                     type="submit"
-                    className="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-white font-semibold rounded-md hover:opacity-90 transition-opacity"
+                    className="px-8 py-3 bg-gradient-to-r from-mk-primary to-pink-500 text-white font-semibold rounded-md hover:opacity-90 transition-opacity"
                     disabled={isPending}
                   >
                     {isPending

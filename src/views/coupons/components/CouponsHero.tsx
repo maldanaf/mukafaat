@@ -1,46 +1,25 @@
 "use client";
 
-import { AboutPattern } from "@assets";
 import { useTranslation } from "react-i18next";
-import { Link } from "@/lib/router-compat";
+import { PageHero } from "@ui";
 
+/** ترويسة صفحة الكوبونات — نفس ترويسة الصفحات الداخلية الموحّدة */
 const CouponsHero = () => {
   const { t } = useTranslation();
-  const titleFontType =
-    " font-semibold mt-8 text-2xl md:text-2xl lg:text-2xl";
 
   return (
-    <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[140px] flex items-center justify-center">
-      <div className="absolute inset-0 bg-primary opacity-30" />
-      <div className="relative pt-20 pb-16 px-6 mx-auto max-w-site text-center lg:pt-20 lg:pb-16 lg:px-12 flex flex-col justify-center z-10">
-        <h1
-          className={`${titleFontType} mb-4 tracking-tight leading-none text-white`}
-        >
-          {t("coupons.title")}
-        </h1>
-
-        <div className="flex items-center justify-center  text-sm md:text-base">
-          <Link
-            to="/"
-            className="text-white hover:text-purple-300 transition-colors cursor-pointer text-xs"
-          >
-            {t("home.navbar.home")}
-          </Link>
-          <span className="text-white text-xs mx-2">|</span>
-          <span className="text-[#fd671a] font-medium text-xs">
-            {t("coupons.title")}
-          </span>
-        </div>
-      </div>
-
-      <div className="absolute -bottom-10 transform z-9">
-        <img
-          src={AboutPattern}
-          alt={t("offersPage.patternAlt")}
-          className="w-full h-96 animate-float"
-        />
-      </div>
-    </section>
+    <PageHero
+      title={t("coupons.title")}
+      eyebrow={t("coupons.hero_eyebrow", "انسخ واستخدم فوراً")}
+      subtitle={t(
+        "coupons.hero_subtitle",
+        "أكواد خصم محدّثة يومياً على مئات العلامات التجارية — بنقرة واحدة.",
+      )}
+      crumbs={[
+        { label: t("home.navbar.home"), to: "/" },
+        { label: t("coupons.title") },
+      ]}
+    />
   );
 };
 

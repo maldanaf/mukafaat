@@ -386,8 +386,8 @@ const NavigationLinks: React.FC<NavigationLinksProps> = ({
                     }`
                   }
                 >
-                  <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-full bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center flex-shrink-0">
-                    <FaCalendarAlt className="text-purple-600 text-lg lg:text-xl" />
+                  <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-full bg-gradient-to-br from-mk-tint to-mk-border-strong flex items-center justify-center flex-shrink-0">
+                    <FaCalendarAlt className="text-mk-primary text-lg lg:text-xl" />
                   </div>
                   <span>{t(`home.navbar.${item.title}`)}</span>
                 </NavLink>

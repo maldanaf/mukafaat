@@ -1,4 +1,8 @@
 {
+  "404": {
+    "title": "Désolé, page non trouvée",
+    "description": "Il semble que la page que vous recherchez n'existe pas"
+  },
   "home": {
     "navbar": {
       "home": "Accueil",
@@ -231,12 +235,17 @@
       "body": "Exclusive offers, coupons and discount codes, digital cards and services that save you more every day.",
       "tag": "Featured offers",
       "cta": "Explore offers",
-      "app": "Get the app"
+      "app": "Get the app",
+      "prev": "Diapositive précédente",
+      "next": "Diapositive suivante",
+      "slide": "Diapositive"
     },
     "search_new": {
       "all_cities": "All cities",
       "placeholder": "Search for a store, restaurant, offer, coupon or card...",
-      "empty": "No results match your search."
+      "empty": "No results match your search.",
+      "submit": "Rechercher",
+      "city_label": "Choisir une ville"
     },
     "services_new": {
       "offers": {
@@ -264,7 +273,8 @@
       "all": "All",
       "eyebrow": "Quick browse",
       "title": "Categories",
-      "all_link": "View all categories"
+      "all_link": "View all categories",
+      "subtitle": "Choisissez la catégorie qui vous convient et parcourez ses offres."
     },
     "offers_new": {
       "eyebrow": "Picked for you",
@@ -274,7 +284,8 @@
       "ended": "Ended",
       "today": "Ends today",
       "ends_in": "Ends in",
-      "days": "days"
+      "days": "days",
+      "subtitle": "Les meilleures remises disponibles maintenant — mises à jour chaque jour."
     },
     "coupons_new": {
       "title": "Featured coupons & promo codes",
@@ -283,7 +294,9 @@
       "copied": "Copied",
       "discount": "Save",
       "with_code": "with code",
-      "use_code": "Use the code at checkout to get the discount"
+      "use_code": "Use the code at checkout to get the discount",
+      "eyebrow": "Économisez plus",
+      "subtitle": "Copiez le code et utilisez-le au paiement pour obtenir la remise."
     },
     "nearby_new": {
       "eyebrow": "Around you",
@@ -293,7 +306,13 @@
       "use_location": "Use my location",
       "locating": "Locating...",
       "km": "km",
-      "up_to": "Up to"
+      "up_to": "Up to",
+      "subtitle": "Découvrez les magasins et restaurants les plus proches qui offrent des remises.",
+      "enable_title": "Activez votre position pour voir ce qui est le plus proche",
+      "enable_body": "Nous utilisons votre position une seule fois pour trier les magasins par distance — jamais enregistrée, jamais partagée.",
+      "privacy": "Nous ne conservons jamais votre position.",
+      "denied": "Autorisation de localisation refusée — activez-la dans les réglages du navigateur puis réessayez.",
+      "sort_hint": "Activez votre position pour trier les magasins par proximité."
     },
     "stores_new": {
       "eyebrow": "Most popular",
@@ -344,6 +363,21 @@
       "about": "The offers, discounts and coupons platform in Saudi Arabia.",
       "rights": "All rights reserved © Mukafaat",
       "country": "Saudi Arabia"
+    },
+    "common": {
+      "prev": "Précédent",
+      "next": "Suivant"
+    },
+    "cards_new": {
+      "subtitle": "Cartes de jeux, de loisirs et de shopping — le code vous parvient immédiatement."
+    },
+    "topbar": {
+      "deals": "Jusqu'à 70 % de réduction chez des centaines de marques",
+      "coupons": "Codes promo mis à jour chaque jour — copiez et utilisez aussitôt",
+      "cards": "Cartes numériques livrées dès l'achat"
+    },
+    "stats_new": {
+      "trust": "Une plateforme saoudienne de confiance — offres quotidiennes et assistance toute la semaine"
     }
   },
   "about": {
@@ -432,10 +466,6 @@
     "national": "Carte nationale",
     "passport": "Passeport",
     "residence": "Titre de séjour"
-  },
-  "404": {
-    "title": "Désolé, page non trouvée",
-    "description": "Il semble que la page que vous recherchez n'existe pas"
   },
   "genders": {
     "male": "Homme",
@@ -817,7 +847,11 @@
     "moreFeatures": "+{{count}} fonctionnalités supplémentaires",
     "popular": "Populaire",
     "new": "Nouveau",
-    "card": "Carte"
+    "card": "Carte",
+    "subscribersOnly": "Réservé aux abonnés",
+    "save": "Économie",
+    "endsToday": "Se termine aujourd'hui",
+    "endsInDays": "Se termine dans {{days}} jours"
   },
   "couponModal": {
     "removedFromFavorites": "Retiré des favoris",
@@ -838,6 +872,403 @@
     "expiresOn": "Expire le {{date}}",
     "validityUnknown": "Validité non précisée",
     "noExpiryDate": "Pas de date d'expiration",
-    "goToStore": "Aller au magasin"
+    "goToStore": "Aller au magasin",
+    "usedCount": "Utilisé ({{count}})",
+    "usedCountOne": "Utilisé une fois",
+    "usedCountTwo": "Utilisé {{count}} fois",
+    "usedCountFew": "Utilisé {{count}} fois",
+    "usedCountMany": "Utilisé {{count}} fois"
+  },
+  "ui": {
+    "viewAll": "Voir tout",
+    "loading": "Chargement…",
+    "retry": "Réessayer",
+    "showMore": "Afficher plus",
+    "showLess": "Afficher moins",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "empty": {
+      "title": "Rien ici pour l'instant",
+      "description": "Essayez de modifier les filtres ou revenez plus tard.",
+      "offers": "Aucune offre correspondante pour le moment.",
+      "coupons": "Aucun coupon disponible pour le moment.",
+      "cards": "Aucune carte disponible pour le moment.",
+      "stores": "Aucun magasin à afficher.",
+      "search": "Aucun résultat pour votre recherche.",
+      "saved": "Aucun élément enregistré pour l’instant.",
+      "orders": "Aucune commande pour l’instant."
+    },
+    "error": {
+      "title": "Impossible de charger les données",
+      "description": "Vérifiez votre connexion et réessayez.",
+      "retry": "Réessayer"
+    },
+    "filters": "Filtres",
+    "clearFilters": "Effacer les filtres",
+    "gridView": "Vue grille",
+    "listView": "Vue liste",
+    "results": "résultats",
+    "searchPlaceholder": "Rechercher…",
+    "share": "Partager",
+    "notifications": "Notifications",
+    "favorite": {
+      "add": "Ajouter aux favoris",
+      "remove": "Retirer des favoris"
+    },
+    "loginRequired": {
+      "title": "Connexion requise",
+      "cta": "Se connecter"
+    },
+    "save": "Économisez",
+    "flag": {
+      "hot": "Les plus demandés",
+      "new": "Nouveau",
+      "ending": "Bientôt terminé"
+    },
+    "results_count": "{{count}} résultats"
+  },
+  "couponCard": {
+    "copies": "Copies"
+  },
+  "profileDashboard": {
+    "group_account": "Mon compte",
+    "group_membership": "Abonnement et avantages",
+    "group_help": "Aide",
+    "menu_card": "Ma carte et niveaux",
+    "menu_notifications": "Notifications",
+    "menu_store_request": "Rejoindre en tant que magasin",
+    "title": "Mon compte",
+    "menu_account": "Mes informations",
+    "menu_interests": "Mes favoris",
+    "menu_orders": "Mes commandes",
+    "menu_wallet": "Portefeuille",
+    "menu_how_to_use": "Mode d'emploi",
+    "menu_subscribe_other": "Abonner quelqu'un d'autre",
+    "menu_upgrade": "Améliorer l'abonnement",
+    "menu_contact": "Nous contacter",
+    "menu_logout": "Se déconnecter",
+    "menu_referrals": "Partager et gagner",
+    "menu_family": "Membres de la famille",
+    "menu_gifts": "Abonnements offerts"
+  },
+  "storePage": {
+    "delivery_time": "Délai de livraison",
+    "minimum_order": "Commande minimum",
+    "delivery_fee": "Frais de livraison",
+    "whatsapp": "WhatsApp",
+    "working_hours": "Horaires d'ouverture",
+    "open_now": "Ouvert maintenant",
+    "closed_now": "Fermé maintenant",
+    "temporarily_closed": "Temporairement fermé",
+    "closed_today": "Fermé",
+    "today": "Aujourd'hui",
+    "hours_unavailable": "Horaires indisponibles",
+    "content_tab_default": "Contenu",
+    "minute_unit": "min",
+    "working_hours_today": "Horaires du jour",
+    "verified": "Boutique vérifiée",
+    "coming_soon": "Bientôt disponible",
+    "delivery_details": "Détails de livraison"
+  },
+  "saved": {
+    "title": "Favoris",
+    "subtitle": "{{count}} élément enregistré",
+    "filters": {
+      "all": "Tout",
+      "offers": "Offres",
+      "cards": "Cartes",
+      "bookings": "Réservations",
+      "coupons": "Coupons",
+      "stores": "Boutiques"
+    },
+    "types": {
+      "offer": "Offre",
+      "card": "Carte",
+      "coupon": "Coupon",
+      "booking": "Réservation",
+      "merchant": "Boutique",
+      "item": "Élément"
+    },
+    "saved_since": "Enregistré le",
+    "empty": {
+      "title": "Aucun élément enregistré",
+      "title_filtered": "Aucun {{type}} enregistré",
+      "description": "Commencez par enregistrer les offres et cartes qui vous plaisent",
+      "browse_offers": "Parcourir les offres"
+    },
+    "eyebrow": "Votre bibliothèque",
+    "results_suffix": "éléments enregistrés",
+    "remove": "Retirer des favoris",
+    "view_details": "Voir les détails"
+  },
+  "homeBuilder": {
+    "categoryOffers": "Offres sélectionnées",
+    "viewAll": "Voir tout",
+    "cards": {
+      "title": "Cartes prépayées",
+      "eyebrow": "Recharge instantanée",
+      "allLink": "Voir toutes les cartes",
+      "digital": "Carte numérique",
+      "currency": "SAR"
+    }
+  },
+  "cardsPage": {
+    "resultsCount": "{{count}} cartes",
+    "validity": {
+      "daily": "Quotidienne",
+      "weekly": "Hebdomadaire",
+      "monthly": "Mensuelle",
+      "quarterly": "Trimestrielle",
+      "semi_annual": "Semestrielle",
+      "annual": "Annuelle",
+      "unlimited": "Illimitée"
+    },
+    "sections": {
+      "resultsTitle": "Résultats",
+      "recommendedTitle": "Sélection pour vous",
+      "recommendedSubtitle": "Cartes qui pourraient vous plaire",
+      "featuredTitle": "Cartes en vedette",
+      "featuredSubtitle": "Notre sélection"
+    },
+    "allCountries": "Tous les pays",
+    "noResults": "Aucune carte correspondante",
+    "sortLabel": "Trier",
+    "sort": {
+      "newest": "Plus récentes",
+      "best_selling": "Meilleures ventes",
+      "highest_discount": "Remise la plus élevée",
+      "price_low_high": "Prix : croissant",
+      "price_high_low": "Prix : décroissant",
+      "most_viewed": "Les plus vues"
+    },
+    "cards_suffix": "cartes",
+    "heroEyebrow": "Achetez une fois, économisez toute l'année",
+    "heroSubtitle": "Cartes de réduction des meilleurs magasins — des remises récurrentes pour un seul prix."
+  },
+  "membershipCard": {
+    "meta_title": "Ma carte et niveaux",
+    "title": "Ma carte et niveaux",
+    "subtitle": "Votre numéro d’adhésion, code QR, niveau et avantages.",
+    "number_label": "Numéro d’adhésion",
+    "copy_number": "Copier le numéro",
+    "copy_link": "Copier le lien de vérification",
+    "copied": "Copié",
+    "share": "Partager",
+    "load_error": "Impossible de charger votre carte.",
+    "no_membership": "Pas encore de carte — abonnez-vous pour l’obtenir.",
+    "subscribe_cta": "Voir les forfaits"
+  },
+  "notificationsPage": {
+    "meta_title": "Notifications",
+    "title": "Notifications",
+    "unread_badge": "{{count}} non lues",
+    "unread": "Non lue",
+    "mark_all": "Tout marquer comme lu",
+    "mark_all_done": "Toutes les notifications ont été marquées comme lues",
+    "action_failed": "Échec de l’opération, réessayez",
+    "settings_cta": "Paramètres des notifications",
+    "tab_general": "Générales",
+    "tab_nearby": "À proximité",
+    "tab_orders": "Commandes",
+    "tab_empty": "Aucune notification dans cette catégorie",
+    "empty_title": "Aucune notification",
+    "load_error": "Impossible de charger les notifications.",
+    "delete": "Supprimer la notification",
+    "prev": "Précédent",
+    "next": "Suivant",
+    "page_of": "Page {{page}} sur {{total}}"
+  },
+  "notificationSettings": {
+    "meta_title": "Paramètres des notifications",
+    "title": "Paramètres des notifications",
+    "subtitle": "Choisissez ce que vous souhaitez recevoir.",
+    "back_to_list": "Notifications",
+    "group_general": "Général",
+    "group_offers": "Offres et alertes",
+    "group_channels": "Canaux",
+    "key_app_notifications": "Notifications et alertes",
+    "key_new_offers": "Nouvelles offres",
+    "key_discount_offers": "Offres de réduction",
+    "key_trip_offers": "Offres de cartes",
+    "key_shopping_sections_offers": "Offres de bons d’achat",
+    "key_offers_and_alerts": "Offres de cartes cadeaux",
+    "key_email_newsletters": "Newsletters par e-mail",
+    "key_sms_notifications": "Notifications SMS",
+    "key_whatsapp_notifications": "Notifications WhatsApp",
+    "saved": "Paramètres enregistrés",
+    "save_failed": "Impossible d’enregistrer les paramètres",
+    "load_error": "Impossible de charger les paramètres.",
+    "hint": "Désactiver « Notifications et alertes » coupe tout d’un coup."
+  },
+  "contactUs": {
+    "prefill_note": "Nous avons pré-rempli vos informations — vous pouvez les modifier."
+  },
+  "accountDelete": {
+    "title": "Supprimer le compte",
+    "description": "La suppression annule vos abonnements actifs et est irréversible.",
+    "cta": "Supprimer mon compte",
+    "confirm_title": "Confirmer la suppression",
+    "confirm_hint": "Tapez « SUPPRIMER » pour confirmer",
+    "confirm_word": "SUPPRIMER",
+    "reason_label": "Motif (facultatif)",
+    "cancel": "Annuler",
+    "submit": "Confirmer la suppression",
+    "submitting": "Suppression…",
+    "success": "Votre compte a été supprimé",
+    "failed": "Impossible de supprimer le compte, réessayez"
+  },
+  "subscription": {
+    "close": "Fermer",
+    "back": "Retour",
+    "features": "Avantages",
+    "discountBadge": "-{{percent}}%",
+    "familyMembersUpTo": "Inclut jusqu'à {{count}} membres de la famille",
+    "currentPlanBadge": "Votre forfait actuel",
+    "previousPlanBadge": "Votre forfait précédent",
+    "renewSubscription": "Renouveler l'abonnement",
+    "activeUntil": "Votre abonnement est valable jusqu'au {{date}}",
+    "subscriptionEndedOn": "Votre abonnement a pris fin le {{date}}",
+    "daysRemaining": "{{count}} jours restants",
+    "expiringSoon": "Expire bientôt",
+    "guestSubscriptionHint": "Connectez-vous pour voir votre abonnement actuel",
+    "guestLogin": "Se connecter",
+    "duration": {
+      "monthly": "Mensuel",
+      "3_months": "Tous les 3 mois",
+      "6_months": "Tous les 6 mois",
+      "yearly": "Annuel",
+      "2_years": "2 ans"
+    }
+  },
+  "payment": {
+    "title": "Moyen de paiement",
+    "electronicPayment": "Paiement électronique",
+    "payThrough": "Payer via",
+    "method": {
+      "mada": "mada",
+      "applePay": "Apple Pay",
+      "card": "Carte bancaire / mada",
+      "wallet": "Payer avec le portefeuille"
+    },
+    "walletBalanceNote": "Votre solde : {{points}} points",
+    "couponLabel": "Coupon",
+    "couponPlaceholder": "Saisissez le coupon",
+    "couponApplied": "Coupon appliqué",
+    "couponInvalid": "Coupon invalide",
+    "couponRemove": "Retirer le coupon",
+    "discountCodeLabel": "Code de réduction",
+    "apply": "Appliquer",
+    "applying": "En cours...",
+    "total": "Total",
+    "currency": "SAR",
+    "completePayment": "Finaliser le paiement",
+    "completePaymentDesc": "Saisissez les informations de votre carte pour payer en toute sécurité.",
+    "gatewayLoadFailed": "Impossible de charger la passerelle de paiement, réessayez.",
+    "gatewayInitFailed": "Impossible d'initialiser la passerelle de paiement. Contactez le support.",
+    "paymentDataIncomplete": "Informations de paiement incomplètes. Contactez le support.",
+    "applePayUnavailable": "Apple Pay n'est disponible que sur Safari sur les appareils Apple.",
+    "promoLabel": "Discount or coupon code",
+    "promoPlaceholder": "Enter code",
+    "promoApply": "Apply",
+    "promoRemove": "Remove code",
+    "promoInvalid": "Invalid or expired code"
+  },
+  "invoice": {
+    "title": "Facture",
+    "number": "Numéro de facture",
+    "notIssuedYet": "Facture pas encore émise",
+    "plan": "Forfait",
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "paymentMethod": "Moyen de paiement",
+    "transactionNumber": "Numéro de transaction",
+    "date": "Date",
+    "subscriptionId": "N° d'abonnement",
+    "total": "Total payé",
+    "downloadPdf": "Télécharger la facture PDF",
+    "pdfUnavailable": "Le fichier de la facture n'est pas encore disponible — il apparaît après le règlement.",
+    "allTransactions": "Toutes les transactions"
+  },
+  "wallet": {
+    "topupTitle": "Recharger des points",
+    "topupSubtitle": "Ajoutez des points à votre portefeuille",
+    "pointsRateTitle": "1 point = 1 riyal saoudien",
+    "pointsRateDesc": "Les soldes sont affichés en points et débités en riyals — 1 point = 1 SAR.",
+    "pointsCountLabel": "Nombre de points",
+    "otherAmount": "Autre montant",
+    "enterPointsAmount": "Nombre de points",
+    "enterAmount": "Saisissez le nombre de points",
+    "amountRange": "Le nombre de points doit être entre {{min}} et {{max}}",
+    "topupGoesToCash": "Les points seront ajoutés à votre solde en espèces.",
+    "payAmount": "Payer {{amount}}",
+    "topupSuccess": "Votre solde a été rechargé avec succès.",
+    "topupFailed": "La recharge n'a pas abouti — rien n'a été débité, réessayez.",
+    "totalBalance": "Solde total",
+    "promotionalBalance": "Solde promotionnel",
+    "cashBalance": "Solde en espèces",
+    "pointsUnitOne": "point",
+    "pointsUnitTwo": "points",
+    "pointsUnitFew": "points",
+    "pointsUnitMany": "points"
+  },
+  "referralLanding": {
+    "title": "Un ami vous a invité",
+    "subtitle": "Nous avons enregistré le code — terminez votre inscription pour être récompensés tous les deux.",
+    "cta_register": "Créer un compte",
+    "cta_home": "Aller à l’accueil",
+    "redirecting": "Redirection automatique…"
+  },
+  "orders": {
+    "eyebrow": "Vos achats",
+    "results_suffix": "commandes"
+  },
+  "qrLanding": {
+    "eyebrow": "Offres exclusives près de vous",
+    "title": "Des offres autour de vous, maintenant",
+    "subtitle": "Activez votre position pour voir les offres des magasins proches en quelques secondes.",
+    "cta": "Voir les offres à proximité",
+    "cta_loading": "Localisation en cours…",
+    "radius_note": "Nous cherchons dans un rayon de",
+    "radius_note_suffix": "autour de vous.",
+    "unit_m": "m",
+    "unit_km": "km",
+    "download_hint": "Ou téléchargez l'application pour une expérience plus rapide",
+    "step1_title": "Scannez le code",
+    "step1_body": "Scannez le code Mukafa'at affiché en magasin, ou ouvrez le lien.",
+    "step2_title": "Activez la localisation",
+    "step2_body": "Autorisez votre navigateur à lire votre position pour chercher autour de vous.",
+    "step3_title": "Profitez de la remise",
+    "step3_body": "Parcourez les offres des magasins proches et obtenez votre remise immédiatement.",
+    "error_fetch": "Impossible de charger les offres proches. Réessayez.",
+    "error_network": "Service injoignable. Réessayez.",
+    "error_unsupported": "Votre navigateur ne prend pas en charge la géolocalisation.",
+    "error_denied": "Accès à la position refusé. Autorisez-le dans les réglages du navigateur puis réessayez.",
+    "error_locate": "Impossible de déterminer votre position. Réessayez.",
+    "disabled": "Ce service est actuellement indisponible.",
+    "offers_in": "offres dans",
+    "merchants_around": "magasins autour de vous",
+    "verified": "Vérifié",
+    "open_now": "Ouvert",
+    "closed_now": "Fermé",
+    "empty_title": "Aucune offre autour de vous",
+    "empty_body": "Réessayez plus tard, ou téléchargez l'application pour voir toutes les offres.",
+    "nearest_prefix": "Le magasin le plus proche",
+    "nearest_suffix": "est à"
+  },
+  "offersPage": {
+    "heroEyebrow": "Économisez plus",
+    "heroSubtitle": "Des milliers d'offres de vos magasins préférés — parcourez, comparez et achetez en quelques minutes."
+  },
+  "coupons": {
+    "hero_eyebrow": "Copiez et utilisez immédiatement",
+    "hero_subtitle": "Des codes promo mis à jour chaque jour sur des centaines de marques — en un clic."
+  },
+  "account": {
+    "hero_fallback_name": "Bienvenue",
+    "quick_links": "Liens rapides",
+    "upsell_desc": "Activez votre abonnement pour débloquer toutes les offres et réductions au même endroit.",
+    "card_upsell_desc": "Abonnez-vous pour obtenir une carte de membre numérique avec votre propre numéro et un QR code scannable chez les commerçants.",
+    "card_actions": "Partager la carte",
+    "gifts_subtitle": "Les abonnements que vous avez offerts et leurs factures"
   }
 }

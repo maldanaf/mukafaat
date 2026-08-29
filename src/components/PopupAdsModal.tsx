@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { useIsRTL } from "@hooks";
 import { useWebPopupAds } from "@hooks/api/useMokafaatQueries";
@@ -51,6 +51,9 @@ function ssSet(key: string, value: string) {
   }
 }
 
+/** تأخير قصير قبل الظهور حتى لا يخنق الإعلانُ الانطباعَ الأول للصفحة */
+const SHOW_DELAY_MS = 2500;
+
 function shouldShowAd(ad: PopupAd, screen: string): boolean {
   const target = (ad.target_screen || "all").toLowerCase();
   if (target !== "all" && target !== screen.toLowerCase()) return false;
@@ -87,6 +90,8 @@ export default function PopupAdsModal({ screen }: { screen: string }) {
   const { data } = useWebPopupAds(screen);
   const [open, setOpen] = useState(false);
   const [activeAd, setActiveAd] = useState<PopupAd | null>(null);
+  const closeRef = useRef<HTMLButtonElement | null>(null);
+  const adRef = useRef<PopupAd | null>(null);
 
   const popupAds = useMemo(() => {
     const root = (data as Record<string, unknown>) ?? {};
@@ -100,22 +105,45 @@ export default function PopupAdsModal({ screen }: { screen: string }) {
     if (!popupAds || popupAds.length === 0) return;
     const candidate = popupAds.find((ad) => shouldShowAd(ad, screen));
     if (!candidate) return;
-    setActiveAd(candidate);
-    setOpen(true);
-    // mark as shown for this session immediately to avoid flicker
+    // مرة واحدة لكل جلسة — نُعلّمها فوراً حتى لا يتكرر الظهور عند إعادة الرسم
     ssSet(`popup_ad:${candidate.id}:session_shown`, "1");
+    // تأخير قصير: يشاهد الزائر الصفحة أولاً ثم يظهر الإعلان
+    const timer = setTimeout(() => {
+      adRef.current = candidate;
+      setActiveAd(candidate);
+      setOpen(true);
+    }, SHOW_DELAY_MS);
+    return () => clearTimeout(timer);
   }, [popupAds, screen]);
 
-  if (!open || !activeAd) return null;
-
-  const close = () => {
-    const id = String(activeAd.id);
-    lsSet(`popup_ad:${id}:shown_at`, String(safeNow()));
-    if (activeAd.show_once) {
-      lsSet(`popup_ad:${id}:shown_once`, "1");
+  const close = useCallback(() => {
+    const ad = adRef.current;
+    if (ad) {
+      const id = String(ad.id);
+      lsSet(`popup_ad:${id}:shown_at`, String(safeNow()));
+      if (ad.show_once) lsSet(`popup_ad:${id}:shown_once`, "1");
     }
     setOpen(false);
-  };
+  }, []);
+
+  // الإغلاق بمفتاح Esc + تثبيت التمرير خلف النافذة + تركيز زر الإغلاق
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+    };
+    document.addEventListener("keydown", onKey);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const focusTimer = setTimeout(() => closeRef.current?.focus(), 60);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = previousOverflow;
+      clearTimeout(focusTimer);
+    };
+  }, [open, close]);
+
+  if (!open || !activeAd) return null;
 
   const handleClickAd = () => {
     const url =
@@ -131,12 +159,12 @@ export default function PopupAdsModal({ screen }: { screen: string }) {
   return (
     <>
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9998]"
+        className="mk-fade-in fixed inset-0 z-[9998] bg-[rgba(15,6,44,0.62)] backdrop-blur-sm"
         onClick={close}
         aria-hidden="true"
       />
       <div
-        className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[92vw] max-w-lg rounded-2xl bg-white shadow-2xl z-[9999] overflow-hidden"
+        className="mk-pop-in fixed left-1/2 top-1/2 z-[9999] w-[92vw] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[24px] bg-white shadow-[0_40px_90px_-24px_rgba(15,6,44,0.7)]"
         style={{ direction: isRTL ? "rtl" : "ltr" }}
         role="dialog"
         aria-modal="true"
@@ -144,11 +172,12 @@ export default function PopupAdsModal({ screen }: { screen: string }) {
       >
         <button
           type="button"
+          ref={closeRef}
           onClick={close}
-          className="absolute top-3 end-3 w-9 h-9 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow"
+          className="absolute top-3 end-3 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#1A1A2E] shadow-[0_8px_24px_-6px_rgba(15,6,44,0.5)] transition-all duration-200 hover:scale-105 hover:bg-[#F2EFFA] hover:text-[#400198] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#400198] focus-visible:ring-offset-2"
           aria-label={isRTL ? "إغلاق" : "Close"}
         >
-          <IoMdClose className="text-xl text-gray-700" />
+          <IoMdClose className="text-2xl" />
         </button>
 
         <button

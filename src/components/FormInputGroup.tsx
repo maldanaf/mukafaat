@@ -23,7 +23,7 @@ const FormInputGroup: React.FC<FormInputGroupProps> = ({
         id={id}
         {...register}
         placeholder={placeholder}
-        className={`p-4 h-12 rounded-md w-full text-sm border border-gray-200 bg-gray-50 placeholder-gray-400 outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-300 mt-2 ${className}`}
+        className={`p-4 h-12 rounded-md w-full text-sm border border-gray-200 bg-gray-50 placeholder-gray-400 outline-none focus:ring-2 focus:ring-mk-border-strong focus:border-mk-lilac mt-2 ${className}`}
       />
       <ErrorMessage message={error || ""} />
     </div>

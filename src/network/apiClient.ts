@@ -18,6 +18,8 @@ export const api = axios.create({
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
+    // قناة الطلب — السيرفر يختار سعر الموقع بدل سعر التطبيق
+    "X-Platform": "web",
   },
 });
 

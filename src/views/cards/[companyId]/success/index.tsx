@@ -92,12 +92,12 @@ const SuccessPage = () => {
     return (
       <div className="flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+          <h2 className="text-2xl font-bold text-mk-text mb-4">
             {t("cardsPurchaseSuccess.data_error")}
           </h2>
           <button
             onClick={() => navigate("/cards")}
-            className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+            className="bg-mk-primary text-white px-6 py-2 rounded-mk-sm hover:bg-mk-primary transition-colors"
           >
             {t("cardsPurchaseSuccess.back_to_cards")}
           </button>
@@ -134,7 +134,7 @@ const SuccessPage = () => {
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-[#400198] to-[#54015d] flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 text-center">
+        <div className="bg-white rounded-mk-xl shadow-2xl max-w-md w-full p-8 text-center">
           {/* Credit Card Illustration */}
           <div className="relative mb-8 mx-auto text-center w-full">
             <img
@@ -145,53 +145,53 @@ const SuccessPage = () => {
           </div>
 
           {/* Success Message */}
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          <h1 className="text-3xl font-bold text-mk-text mb-2">
             {t("cardsPurchaseSuccess.thank_you")}
           </h1>
-          <h2 className="text-xl font-bold text-gray-700 mb-2">
+          <h2 className="text-xl font-bold text-mk-text-strong mb-2">
             {t("cardsPurchaseSuccess.card_purchased")}
           </h2>
-          <p className="text-gray-600 mb-8 text-sm">
+          <p className="text-mk-muted mb-8 text-sm">
             {t("cardsPurchaseSuccess.happy")}
           </p>
 
           {/* Order Details */}
-          <div className="bg-gray-50 rounded-lg p-4 mb-6 text-right">
+          <div className="bg-mk-tint3 rounded-mk-sm p-4 mb-6 text-right">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-mk-muted">
                 {t("cardsPurchaseSuccess.order_number")}
               </span>
-              <span className="text-sm font-medium text-gray-800">
+              <span className="text-sm font-medium text-mk-text">
                 #{orderId ?? "—"}
               </span>
             </div>
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-mk-muted">
                 {t("cardsPurchaseSuccess.company")}
               </span>
-              <span className="text-sm font-medium text-gray-800">
+              <span className="text-sm font-medium text-mk-text">
                 {pickLocalized(company.name, langBase)}
               </span>
             </div>
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-mk-muted">
                 {t("cardsPurchaseSuccess.offer")}
               </span>
-              <span className="text-sm font-medium text-gray-800">
+              <span className="text-sm font-medium text-mk-text">
                 {pickLocalized(offer.title, langBase)}
               </span>
             </div>
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-mk-muted">
                 {t("cardsPurchaseSuccess.quantity")}
               </span>
-              <span className="text-sm font-medium text-gray-800">
+              <span className="text-sm font-medium text-mk-text">
                 {quantity}
               </span>
             </div>
             <div className="border-t pt-2 mt-2">
               <div className="flex justify-between items-center">
-                <span className="font-semibold text-gray-800">
+                <span className="font-semibold text-mk-text">
                   {t("cardsPurchaseSuccess.total")}
                 </span>
                 <span className="text-lg font-bold text-orange-500 flex items-center gap-1">
@@ -212,14 +212,14 @@ const SuccessPage = () => {
             </button>
             <button
               onClick={handleBackToCards}
-              className="flex-1 py-3 px-6 bg-white border-2 border-gray-300 text-gray-800 rounded-full hover:bg-gray-50 transition-colors font-medium"
+              className="flex-1 py-3 px-6 bg-white border-2 border-mk-border-2 text-mk-text rounded-full hover:bg-mk-tint3 transition-colors font-medium"
             >
               {t("cardsPurchaseSuccess.ok")}
             </button>
           </div>
 
           {/* Additional Info */}
-          <div className="mt-6 text-xs text-gray-500">
+          <div className="mt-6 text-xs text-mk-muted">
             <p>{t("cardsPurchaseSuccess.email_notice")}</p>
           </div>
         </div>

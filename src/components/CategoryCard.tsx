@@ -57,7 +57,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
         className={`w-14 h-14 mb-4 flex items-center justify-center rounded-full transition-all duration-300 ${
           selected
             ? "bg-gradient-to-br from-[#400198]/20 to-[#400198]/30"
-            : "bg-gradient-to-br from-purple-50 to-purple-100 group-hover:from-purple-100 group-hover:to-purple-200"
+            : "bg-gradient-to-br from-mk-tint3 to-mk-tint group-hover:from-mk-tint group-hover:to-mk-border-strong"
         }`}
       >
         <img
@@ -74,7 +74,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
         className={`text-[14px] font-semibold text-center transition-colors duration-300 leading-tight ${
           selected
             ? "text-[#400198]"
-            : "text-gray-800 group-hover:text-purple-700"
+            : "text-gray-800 group-hover:text-mk-primary"
         }`}
       >
         {title}
@@ -82,7 +82,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
 
       {/* Bottom accent - يظهر عند التحديد أو الـ hover */}
       <div
-        className={`w-8 h-1 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full mt-3 transition-opacity duration-300 ${
+        className={`w-8 h-1 bg-gradient-to-r from-mk-primary-soft to-mk-primary rounded-full mt-3 transition-opacity duration-300 ${
           selected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
         }`}
       />

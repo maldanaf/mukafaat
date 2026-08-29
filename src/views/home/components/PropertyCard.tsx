@@ -8,8 +8,8 @@ import {
   BsHouse,
   BsShop,
   BsBuildingFill,
-  BsShare,
 } from "react-icons/bs";
+import { ShareIcon } from "@ui";
 import { IoBedOutline } from "react-icons/io5";
 import { LiaVectorSquareSolid } from "react-icons/lia";
 import { useIsRTL } from "@hooks";
@@ -117,7 +117,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             }}
             className="w-8 h-8 bg-white bg-opacity-90 rounded-full flex items-center justify-center text-gray-700 hover:bg-opacity-100 transition-all duration-200"
           >
-            <BsShare className="text-sm" />
+            <ShareIcon size={14} />
           </button>
           {/* <button
             onClick={() => onFavoriteClick?.(id)}

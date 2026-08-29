@@ -28,7 +28,7 @@ const CoreValues = () => {
         </div>
 
         {/* Right Section - Core Values */}
-        <div className="padding-mobile-inner bg-[#1D0843] p-20 lg:p-20 flex flex-col justify-center w-1/2 relative overflow-hidden">
+        <div className="padding-mobile-inner bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] p-20 lg:p-20 flex flex-col justify-center w-1/2 relative overflow-hidden">
           <h2 className="text-3xl lg:text-4xl font-bold text-white mb-8">
             {t("about.coreValues.heading")}
           </h2>

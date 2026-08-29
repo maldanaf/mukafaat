@@ -1,4 +1,8 @@
 {
+  "404": {
+    "title": "Page Not Found !",
+    "description": "It looks like the page you're searching for no exist."
+  },
   "home": {
     "navbar": {
       "home": "Home",
@@ -43,7 +47,10 @@
       "brand": "Mukafaat",
       "choose_city": "Choose your city",
       "points_balance": "Your points",
-      "saved": "Saved"
+      "saved": "Saved",
+      "membership_tier": "Membership level",
+      "tier_renewal_discount": "Subscription renewal discount",
+      "tier_progress": "{{count}} more orders to reach {{tier}}"
     },
     "login": {
       "welcome_title": "Welcome to Mukafaat",
@@ -73,7 +80,9 @@
     },
     "common": {
       "success": "Success",
-      "error": "Error"
+      "error": "Error",
+      "prev": "Previous",
+      "next": "Next"
     },
     "subscription": {
       "offerForSubscribersOnly": "Offer for subscribers only",
@@ -111,7 +120,14 @@
       "noPlansAvailable": "No subscription plans available at the moment.",
       "alreadyHaveActiveSubscription": "You already have an active subscription.",
       "alreadySubscribedDesc": "You cannot subscribe again while you have an active subscription.",
-      "subscriptionRequired": "Subscription required"
+      "subscriptionRequired": "Subscription required",
+      "originalPrice": "Original price",
+      "tierDiscount": "Membership tier discount",
+      "tierDiscountRenewal": "Renewal discount",
+      "tierDiscountNew": "New subscription discount",
+      "tierBadge": "{{tier}} · {{percent}}% off",
+      "youSave": "You save {{amount}}",
+      "yourTier": "Your membership tier"
     },
     "hero": {
       "slides": {
@@ -379,12 +395,17 @@
       "body": "Exclusive offers, coupons and discount codes, digital cards and services that save you more every day.",
       "tag": "Featured offers",
       "cta": "Explore offers",
-      "app": "Get the app"
+      "app": "Get the app",
+      "prev": "Previous slide",
+      "next": "Next slide",
+      "slide": "Slide"
     },
     "search_new": {
       "all_cities": "All cities",
       "placeholder": "Search for a store, restaurant, offer, coupon or card...",
-      "empty": "No results match your search."
+      "empty": "No results match your search.",
+      "submit": "Search",
+      "city_label": "Choose a city"
     },
     "services_new": {
       "offers": {
@@ -412,7 +433,8 @@
       "all": "All",
       "eyebrow": "Quick browse",
       "title": "Categories",
-      "all_link": "View all categories"
+      "all_link": "View all categories",
+      "subtitle": "Pick the category you need and browse its offers instantly."
     },
     "offers_new": {
       "eyebrow": "Picked for you",
@@ -422,7 +444,8 @@
       "ended": "Ended",
       "today": "Ends today",
       "ends_in": "Ends in",
-      "days": "days"
+      "days": "days",
+      "subtitle": "The strongest discounts available right now — updated daily."
     },
     "coupons_new": {
       "title": "Featured coupons & promo codes",
@@ -431,7 +454,9 @@
       "copied": "Copied",
       "discount": "Save",
       "with_code": "with code",
-      "use_code": "Use the code at checkout to get the discount"
+      "use_code": "Use the code at checkout to get the discount",
+      "eyebrow": "Save more",
+      "subtitle": "Copy the code and use it at checkout to get your discount instantly."
     },
     "nearby_new": {
       "eyebrow": "Around you",
@@ -441,7 +466,13 @@
       "use_location": "Use my location",
       "locating": "Locating...",
       "km": "km",
-      "up_to": "Up to"
+      "up_to": "Up to",
+      "subtitle": "See the closest stores and restaurants offering discounts around you.",
+      "enable_title": "Enable your location to see what's nearest",
+      "enable_body": "We use your location once to sort stores by distance — never stored, never shared.",
+      "privacy": "We never keep your location.",
+      "denied": "Location permission was denied — enable it in your browser settings and try again.",
+      "sort_hint": "Enable your location to sort stores by how close they are."
     },
     "stores_new": {
       "eyebrow": "Most popular",
@@ -492,6 +523,17 @@
       "about": "The offers, discounts and coupons platform in Saudi Arabia.",
       "rights": "All rights reserved © Mukafaat",
       "country": "Saudi Arabia"
+    },
+    "cards_new": {
+      "subtitle": "Gaming, entertainment and shopping cards — the code reaches you instantly."
+    },
+    "topbar": {
+      "deals": "Up to 70% off across hundreds of brands",
+      "coupons": "Discount codes refreshed daily — copy and use instantly",
+      "cards": "Digital cards delivered the moment you buy"
+    },
+    "stats_new": {
+      "trust": "A trusted Saudi platform — offers updated daily, support all week"
     }
   },
   "about": {
@@ -624,10 +666,6 @@
     "national": "National ID",
     "passport": "Passport",
     "residence": "Residence"
-  },
-  "404": {
-    "title": "Page Not Found !",
-    "description": "It looks like the page you're searching for no exist."
   },
   "genders": {
     "male": "Male",
@@ -1388,7 +1426,9 @@
       "shareLocation": "Share Location",
       "emptyTitle": "No offers available",
       "emptyHint": "Try another filter or check back later"
-    }
+    },
+    "heroEyebrow": "Save more",
+    "heroSubtitle": "Thousands of deals from your favourite stores — browse, compare and buy in minutes."
   },
   "categoryOffers": {
     "not_found": "Category not found",
@@ -1426,8 +1466,37 @@
       "topSellingTitle": "Top Selling",
       "topSellingSubtitle": "Most requested cards by customers",
       "mostViewedTitle": "Most Viewed",
-      "mostViewedSubtitle": "Most viewed and browsed cards"
-    }
+      "mostViewedSubtitle": "Most viewed and browsed cards",
+      "resultsTitle": "Search results",
+      "recommendedTitle": "Picked for you",
+      "recommendedSubtitle": "Cards you may like",
+      "featuredTitle": "Featured cards",
+      "featuredSubtitle": "Our picks"
+    },
+    "resultsCount": "{{count}} cards",
+    "validity": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "quarterly": "Quarterly",
+      "semi_annual": "Semi-annual",
+      "annual": "Annual",
+      "unlimited": "Unlimited"
+    },
+    "allCountries": "All countries",
+    "noResults": "No matching cards",
+    "sortLabel": "Sort",
+    "sort": {
+      "newest": "Newest",
+      "best_selling": "Best selling",
+      "highest_discount": "Highest discount",
+      "price_low_high": "Price: low to high",
+      "price_high_low": "Price: high to low",
+      "most_viewed": "Most viewed"
+    },
+    "cards_suffix": "cards",
+    "heroEyebrow": "Buy once, save all year",
+    "heroSubtitle": "Discount cards from the best stores — recurring savings for one price."
   },
   "saved": {
     "title": "Saved Items",
@@ -1436,14 +1505,17 @@
       "all": "All",
       "offers": "Offers",
       "cards": "Cards",
-      "bookings": "Bookings"
+      "bookings": "Bookings",
+      "coupons": "Coupons",
+      "stores": "Stores"
     },
     "types": {
       "offer": "Offer",
       "card": "Card",
       "coupon": "Coupon",
       "booking": "Booking",
-      "item": "Item"
+      "item": "Item",
+      "merchant": "Store"
     },
     "saved_since": "Saved since",
     "empty": {
@@ -1451,7 +1523,11 @@
       "title_filtered": "No saved {{type}}",
       "description": "Start saving offers and cards you like",
       "browse_offers": "Browse Offers"
-    }
+    },
+    "eyebrow": "Your library",
+    "results_suffix": "saved items",
+    "remove": "Remove from favorites",
+    "view_details": "View details"
   },
   "orders": {
     "title": "My Orders",
@@ -1502,7 +1578,9 @@
       "title_filtered": "No {{status}} orders",
       "description": "Start adding offers and cards to your cart",
       "browse_offers": "Browse Offers"
-    }
+    },
+    "eyebrow": "Your purchases",
+    "results_suffix": "orders"
   },
   "sideMenu": {
     "logoAlt": "Mukafaat logo",
@@ -1625,7 +1703,27 @@
     "redeem_success": "Points redeemed successfully",
     "redeem_error": "Failed to redeem points",
     "loading": "Loading...",
-    "no_transactions": "No transactions"
+    "no_transactions": "No transactions",
+    "topupTitle": "Top up points",
+    "topupSubtitle": "Add points to your wallet",
+    "pointsRateTitle": "1 point = 1 Saudi riyal",
+    "pointsRateDesc": "Balances are shown in points and charged in riyals — 1 point = 1 SAR.",
+    "pointsCountLabel": "Number of points",
+    "otherAmount": "Other amount",
+    "enterPointsAmount": "Number of points",
+    "enterAmount": "Enter the number of points",
+    "amountRange": "Points must be between {{min}} and {{max}}",
+    "topupGoesToCash": "The points will be added to your cash balance.",
+    "payAmount": "Pay {{amount}}",
+    "topupSuccess": "Your balance was topped up successfully.",
+    "topupFailed": "Top-up did not complete — nothing was charged, please try again.",
+    "totalBalance": "Total balance",
+    "promotionalBalance": "Promotional balance",
+    "cashBalance": "Cash balance",
+    "pointsUnitOne": "point",
+    "pointsUnitTwo": "points",
+    "pointsUnitFew": "points",
+    "pointsUnitMany": "points"
   },
   "profile": {
     "subscription_active": "Active subscription",
@@ -1683,7 +1781,16 @@
     "menu_subscribe_other": "Subscribe for someone else",
     "menu_upgrade": "Upgrade subscription",
     "menu_contact": "Contact us",
-    "menu_logout": "Log out"
+    "menu_logout": "Log out",
+    "menu_referrals": "Share & Earn",
+    "menu_family": "Family members",
+    "menu_gifts": "Gifted subscriptions",
+    "group_account": "My account",
+    "group_membership": "Membership & benefits",
+    "group_help": "Help",
+    "menu_card": "My card & tiers",
+    "menu_notifications": "Notifications",
+    "menu_store_request": "Join as a store"
   },
   "subscribeForOther": {
     "meta_title": "Subscribe for someone else",
@@ -1716,7 +1823,14 @@
     "payment_unexpected": "Could not start payment. Please try again or contact support.",
     "complete_payment": "Complete payment with your card",
     "back_to_form": "Back to form",
-    "moyasar_load_failed": "Could not load payment form."
+    "moyasar_load_failed": "Could not load payment form.",
+    "label_coupon": "Discount coupon (optional)",
+    "placeholder_coupon": "Enter coupon code",
+    "apply_coupon": "Apply",
+    "clear_coupon": "Remove",
+    "price_breakdown": "Price breakdown",
+    "invoice_cta": "View invoice",
+    "gift_success_invoice": "Subscription completed — you can view the invoice."
   },
   "coupons": {
     "title": "Couponz",
@@ -1753,7 +1867,9 @@
     "coupons_suffix": "coupons",
     "discount_min_tag": "Discount ≥ {{min}}%",
     "clear_all": "Clear all",
-    "image_cut_coupon": "Coupon divider"
+    "image_cut_coupon": "Coupon divider",
+    "hero_eyebrow": "Copy and use instantly",
+    "hero_subtitle": "Promo codes updated daily across hundreds of brands — one tap away."
   },
   "languageToggle": {
     "languagesTab": "Languages",
@@ -1824,7 +1940,14 @@
     "purchases_few": "{{count}} purchases",
     "purchases_many": "{{count}} purchases",
     "purchases_two": "{{count}} purchases",
-    "purchases_zero": "0 purchases"
+    "purchases_zero": "0 purchases",
+    "favorites": "Favorites",
+    "shares": "Shares",
+    "viewsLabel": "Views",
+    "subscribersOnly": "Subscribers only",
+    "save": "Save",
+    "endsToday": "Ends today",
+    "endsInDays": "Ends in {{days}} days"
   },
   "couponModal": {
     "removedFromFavorites": "Removed from favorites",
@@ -1845,6 +1968,461 @@
     "expiresOn": "Expires {{date}}",
     "validityUnknown": "Validity not specified",
     "noExpiryDate": "No expiry date",
-    "goToStore": "Go to store"
+    "goToStore": "Go to store",
+    "usedCount": "Used ({{count}})",
+    "usedCountOne": "Used once",
+    "usedCountTwo": "Used {{count}} times",
+    "usedCountFew": "Used {{count}} times",
+    "usedCountMany": "Used {{count}} times"
+  },
+  "membershipTier": {
+    "title": "Your membership tier",
+    "level": "Level",
+    "benefits": "Your tier benefits",
+    "renewal_discount": "Renewal discount",
+    "new_subscription_discount": "New subscription discount",
+    "gift_discount": "Gift subscription discount",
+    "percent_off": "{{percent}}% off",
+    "no_discount": "No discount right now",
+    "next_tier": "Next tier: {{tier}}",
+    "highest_tier": "You are at the highest tier",
+    "remaining_orders": "{{count}} paid orders to go",
+    "remaining_spend": "{{amount}} more to spend",
+    "current_orders": "Your paid orders",
+    "current_spend": "Your total spend",
+    "evaluation_period": "In the last {{months}} months",
+    "none": "No membership tier yet"
+  },
+  "referrals": {
+    "meta_title": "Share & Earn",
+    "title": "Share & Earn",
+    "subtitle": "Invite friends with your code or link — reach the goal and claim your reward.",
+    "menu": "Share & Earn",
+    "your_code": "Invite code",
+    "your_link": "Invite link",
+    "copy": "Copy",
+    "copied": "Copied",
+    "share": "Share",
+    "progress_title": "Progress to your reward",
+    "progress_value": "{{progress}} of {{required}}",
+    "remaining": "{{count}} more invites to earn your reward",
+    "goal_reached": "Goal reached — your reward is on the way",
+    "signups": "Signups via your link",
+    "qualified": "Completed invites",
+    "pending": "Pending",
+    "rewards_title": "Rewards received",
+    "rewards_count": "Rewards",
+    "no_rewards": "No rewards yet",
+    "reward_status_pending": "Processing",
+    "reward_status_granted": "Granted",
+    "reward_status_applied": "Used",
+    "reward_coupon_code": "Coupon code",
+    "reward_valid_until": "Valid until {{date}}",
+    "reward_used": "Used",
+    "reward_expired": "Expired",
+    "invites_title": "People you invited",
+    "no_invites": "You haven't invited anyone yet",
+    "invite_status_pending": "Not completed",
+    "invite_status_qualified": "Completed",
+    "my_reward": "My reward",
+    "friend_reward": "Your friend's reward",
+    "reward_months": "{{count}} free subscription months",
+    "reward_cashback": "{{amount}} cashback",
+    "reward_coupon": "{{percent}}% discount coupon",
+    "disabled": "The Share & Earn program is currently disabled.",
+    "login_required": "Sign in to see your invite code.",
+    "load_error": "Could not load Share & Earn data."
+  },
+  "family": {
+    "meta_title": "Family members",
+    "title": "Family members",
+    "menu": "Family members",
+    "subtitle": "Add your family members so they benefit from your plan, within its limit.",
+    "no_plan_title": "A family plan is required",
+    "no_plan_desc": "Subscribe to a family plan to add your family members.",
+    "upgrade_cta": "View plans",
+    "member_of_title": "You are part of {{owner}}'s family",
+    "member_of_desc": "Your subscription follows the plan owner's subscription.",
+    "plan_title": "Family plan",
+    "plan_ends": "Ends on {{date}}",
+    "plan_active": "Active",
+    "plan_inactive": "Inactive",
+    "seats": "Seats",
+    "used_seats": "Used",
+    "remaining_seats": "Remaining",
+    "max_members": "Maximum",
+    "seats_full": "All plan seats are used",
+    "members_title": "Members",
+    "no_members": "No members yet",
+    "add_member": "Add member",
+    "label_name": "Name",
+    "placeholder_name": "Member name (optional)",
+    "label_phone": "Mobile number",
+    "label_relation": "Relation",
+    "placeholder_relation": "e.g. son, wife (optional)",
+    "submit": "Add",
+    "submitting": "Adding…",
+    "invite_success": "Member added",
+    "invite_failed": "Could not add the member",
+    "err_phone": "Enter a valid mobile number",
+    "remove": "Remove",
+    "remove_confirm": "Remove this member?",
+    "remove_success": "Member removed",
+    "remove_failed": "Could not remove the member",
+    "cannot_remove": "This member cannot be removed",
+    "view_only": "View only",
+    "owner": "Plan owner",
+    "status_active": "Active",
+    "status_pending": "Pending",
+    "status_inactive": "Inactive",
+    "invitations_title": "Invitations for you",
+    "accept": "Accept invitation",
+    "accepting": "Accepting…",
+    "accept_success": "Invitation accepted",
+    "accept_failed": "Could not accept the invitation",
+    "load_error": "Could not load family data."
+  },
+  "storeRequest": {
+    "meta_title": "Join as a store or suggest one",
+    "title": "Mukafaat stores",
+    "subtitle": "Own a store? Join us. A customer? Suggest a store you'd like to see on Mukafaat.",
+    "tab_join": "Store join request",
+    "tab_suggest": "Suggest a store",
+    "join_desc": "Fill in the details and our team will contact you to complete the onboarding.",
+    "suggest_desc": "Tell us which store you'd like to see on Mukafaat and we'll consider adding it.",
+    "label_store_name": "Store name",
+    "placeholder_store_name": "Enter the store name",
+    "label_contact_name": "Contact name",
+    "placeholder_contact_name": "Enter the contact name",
+    "label_contact_phone": "Contact number",
+    "placeholder_contact_phone": "05xxxxxxxx",
+    "label_email": "Email",
+    "placeholder_email": "name@example.com",
+    "label_country": "Country",
+    "label_city": "City",
+    "select_country": "Select country",
+    "select_city": "Select city",
+    "city_not_listed": "My city is not listed",
+    "label_city_name": "Type the city name",
+    "label_notes": "Notes",
+    "placeholder_notes": "Any extra details (optional)",
+    "optional": "optional",
+    "submit": "Send request",
+    "submitting": "Sending…",
+    "thanks_title": "Thank you",
+    "thanks_join": "We received your request and will contact you soon.",
+    "thanks_suggest": "We received your suggestion, thank you.",
+    "new_request": "Send another request",
+    "err_store_name": "Store name is required",
+    "err_contact_name": "Contact name is required",
+    "err_contact_phone": "Contact number is required",
+    "err_country": "Country is required",
+    "err_city": "City is required",
+    "failed": "Could not send the request, please try again."
+  },
+  "storePage": {
+    "working_hours": "Working hours",
+    "open_now": "Open now",
+    "closed_now": "Closed now",
+    "temporarily_closed": "Temporarily closed",
+    "closed_today": "Closed",
+    "today": "Today",
+    "hours_unavailable": "Working hours unavailable",
+    "content_tab_default": "Content",
+    "delivery_time": "Delivery time",
+    "minimum_order": "Minimum order",
+    "delivery_fee": "Delivery fee",
+    "whatsapp": "WhatsApp",
+    "minute_unit": "min",
+    "working_hours_today": "Today's hours",
+    "verified": "Verified store",
+    "coming_soon": "Coming soon",
+    "delivery_details": "Delivery details"
+  },
+  "giftSubscription": {
+    "coupon_label": "Discount coupon",
+    "coupon_placeholder": "Enter coupon code",
+    "coupon_apply": "Apply",
+    "coupon_remove": "Remove",
+    "coupon_applied": "Coupon applied",
+    "coupon_invalid": "Invalid coupon",
+    "price_original": "Original price",
+    "tier_discount": "{{tier}} tier discount",
+    "tier_discount_generic": "Membership tier discount",
+    "coupon_discount": "Coupon discount",
+    "code_discount": "Discount code",
+    "total_discount": "Total discount",
+    "final_price": "Amount due",
+    "invoice_title": "Gifted subscription invoice",
+    "invoice_number": "Invoice number",
+    "invoice_date": "Issue date",
+    "invoice_amount": "Amount",
+    "invoice_tax": "Tax",
+    "invoice_total": "Total",
+    "invoice_status": "Status",
+    "invoice_recipient": "Recipient",
+    "invoice_plan": "Plan",
+    "invoice_period": "Period",
+    "invoice_download": "Download invoice PDF",
+    "invoice_not_ready": "The invoice isn't issued yet; it will appear once payment completes.",
+    "invoice_error": "Could not load the invoice.",
+    "back_to_gifts": "Subscriptions I gifted",
+    "gifts_title": "Subscriptions I gifted",
+    "gifts_empty": "You haven't gifted any subscription yet",
+    "view_invoice": "View invoice"
+  },
+  "ui": {
+    "viewAll": "View all",
+    "loading": "Loading…",
+    "retry": "Try again",
+    "showMore": "Show more",
+    "showLess": "Show less",
+    "next": "Next",
+    "previous": "Previous",
+    "empty": {
+      "title": "Nothing here yet",
+      "description": "Try changing the filters or come back later.",
+      "offers": "No matching offers right now.",
+      "coupons": "No coupons available right now.",
+      "cards": "No cards available right now.",
+      "stores": "No stores to show.",
+      "search": "No results for your search.",
+      "saved": "You have no saved items yet.",
+      "orders": "No orders yet."
+    },
+    "error": {
+      "title": "Couldn't load the data",
+      "description": "Check your connection and try again.",
+      "retry": "Try again"
+    },
+    "filters": "Filters",
+    "clearFilters": "Clear filters",
+    "gridView": "Grid view",
+    "listView": "List view",
+    "results": "results",
+    "searchPlaceholder": "Search…",
+    "share": "Share",
+    "notifications": "Notifications",
+    "favorite": {
+      "add": "Add to favorites",
+      "remove": "Remove from favorites"
+    },
+    "loginRequired": {
+      "title": "Login required",
+      "cta": "Log in"
+    },
+    "save": "Save",
+    "flag": {
+      "hot": "Most wanted",
+      "new": "New",
+      "ending": "Ending soon"
+    },
+    "results_count": "{{count}} results"
+  },
+  "couponCard": {
+    "copies": "Copies"
+  },
+  "homeBuilder": {
+    "categoryOffers": "Selected offers",
+    "viewAll": "View all",
+    "cards": {
+      "title": "Prepaid & gift cards",
+      "eyebrow": "Instant top-up",
+      "allLink": "View all cards",
+      "digital": "Digital card",
+      "currency": "SAR"
+    }
+  },
+  "membershipCard": {
+    "meta_title": "My card & tiers",
+    "title": "My card & tiers",
+    "subtitle": "Your membership number, QR code, tier and its benefits.",
+    "number_label": "Membership number",
+    "copy_number": "Copy membership number",
+    "copy_link": "Copy verification link",
+    "copied": "Copied",
+    "share": "Share",
+    "load_error": "Could not load your card.",
+    "no_membership": "No membership card yet — subscribe to get yours.",
+    "subscribe_cta": "View plans"
+  },
+  "notificationsPage": {
+    "meta_title": "Notifications",
+    "title": "Notifications",
+    "unread_badge": "{{count}} unread",
+    "unread": "Unread",
+    "mark_all": "Mark all as read",
+    "mark_all_done": "All notifications marked as read",
+    "action_failed": "Action failed, please try again",
+    "settings_cta": "Notification settings",
+    "tab_general": "General",
+    "tab_nearby": "Nearby",
+    "tab_orders": "Orders",
+    "tab_empty": "No notifications in this category",
+    "empty_title": "No notifications",
+    "load_error": "Could not load notifications.",
+    "delete": "Delete notification",
+    "prev": "Previous",
+    "next": "Next",
+    "page_of": "Page {{page}} of {{total}}"
+  },
+  "notificationSettings": {
+    "meta_title": "Notification settings",
+    "title": "Notification settings",
+    "subtitle": "Choose what you want to hear about.",
+    "back_to_list": "Notifications",
+    "group_general": "General",
+    "group_offers": "Offers & alerts",
+    "group_channels": "Channels",
+    "key_app_notifications": "Notifications & alerts",
+    "key_new_offers": "New offers",
+    "key_discount_offers": "Discount offers",
+    "key_trip_offers": "Card offers",
+    "key_shopping_sections_offers": "Shopping voucher offers",
+    "key_offers_and_alerts": "Gift card offers",
+    "key_email_newsletters": "Email newsletters",
+    "key_sms_notifications": "SMS notifications",
+    "key_whatsapp_notifications": "WhatsApp notifications",
+    "saved": "Settings saved",
+    "save_failed": "Could not save settings",
+    "load_error": "Could not load notification settings.",
+    "hint": "Turning off “Notifications & alerts” disables everything at once."
+  },
+  "contactUs": {
+    "prefill_note": "We filled in your account details — you can edit them before sending."
+  },
+  "accountDelete": {
+    "title": "Delete account",
+    "description": "Deleting your account cancels active subscriptions and cannot be undone.",
+    "cta": "Delete my account",
+    "confirm_title": "Confirm account deletion",
+    "confirm_hint": "Type “DELETE” to confirm",
+    "confirm_word": "DELETE",
+    "reason_label": "Reason (optional)",
+    "cancel": "Cancel",
+    "submit": "Confirm deletion",
+    "submitting": "Deleting…",
+    "success": "Your account has been deleted",
+    "failed": "Could not delete the account, please try again"
+  },
+  "subscription": {
+    "close": "Close",
+    "back": "Back",
+    "features": "Features",
+    "discountBadge": "{{percent}}% off",
+    "familyMembersUpTo": "Includes up to {{count}} family members",
+    "currentPlanBadge": "Your current plan",
+    "previousPlanBadge": "Your previous plan",
+    "renewSubscription": "Renew subscription",
+    "activeUntil": "Your subscription is active until {{date}}",
+    "subscriptionEndedOn": "Your subscription ended on {{date}}",
+    "daysRemaining": "{{count}} days remaining",
+    "expiringSoon": "Expiring soon",
+    "guestSubscriptionHint": "Log in to see your current subscription",
+    "guestLogin": "Log in",
+    "duration": {
+      "monthly": "Monthly",
+      "3_months": "Every 3 months",
+      "6_months": "Every 6 months",
+      "yearly": "Yearly",
+      "2_years": "2 years"
+    }
+  },
+  "payment": {
+    "title": "Payment method",
+    "electronicPayment": "Electronic payment",
+    "payThrough": "Pay through",
+    "method": {
+      "mada": "mada",
+      "applePay": "Apple Pay",
+      "card": "Credit card / mada",
+      "wallet": "Pay from wallet"
+    },
+    "walletBalanceNote": "Your balance: {{points}} points",
+    "couponLabel": "Coupon",
+    "couponPlaceholder": "Enter coupon code",
+    "couponApplied": "Coupon applied",
+    "couponInvalid": "Invalid coupon",
+    "couponRemove": "Remove coupon",
+    "discountCodeLabel": "Discount code",
+    "apply": "Apply",
+    "applying": "Loading...",
+    "total": "Total",
+    "currency": "SAR",
+    "completePayment": "Complete payment",
+    "completePaymentDesc": "Enter your card details to complete the payment securely.",
+    "gatewayLoadFailed": "Could not load the payment gateway, please try again.",
+    "gatewayInitFailed": "Could not initialize the payment gateway. Please contact support.",
+    "paymentDataIncomplete": "Incomplete payment information. Please contact support.",
+    "applePayUnavailable": "Apple Pay is available on Safari on Apple devices only.",
+    "promoLabel": "Discount or coupon code",
+    "promoPlaceholder": "Enter code",
+    "promoApply": "Apply",
+    "promoRemove": "Remove code",
+    "promoInvalid": "Invalid or expired code"
+  },
+  "invoice": {
+    "title": "Invoice",
+    "number": "Invoice number",
+    "notIssuedYet": "Invoice not issued yet",
+    "plan": "Plan",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "paymentMethod": "Payment method",
+    "transactionNumber": "Transaction number",
+    "date": "Date",
+    "subscriptionId": "Subscription ID",
+    "total": "Total paid",
+    "downloadPdf": "Download PDF invoice",
+    "pdfUnavailable": "The invoice file is not available yet — it appears once the payment is settled.",
+    "allTransactions": "All transactions"
+  },
+  "referralLanding": {
+    "title": "A friend invited you",
+    "subtitle": "We saved the invite code — finish signing up so you and your friend both get rewarded.",
+    "cta_register": "Create an account",
+    "cta_home": "Continue to home",
+    "redirecting": "Redirecting you automatically…"
+  },
+  "qrLanding": {
+    "eyebrow": "Exclusive deals near you",
+    "title": "Offers around you right now",
+    "subtitle": "Turn on your location and see deals from nearby stores in seconds.",
+    "cta": "Show nearby offers now",
+    "cta_loading": "Locating you…",
+    "radius_note": "We search within",
+    "radius_note_suffix": "of your location.",
+    "unit_m": "m",
+    "unit_km": "km",
+    "download_hint": "Or download the app for a faster experience",
+    "step1_title": "Scan the code",
+    "step1_body": "Scan the Mukafa'at code shown in the store, or open the link.",
+    "step2_title": "Enable location",
+    "step2_body": "Allow your browser to read your location so we can search around you.",
+    "step3_title": "Enjoy the discount",
+    "step3_body": "Browse offers from nearby stores and claim your discount instantly.",
+    "error_fetch": "Couldn't load nearby offers. Please try again.",
+    "error_network": "Couldn't reach the service. Please try again.",
+    "error_unsupported": "Your browser doesn't support geolocation.",
+    "error_denied": "Location access was denied. Allow it in your browser settings and try again.",
+    "error_locate": "Couldn't determine your location. Please try again.",
+    "disabled": "This service is currently unavailable.",
+    "offers_in": "offers in",
+    "merchants_around": "stores around you",
+    "verified": "Verified",
+    "open_now": "Open now",
+    "closed_now": "Closed now",
+    "empty_title": "No offers around you",
+    "empty_body": "Try again later, or download the app to browse all offers.",
+    "nearest_prefix": "The nearest store",
+    "nearest_suffix": "is"
+  },
+  "account": {
+    "hero_fallback_name": "Welcome",
+    "quick_links": "Quick links",
+    "upsell_desc": "Activate your subscription to unlock every offer and discount in one place.",
+    "card_upsell_desc": "Subscribe to get a digital membership card with your own number and a QR code merchants can scan.",
+    "card_actions": "Share your card",
+    "gifts_subtitle": "Subscriptions you gifted and their invoices"
   }
 }

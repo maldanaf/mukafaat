@@ -3,25 +3,24 @@
 import React, { useMemo } from "react";
 import { Link, useNavigate } from "@/lib/router-compat";
 import { IoIosArrowRoundForward } from "react-icons/io";
-import {
-  FiStar,
-  FiEye,
-  FiDownload,
-  FiBookmark,
-  FiClock,
-  FiGift,
-  FiCreditCard,
-  FiShoppingBag,
-} from "react-icons/fi";
-import { BsHeart, BsHeartFill } from "react-icons/bs";
+import { FiStar, FiBookmark, FiClock, FiShoppingBag } from "react-icons/fi";
+import { HeartIcon } from "@ui";
 import { useIsRTL } from "@hooks";
 import { useTranslation } from "react-i18next";
 import { type CardOffer } from "@data/cards";
 import type { CardOfferWithCompanyId } from "@network/mappers/cardsMapper";
-import CurrencyIcon from "@components/CurrencyIcon";
 import { useUserStore } from "@stores/userStore";
 import { useFavorites, useFavoriteToggle } from "@hooks/api/useMokafaatQueries";
 import { normalizeFavoritesList } from "@utils/favorites";
+import { StatChips, PriceTag, SmartImage, Ratio, FOCUS } from "@ui";
+import {
+  VIVID_CARD,
+  VIVID_MEDIA,
+  VIVID_SCRIM,
+  DiscountBadge,
+  Ribbon,
+  CornerButton,
+} from "@views/offers/components/CatalogKit";
 import { toast } from "react-toastify";
 import {
   Cards1,
@@ -36,7 +35,6 @@ import {
   Cards7,
   Cards8,
 } from "@assets";
-import { stripHtml } from "@utils/stripHtml";
 import { pickLocalized } from "@utils/pickLocalized";
 
 interface CategoryItem {
@@ -185,170 +183,147 @@ const OfferCard: React.FC<OfferCardProps> = ({
     return t("offerCard.moreFeatures", { count: extra });
   }, [offer.features.length, t]);
 
-  // Function to get the appropriate icon (بطاقة = أيقونة بطاقة)
-  const getOfferTypeIcon = () => {
-    if (offer.isPopular) {
-      return <FiGift className="w-3 h-3 text-white" />;
-    }
-    if (offer.isNew) {
-      return <FiClock className="w-3 h-3 text-white" />;
-    }
-    return <FiCreditCard className="w-3 h-3 text-white" />;
-  };
 
-  // Function to get card/offer type text (بطاقة وليس عرض)
-  const getOfferTypeText = () => {
-    if (offer.isPopular) {
-      return t("offerCard.popular");
-    }
-    if (offer.isNew) {
-      return t("offerCard.new");
-    }
-    return t("offerCard.card");
-  };
 
-  // Function to get offer type color
-  const getOfferTypeColor = () => {
-    if (offer.isPopular) {
-      return "bg-orange-500";
-    }
-    if (offer.isNew) {
-      return "bg-green-500";
-    }
-    return "bg-purple-500";
-  };
 
   const priceAfter = Number(offer.price ?? 0);
   const priceBefore =
     offer.originalPrice != null ? Number(offer.originalPrice) : 0;
-  const showStrikethrough = priceBefore > 0 && priceBefore > priceAfter;
-  const formatPrice = (n: number) => {
-    const rounded = Math.round(Number(n) * 100) / 100;
-    return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(2);
-  };
+
+  /** نسبة الخصم — من السعرين مباشرة (لا يوجد حقل جاهز في موديل البطاقة) */
+  const discountPercent =
+    priceBefore > 0 && priceAfter >= 0 && priceBefore > priceAfter
+      ? Math.round(((priceBefore - priceAfter) / priceBefore) * 100)
+      : 0;
+
+  const cardTitle = pickLocalized(offer.title, langBase);
 
   const cardContent = (
     <>
-      {/* Image Section - ارتفاع ثابت */}
-      <div className="relative h-[160px] overflow-hidden flex-shrink-0">
-        <img
-          src={getCardImage(offer.image)}
-          alt={pickLocalized(offer.title, langBase)}
-          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-        />
+      {/* الصورة — نسبة محفوظة فلا تقفز الشبكة */}
+      <div className={VIVID_MEDIA}>
+        <Ratio ratio="aspect-[16/10]">
+          <SmartImage
+            src={getCardImage(offer.image)}
+            alt={cardTitle}
+            name={cardTitle}
+            variant="name"
+          />
+        </Ratio>
 
-        <div className="absolute top-3 right-3 flex gap-2">
-          <button
-            type="button"
+        <span aria-hidden className={VIVID_SCRIM} />
+
+        {/* شارة الخصم البارزة */}
+        <DiscountBadge percent={discountPercent} size="lg" floating />
+
+        <div className="absolute end-2 top-2 z-[2] flex gap-1.5">
+          <CornerButton
+            label={t("offerCard.favorites", "المفضلة")}
+            pressed={isFavorite}
+            disabled={toggleFavorite.isPending}
+            className="hover:text-mk-red"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
               handleFavoriteClick(e);
             }}
-            className="w-8 h-8 bg-white bg-opacity-90 rounded-full flex items-center justify-center text-gray-700 hover:bg-opacity-100 transition-all disabled:opacity-50"
-            disabled={toggleFavorite.isPending}
           >
             {isFavorite ? (
-              <BsHeartFill className="text-sm text-red-500" />
+              <HeartIcon size={15} filled className="text-mk-red" />
             ) : (
-              <BsHeart className="text-sm" />
+              <HeartIcon size={15} />
             )}
-          </button>
-          <button
-            type="button"
+          </CornerButton>
+          <CornerButton
+            label={t("offerCard.cardDetails", "تفاصيل البطاقة")}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
               onOfferClick?.(offer);
             }}
-            className="w-8 h-8 bg-white bg-opacity-90 rounded-full flex items-center justify-center text-gray-700 hover:bg-opacity-100 transition-all duration-200"
           >
-            <FiBookmark className="text-sm" />
-          </button>
+            <FiBookmark size={15} />
+          </CornerButton>
         </div>
 
-        {extendedOffer.category && (
-          <div className="absolute top-3 left-3">
-            <div className="bg-white/95 text-[#400198] px-2 py-1 rounded-full text-[11px] font-semibold shadow-sm flex items-center gap-1">
+        {/* شارات الحالة والتصنيف */}
+        <div className="absolute bottom-2 start-2 z-[2] flex max-w-[88%] flex-wrap items-center gap-1.5">
+          {offer.isNew && <Ribbon tone="new">{t("offerCard.new")}</Ribbon>}
+          {offer.isPopular && <Ribbon tone="hot">{t("offerCard.popular")}</Ribbon>}
+          {extendedOffer.category && (
+            <Ribbon tone="info">
               {categoryImage ? (
-                <span className="flex h-4 w-4 flex-shrink-0 items-center justify-center overflow-hidden rounded bg-[#400198]/10">
-                  <img
-                    src={categoryImage}
-                    alt=""
-                    className="h-full w-full object-contain"
-                  />
+                <span className="flex h-4 w-4 shrink-0 items-center justify-center overflow-hidden rounded bg-mk-tint">
+                  <img src={categoryImage} alt="" className="h-full w-full object-contain" />
                 </span>
               ) : (
-                <FiShoppingBag className="h-3 w-3" />
+                <FiShoppingBag className="h-3 w-3" aria-hidden />
               )}
-              <span>{extendedOffer.category.name}</span>
-            </div>
-          </div>
-        )}
+              {extendedOffer.category.name}
+            </Ribbon>
+          )}
+        </div>
       </div>
 
-      {/* Content Section - flex لارتفاع موحد والسعر يثبت في الأسفل */}
-      <div className="px-4 py-4 flex flex-col flex-1 min-h-[180px]">
-        <div className="flex flex-col flex-1 min-h-0">
-          <h3 className="text-base font-bold text-gray-900 mb-2 line-clamp-2">
-            {pickLocalized(offer.title, langBase)}
-          </h3>
+      {/* المحتوى — ارتفاع موحّد والسعر يثبت أسفل الكرت */}
+      <div className="flex flex-1 flex-col gap-2 p-4">
+        <h3 className="mk-clamp-2 m-0 text-[15px] font-extrabold leading-snug text-mk-text">
+          {cardTitle}
+        </h3>
 
-          <div className="mb-2">
-            <div className="flex flex-wrap gap-1">
-              {offer.features.slice(0, 2).map((feature, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-1 text-xs text-gray-600 bg-gray-100 px-2 py-0.5 rounded-full"
-                >
-                  <div className="w-1 h-1 bg-purple-500 rounded-full" />
-                  <span>{feature}</span>
-                </div>
-              ))}
-              {offer.features.length > 2 && (
-                <div className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
-                  {featuresText}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1">
-                <FiStar className="w-4 h-4 text-[#B3B3B3]" />
-                <span className="text-xs text-[#B3B3B3]">{offer.rating}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <FiEye className="w-4 h-4 text-[#B3B3B3]" />
-                <span className="text-xs text-[#B3B3B3]">{offer.views}</span>
-              </div>
-            </div>
-            <div className="text-xs text-gray-500">{purchaseText}</div>
-          </div>
-        </div>
-
-        <hr className="my-2 border-t border-[#e6e6e6] flex-shrink-0" />
-
-        <div className="flex items-center justify-between gap-2 flex-shrink-0">
-          <div className="flex items-center gap-1 flex-wrap">
-            <span className="text-base font-bold text-[#400198] flex items-center gap-1">
-              {formatPrice(priceAfter)}
-              <CurrencyIcon className="text-[#400198]" size={14} />
-            </span>
-            {showStrikethrough && (
-              <span className="text-xs text-gray-500 line-through flex items-center gap-1">
-                {formatPrice(priceBefore)}
-                <CurrencyIcon className="text-gray-500" size={11} />
+        {offer.features.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {offer.features.slice(0, 2).map((feature, index) => (
+              <span
+                key={index}
+                className="flex items-center gap-1 rounded-full bg-mk-tint2 px-2 py-1 text-[11px] text-mk-text-strong"
+              >
+                <span aria-hidden className="h-1 w-1 rounded-full bg-mk-primary" />
+                {feature}
+              </span>
+            ))}
+            {offer.features.length > 2 && (
+              <span className="rounded-full bg-mk-tint2 px-2 py-1 text-[11px] text-mk-faint">
+                {featuresText}
               </span>
             )}
           </div>
-          <span className="flex items-center gap-1 text-xs font-semibold text-[#400198] hover:text-[#fd671a] transition-colors">
+        )}
+
+        {validityText && (
+          <span className="inline-flex w-fit items-center gap-1 rounded-full bg-mk-tint px-2 py-1 text-[11px] font-semibold text-mk-primary">
+            <FiClock className="h-3 w-3" aria-hidden />
+            {validityText}
+          </span>
+        )}
+
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            {Number(offer.rating) > 0 && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#FDF4DE] px-2 py-1 text-[11px] font-bold text-[#8A6209]">
+                <FiStar className="h-3 w-3" aria-hidden />
+                {offer.rating}
+              </span>
+            )}
+            {/* عدّادات موحّدة: مشاهدات / مفضلة / مشاركات */}
+            <StatChips
+              compact
+              views={offer.views}
+              favorites={extendedOffer.favoritesCount}
+              shares={extendedOffer.sharesCount}
+            />
+          </div>
+          <span className="shrink-0 text-[11px] text-mk-faint">{purchaseText}</span>
+        </div>
+
+        {/* السعر والزر */}
+        <div className="mt-auto flex flex-wrap items-end justify-between gap-2 border-t border-mk-divider pt-3">
+          <PriceTag price={priceAfter} priceBefore={priceBefore} size="lg" stacked />
+          <span className="inline-flex items-center gap-1 rounded-full bg-mk-tint px-3.5 py-2 text-[12.5px] font-extrabold text-mk-primary transition-colors group-hover/vivid:bg-mk-primary group-hover/vivid:text-white">
             {visitButtonText}
             <IoIosArrowRoundForward
-              className={`text-xl transform ${
-                isRTL ? "rotate-[225deg]" : "-rotate-45"
-              }`}
+              className={`text-xl ${isRTL ? "rotate-[225deg]" : "-rotate-45"}`}
+              aria-hidden
             />
           </span>
         </div>
@@ -359,7 +334,7 @@ const OfferCard: React.FC<OfferCardProps> = ({
   return (
     <Link
       to={detailPath}
-      className="block bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl cursor-pointer flex flex-col h-full no-underline text-inherit"
+      className={`${VIVID_CARD} text-inherit no-underline ${FOCUS}`}
       style={{ direction: isRTL ? "rtl" : "ltr" }}
     >
       {cardContent}

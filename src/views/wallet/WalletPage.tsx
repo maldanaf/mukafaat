@@ -1,10 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
+import { POINTS_ENABLED } from "@config/features";
 import { useTranslation } from "react-i18next";
-import { IoWalletOutline, IoGiftOutline } from "react-icons/io5";
+import { useNavigate } from "@/lib/router-compat";
+import { IoWalletOutline, IoGiftOutline, IoAddCircleOutline } from "react-icons/io5";
 import { TbArrowsExchange2 } from "react-icons/tb";
 import CurrencyIcon from "@components/CurrencyIcon";
+import { Button } from "@ui";
+import { pointsUnit } from "@utils/points";
 import {
   usePointsBalance,
   usePointsHistory,
@@ -26,6 +30,8 @@ function getPointsBalance(data: unknown): { points: number; value?: number } {
 
 function getWalletSummary(data: unknown): {
   walletBalance: number;
+  promotionalBalance: number;
+  totalBalance: number;
   pointsBalance: number;
   pointsValueSar: number;
   walletTransactions: Array<Record<string, unknown>>;
@@ -42,7 +48,10 @@ function getWalletSummary(data: unknown): {
       | undefined) ??
     {};
 
-  const walletBalance = Number(wallet.wallet_balance ?? 0) || 0;
+  const walletBalance = Number(wallet.cash_balance ?? wallet.wallet_balance ?? 0) || 0;
+  const promotionalBalance = Number(wallet.promotional_balance ?? 0) || 0;
+  const totalBalance =
+    Number(wallet.total_balance ?? walletBalance + promotionalBalance) || 0;
   const pointsBalance = Number(wallet.points_balance ?? 0) || 0;
   const pointsValueSar = Number(wallet.points_value_sar ?? 0) || 0;
 
@@ -56,6 +65,8 @@ function getWalletSummary(data: unknown): {
 
   return {
     walletBalance,
+    promotionalBalance,
+    totalBalance,
     pointsBalance,
     pointsValueSar,
     walletTransactions: Array.isArray(walletTransactionsRaw)
@@ -77,6 +88,7 @@ function getHistoryList(data: unknown): Array<Record<string, unknown>> {
 
 const WalletPage: React.FC = () => {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const isRTL = i18n.language?.startsWith("ar");
   const [activeTab, setActiveTab] = useState<"payments" | "points" | "transactions">("payments");
 
@@ -135,36 +147,36 @@ const WalletPage: React.FC = () => {
     {/* مودال تحويل النقاط */}
     {redeemModalOpen && (
       <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => !redeemMutation.isPending && setRedeemModalOpen(false)}>
-        <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6" onClick={(e) => e.stopPropagation()}>
+        <div className="bg-white rounded-mk-xl shadow-2xl max-w-sm w-full p-6" onClick={(e) => e.stopPropagation()}>
           <div className="text-center mb-6">
             <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <IoGiftOutline className="w-8 h-8 text-orange-500" />
             </div>
-            <h3 className="text-lg font-bold text-gray-900">
+            <h3 className="text-lg font-bold text-mk-text">
               {isRTL ? "تحويل النقاط إلى المحفظة" : "Convert Points to Wallet"}
             </h3>
           </div>
 
           <div className="space-y-3 mb-6">
-            <div className="flex items-center justify-between p-3 bg-orange-50 rounded-xl">
-              <span className="text-sm text-gray-600">{isRTL ? "النقاط المتاحة" : "Available Points"}</span>
+            <div className="flex items-center justify-between p-3 bg-orange-50 rounded-mk-md">
+              <span className="text-sm text-mk-muted">{isRTL ? "النقاط المتاحة" : "Available Points"}</span>
               <span className="font-bold text-orange-600">{points} {isRTL ? "نقطة" : "pts"}</span>
             </div>
-            <div className="flex items-center justify-between p-3 bg-green-50 rounded-xl">
-              <span className="text-sm text-gray-600">{isRTL ? "القيمة بالريال" : "Value in SAR"}</span>
+            <div className="flex items-center justify-between p-3 bg-green-50 rounded-mk-md">
+              <span className="text-sm text-mk-muted">{isRTL ? "القيمة بالريال" : "Value in SAR"}</span>
               <span className="font-bold text-green-600 flex items-center gap-1">
                 {pointsValue ?? 0} <CurrencyIcon size={14} className="text-green-600" />
               </span>
             </div>
-            <div className="flex items-center justify-between p-3 bg-purple-50 rounded-xl">
-              <span className="text-sm text-gray-600">{isRTL ? "رصيد المحفظة بعد التحويل" : "Wallet After"}</span>
-              <span className="font-bold text-purple-600 flex items-center gap-1">
-                {(walletBalance + (pointsValue ?? 0)).toFixed(2)} <CurrencyIcon size={14} className="text-purple-600" />
+            <div className="flex items-center justify-between p-3 bg-mk-tint3 rounded-mk-md">
+              <span className="text-sm text-mk-muted">{isRTL ? "رصيد المحفظة بعد التحويل" : "Wallet After"}</span>
+              <span className="font-bold text-mk-primary flex items-center gap-1">
+                {(walletBalance + (pointsValue ?? 0)).toFixed(2)} <CurrencyIcon size={14} className="text-mk-primary" />
               </span>
             </div>
           </div>
 
-          <p className="text-xs text-gray-500 text-center mb-4">
+          <p className="text-xs text-mk-muted text-center mb-4">
             {isRTL
               ? "سيتم تحويل جميع النقاط إلى رصيد في المحفظة. هذه العملية لا يمكن التراجع عنها."
               : "All points will be converted to wallet balance. This action cannot be undone."}
@@ -174,7 +186,7 @@ const WalletPage: React.FC = () => {
             <button
               onClick={onRedeemConfirm}
               disabled={redeemMutation.isPending || points < 1}
-              className="flex-1 py-3 rounded-xl bg-[#400198] text-white font-medium hover:bg-[#33007a] transition-colors disabled:opacity-50"
+              className="flex-1 py-3 rounded-mk-md bg-[#400198] text-white font-medium hover:bg-[#33007a] transition-colors disabled:opacity-50"
             >
               {redeemMutation.isPending
                 ? (isRTL ? "جاري التحويل..." : "Converting...")
@@ -183,7 +195,7 @@ const WalletPage: React.FC = () => {
             <button
               onClick={() => setRedeemModalOpen(false)}
               disabled={redeemMutation.isPending}
-              className="flex-1 py-3 rounded-xl border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
+              className="flex-1 py-3 rounded-mk-md border border-mk-border-2 text-mk-text-strong font-medium hover:bg-mk-tint3 transition-colors disabled:opacity-50"
             >
               {isRTL ? "إلغاء" : "Cancel"}
             </button>
@@ -193,70 +205,112 @@ const WalletPage: React.FC = () => {
     )}
 
     <div
-      className="min-h-screen bg-gray-50 pt-8 pb-28"
+      className="min-h-screen bg-mk-tint3 pt-8 pb-28"
       style={{ marginTop: "77px" }}
     >
       <div className="container mx-auto px-4 sm:px-4 lg:px-4">
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900">{t("wallet.title")}</h1>
-            <IoWalletOutline className="w-8 h-8 text-[#440798]" />
+        <div className="bg-white rounded-mk-sm shadow-mk-card p-6 mb-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <IoWalletOutline className="w-8 h-8 text-[#400198]" />
+              <div>
+                <h1 className="text-2xl font-bold text-mk-text">{t("wallet.title")}</h1>
+                <p className="text-xs text-mk-muted">{t("wallet.pointsRateDesc")}</p>
+              </div>
+            </div>
+            <Button
+              variant="accent"
+              size="md"
+              className="rounded-full"
+              icon={<IoAddCircleOutline className="w-5 h-5" />}
+              onClick={() => navigate("/wallet/topup")}
+            >
+              {t("wallet.topupTitle")}
+            </Button>
           </div>
         </div>
 
         {isLoading && (
-          <div className="text-center py-8 text-gray-500">{t("wallet.loading")}</div>
+          <div className="text-center py-8 text-mk-muted">{t("wallet.loading")}</div>
         )}
 
         {!isLoading && (
           <>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
-              <div className="bg-gradient-to-br from-orange-400 to-orange-500 rounded-xl p-6 text-white shadow-lg">
-                <div className="flex items-center justify-between mb-4">
-                  <IoGiftOutline className="w-8 h-8" />
-                </div>
-                <div className="text-3xl font-bold mb-2">{points}</div>
-                <div className="text-sm opacity-90">{t("wallet.points_balance")}</div>
-                {pointsValue != null && (
-                  <div className="text-sm opacity-90 mt-1">
-                    {t("wallet.points_value")}: {pointsValue} <CurrencyIcon size={14} className="inline text-white" />
+              {/* نظام النقاط مخفي — POINTS_ENABLED */}
+              {POINTS_ENABLED && (
+                <div className="bg-gradient-to-br from-orange-400 to-orange-500 rounded-mk-md p-6 text-white shadow-mk-raised">
+                  <div className="flex items-center justify-between mb-4">
+                    <IoGiftOutline className="w-8 h-8" />
                   </div>
-                )}
-                <button
-                  onClick={() => setRedeemModalOpen(true)}
-                  disabled={points < 1}
-                  className="mt-3 text-sm font-medium bg-white/20 hover:bg-white/30 rounded-lg px-3 py-2 disabled:opacity-50"
-                >
-                  {t("wallet.redeem_to_wallet")}
-                </button>
-              </div>
+                  <div className="text-3xl font-bold mb-2">{points}</div>
+                  <div className="text-sm opacity-90">{t("wallet.points_balance")}</div>
+                  {pointsValue != null && (
+                    <div className="text-sm opacity-90 mt-1">
+                      {t("wallet.points_value")}: {pointsValue} <CurrencyIcon size={14} className="inline text-white" />
+                    </div>
+                  )}
+                  <button
+                    onClick={() => setRedeemModalOpen(true)}
+                    disabled={points < 1}
+                    className="mt-3 text-sm font-medium bg-white/20 hover:bg-white/30 rounded-mk-sm px-3 py-2 disabled:opacity-50"
+                  >
+                    {t("wallet.redeem_to_wallet")}
+                  </button>
+                </div>
+              )}
 
-              <div className="bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl p-6 text-white shadow-lg">
-                <div className="flex items-center justify-between mb-4">
-                  <IoWalletOutline className="w-8 h-8" />
+              <div className="md:col-span-3 rounded-mk-md bg-gradient-to-br from-mk-primary-light to-mk-primary p-6 text-white shadow-mk-raised">
+                <div className="mb-1 text-sm opacity-85">{t("wallet.totalBalance")}</div>
+                <div className="mb-4 flex items-baseline gap-2 text-3xl font-bold">
+                  {walletSummary.totalBalance.toFixed(2)}
+                  <span className="text-[15px] font-semibold opacity-90">
+                    {pointsUnit(walletSummary.totalBalance, t)}
+                  </span>
                 </div>
-                <div className="text-3xl font-bold mb-2 flex items-center gap-2">
-                  {walletBalance}
-                  <CurrencyIcon size={24} className="text-white" />
+                <div className="grid grid-cols-2 gap-3 rounded-mk-md bg-white p-4">
+                  <div className="text-center">
+                    <div className="text-[11.5px] text-mk-muted">
+                      {t("wallet.promotionalBalance")}
+                    </div>
+                    <div className="mt-1 flex items-baseline justify-center gap-1 text-base font-bold text-mk-text">
+                      {walletSummary.promotionalBalance.toFixed(2)}
+                      <span className="text-[10.5px] font-semibold text-mk-text-strong">
+                        {pointsUnit(walletSummary.promotionalBalance, t)}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="border-s border-mk-border text-center">
+                    <div className="text-[11.5px] text-mk-muted">
+                      {t("wallet.cashBalance")}
+                    </div>
+                    <div className="mt-1 flex items-baseline justify-center gap-1 text-base font-bold text-mk-text">
+                      {walletBalance.toFixed(2)}
+                      <span className="text-[10.5px] font-semibold text-mk-text-strong">
+                        {pointsUnit(walletBalance, t)}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-sm opacity-90">{t("wallet.account_balance")}</div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+            <div className="bg-white rounded-mk-sm shadow-mk-card p-4 mb-6">
               <div className="flex space-x-4 space-x-reverse">
                 {([
                   { key: "payments" as const, label: isRTL ? "المدفوعات" : "Payments" },
                   { key: "transactions" as const, label: t("wallet.financial_transactions") },
-                  { key: "points" as const, label: t("wallet.points_log") },
-                ] as const).map((tab) => (
+                  ...(POINTS_ENABLED
+                    ? [{ key: "points" as const, label: t("wallet.points_log") }]
+                    : []),
+                ]).map((tab) => (
                   <button
                     key={tab.key}
                     onClick={() => setActiveTab(tab.key)}
                     className={`px-6 py-3 rounded-full font-medium text-sm transition-all duration-300 ${
                       activeTab === tab.key
-                        ? "bg-[#400198] text-white shadow-lg"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        ? "bg-[#400198] text-white shadow-mk-raised"
+                        : "bg-mk-tint2 text-mk-text-strong hover:bg-mk-border-strong/60"
                     }`}
                   >
                     {tab.label}
@@ -267,9 +321,9 @@ const WalletPage: React.FC = () => {
 
             {/* تاب المدفوعات */}
             {activeTab === "payments" && (
-              <div className="bg-white rounded-lg shadow-sm p-6">
+              <div className="bg-white rounded-mk-sm shadow-mk-card p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-bold text-gray-900">
+                  <h3 className="text-lg font-bold text-mk-text">
                     {isRTL ? "سجل المدفوعات" : "Payment History"}
                   </h3>
                   {(() => {
@@ -277,7 +331,7 @@ const WalletPage: React.FC = () => {
                     const summary = (root as Record<string, unknown>)?.summary as Record<string, unknown> | undefined;
                     const totalPaid = Number(summary?.total_paid ?? 0);
                     return totalPaid > 0 ? (
-                      <span className="text-sm text-gray-500">
+                      <span className="text-sm text-mk-muted">
                         {isRTL ? "إجمالي المدفوعات:" : "Total paid:"}{" "}
                         <span className="font-bold text-[#400198]">{totalPaid}</span>{" "}
                         <CurrencyIcon size={12} className="inline text-[#400198]" />
@@ -286,14 +340,14 @@ const WalletPage: React.FC = () => {
                   })()}
                 </div>
                 {myTransactionsLoading && (
-                  <div className="text-center py-6 text-gray-500">{t("wallet.loading")}</div>
+                  <div className="text-center py-6 text-mk-muted">{t("wallet.loading")}</div>
                 )}
                 {!myTransactionsLoading && (() => {
                   const root = (myTransactionsData as Record<string, unknown>)?.data ?? myTransactionsData;
                   const txList = ((root as Record<string, unknown>)?.transactions ?? []) as Array<Record<string, unknown>>;
                   if (txList.length === 0) {
                     return (
-                      <div className="text-center py-8 text-gray-500">
+                      <div className="text-center py-8 text-mk-muted">
                         {isRTL ? "لا توجد مدفوعات" : "No payments yet"}
                       </div>
                     );
@@ -304,32 +358,32 @@ const WalletPage: React.FC = () => {
                         const isRefund = tx.type === "refund";
                         const statusColor = tx.status === "successful" ? "text-green-600" : tx.status === "failed" ? "text-red-500" : "text-yellow-600";
                         return (
-                          <div key={(tx.id as string) ?? idx} className="flex items-center justify-between p-4 border border-gray-200 rounded-xl hover:shadow-sm transition-all">
+                          <div key={(tx.id as string) ?? idx} className="flex items-center justify-between p-4 border border-mk-border rounded-mk-md hover:shadow-mk-card transition-all">
                             <div className="flex items-center gap-3 flex-1">
-                              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isRefund ? "bg-green-100" : "bg-purple-100"}`}>
+                              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isRefund ? "bg-green-100" : "bg-mk-tint"}`}>
                                 <span className="text-lg">{isRefund ? "↩" : "💳"}</span>
                               </div>
                               <div className="flex-1 min-w-0">
-                                <p className="font-medium text-gray-900 text-sm truncate">
+                                <p className="font-medium text-mk-text text-sm truncate">
                                   {String(tx.item_name ?? tx.order_number ?? "—")}
                                 </p>
                                 <div className="flex items-center gap-2 mt-1">
-                                  <span className="text-xs text-gray-500">{String(tx.time_ago ?? tx.created_at ?? "")}</span>
-                                  <span className="text-xs text-gray-400">•</span>
-                                  <span className="text-xs text-gray-500">{String(tx.payment_method_label ?? tx.payment_method ?? "")}</span>
+                                  <span className="text-xs text-mk-muted">{String(tx.time_ago ?? tx.created_at ?? "")}</span>
+                                  <span className="text-xs text-mk-faint">•</span>
+                                  <span className="text-xs text-mk-muted">{String(tx.payment_method_label ?? tx.payment_method ?? "")}</span>
                                   {tx.card_last_four && (
                                     <>
-                                      <span className="text-xs text-gray-400">•</span>
-                                      <span className="text-xs text-gray-500">****{String(tx.card_last_four)}</span>
+                                      <span className="text-xs text-mk-faint">•</span>
+                                      <span className="text-xs text-mk-muted">****{String(tx.card_last_four)}</span>
                                     </>
                                   )}
                                 </div>
                               </div>
                             </div>
                             <div className="text-end">
-                              <p className={`font-bold ${isRefund ? "text-green-600" : "text-gray-900"} flex items-center gap-1`}>
+                              <p className={`font-bold ${isRefund ? "text-green-600" : "text-mk-text"} flex items-center gap-1`}>
                                 {isRefund ? "+" : "-"}{Number(tx.amount)}
-                                <CurrencyIcon size={14} className={isRefund ? "text-green-600" : "text-gray-700"} />
+                                <CurrencyIcon size={14} className={isRefund ? "text-green-600" : "text-mk-text-strong"} />
                               </p>
                               <p className={`text-xs font-medium ${statusColor}`}>
                                 {String(tx.status_label ?? tx.status ?? "")}
@@ -346,10 +400,10 @@ const WalletPage: React.FC = () => {
 
             {/* تاب حركات المحفظة والنقاط */}
             {(activeTab === "transactions" || activeTab === "points") && (
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-6">{t("wallet.transaction_log")}</h3>
+              <div className="bg-white rounded-mk-sm shadow-mk-card p-6">
+                <h3 className="text-lg font-bold text-mk-text mb-6">{t("wallet.transaction_log")}</h3>
                 {(activeTab === "points" ? pointsHistoryLoading : walletHistoryLoading) && (
-                  <div className="text-center py-6 text-gray-500">{t("wallet.loading")}</div>
+                  <div className="text-center py-6 text-mk-muted">{t("wallet.loading")}</div>
                 )}
                 {!pointsHistoryLoading && !walletHistoryLoading && (
                   <div className="space-y-3">
@@ -363,7 +417,7 @@ const WalletPage: React.FC = () => {
                       />
                     ))}
                     {(activeTab === "transactions" ? walletList : pointsList).length === 0 && (
-                      <div className="text-center py-8 text-gray-500">
+                      <div className="text-center py-8 text-mk-muted">
                         {t("wallet.no_transactions")}
                       </div>
                     )}
@@ -375,7 +429,7 @@ const WalletPage: React.FC = () => {
         )}
 
         {(showPointsError || showWalletError) && (
-          <div className="rounded-lg bg-red-50 border border-red-200 text-red-700 p-4 mb-6">
+          <div className="rounded-mk-sm bg-red-50 border border-red-200 text-red-700 p-4 mb-6">
             {showPointsError && <p>{t("wallet.loading")} (points)</p>}
             {showWalletError && <p>{t("wallet.loading")} (wallet)</p>}
           </div>
@@ -389,12 +443,12 @@ const WalletPage: React.FC = () => {
 function WalletTransactionRow({
   item,
   type,
-
+  t: tr,
   isRTL,
 }: {
   item: Record<string, unknown>;
   type: "points" | "transactions";
-  _t?: (key: string) => string;
+  t: (key: string) => string;
   isRTL?: boolean;
 }) {
   const description = String(
@@ -411,19 +465,21 @@ function WalletTransactionRow({
     const amount = Number(item.amount ?? 0);
     const isCredit = String(item.type ?? "").includes("credit") || String(item.type ?? "").includes("refund") || amount > 0;
     return (
-      <div className="flex items-center justify-between p-4 border border-gray-200 rounded-xl hover:shadow-sm transition-all">
+      <div className="flex items-center justify-between p-4 border border-mk-border rounded-mk-md hover:shadow-mk-card transition-all">
         <div className="flex items-center gap-3 flex-1">
           <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isCredit ? "bg-green-100" : "bg-orange-100"}`}>
             <TbArrowsExchange2 className={`w-5 h-5 ${isCredit ? "text-green-600" : "text-orange-500"}`} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-medium text-gray-900 text-sm truncate">{description}</p>
-            <p className="text-xs text-gray-500 mt-1">{date}</p>
+            <p className="font-medium text-mk-text text-sm truncate">{description}</p>
+            <p className="text-xs text-mk-muted mt-1">{date}</p>
           </div>
         </div>
-        <span className={`font-bold ${isCredit ? "text-green-600" : "text-orange-500"} flex items-center gap-1`}>
+        <span className={`font-bold ${isCredit ? "text-green-600" : "text-orange-500"} flex items-baseline gap-1`}>
           {isCredit ? "+" : "-"}{Math.abs(amount)}
-          <CurrencyIcon size={14} className="text-gray-700" />
+          <span className="text-[11px] font-semibold opacity-90">
+            {pointsUnit(amount, tr)}
+          </span>
         </span>
       </div>
     );
@@ -440,29 +496,30 @@ function WalletTransactionRow({
       : (isRTL ? "مستخدمة" : "Redeemed");
 
   return (
-    <div className="flex items-center justify-between p-4 border border-gray-200 rounded-xl hover:shadow-sm transition-all">
+    <div className="flex items-center justify-between p-4 border border-mk-border rounded-mk-md hover:shadow-mk-card transition-all">
       <div className="flex items-center gap-3 flex-1">
         <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-          isReversed ? "bg-red-100" : isEarn ? "bg-green-100" : "bg-purple-100"
+          isReversed ? "bg-red-100" : isEarn ? "bg-green-100" : "bg-mk-tint"
         }`}>
           <IoGiftOutline className={`w-5 h-5 ${
-            isReversed ? "text-red-500" : isEarn ? "text-green-600" : "text-purple-600"
+            isReversed ? "text-red-500" : isEarn ? "text-green-600" : "text-mk-primary"
           }`} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-medium text-gray-900 text-sm truncate">{description}</p>
+          <p className="font-medium text-mk-text text-sm truncate">{description}</p>
           <div className="flex items-center gap-2 mt-1">
-            <span className="text-xs text-gray-500">{date}</span>
+            <span className="text-xs text-mk-muted">{date}</span>
             <span className={`text-xs px-2 py-0.5 rounded-full ${
-              isReversed ? "bg-red-50 text-red-600" : isEarn ? "bg-green-50 text-green-600" : "bg-purple-50 text-purple-600"
+              isReversed ? "bg-red-50 text-red-600" : isEarn ? "bg-green-50 text-green-600" : "bg-mk-tint3 text-mk-primary"
             }`}>{typeLabel}</span>
           </div>
         </div>
       </div>
       <span className={`font-bold text-lg ${
-        isReversed ? "text-red-500" : isEarn ? "text-green-600" : "text-purple-600"
+        isReversed ? "text-red-500" : isEarn ? "text-green-600" : "text-mk-primary"
       }`}>
-        {isEarn ? "+" : "-"}{Math.abs(points)} <span className="text-xs font-normal">{isRTL ? "نقطة" : "pts"}</span>
+        {isEarn ? "+" : "-"}{Math.abs(points)}{" "}
+        <span className="text-xs font-normal">{pointsUnit(points, tr)}</span>
       </span>
     </div>
   );

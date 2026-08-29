@@ -6,6 +6,7 @@ import { useIsRTL } from "@hooks";
 import { Pattern } from "@assets";
 import OfferCard from "@views/cards/[companyId]/components/OfferCard";
 import type { CardOfferWithCompanyId } from "@network/mappers/cardsMapper";
+import { SectionTitle } from "@views/offers/components/CatalogKit";
 
 interface CategoryItem {
   id: number;
@@ -22,19 +23,19 @@ interface CardsSliderSectionProps {
 }
 
 const SkeletonCard = () => (
-  <div className="bg-white rounded-xl shadow-lg overflow-hidden animate-pulse">
-    <div className="h-48 bg-gray-200" />
+  <div className="bg-white rounded-mk-md shadow-mk-raised overflow-hidden animate-pulse">
+    <div className="h-48 bg-mk-border-strong/50" />
     <div className="p-4">
-      <div className="h-6 bg-gray-200 rounded mb-2" />
-      <div className="h-4 bg-gray-200 rounded mb-3 w-3/4" />
+      <div className="h-6 bg-mk-border-strong/50 rounded mb-2" />
+      <div className="h-4 bg-mk-border-strong/50 rounded mb-3 w-3/4" />
       <div className="flex gap-1 mb-4">
-        <div className="h-6 bg-gray-200 rounded-full w-16" />
-        <div className="h-6 bg-gray-200 rounded-full w-20" />
+        <div className="h-6 bg-mk-border-strong/50 rounded-full w-16" />
+        <div className="h-6 bg-mk-border-strong/50 rounded-full w-20" />
       </div>
-      <div className="h-4 bg-gray-200 rounded mb-4 w-1/2" />
+      <div className="h-4 bg-mk-border-strong/50 rounded mb-4 w-1/2" />
       <div className="flex justify-between items-center">
-        <div className="h-6 bg-gray-200 rounded w-20" />
-        <div className="h-6 bg-gray-200 rounded w-24" />
+        <div className="h-6 bg-mk-border-strong/50 rounded w-20" />
+        <div className="h-6 bg-mk-border-strong/50 rounded w-24" />
       </div>
     </div>
   </div>
@@ -76,7 +77,7 @@ const CardsSliderSection: React.FC<CardsSliderSectionProps> = ({
   );
 
   return (
-    <section className="container mx-auto px-4 py-10 relative z-1">
+    <section className="container relative z-[1] mx-auto overflow-hidden px-4 py-10">
       <div
         className={`absolute -top-20 w-1/2 sm:w-1/1 ${
           isRTL ? "-left-10" : "-right-10"
@@ -85,10 +86,7 @@ const CardsSliderSection: React.FC<CardsSliderSectionProps> = ({
       >
         <img src={Pattern} alt="" className="h-auto animate-float" />
       </div>
-      <div className="text-start mb-4">
-        <h2 className="text-[#400198] text-3xl font-bold">{title}</h2>
-        <p className="text-md text-gray-700 leading-relaxed">{subtitle}</p>
-      </div>
+      <SectionTitle title={title} subtitle={subtitle} />
 
       <div
         className="relative OffersCarousel PropertiesCarousel"
@@ -130,7 +128,7 @@ const CardsSliderSection: React.FC<CardsSliderSectionProps> = ({
           )
         )}
         {!isLoading && cards.length === 0 && (
-          <div className="text-center py-12 text-gray-500">
+          <div className="text-center py-12 text-mk-muted">
             {isRTL ? "لا توجد بطاقات متاحة حالياً" : "No cards available at the moment"}
           </div>
         )}

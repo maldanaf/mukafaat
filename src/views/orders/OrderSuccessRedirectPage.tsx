@@ -112,7 +112,7 @@ const OrderSuccessRedirectPage: React.FC = () => {
   if (hasParams && isPaid && !redirectDone && (orderId || (id && status))) {
     const effectiveOrderId = orderIdFromUrl || resolvedOrderId;
     return (
-      <div className="min-h-screen bg-[#1D0843] flex flex-col items-center justify-center px-4 py-12">
+      <div className="min-h-screen bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] flex flex-col items-center justify-center px-4 py-12">
         <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mb-6" aria-hidden>
           <svg className="w-12 h-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -136,7 +136,7 @@ const OrderSuccessRedirectPage: React.FC = () => {
               setRedirectDone(true);
               navigate(`/orders/${effectiveOrderId}`, { replace: true });
             }}
-            className="px-8 py-3 rounded-full bg-white text-gray-900 font-medium hover:bg-gray-100 transition-colors"
+            className="px-8 py-3 rounded-full bg-white text-mk-text font-medium hover:bg-mk-tint2 transition-colors"
           >
             {isRTL ? "عرض الطلب" : "View Order"}
           </button>
@@ -147,7 +147,7 @@ const OrderSuccessRedirectPage: React.FC = () => {
               setRedirectDone(true);
               navigate("/orders", { replace: true });
             }}
-            className="px-8 py-3 rounded-full bg-white text-gray-900 font-medium hover:bg-gray-100 transition-colors"
+            className="px-8 py-3 rounded-full bg-white text-mk-text font-medium hover:bg-mk-tint2 transition-colors"
           >
             {isRTL ? "عرض الطلبات" : "View Orders"}
           </button>
@@ -162,7 +162,7 @@ const OrderSuccessRedirectPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#1D0843] flex items-center justify-center">
+    <div className="min-h-screen bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] flex items-center justify-center">
       <div className="flex items-center gap-2 text-white/80">
         <span className="inline-block w-6 h-6 border-2 border-white/50 border-t-white rounded-full animate-spin" />
         <span>{isRTL ? "جاري التحويل..." : "Redirecting..."}</span>

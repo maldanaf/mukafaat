@@ -183,6 +183,10 @@ export function mapApiHomeCardToOffer(
     views: Number(raw.views_count ?? 0),
     downloads: 0,
     bookmarks: 0,
+    favoritesCount:
+      raw.favorites_count != null ? Number(raw.favorites_count) : undefined,
+    sharesCount:
+      raw.shares_count != null ? Number(raw.shares_count) : undefined,
   };
 }
 

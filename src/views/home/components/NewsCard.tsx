@@ -5,7 +5,7 @@ import { useNavigate } from "@/lib/router-compat";
 import { useIsRTL } from "@hooks";
 import { useTranslation } from "react-i18next";
 import { IoIosArrowRoundForward } from "react-icons/io";
-import { BsShare } from "react-icons/bs";
+import { ShareIcon } from "@ui";
 import { LuCalendarRange } from "react-icons/lu";
 import { HiOutlineEye } from "react-icons/hi";
 // import { newsArticles } from "./NewsBlogs";
@@ -83,7 +83,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
             }}
             className="w-8 h-8 bg-white bg-opacity-90 rounded-full flex items-center justify-center text-gray-700 hover:bg-opacity-100 transition-all duration-200"
           >
-            <BsShare className="text-sm" />
+            <ShareIcon size={14} />
           </button>
         </div>
       </div>

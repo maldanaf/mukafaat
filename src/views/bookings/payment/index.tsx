@@ -293,7 +293,7 @@ const PaymentPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Booking Header */}
-      <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[200px] flex items-center justify-center">
+      <section className="relative w-full bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] overflow-hidden min-h-[200px] flex items-center justify-center">
         <div className="absolute inset-0 bg-primary opacity-30" />
         <div className="relative w-full pt-10 pb-10 px-6 mx-auto max-w-site text-center lg:pt-12 lg:pb-10 lg:px-12 flex flex-col justify-center z-10">
           {/* Back Button */}
@@ -361,14 +361,14 @@ const PaymentPage: React.FC = () => {
           <div className="flex items-center justify-center text-sm md:text-base">
             <Link
               to="/"
-              className="text-white hover:text-purple-300 transition-colors cursor-pointer text-xs"
+              className="text-white hover:text-mk-lilac transition-colors cursor-pointer text-xs"
             >
               {isRTL ? "الرئيسية" : "Home"}
             </Link>
             <span className="text-white text-xs mx-2">|</span>
             <Link
               to="/bookings"
-              className="text-white hover:text-purple-300 transition-colors cursor-pointer text-xs"
+              className="text-white hover:text-mk-lilac transition-colors cursor-pointer text-xs"
             >
               {isRTL ? "الحجوزات" : "Bookings"}
             </Link>
@@ -477,7 +477,7 @@ const PaymentPage: React.FC = () => {
                     {paymentMethods.map((method) => (
                       <label
                         key={method.id}
-                        className="px-4 py-3 border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 transition-colors flex items-center justify-between cursor-pointer"
+                        className="px-4 py-3 border border-gray-200 rounded-lg hover:border-mk-lilac hover:bg-mk-tint3 transition-colors flex items-center justify-between cursor-pointer"
                       >
                         <div className="flex items-center gap-3">
                           <input
@@ -487,7 +487,7 @@ const PaymentPage: React.FC = () => {
                             onChange={() =>
                               handlePaymentMethodSelect(method.id)
                             }
-                            className="w-4 h-4 text-purple-600 border-gray-300 focus:ring-purple-500"
+                            className="w-4 h-4 text-mk-primary border-gray-300 focus:ring-mk-primary-light"
                           />
                           <span className="font-medium text-gray-800">
                             {method.name[isRTL ? "ar" : "en"]}
@@ -519,7 +519,7 @@ const PaymentPage: React.FC = () => {
                       required
                       isRTL={!!isRTL}
                       error={cardErrors.cardNumber}
-                      className="focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="focus:ring-2 focus:ring-mk-primary-light focus:border-transparent"
                     />
 
                     <div className="grid grid-cols-2 gap-4">
@@ -531,7 +531,7 @@ const PaymentPage: React.FC = () => {
                         required
                         isRTL={!!isRTL}
                         error={cardErrors.expiry}
-                        className="focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        className="focus:ring-2 focus:ring-mk-primary-light focus:border-transparent"
                       />
                       <CVVInput
                         value={cvv}
@@ -541,7 +541,7 @@ const PaymentPage: React.FC = () => {
                         required
                         isRTL={!!isRTL}
                         error={cardErrors.cvv}
-                        className="focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        className="focus:ring-2 focus:ring-mk-primary-light focus:border-transparent"
                       />
                     </div>
 
@@ -557,7 +557,7 @@ const PaymentPage: React.FC = () => {
                       required
                       isRTL={!!isRTL}
                       error={cardErrors.cardholderName}
-                      className="focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="focus:ring-2 focus:ring-mk-primary-light focus:border-transparent"
                     />
 
                     <button

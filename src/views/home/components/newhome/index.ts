@@ -12,3 +12,6 @@ export { default as BlogBand } from "./BlogBand";
 export { default as Newsletter } from "./Newsletter";
 export { default as StatsBand } from "./StatsBand";
 export { default as SectionHead } from "./SectionHead";
+export { default as PromoBand } from "./PromoBand";
+export { default as HomeSkeleton } from "./HomeSkeleton";
+export { default as CardsBand } from "./CardsBand";

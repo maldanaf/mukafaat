@@ -88,7 +88,7 @@ const SubscribersOnlyModal: React.FC<SubscribersOnlyModalProps> = ({
             <button
               type="button"
               onClick={handleSubscribe}
-              className="order-1 sm:order-2 px-6 py-3 bg-[#fd671a] text-white rounded-full font-medium hover:bg-[#e55c18] transition-colors"
+              className="order-1 sm:order-2 px-6 py-3 bg-[#fd671a] text-white rounded-full font-medium hover:bg-[#D9500B] transition-colors"
             >
               {t("home.subscription.subscribe")}
             </button>

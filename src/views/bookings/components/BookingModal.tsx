@@ -299,7 +299,7 @@ const BookingModal = ({
                     key={index}
                     className="flex items-center gap-1 text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full"
                   >
-                    <div className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
+                    <div className="w-1.5 h-1.5 bg-mk-primary-light rounded-full"></div>
                     <span>{feature}</span>
                   </div>
                 ))}

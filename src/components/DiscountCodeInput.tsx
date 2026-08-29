@@ -183,7 +183,7 @@ const DiscountCodeInput: React.FC<DiscountCodeInputProps> = ({
           type="button"
           onClick={handleApply}
           disabled={!code.trim() || validateMutation.isPending || amount <= 0}
-          className="px-5 py-3 rounded-xl bg-[#fd671a] text-white font-bold text-sm hover:bg-[#e55c18] disabled:opacity-50 disabled:cursor-not-allowed transition"
+          className="px-5 py-3 rounded-xl bg-[#fd671a] text-white font-bold text-sm hover:bg-[#D9500B] disabled:opacity-50 disabled:cursor-not-allowed transition"
         >
           {validateMutation.isPending
             ? isRTL

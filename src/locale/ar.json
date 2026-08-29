@@ -1,4 +1,8 @@
 {
+  "404": {
+    "title": "عذراً ، الصفحة غير موجودة",
+    "description": "يبدو أن الصفحة التي تبحث عنها غير موجودة"
+  },
   "home": {
     "navbar": {
       "home": "الرئيسية",
@@ -43,7 +47,10 @@
       "brand": "مكافآت",
       "choose_city": "اختر مدينتك",
       "points_balance": "رصيد نقاطك",
-      "saved": "المفضلة"
+      "saved": "المفضلة",
+      "membership_tier": "مستوى العضوية",
+      "tier_renewal_discount": "خصم على تجديد الاشتراك",
+      "tier_progress": "باقي {{count}} طلبات للوصول إلى {{tier}}"
     },
     "login": {
       "welcome_title": "مرحباً بك في مكافآت",
@@ -73,7 +80,9 @@
     },
     "common": {
       "success": "نجح",
-      "error": "خطأ"
+      "error": "خطأ",
+      "prev": "السابق",
+      "next": "التالي"
     },
     "subscription": {
       "offerForSubscribersOnly": "العرض متاح للمشتركين",
@@ -111,7 +120,14 @@
       "noPlansAvailable": "لا توجد خطط اشتراك متاحة حالياً.",
       "alreadyHaveActiveSubscription": "لديك اشتراك فعال بالفعل.",
       "alreadySubscribedDesc": "لا يمكنك الاشتراك مرة أخرى أثناء وجود اشتراك فعال.",
-      "subscriptionRequired": "يتطلب اشتراكاً"
+      "subscriptionRequired": "يتطلب اشتراكاً",
+      "originalPrice": "السعر الأصلي",
+      "tierDiscount": "خصم مستوى العضوية",
+      "tierDiscountRenewal": "خصم التجديد",
+      "tierDiscountNew": "خصم الاشتراك الجديد",
+      "tierBadge": "{{tier}} · خصم {{percent}}%",
+      "youSave": "توفّر {{amount}}",
+      "yourTier": "مستوى عضويتك"
     },
     "hero": {
       "subtitle": "يجب أن يكون كل حدث مثاليًا",
@@ -376,12 +392,17 @@
       "body": "عروض حصرية، كوبونات وأكواد خصم، بطاقات رقمية وخدمات توفر لك أكثر كل يوم.",
       "tag": "عروض مختارة",
       "cta": "استكشف العروض",
-      "app": "حمّل التطبيق"
+      "app": "حمّل التطبيق",
+      "prev": "الشريحة السابقة",
+      "next": "الشريحة التالية",
+      "slide": "شريحة"
     },
     "search_new": {
       "all_cities": "جميع المدن",
       "placeholder": "ابحث عن متجر، مطعم، عرض، كوبون أو بطاقة...",
-      "empty": "لا توجد نتائج مطابقة لبحثك."
+      "empty": "لا توجد نتائج مطابقة لبحثك.",
+      "submit": "ابحث",
+      "city_label": "اختر المدينة"
     },
     "services_new": {
       "offers": {
@@ -409,7 +430,8 @@
       "all": "الكل",
       "eyebrow": "تنقّل سريع",
       "title": "التصنيفات",
-      "all_link": "عرض جميع التصنيفات"
+      "all_link": "عرض جميع التصنيفات",
+      "subtitle": "اختر التصنيف الذي يناسبك وتصفّح عروضه فوراً."
     },
     "offers_new": {
       "eyebrow": "مختارة لك",
@@ -419,7 +441,8 @@
       "ended": "انتهى",
       "today": "ينتهي اليوم",
       "ends_in": "ينتهي بعد",
-      "days": "يوم"
+      "days": "يوم",
+      "subtitle": "أقوى الخصومات المتاحة الآن لدى شركائنا — محدّثة يومياً."
     },
     "coupons_new": {
       "title": "كوبونات وأكواد خصم مميزة",
@@ -428,7 +451,9 @@
       "copied": "تم النسخ",
       "discount": "خصم",
       "with_code": "مع الكود",
-      "use_code": "استخدم الكود عند الدفع للحصول على الخصم"
+      "use_code": "استخدم الكود عند الدفع للحصول على الخصم",
+      "eyebrow": "وفّر أكثر",
+      "subtitle": "انسخ الكود واستخدمه عند الدفع لتحصل على الخصم فوراً."
     },
     "nearby_new": {
       "eyebrow": "حول موقعك",
@@ -438,7 +463,13 @@
       "use_location": "استخدم موقعي",
       "locating": "جارٍ تحديد موقعك...",
       "km": "كم",
-      "up_to": "خصم حتى"
+      "up_to": "خصم حتى",
+      "subtitle": "اعرف أقرب المتاجر والمطاعم التي تقدّم خصومات في محيطك الآن.",
+      "enable_title": "فعّل موقعك لترى الأقرب إليك",
+      "enable_body": "نستخدم موقعك مرة واحدة لترتيب المتاجر حسب المسافة — بلا حفظ ولا مشاركة.",
+      "privacy": "لا نحتفظ بموقعك في أي وقت.",
+      "denied": "تم رفض إذن الموقع — فعّله من إعدادات المتصفح ثم أعد المحاولة.",
+      "sort_hint": "فعّل موقعك ليُرتَّب المتاجر حسب الأقرب إليك."
     },
     "stores_new": {
       "eyebrow": "الأكثر طلباً",
@@ -489,6 +520,17 @@
       "about": "منصة العروض والخصومات والكوبونات في المملكة العربية السعودية.",
       "rights": "جميع الحقوق محفوظة © مكافآت",
       "country": "المملكة العربية السعودية"
+    },
+    "cards_new": {
+      "subtitle": "بطاقات ألعاب وترفيه وتسوق يصلك كودها فوراً بعد الشراء."
+    },
+    "topbar": {
+      "deals": "خصومات تصل إلى 70% على مئات العلامات التجارية",
+      "coupons": "أكواد خصم محدّثة يومياً — انسخ واستخدم فوراً",
+      "cards": "بطاقات رقمية يصلك كودها لحظة الشراء"
+    },
+    "stats_new": {
+      "trust": "منصّة سعودية موثوقة — عروض محدّثة يومياً ودعم على مدار الأسبوع"
     }
   },
   "about": {
@@ -621,10 +663,6 @@
     "national": "هوية وطنية",
     "passport": "جواز سفر",
     "residence": "الإقامة"
-  },
-  "404": {
-    "title": "عذراً ، الصفحة غير موجودة",
-    "description": "يبدو أن الصفحة التي تبحث عنها غير موجودة"
   },
   "genders": {
     "male": "ذكر",
@@ -1384,7 +1422,9 @@
       "shareLocation": "تحديد الموقع",
       "emptyTitle": "لا توجد عروض متاحة",
       "emptyHint": "جرب فلتر آخر أو تحقق مرة أخرى لاحقاً"
-    }
+    },
+    "heroEyebrow": "وفّر أكثر",
+    "heroSubtitle": "آلاف العروض والخصومات من متاجرك المفضّلة — تصفّح، قارن، واشترِ في دقائق."
   },
   "categoryOffers": {
     "not_found": "الفئة غير موجودة",
@@ -1422,8 +1462,37 @@
       "topSellingTitle": "الأكثر مبيعاً",
       "topSellingSubtitle": "البطاقات الأكثر طلباً من قبل العملاء",
       "mostViewedTitle": "الأكثر مشاهدة",
-      "mostViewedSubtitle": "البطاقات الأكثر مشاهدة وتصفحاً"
-    }
+      "mostViewedSubtitle": "البطاقات الأكثر مشاهدة وتصفحاً",
+      "resultsTitle": "نتائج البحث",
+      "recommendedTitle": "اخترنا لك",
+      "recommendedSubtitle": "بطاقات قد تعجبك",
+      "featuredTitle": "بطاقات مميزة",
+      "featuredSubtitle": "اختيارنا المميز"
+    },
+    "resultsCount": "{{count}} بطاقة",
+    "validity": {
+      "daily": "يومية",
+      "weekly": "أسبوعية",
+      "monthly": "شهرية",
+      "quarterly": "ربع سنوية",
+      "semi_annual": "نصف سنوية",
+      "annual": "سنوية",
+      "unlimited": "غير محدودة"
+    },
+    "allCountries": "كل الدول",
+    "noResults": "لا توجد بطاقات مطابقة",
+    "sortLabel": "الترتيب",
+    "sort": {
+      "newest": "الأحدث",
+      "best_selling": "الأكثر مبيعاً",
+      "highest_discount": "الأعلى خصماً",
+      "price_low_high": "السعر: من الأقل",
+      "price_high_low": "السعر: من الأعلى",
+      "most_viewed": "الأكثر مشاهدة"
+    },
+    "cards_suffix": "بطاقة",
+    "heroEyebrow": "اشترِ مرة، وفّر طوال العام",
+    "heroSubtitle": "بطاقات خصم من أفضل المتاجر — خصومات متجدّدة بسعر واحد."
   },
   "saved": {
     "title": "العناصر المفضلة",
@@ -1432,14 +1501,17 @@
       "all": "الكل",
       "offers": "العروض",
       "cards": "البطاقات",
-      "bookings": "الحجوزات"
+      "bookings": "الحجوزات",
+      "coupons": "الكوبونات",
+      "stores": "المتاجر"
     },
     "types": {
       "offer": "عرض",
       "card": "بطاقة",
       "coupon": "كوبون",
       "booking": "حجز",
-      "item": "عنصر"
+      "item": "عنصر",
+      "merchant": "متجر"
     },
     "saved_since": "محفوظ منذ",
     "empty": {
@@ -1447,7 +1519,11 @@
       "title_filtered": "لا توجد {{type}} محفوظة",
       "description": "ابدأ بحفظ العروض والبطاقات التي تعجبك",
       "browse_offers": "تصفح العروض"
-    }
+    },
+    "eyebrow": "مكتبتك",
+    "results_suffix": "عنصر محفوظ",
+    "remove": "إزالة من المفضلة",
+    "view_details": "عرض التفاصيل"
   },
   "orders": {
     "title": "طلباتي",
@@ -1498,7 +1574,9 @@
       "title_filtered": "لا توجد طلبات {{status}}",
       "description": "ابدأ بإضافة العروض والبطاقات إلى سلة التسوق",
       "browse_offers": "تصفح العروض"
-    }
+    },
+    "eyebrow": "مشترياتك",
+    "results_suffix": "طلب"
   },
   "sideMenu": {
     "logoAlt": "شعار مكافآت",
@@ -1621,7 +1699,27 @@
     "redeem_success": "تم تحويل النقاط بنجاح",
     "redeem_error": "فشل تحويل النقاط",
     "loading": "جاري التحميل...",
-    "no_transactions": "لا توجد عمليات"
+    "no_transactions": "لا توجد عمليات",
+    "topupTitle": "شحن نقاط",
+    "topupSubtitle": "أضف نقاطاً إلى محفظتك",
+    "pointsRateTitle": "1 نقطة = 1 ريال سعودي",
+    "pointsRateDesc": "العرض بالنقاط والدفع بالريال — 1 نقطة = 1 ريال سعودي.",
+    "pointsCountLabel": "عدد النقاط",
+    "otherAmount": "عدد آخر",
+    "enterPointsAmount": "عدد النقاط",
+    "enterAmount": "أدخل عدد النقاط",
+    "amountRange": "عدد النقاط يجب أن يكون بين {{min}} و {{max}} نقطة",
+    "topupGoesToCash": "ستتم إضافة النقاط إلى رصيدك النقدي.",
+    "payAmount": "ادفع {{amount}}",
+    "topupSuccess": "تم شحن رصيدك بنجاح.",
+    "topupFailed": "لم تكتمل عملية الشحن — لم يُخصم أي مبلغ، حاول مرة أخرى.",
+    "totalBalance": "إجمالي الرصيد",
+    "promotionalBalance": "الرصيد الترويجي",
+    "cashBalance": "الرصيد النقدي",
+    "pointsUnitOne": "نقطة",
+    "pointsUnitTwo": "نقطتان",
+    "pointsUnitFew": "نقاط",
+    "pointsUnitMany": "نقطة"
   },
   "profile": {
     "subscription_active": "اشتراك فعّال",
@@ -1679,7 +1777,16 @@
     "menu_subscribe_other": "الاشتراك لشخص آخر",
     "menu_upgrade": "ترقية باقة الاشتراك",
     "menu_contact": "اتصل بنا",
-    "menu_logout": "تسجيل الخروج"
+    "menu_logout": "تسجيل الخروج",
+    "menu_referrals": "شارك واربح",
+    "menu_family": "أفراد العائلة",
+    "menu_gifts": "اشتراكات أهديتها",
+    "group_account": "حسابي",
+    "group_membership": "اشتراكي ومزاياي",
+    "group_help": "المساعدة",
+    "menu_card": "بطاقتي والمستويات",
+    "menu_notifications": "الإشعارات",
+    "menu_store_request": "انضم كمتجر"
   },
   "subscribeForOther": {
     "meta_title": "الاشتراك لشخص آخر",
@@ -1712,7 +1819,14 @@
     "payment_unexpected": "تعذر بدء الدفع. أعد المحاولة أو تواصل مع الدعم.",
     "complete_payment": "أكمل الدفع بالبطاقة",
     "back_to_form": "العودة للنموذج",
-    "moyasar_load_failed": "تعذر تحميل نموذج الدفع."
+    "moyasar_load_failed": "تعذر تحميل نموذج الدفع.",
+    "label_coupon": "كوبون خصم (اختياري)",
+    "placeholder_coupon": "أدخل كود الكوبون",
+    "apply_coupon": "تطبيق",
+    "clear_coupon": "إزالة",
+    "price_breakdown": "تفاصيل السعر",
+    "invoice_cta": "عرض الفاتورة",
+    "gift_success_invoice": "تم الاشتراك — يمكنك عرض الفاتورة."
   },
   "coupons": {
     "title": "الكوبونز",
@@ -1749,7 +1863,9 @@
     "coupons_suffix": "كوبون",
     "discount_min_tag": "خصم من {{min}}%",
     "clear_all": "مسح الكل",
-    "image_cut_coupon": "فاصل الكوبون"
+    "image_cut_coupon": "فاصل الكوبون",
+    "hero_eyebrow": "انسخ واستخدم فوراً",
+    "hero_subtitle": "أكواد خصم محدّثة يومياً على مئات العلامات التجارية — بنقرة واحدة."
   },
   "languageToggle": {
     "languagesTab": "اللغات",
@@ -1820,7 +1936,14 @@
     "typeOffer": "عرض",
     "discountOff": "خصم",
     "viewDetails": "عرض التفاصيل",
-    "free": "بدون رسوم"
+    "free": "بدون رسوم",
+    "favorites": "المفضلة",
+    "shares": "المشاركات",
+    "viewsLabel": "المشاهدات",
+    "subscribersOnly": "حصري للمشتركين",
+    "save": "توفير",
+    "endsToday": "ينتهي اليوم",
+    "endsInDays": "ينتهي بعد {{days}} يوم"
   },
   "couponModal": {
     "removedFromFavorites": "تمت إزالته من المفضلة",
@@ -1841,6 +1964,461 @@
     "expiresOn": "ينتهي {{date}}",
     "validityUnknown": "الصلاحية غير محددة",
     "noExpiryDate": "لا تاريخ انتهاء",
-    "goToStore": "الذهاب للمتجر"
+    "goToStore": "الذهاب للمتجر",
+    "usedCount": "استخدم ({{count}})",
+    "usedCountOne": "استخدم (مرة واحدة)",
+    "usedCountTwo": "استخدم (مرتين)",
+    "usedCountFew": "استخدم ({{count}} مرات)",
+    "usedCountMany": "استخدم ({{count}} مرة)"
+  },
+  "membershipTier": {
+    "title": "مستوى عضويتك",
+    "level": "المستوى",
+    "benefits": "مميزات مستواك",
+    "renewal_discount": "خصم تجديد الاشتراك",
+    "new_subscription_discount": "خصم الاشتراك الجديد",
+    "gift_discount": "خصم إهداء اشتراك",
+    "percent_off": "{{percent}}% خصم",
+    "no_discount": "بلا خصم حالياً",
+    "next_tier": "المستوى التالي: {{tier}}",
+    "highest_tier": "أنت في أعلى مستوى عضوية",
+    "remaining_orders": "تبقّى {{count}} طلب مدفوع",
+    "remaining_spend": "تبقّى {{amount}} من الإنفاق",
+    "current_orders": "طلباتك المدفوعة",
+    "current_spend": "إجمالي إنفاقك",
+    "evaluation_period": "خلال آخر {{months}} شهر",
+    "none": "لم يُحدَّد مستوى عضوية بعد"
+  },
+  "referrals": {
+    "meta_title": "شارك واربح",
+    "title": "شارك واربح",
+    "subtitle": "ادعُ أصدقاءك عبر كودك أو رابطك، وكلما اكتمل الهدف حصلت على مكافأتك.",
+    "menu": "شارك واربح",
+    "your_code": "كود الدعوة",
+    "your_link": "رابط الدعوة",
+    "copy": "نسخ",
+    "copied": "تم النسخ",
+    "share": "مشاركة",
+    "progress_title": "تقدّمك نحو المكافأة",
+    "progress_value": "{{progress}} من {{required}}",
+    "remaining": "تبقّى {{count}} دعوة للحصول على المكافأة",
+    "goal_reached": "اكتمل الهدف — مكافأتك في الطريق",
+    "signups": "التسجيلات عبر رابطك",
+    "qualified": "الدعوات المكتملة",
+    "pending": "قيد الانتظار",
+    "rewards_title": "المكافآت المستلمة",
+    "rewards_count": "عدد المكافآت",
+    "no_rewards": "لا توجد مكافآت بعد",
+    "reward_status_pending": "قيد المعالجة",
+    "reward_status_granted": "مُمنوحة",
+    "reward_status_applied": "مُستخدمة",
+    "reward_coupon_code": "كود الكوبون",
+    "reward_valid_until": "صالح حتى {{date}}",
+    "reward_used": "مستخدم",
+    "reward_expired": "منتهي",
+    "invites_title": "من دعوتهم",
+    "no_invites": "لم تدعُ أحداً بعد",
+    "invite_status_pending": "لم يكتمل بعد",
+    "invite_status_qualified": "مكتمل",
+    "my_reward": "مكافأتي",
+    "friend_reward": "مكافأة صديقك",
+    "reward_months": "{{count}} شهر اشتراك مجاني",
+    "reward_cashback": "كاش باك {{amount}}",
+    "reward_coupon": "كوبون خصم {{percent}}%",
+    "disabled": "برنامج «شارك واربح» غير مفعّل حالياً.",
+    "login_required": "سجّل الدخول لعرض كود الدعوة الخاص بك.",
+    "load_error": "تعذّر تحميل بيانات شارك واربح."
+  },
+  "family": {
+    "meta_title": "أفراد العائلة",
+    "title": "أفراد العائلة",
+    "menu": "أفراد العائلة",
+    "subtitle": "أضف أفراد عائلتك ليستفيدوا من اشتراكك ضمن حدّ الباقة.",
+    "no_plan_title": "تحتاج باقة عائلية",
+    "no_plan_desc": "اشترك في باقة عائلية لتتمكّن من إضافة أفراد عائلتك.",
+    "upgrade_cta": "عرض الباقات",
+    "member_of_title": "أنت ضمن عائلة {{owner}}",
+    "member_of_desc": "اشتراكك مرتبط باشتراك صاحب الباقة.",
+    "plan_title": "باقة العائلة",
+    "plan_ends": "تنتهي في {{date}}",
+    "plan_active": "فعّالة",
+    "plan_inactive": "غير فعّالة",
+    "seats": "المقاعد",
+    "used_seats": "المستخدمة",
+    "remaining_seats": "المتبقية",
+    "max_members": "الحد الأقصى",
+    "seats_full": "اكتمل عدد أفراد الباقة",
+    "members_title": "الأفراد",
+    "no_members": "لا يوجد أفراد بعد",
+    "add_member": "إضافة فرد",
+    "label_name": "الاسم",
+    "placeholder_name": "اسم الفرد (اختياري)",
+    "label_phone": "رقم الجوال",
+    "label_relation": "صلة القرابة",
+    "placeholder_relation": "مثال: ابن، زوجة (اختياري)",
+    "submit": "إضافة",
+    "submitting": "جاري الإضافة…",
+    "invite_success": "تمت إضافة الفرد",
+    "invite_failed": "تعذّر إضافة الفرد",
+    "err_phone": "أدخل رقم جوال صحيح",
+    "remove": "إزالة",
+    "remove_confirm": "هل تريد إزالة هذا الفرد؟",
+    "remove_success": "تمت إزالة الفرد",
+    "remove_failed": "تعذّر إزالة الفرد",
+    "cannot_remove": "لا يمكن إزالة هذا الفرد",
+    "view_only": "للعرض فقط",
+    "owner": "صاحب الباقة",
+    "status_active": "مفعّل",
+    "status_pending": "بانتظار القبول",
+    "status_inactive": "غير مفعّل",
+    "invitations_title": "دعوات موجّهة لك",
+    "accept": "قبول الدعوة",
+    "accepting": "جاري القبول…",
+    "accept_success": "تم قبول الدعوة",
+    "accept_failed": "تعذّر قبول الدعوة",
+    "load_error": "تعذّر تحميل بيانات العائلة."
+  },
+  "storeRequest": {
+    "meta_title": "انضم كمتجر أو اقترح متجراً",
+    "title": "متاجر مكافآت",
+    "subtitle": "صاحب متجر؟ انضم إلينا. عميل؟ اقترح متجراً تودّ رؤيته في مكافآت.",
+    "tab_join": "طلب انضمام متجر",
+    "tab_suggest": "اقتراح متجر",
+    "join_desc": "املأ البيانات وسيتواصل معك فريقنا لإتمام الانضمام.",
+    "suggest_desc": "أخبرنا بالمتجر الذي تودّ رؤيته في مكافآت وسندرس إضافته.",
+    "label_store_name": "اسم المتجر",
+    "placeholder_store_name": "اكتب اسم المتجر",
+    "label_contact_name": "اسم المسؤول",
+    "placeholder_contact_name": "اكتب اسم المسؤول",
+    "label_contact_phone": "رقم التواصل",
+    "placeholder_contact_phone": "05xxxxxxxx",
+    "label_email": "البريد الإلكتروني",
+    "placeholder_email": "name@example.com",
+    "label_country": "الدولة",
+    "label_city": "المدينة",
+    "select_country": "اختر الدولة",
+    "select_city": "اختر المدينة",
+    "city_not_listed": "مدينتي غير موجودة",
+    "label_city_name": "اكتب اسم المدينة",
+    "label_notes": "ملاحظات",
+    "placeholder_notes": "أي تفاصيل إضافية (اختياري)",
+    "optional": "اختياري",
+    "submit": "إرسال الطلب",
+    "submitting": "جاري الإرسال…",
+    "thanks_title": "شكراً لك",
+    "thanks_join": "تم استلام طلبك وسنتواصل معك قريباً.",
+    "thanks_suggest": "تم استلام اقتراحك، شكراً لك.",
+    "new_request": "إرسال طلب آخر",
+    "err_store_name": "اسم المتجر مطلوب",
+    "err_contact_name": "اسم المسؤول مطلوب",
+    "err_contact_phone": "رقم التواصل مطلوب",
+    "err_country": "الدولة مطلوبة",
+    "err_city": "المدينة مطلوبة",
+    "failed": "تعذّر إرسال الطلب، حاول مرة أخرى."
+  },
+  "storePage": {
+    "working_hours": "ساعات العمل",
+    "open_now": "مفتوح الآن",
+    "closed_now": "مغلق الآن",
+    "temporarily_closed": "مغلق مؤقتاً",
+    "closed_today": "مغلق",
+    "today": "اليوم",
+    "hours_unavailable": "ساعات العمل غير متوفرة",
+    "content_tab_default": "المحتوى",
+    "delivery_time": "وقت التوصيل",
+    "minimum_order": "الحد الأدنى للطلب",
+    "delivery_fee": "رسوم التوصيل",
+    "whatsapp": "تواصل واتساب",
+    "minute_unit": "دقيقة",
+    "working_hours_today": "ساعات العمل اليوم",
+    "verified": "متجر موثّق",
+    "coming_soon": "قريباً",
+    "delivery_details": "تفاصيل التوصيل"
+  },
+  "giftSubscription": {
+    "coupon_label": "كوبون خصم",
+    "coupon_placeholder": "أدخل كود الكوبون",
+    "coupon_apply": "تطبيق",
+    "coupon_remove": "إزالة",
+    "coupon_applied": "تم تطبيق الكوبون",
+    "coupon_invalid": "الكوبون غير صالح",
+    "price_original": "السعر الأصلي",
+    "tier_discount": "خصم مستوى {{tier}}",
+    "tier_discount_generic": "خصم مستوى العضوية",
+    "coupon_discount": "خصم الكوبون",
+    "code_discount": "كود الخصم",
+    "total_discount": "إجمالي الخصم",
+    "final_price": "المبلغ المستحق",
+    "invoice_title": "فاتورة الاشتراك المُهدى",
+    "invoice_number": "رقم الفاتورة",
+    "invoice_date": "تاريخ الإصدار",
+    "invoice_amount": "المبلغ",
+    "invoice_tax": "الضريبة",
+    "invoice_total": "الإجمالي",
+    "invoice_status": "الحالة",
+    "invoice_recipient": "المستفيد",
+    "invoice_plan": "الباقة",
+    "invoice_period": "المدة",
+    "invoice_download": "تحميل الفاتورة PDF",
+    "invoice_not_ready": "لم تُصدَر الفاتورة بعد، ستظهر بعد اكتمال الدفع.",
+    "invoice_error": "تعذّر تحميل الفاتورة.",
+    "back_to_gifts": "الاشتراكات التي أهديتها",
+    "gifts_title": "اشتراكات أهديتها",
+    "gifts_empty": "لم تُهدِ أي اشتراك بعد",
+    "view_invoice": "عرض الفاتورة"
+  },
+  "ui": {
+    "viewAll": "عرض الكل",
+    "loading": "جارٍ التحميل…",
+    "retry": "إعادة المحاولة",
+    "showMore": "عرض المزيد",
+    "showLess": "عرض أقل",
+    "next": "التالي",
+    "previous": "السابق",
+    "empty": {
+      "title": "لا يوجد شيء هنا بعد",
+      "description": "جرّب تغيير الفلاتر أو عُد لاحقاً.",
+      "offers": "لا توجد عروض مطابقة حالياً.",
+      "coupons": "لا توجد كوبونات متاحة حالياً.",
+      "cards": "لا توجد بطاقات متاحة حالياً.",
+      "stores": "لا توجد متاجر لعرضها.",
+      "search": "لا نتائج لبحثك.",
+      "saved": "لا توجد عناصر في المفضلة بعد.",
+      "orders": "لا توجد طلبات بعد."
+    },
+    "error": {
+      "title": "تعذّر تحميل البيانات",
+      "description": "تحقّق من اتصالك بالإنترنت وحاول مرة أخرى.",
+      "retry": "إعادة المحاولة"
+    },
+    "filters": "الفلاتر",
+    "clearFilters": "مسح الفلاتر",
+    "gridView": "عرض شبكي",
+    "listView": "عرض قائمة",
+    "results": "نتيجة",
+    "searchPlaceholder": "ابحث…",
+    "share": "مشاركة",
+    "notifications": "الإشعارات",
+    "favorite": {
+      "add": "إضافة للمفضلة",
+      "remove": "إزالة من المفضلة"
+    },
+    "loginRequired": {
+      "title": "تسجيل الدخول مطلوب",
+      "cta": "تسجيل الدخول"
+    },
+    "save": "وفّر",
+    "flag": {
+      "hot": "الأكثر طلباً",
+      "new": "جديد",
+      "ending": "ينتهي قريباً"
+    },
+    "results_count": "{{count}} نتيجة"
+  },
+  "couponCard": {
+    "copies": "مرات النسخ"
+  },
+  "homeBuilder": {
+    "categoryOffers": "عروض مختارة",
+    "viewAll": "عرض الكل",
+    "cards": {
+      "title": "بطاقات شحن منوّعة",
+      "eyebrow": "شحن فوري",
+      "allLink": "عرض جميع البطاقات",
+      "digital": "بطاقة رقمية",
+      "currency": "ر.س"
+    }
+  },
+  "membershipCard": {
+    "meta_title": "بطاقتي والمستويات",
+    "title": "بطاقتي والمستويات",
+    "subtitle": "رقم عضويتك ورمز QR ومستواك ومميزاته.",
+    "number_label": "رقم العضوية",
+    "copy_number": "نسخ رقم العضوية",
+    "copy_link": "نسخ رابط التحقق",
+    "copied": "تم النسخ",
+    "share": "مشاركة",
+    "load_error": "تعذّر تحميل بيانات البطاقة.",
+    "no_membership": "لا توجد بطاقة عضوية بعد — اشترك لتحصل على بطاقتك.",
+    "subscribe_cta": "عرض الباقات"
+  },
+  "notificationsPage": {
+    "meta_title": "الإشعارات",
+    "title": "الإشعارات",
+    "unread_badge": "{{count}} غير مقروء",
+    "unread": "غير مقروء",
+    "mark_all": "تحديد الكل كمقروء",
+    "mark_all_done": "تم تحديد جميع الإشعارات كمقروءة",
+    "action_failed": "تعذّر تنفيذ العملية، حاول مرة أخرى",
+    "settings_cta": "إعدادات الإشعارات",
+    "tab_general": "عامة",
+    "tab_nearby": "الأقرب",
+    "tab_orders": "طلبات",
+    "tab_empty": "لا توجد إشعارات في هذا التصنيف",
+    "empty_title": "لا إشعارات",
+    "load_error": "تعذّر تحميل الإشعارات.",
+    "delete": "حذف الإشعار",
+    "prev": "السابق",
+    "next": "التالي",
+    "page_of": "صفحة {{page}} من {{total}}"
+  },
+  "notificationSettings": {
+    "meta_title": "إعدادات الإشعارات",
+    "title": "إعدادات الإشعارات",
+    "subtitle": "اختر ما تودّ أن نصلك به.",
+    "back_to_list": "الإشعارات",
+    "group_general": "عام",
+    "group_offers": "العروض والتنبيهات",
+    "group_channels": "قنوات التواصل",
+    "key_app_notifications": "الاشعارات والتنبيهات",
+    "key_new_offers": "العروض الجديدة",
+    "key_discount_offers": "عروض التخفيضات",
+    "key_trip_offers": "عروض البطاقات",
+    "key_shopping_sections_offers": "عروض القسائم الشرائية",
+    "key_offers_and_alerts": "عروض بطاقات الهدايا",
+    "key_email_newsletters": "النشرات البريدية",
+    "key_sms_notifications": "اشعارات الرسائل النصية",
+    "key_whatsapp_notifications": "تفعيل اشعارات الواتس اب",
+    "saved": "تم حفظ الإعدادات",
+    "save_failed": "تعذّر حفظ الإعدادات",
+    "load_error": "تعذّر تحميل إعدادات الإشعارات.",
+    "hint": "إطفاء «الاشعارات والتنبيهات» يوقف كل الإشعارات دفعة واحدة."
+  },
+  "contactUs": {
+    "prefill_note": "عبّأنا بياناتك من حسابك — يمكنك تعديلها قبل الإرسال."
+  },
+  "accountDelete": {
+    "title": "حذف الحساب",
+    "description": "حذف حسابك يلغي اشتراكاتك الفعّالة ولا يمكن التراجع عنه.",
+    "cta": "حذف حسابي",
+    "confirm_title": "تأكيد حذف الحساب",
+    "confirm_hint": "اكتب «حذف» للتأكيد",
+    "confirm_word": "حذف",
+    "reason_label": "سبب الحذف (اختياري)",
+    "cancel": "إلغاء",
+    "submit": "تأكيد الحذف",
+    "submitting": "جاري الحذف…",
+    "success": "تم حذف حسابك",
+    "failed": "تعذّر حذف الحساب، حاول مرة أخرى"
+  },
+  "subscription": {
+    "close": "إغلاق",
+    "back": "رجوع",
+    "features": "المميزات",
+    "discountBadge": "خصم {{percent}}%",
+    "familyMembersUpTo": "تشمل حتى {{count}} أفراد من العائلة",
+    "currentPlanBadge": "باقتك الحالية",
+    "previousPlanBadge": "باقتك السابقة",
+    "renewSubscription": "تجديد الاشتراك",
+    "activeUntil": "اشتراكك ساري حتى {{date}}",
+    "subscriptionEndedOn": "انتهى اشتراكك في {{date}}",
+    "daysRemaining": "يتبقّى {{count}} يوماً",
+    "expiringSoon": "قارب على الانتهاء",
+    "guestSubscriptionHint": "سجّل الدخول لعرض اشتراكك الحالي",
+    "guestLogin": "تسجيل الدخول",
+    "duration": {
+      "monthly": "شهري",
+      "3_months": "كل 3 أشهر",
+      "6_months": "كل 6 أشهر",
+      "yearly": "سنوي",
+      "2_years": "سنتان"
+    }
+  },
+  "payment": {
+    "title": "طريقة الدفع",
+    "electronicPayment": "الدفع الالكتروني",
+    "payThrough": "الدفع من خلال",
+    "method": {
+      "mada": "مدى",
+      "applePay": "Apple Pay",
+      "card": "بطاقة ائتمانية / مدى",
+      "wallet": "دفع من المحفظة"
+    },
+    "walletBalanceNote": "رصيدك: {{points}} نقطة",
+    "couponLabel": "كوبون خصم",
+    "couponPlaceholder": "أدخل كوبون الخصم",
+    "couponApplied": "تم تطبيق الكوبون",
+    "couponInvalid": "الكوبون غير صالح",
+    "couponRemove": "إزالة الكوبون",
+    "discountCodeLabel": "كود الخصم",
+    "apply": "تطبيق",
+    "applying": "جاري...",
+    "total": "الإجمالي",
+    "currency": "ر.س",
+    "completePayment": "إتمام الدفع",
+    "completePaymentDesc": "أدخل بيانات البطاقة لإتمام العملية بأمان.",
+    "gatewayLoadFailed": "تعذّر تحميل بوابة الدفع، حاول مرة أخرى.",
+    "gatewayInitFailed": "تعذّر تهيئة بوابة الدفع. تواصل مع الدعم.",
+    "paymentDataIncomplete": "بيانات الدفع غير مكتملة. تواصل مع الدعم.",
+    "applePayUnavailable": "Apple Pay متاح على متصفّح Safari في أجهزة Apple فقط.",
+    "promoLabel": "كود الخصم أو الكوبون",
+    "promoPlaceholder": "أدخل الكود",
+    "promoApply": "تطبيق",
+    "promoRemove": "إزالة الكود",
+    "promoInvalid": "الكود غير صالح أو منتهي"
+  },
+  "invoice": {
+    "title": "الفاتورة",
+    "number": "رقم الفاتورة",
+    "notIssuedYet": "لم تُصدر الفاتورة بعد",
+    "plan": "الباقة",
+    "startDate": "تاريخ البداية",
+    "endDate": "تاريخ الانتهاء",
+    "paymentMethod": "وسيلة الدفع",
+    "transactionNumber": "رقم العملية",
+    "date": "التاريخ",
+    "subscriptionId": "رقم الاشتراك",
+    "total": "الإجمالي المدفوع",
+    "downloadPdf": "تحميل الفاتورة PDF",
+    "pdfUnavailable": "ملف الفاتورة غير متاح حالياً — يظهر بعد اعتماد الدفع.",
+    "allTransactions": "كل المعاملات"
+  },
+  "referralLanding": {
+    "title": "دعوة من صديق",
+    "subtitle": "حفظنا كود الدعوة — أكمل التسجيل لتحصل أنت وصديقك على المكافأة.",
+    "cta_register": "إنشاء حساب",
+    "cta_home": "متابعة للرئيسية",
+    "redirecting": "سيتم تحويلك تلقائياً…"
+  },
+  "qrLanding": {
+    "eyebrow": "عروض حصرية بجوارك",
+    "title": "عروض من حولك الآن",
+    "subtitle": "فعّل موقعك لتظهر لك عروض المتاجر القريبة منك خلال ثوانٍ.",
+    "cta": "اعرض العروض القريبة الآن",
+    "cta_loading": "جارٍ تحديد موقعك…",
+    "radius_note": "نبحث داخل نطاق",
+    "radius_note_suffix": "من مكانك.",
+    "unit_m": "م",
+    "unit_km": "كم",
+    "download_hint": "أو حمّل التطبيق لتجربة أسرع",
+    "step1_title": "امسح الكود",
+    "step1_body": "امسح كود مكافآت المعروض في المتجر أو افتح الرابط.",
+    "step2_title": "فعّل موقعك",
+    "step2_body": "اسمح للمتصفح بمعرفة موقعك لنبحث في محيطك مباشرة.",
+    "step3_title": "استمتع بالخصم",
+    "step3_body": "تصفّح عروض المتاجر القريبة واحصل على خصمك فوراً.",
+    "error_fetch": "تعذّر جلب العروض القريبة، حاول مرة أخرى.",
+    "error_network": "تعذّر الاتصال بالخدمة، حاول مرة أخرى.",
+    "error_unsupported": "متصفحك لا يدعم تحديد الموقع.",
+    "error_denied": "لم يُسمح بالوصول إلى موقعك. اسمح بالموقع من إعدادات المتصفح ثم أعد المحاولة.",
+    "error_locate": "تعذّر تحديد موقعك، حاول مرة أخرى.",
+    "disabled": "الخدمة غير متاحة حالياً.",
+    "offers_in": "عرضاً في",
+    "merchants_around": "متجراً حولك",
+    "verified": "موثّق",
+    "open_now": "مفتوح الآن",
+    "closed_now": "مغلق الآن",
+    "empty_title": "لا توجد عروض في محيطك",
+    "empty_body": "جرّب لاحقاً أو حمّل التطبيق لتصفّح كل العروض.",
+    "nearest_prefix": "أقرب متجر",
+    "nearest_suffix": "يبعد"
+  },
+  "account": {
+    "hero_fallback_name": "مرحباً بك",
+    "quick_links": "روابط سريعة",
+    "upsell_desc": "فعّل اشتراكك لتفتح كل العروض والخصومات في مكان واحد.",
+    "card_upsell_desc": "اشترك لتحصل على بطاقة عضوية رقمية برقم خاص وكود QR يُقرأ لدى التجّار.",
+    "card_actions": "مشاركة البطاقة",
+    "gifts_subtitle": "الاشتراكات التي أهديتها وفواتيرها"
   }
 }

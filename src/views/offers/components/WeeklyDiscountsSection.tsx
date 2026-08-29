@@ -7,6 +7,8 @@ import { useIsRTL } from "@hooks";
 import OwlCarousel from "@components/DynamicOwlCarousel";
 import { type Offer } from "@data/offers";
 import OfferCard from "./OfferCard";
+import { SkeletonGrid } from "@ui";
+import { SectionTitle } from "./CatalogKit";
 import { useWebOffers } from "@hooks/api/useMokafaatQueries";
 import { mapApiOffersToModels } from "@network/mappers/offersMapper";
 import { buildWebOffersParams } from "@utils/webFilters";
@@ -76,15 +78,11 @@ const WeeklyDiscountsSection: React.FC = () => {
   );
 
   return (
-    <section className="container mx-auto px-4 py-0">
-      <div className="text-start mb-4">
-        <h2 className="text-[#400198] text-3xl font-bold">
-          {t("offersPage.freeOffers.title")}
-        </h2>
-        <p className="text-md text-gray-700 leading-relaxed">
-          {t("offersPage.freeOffers.subtitle")}
-        </p>
-      </div>
+    <section className="container mx-auto overflow-hidden px-4 py-0">
+      <SectionTitle
+        title={t("offersPage.freeOffers.title")}
+        subtitle={t("offersPage.freeOffers.subtitle")}
+      />
 
       <div
         className="relative OffersCarousel PropertiesCarousel -ms-[15px]"
@@ -93,9 +91,10 @@ const WeeklyDiscountsSection: React.FC = () => {
         }}
       >
         {isLoading ? (
-          <div className="text-center py-12 text-gray-500">
-            {t("common.loading")}
-          </div>
+          <SkeletonGrid
+            count={4}
+            className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+          />
         ) : isRTL && freeOffers.length < 4 ? (
           <div
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pb-6"

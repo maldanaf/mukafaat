@@ -6,6 +6,8 @@ import { useNavigate } from "@/lib/router-compat";
 import { useIsRTL } from "@hooks";
 import { type Offer } from "@data/offers";
 import OfferCard from "./OfferCard";
+import { SkeletonGrid } from "@ui";
+import { SectionTitle } from "./CatalogKit";
 import OwlCarousel from "@components/DynamicOwlCarousel";
 import { useWebOffers } from "@hooks/api/useMokafaatQueries";
 import { mapApiOffersToModels } from "@network/mappers/offersMapper";
@@ -70,24 +72,21 @@ const PaidOffersSection: React.FC = () => {
   };
 
   return (
-    <section className="container mx-auto px-4 py-10">
-      <div className="text-start mb-4">
-        <h2 className="text-[#400198] text-3xl font-bold">
-          {t("offersPage.paidOffers.title")}
-        </h2>
-        <p className="text-md text-gray-700 leading-relaxed">
-          {t("offersPage.paidOffers.subtitle")}
-        </p>
-      </div>
+    <section className="container mx-auto overflow-hidden px-4 py-10">
+      <SectionTitle
+        title={t("offersPage.paidOffers.title")}
+        subtitle={t("offersPage.paidOffers.subtitle")}
+      />
 
       <div
         className="relative OffersCarousel PropertiesCarousel"
         style={{ direction: "ltr" }}
       >
         {isLoading ? (
-          <div className="text-center py-12 text-gray-500">
-            {t("common.loading")}
-          </div>
+          <SkeletonGrid
+            count={4}
+            className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+          />
         ) : isRTL && paidOffers.length < 4 ? (
           <div
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pb-6"

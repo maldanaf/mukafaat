@@ -1,11 +1,15 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { LuChevronRight, LuChevronLeft } from "react-icons/lu";
+import { LuChevronRight, LuChevronLeft, LuUsers, LuCopy, LuCheck } from "react-icons/lu";
 import { t } from "i18next";
+import { useCouponCopy } from "@hooks/api/useMokafaatQueries";
 import { CONTAINER, pick } from "./tokens";
+import { FOCUS } from "@ui";
 import SectionHead from "./SectionHead";
 import BrandImage from "./BrandImage";
+import Reveal from "./Reveal";
+import { usedCountText } from "@utils/usedCount";
 
 interface Coupon {
   id: number | string;
@@ -15,11 +19,16 @@ interface Coupon {
   terms?: string | null;
   image?: string | null;
   coupon_code?: string | null;
+  copies_count?: number | string | null;
   discount_percentage?: number | string | null;
   merchant?: { id: number; name: string; logo?: string | null } | null;
 }
 
 interface Props {
+  /** عنوان القسم من لوحة التحكم «بناء واجهة الموقع» (فارغ = العنوان الافتراضي) */
+  title?: string;
+  /** إظهار رابط «عرض الكل» — يتحكم فيه الأدمن */
+  showViewAll?: boolean;
   coupons: Coupon[];
 }
 
@@ -27,9 +36,12 @@ const PER_SLIDE = 5;
 const MAX_COUPONS = 15;
 
 /** كوبونات وأكواد خصم مميزة — كروزيل ٣ شرائح × ٥ كوبونات مع نسخ الكود */
-const CouponsBand: React.FC<Props> = ({ coupons }) => {
+const CouponsBand: React.FC<Props> = ({ coupons, title, showViewAll = true }) => {
   const [copied, setCopied] = useState<string | null>(null);
   const [slide, setSlide] = useState(0);
+  const couponCopy = useCouponCopy();
+  /** تجاوزات محلية لعدّاد النسخ (زيادة تفاؤلية) */
+  const [copies, setCopies] = useState<Record<string, number>>({});
 
   const slides = useMemo(() => {
     const items = (coupons ?? []).slice(0, MAX_COUPONS);
@@ -44,7 +56,18 @@ const CouponsBand: React.FC<Props> = ({ coupons }) => {
 
   const current = Math.min(slide, slides.length - 1);
 
-  const copy = async (code: string) => {
+  const copy = async (coupon: Coupon, code: string) => {
+    // زيادة تفاؤلية فورية ثم تسجيل النسخة في الخادم (fire-and-forget)
+    const key = String(coupon.id);
+    const base = Number(coupon.copies_count ?? 0) || 0;
+    setCopies((prev) => ({ ...prev, [key]: (prev[key] ?? base) + 1 }));
+    couponCopy.mutate(coupon.id, {
+      onSuccess: (serverCount) => {
+        if (typeof serverCount === "number")
+          setCopies((prev) => ({ ...prev, [key]: serverCount }));
+      },
+    });
+
     try {
       await navigator.clipboard.writeText(code);
     } catch {
@@ -66,13 +89,29 @@ const CouponsBand: React.FC<Props> = ({ coupons }) => {
   };
 
   return (
-    <section className="mt-11 bg-[linear-gradient(160deg,#2E1065,#43167F)] py-[52px]">
-      <div className={CONTAINER}>
+    <section className="relative mt-12 overflow-hidden bg-grad-night py-[56px]">
+      {/* هالات هوية ناعمة تكسر الخلفية المسطّحة */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -top-24 start-[8%] h-[300px] w-[300px] rounded-full bg-[#6703EB]/40 blur-[110px]"
+      />
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -bottom-28 end-[6%] h-[280px] w-[280px] rounded-full bg-[#FD671A]/20 blur-[110px]"
+      />
+
+      <div className={`${CONTAINER} relative`}>
         <SectionHead
           dark
-          title={t("home.coupons_new.title", "كوبونات وأكواد خصم مميزة")}
-          linkLabel={t("home.coupons_new.all_link", "عرض جميع الكوبونات")}
-          linkTo="/coupons"
+          eyebrow={t("home.coupons_new.eyebrow", "وفّر أكثر")}
+          title={title || t("home.coupons_new.title", "كوبونات وأكواد خصم مميزة")}
+          subtitle={t(
+            "home.coupons_new.subtitle",
+            "انسخ الكود واستخدمه عند الدفع لتحصل على الخصم فوراً.",
+          )}
+          linkLabel={showViewAll ? t("home.coupons_new.all_link", "عرض جميع الكوبونات") : undefined}
+          linkTo={showViewAll ? "/coupons" : undefined}
+          className="!mb-6"
         />
 
         <div className="relative">
@@ -81,45 +120,85 @@ const CouponsBand: React.FC<Props> = ({ coupons }) => {
               const color = pick(i + current * PER_SLIDE);
               const code = coupon.coupon_code ?? "";
               const isCopied = copied === code && code.length > 0;
+              const copiesCount =
+                copies[String(coupon.id)] ??
+                (Number(coupon.copies_count ?? 0) || 0);
+              const percent = Math.round(Number(coupon.discount_percentage ?? 0));
               return (
-                <div
-                  key={coupon.id}
-                  className="flex flex-col overflow-hidden rounded-[18px] border border-[#EDE9F7] bg-white"
-                >
-                  <div className="h-[5px] w-full" style={{ background: color.c }} />
-                  <div className="relative aspect-[16/8] w-full overflow-hidden bg-[#F6F3FC]">
-                    <BrandImage
-                      src={coupon.image}
-                      name=""
-                      variant="name"
-                      className="h-full w-full text-[26px]"
-                      bg="#F6F3FC"
+                <Reveal key={coupon.id} delay={i * 60} className="h-full">
+                  <div className="group mk-lift flex h-full flex-col overflow-hidden rounded-mk-2xl border border-white/10 bg-white shadow-[0_10px_30px_-12px_rgba(9,3,32,0.55)] hover:!shadow-[0_28px_58px_-18px_rgba(9,3,32,0.85)]">
+                    <div
+                      className="h-[6px] w-full"
+                      style={{ backgroundImage: `linear-gradient(90deg, ${color.c}, ${color.c}99)` }}
                     />
-                    <span className="absolute inset-0 flex items-end bg-[linear-gradient(to_top,rgba(46,16,101,0.72),rgba(46,16,101,0.15))] p-2.5 text-[13px] font-bold text-white">
-                      {coupon.merchant?.name ?? coupon.title ?? ""}
-                    </span>
+
+                    <div className="mk-zoom relative aspect-[16/9] w-full overflow-hidden bg-[#F2EFFA]">
+                      <BrandImage
+                        src={coupon.image}
+                        name=""
+                        variant="name"
+                        className="h-full w-full text-[26px]"
+                        bg="#F2EFFA"
+                      />
+                      <span className="pointer-events-none absolute inset-0 flex items-end bg-[linear-gradient(to_top,rgba(27,17,80,0.82),rgba(27,17,80,0.05))] p-3 text-[13.5px] font-bold text-white">
+                        <span className="line-clamp-1">
+                          {coupon.merchant?.name ?? coupon.title ?? ""}
+                        </span>
+                      </span>
+                      {percent > 0 && (
+                        <span
+                          dir="ltr"
+                          className="mk-shine absolute start-2.5 top-2.5 inline-flex items-baseline gap-0.5 rounded-full bg-grad-accent px-3.5 py-2 text-[15px] font-extrabold leading-none text-white shadow-mk-badge"
+                        >
+                          {percent}
+                          <span className="text-[10px] font-bold">%</span>
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex flex-1 flex-col gap-3 p-4">
+                      <p className="m-0 line-clamp-2 min-h-[42px] text-[13px] leading-[1.7] text-[#4A4A63]">
+                        {cardText(coupon)}
+                      </p>
+
+                      {code && (
+                        <div className="mt-auto rounded-mk-md border-[1.5px] border-dashed border-[#C9BCEC] bg-[#FBF9FF] px-3 py-3 text-center font-mono text-[16px] font-extrabold tracking-[0.1em] text-[#2B1B5E]">
+                          {code}
+                        </div>
+                      )}
+
+                      {copiesCount > 0 && (
+                        <p className="m-0 flex items-center justify-center gap-1 text-[11.5px] font-medium text-[#9A99B0]">
+                          <LuUsers size={13} aria-hidden />
+                          {usedCountText(copiesCount)}
+                        </p>
+                      )}
+
+                      <button
+                        onClick={() => code && copy(coupon, code)}
+                        disabled={!code}
+                        className={`mk-shine inline-flex h-[48px] items-center justify-center gap-2 rounded-mk-md text-[14px] font-extrabold text-white shadow-[0_12px_26px_-12px_rgba(46,16,101,0.85)] transition-all duration-200 ease-out hover:-translate-y-0.5 hover:brightness-110 disabled:opacity-50 ${FOCUS}`}
+                        style={
+                          isCopied
+                            ? { background: "linear-gradient(135deg,#22C55E,#12A06A)", color: "#FFFFFF" }
+                            : { backgroundImage: `linear-gradient(135deg, ${color.c}, ${color.c}CC)` }
+                        }
+                      >
+                        {isCopied ? (
+                          <>
+                            <LuCheck size={16} aria-hidden />
+                            {t("home.coupons_new.copied", "تم النسخ")}
+                          </>
+                        ) : (
+                          <>
+                            <LuCopy size={15} aria-hidden />
+                            {t("home.coupons_new.copy", "نسخ الكود")}
+                          </>
+                        )}
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex flex-1 flex-col gap-3 p-3.5">
-                    <p className="m-0 line-clamp-2 min-h-[42px] text-[13px] leading-[1.6] text-[#4A4459]">
-                      {cardText(coupon)}
-                    </p>
-                    {code && (
-                      <div className="mt-auto rounded-[10px] border border-dashed border-[#C9BCEC] bg-[#FBF9FF] px-3 py-2.5 text-center font-mono text-[14px] font-semibold tracking-[0.06em] text-[#2E1065]">
-                        {code}
-                      </div>
-                    )}
-                    <button
-                      onClick={() => code && copy(code)}
-                      disabled={!code}
-                      className="h-[42px] rounded-[11px] text-[13px] font-semibold text-white transition-colors disabled:opacity-50"
-                      style={isCopied ? { background: color.bg, color: color.c } : { background: color.c }}
-                    >
-                      {isCopied
-                        ? `${t("home.coupons_new.copied", "تم النسخ")} ✓`
-                        : t("home.coupons_new.copy", "نسخ الكود")}
-                    </button>
-                  </div>
-                </div>
+                </Reveal>
               );
             })}
           </div>
@@ -128,10 +207,10 @@ const CouponsBand: React.FC<Props> = ({ coupons }) => {
             <div className="mt-7 flex items-center justify-center gap-4">
               <button
                 onClick={() => setSlide((s) => (s + slides.length - 1) % slides.length)}
-                aria-label="prev-coupons"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white transition-colors hover:bg-white hover:text-[#2E1065]"
+                aria-label={t("home.common.prev", "السابق")}
+                className={`flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:bg-white hover:text-[#2B1B5E] ${FOCUS} focus-visible:ring-offset-[#2B1B5E]`}
               >
-                <LuChevronRight size={20} />
+                <LuChevronLeft size={20} className="rtl:-scale-x-100" aria-hidden />
               </button>
 
               <div className="flex items-center gap-2" dir="ltr">
@@ -140,7 +219,7 @@ const CouponsBand: React.FC<Props> = ({ coupons }) => {
                     key={i}
                     onClick={() => setSlide(i)}
                     aria-label={`coupons-slide-${i + 1}`}
-                    className={`h-2 rounded-full transition-all ${
+                    className={`h-2 rounded-full transition-all duration-300 ${
                       i === current ? "w-7 bg-white" : "w-2 bg-white/40 hover:bg-white/70"
                     }`}
                   />
@@ -149,10 +228,10 @@ const CouponsBand: React.FC<Props> = ({ coupons }) => {
 
               <button
                 onClick={() => setSlide((s) => (s + 1) % slides.length)}
-                aria-label="next-coupons"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white transition-colors hover:bg-white hover:text-[#2E1065]"
+                aria-label={t("home.common.next", "التالي")}
+                className={`flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:bg-white hover:text-[#2B1B5E] ${FOCUS} focus-visible:ring-offset-[#2B1B5E]`}
               >
-                <LuChevronLeft size={20} />
+                <LuChevronRight size={20} className="rtl:-scale-x-100" aria-hidden />
               </button>
             </div>
           )}

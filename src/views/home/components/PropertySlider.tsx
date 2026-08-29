@@ -8,7 +8,7 @@ import { Link, useNavigate } from "@/lib/router-compat";
 import { FaMapMarkerAlt, FaCheck, FaEye, FaStar } from "react-icons/fa";
 import { PatternNewProperty, Restu1, Restu2, Restu3 } from "@assets";
 import { IoIosArrowRoundForward } from "react-icons/io";
-import { BsHeart, BsHeartFill, BsShare } from "react-icons/bs";
+import { ShareIcon, HeartIcon } from "@ui";
 import { useWebHome } from "@hooks/api/useMokafaatQueries";
 import { useShareSheetStore } from "@stores/shareSheetStore";
 import { offerCategories } from "@data/offers";
@@ -43,7 +43,7 @@ const TOP_COLORS = [
   "bg-red-500",
   "bg-yellow-500",
   "bg-green-500",
-  "bg-purple-500",
+  "bg-mk-primary-light",
   "bg-indigo-500",
 ];
 
@@ -525,9 +525,9 @@ const PropertySlider: React.FC = () => {
                         disabled={pendingFavIds.has(String(restaurant.id))}
                       >
                         {optimisticFavs.has(String(restaurant.id)) ? (
-                          <BsHeartFill className="text-white text-sm" />
+                          <HeartIcon size={14} filled className="text-white" />
                         ) : (
-                          <BsHeart className="text-white text-sm" />
+                          <HeartIcon size={14} className="text-white" />
                         )}
                       </button>
                       <button
@@ -538,7 +538,7 @@ const PropertySlider: React.FC = () => {
                           openShare({ title: restaurant.name, url });
                         }}
                       >
-                        <BsShare className="text-white text-sm" />
+                        <ShareIcon size={14} className="text-white" />
                       </button>
                     </div>
                     {/* Wavy Separator */}

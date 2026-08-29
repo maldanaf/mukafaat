@@ -69,6 +69,25 @@ export interface MoyasarPaymentConfig {
   methods?: string[];
   /** شبكات البطاقات المدعومة — حسب التوثيق: visa, mastercard, mada, amex */
   supportedNetworks?: string[];
+  /** إعدادات Apple Pay (تُرسل فقط عندما تكون applepay ضمن methods) */
+  applePay?: {
+    country?: string;
+    label?: string;
+    validateMerchantUrl?: string;
+  };
+}
+
+/** هل يدعم متصفح الزائر Apple Pay فعلياً؟ (Safari على أجهزة Apple فقط) */
+export function isApplePayAvailable(): boolean {
+  if (typeof window === "undefined") return false;
+  const w = window as unknown as {
+    ApplePaySession?: { canMakePayments?: () => boolean };
+  };
+  try {
+    return !!w.ApplePaySession?.canMakePayments?.();
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -84,6 +103,8 @@ export async function initMoyasarPayment(config: MoyasarPaymentConfig) {
   const element = config.elementSelector ?? ".mysr-form";
   const amount = Math.max(100, Math.floor(config.amountHalala));
 
+  const methods = config.methods ?? ["creditcard"];
+
   Moyasar.init({
     element,
     amount,
@@ -91,9 +112,20 @@ export async function initMoyasarPayment(config: MoyasarPaymentConfig) {
     description: config.description,
     publishable_api_key: config.publishableKey,
     callback_url: config.callbackUrl,
-    methods: config.methods ?? ["creditcard"],
+    methods,
     supported_networks: config.supportedNetworks ?? ["visa", "mastercard", "mada"],
     metadata: config.metadata ?? {},
+    ...(methods.includes("applepay")
+      ? {
+          apple_pay: {
+            country: config.applePay?.country ?? "SA",
+            label: config.applePay?.label ?? config.description,
+            ...(config.applePay?.validateMerchantUrl
+              ? { validate_merchant_url: config.applePay.validateMerchantUrl }
+              : {}),
+          },
+        }
+      : {}),
   });
 }
 

@@ -27,8 +27,17 @@ import {
   filtersApi,
   membershipApi,
   discountCodesApi,
+  couponValidateApi,
+  referralsApi,
+  familyApi,
+  storeRequestsApi,
+  geoApi,
+  notificationsApi,
   type SubscribeForOtherBody,
   type DiscountCodeValidateParams,
+  type CouponValidateParams,
+  type FamilyInviteBody,
+  type StoreRequestBody,
 } from "@network/services/mokafaatService";
 
 /** لغة حالية للـ query key (يعيد طلب البيانات عند تغيير اللغة) */
@@ -99,6 +108,20 @@ export const mokafaatKeys = {
   profile: ["mokafaat", "profile"] as const,
   membershipVerify: (membershipNumber: string) =>
     ["mokafaat", "membership", "verify", membershipNumber] as const,
+  giftPlans: (params?: Record<string, unknown>) =>
+    ["mokafaat", "subscription", "gift", "plans", params] as const,
+  gifts: ["mokafaat", "subscription", "gifts"] as const,
+  giftInvoice: (id: string | number) =>
+    ["mokafaat", "subscription", "gift", id, "invoice"] as const,
+  referrals: ["mokafaat", "referrals"] as const,
+  referralRewards: ["mokafaat", "referrals", "rewards"] as const,
+  family: ["mokafaat", "family"] as const,
+  familyInvitations: ["mokafaat", "family", "invitations"] as const,
+  geoCountries: ["mokafaat", "geo", "countries"] as const,
+  notifications: (page: number) =>
+    ["mokafaat", "notifications", page] as const,
+  notificationsUnread: ["mokafaat", "notifications", "unread-count"] as const,
+  notificationSettings: ["mokafaat", "settings", "notifications"] as const,
 };
 
 // ========== Home ==========
@@ -227,6 +250,27 @@ export function useCouponVote() {
   });
 }
 
+// ========== Coupon Copy Counter (عام - بدون توثيق) ==========
+/**
+ * تسجيل نسخة لكود الكوبون: POST /web/coupons/{id}/copy
+ * fire-and-forget — الفشل لا يزعج المستخدم، والزيادة تتم تفاؤلياً في الواجهة.
+ * يرجع copies_count المحدّث من الخادم إن توفّر، وإلا null.
+ */
+export function useCouponCopy() {
+  return useMutation<number | null, unknown, string | number>({
+    mutationFn: (id: string | number) =>
+      webApi.couponCopy(id).then((r) => {
+        const wrapper = r.data as
+          | { data?: { copies_count?: unknown } | null }
+          | undefined;
+        const n = Number(wrapper?.data?.copies_count);
+        return Number.isFinite(n) ? n : null;
+      }),
+    // لا نُبطل أي كاش ولا نعرض أي خطأ — العدّاد تفاؤلي بالكامل
+    onError: () => {},
+  });
+}
+
 // ========== Settings ==========
 export function useSettings() {
   const lang = useQueryLang();
@@ -309,6 +353,14 @@ export function useValidateDiscountCode() {
   return useMutation({
     mutationFn: (params: DiscountCodeValidateParams) =>
       discountCodesApi.validate(params).then((r) => r.data),
+  });
+}
+
+/** التحقق من كوبون الخصم قبل الدفع (POST /api/coupons/validate) */
+export function useValidateCoupon() {
+  return useMutation({
+    mutationFn: (params: CouponValidateParams) =>
+      couponValidateApi.validate(params).then((r) => r.data),
   });
 }
 
@@ -649,12 +701,21 @@ export function useSubscribe() {
       paymentMethod,
       useWallet,
       discountCode,
+      couponCode,
     }: {
       planId: string | number;
-      paymentMethod?: "online" | "cash" | "bank";
+      paymentMethod?: "online" | "cash" | "bank" | "card";
       useWallet?: boolean;
       discountCode?: string;
-    }) => subscriptionApi.subscribe(planId, paymentMethod, useWallet, discountCode),
+      couponCode?: string;
+    }) =>
+      subscriptionApi.subscribe(
+        planId,
+        paymentMethod,
+        useWallet,
+        discountCode,
+        couponCode,
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: mokafaatKeys.subscriptionStatus });
       queryClient.invalidateQueries({ queryKey: mokafaatKeys.subscriptionHistory });
@@ -741,11 +802,32 @@ export function useWalletHistory() {
   });
 }
 
-export function useMyTransactions() {
+/** GET /api/wallet/topup-options — مبالغ الشحن السريعة وحدود المبلغ */
+export function useWalletTopupOptions() {
+  return useQuery({
+    queryKey: ["mokafaat", "wallet", "topup-options"],
+    queryFn: () => walletApi.topupOptions().then((r) => r.data),
+  });
+}
+
+/** POST /api/wallet/topup — يبدأ عملية الشحن ويرجّع payment_info */
+export function useWalletTopup() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (amount: number) => walletApi.topup(amount).then((r) => r.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: mokafaatKeys.wallet });
+      queryClient.invalidateQueries({ queryKey: mokafaatKeys.walletBalance });
+      queryClient.invalidateQueries({ queryKey: mokafaatKeys.walletHistory });
+    },
+  });
+}
+
+export function useMyTransactions(params?: Record<string, unknown>) {
   const lang = useQueryLang();
   return useQuery({
-    queryKey: ["mokafaat", "my-transactions", lang],
-    queryFn: () => walletApi.myTransactions().then((r) => r.data),
+    queryKey: ["mokafaat", "my-transactions", lang, params ?? null],
+    queryFn: () => walletApi.myTransactions(params).then((r) => r.data),
   });
 }
 
@@ -777,5 +859,244 @@ export function useProfileUpdate() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: mokafaatKeys.profile });
     },
+  });
+}
+
+
+// ========== Subscription — الإهداء (باقات/فواتير) ==========
+/**
+ * GET /api/subscription/gift/plans — أسعار الإهداء الحقيقية:
+ * price_original / tier_discount_* / coupon_discount / price_after_discount.
+ */
+export function useGiftPlans(params?: {
+  coupon_code?: string;
+  discount_code?: string;
+}) {
+  const lang = useQueryLang();
+  const key = {
+    coupon_code: params?.coupon_code || "",
+    discount_code: params?.discount_code || "",
+  };
+  return useQuery({
+    queryKey: [...mokafaatKeys.giftPlans(key), lang],
+    queryFn: () =>
+      subscriptionApi
+        .giftPlans({
+          ...(key.coupon_code && { coupon_code: key.coupon_code }),
+          ...(key.discount_code && { discount_code: key.discount_code }),
+        })
+        .then((r) => r.data),
+  });
+}
+
+/** GET /api/subscription/gifts — الاشتراكات التي أهديتها */
+export function useMyGifts(enabled = true) {
+  const lang = useQueryLang();
+  return useQuery({
+    queryKey: [...mokafaatKeys.gifts, lang],
+    queryFn: () => subscriptionApi.gifts().then((r) => r.data),
+    enabled,
+  });
+}
+
+/** GET /api/subscription/gift/{id}/invoice — فاتورة اشتراك مُهدى */
+export function useGiftInvoice(id: string | number | undefined) {
+  const lang = useQueryLang();
+  return useQuery({
+    queryKey: id
+      ? [...mokafaatKeys.giftInvoice(id), lang]
+      : (["mokafaat", "subscription", "gift", "none", "invoice", lang] as const),
+    queryFn: () =>
+      subscriptionApi.giftInvoice(id as string | number).then((r) => r.data),
+    enabled: id != null && String(id) !== "",
+    retry: false,
+  });
+}
+
+// ========== Referrals — شارك واربح ==========
+export function useReferrals(enabled = true) {
+  const lang = useQueryLang();
+  return useQuery({
+    queryKey: [...mokafaatKeys.referrals, lang],
+    queryFn: () => referralsApi.get().then((r) => r.data),
+    enabled,
+  });
+}
+
+export function useReferralRewards(enabled = true) {
+  const lang = useQueryLang();
+  return useQuery({
+    queryKey: [...mokafaatKeys.referralRewards, lang],
+    queryFn: () => referralsApi.rewards().then((r) => r.data),
+    enabled,
+  });
+}
+
+export function useAttachReferral() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (code: string) => referralsApi.attach(code).then((r) => r.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: mokafaatKeys.referrals });
+      queryClient.invalidateQueries({ queryKey: mokafaatKeys.referralRewards });
+    },
+  });
+}
+
+// ========== Family — أفراد العائلة ==========
+export function useFamily(enabled = true) {
+  const lang = useQueryLang();
+  return useQuery({
+    queryKey: [...mokafaatKeys.family, lang],
+    queryFn: () => familyApi.get().then((r) => r.data),
+    enabled,
+  });
+}
+
+export function useFamilyInvitations(enabled = true) {
+  const lang = useQueryLang();
+  return useQuery({
+    queryKey: [...mokafaatKeys.familyInvitations, lang],
+    queryFn: () => familyApi.invitations().then((r) => r.data),
+    enabled,
+  });
+}
+
+export function useFamilyInvite() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (body: FamilyInviteBody) =>
+      familyApi.invite(body).then((r) => r.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: mokafaatKeys.family });
+    },
+  });
+}
+
+export function useFamilyRemoveMember() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string | number) =>
+      familyApi.removeMember(id).then((r) => r.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: mokafaatKeys.family });
+    },
+  });
+}
+
+export function useAcceptFamilyInvitation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string | number) =>
+      familyApi.acceptInvitation(id).then((r) => r.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: mokafaatKeys.family });
+      queryClient.invalidateQueries({ queryKey: mokafaatKeys.familyInvitations });
+      queryClient.invalidateQueries({ queryKey: mokafaatKeys.subscriptionStatus });
+    },
+  });
+}
+
+// ========== Store Requests — انضمام متجر / اقتراح متجر (عام) ==========
+export function useCreateStoreRequest() {
+  return useMutation({
+    mutationFn: (body: StoreRequestBody) =>
+      storeRequestsApi.create(body).then((r) => r.data),
+  });
+}
+
+// ========== Geo — الدول المفعّلة مع علامة «دولة واحدة» ==========
+export function useGeoCountries() {
+  const lang = useQueryLang();
+  return useQuery({
+    queryKey: [...mokafaatKeys.geoCountries, lang],
+    queryFn: () => geoApi.countries().then((r) => r.data),
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+// ========== Notifications — الإشعارات ==========
+/** GET /api/notifications?page=n */
+export function useNotifications(page = 1, enabled = true) {
+  const lang = useQueryLang();
+  return useQuery({
+    queryKey: [...mokafaatKeys.notifications(page), lang],
+    queryFn: () => notificationsApi.list(page).then((r) => r.data),
+    enabled,
+    placeholderData: (prev) => prev,
+  });
+}
+
+/** GET /api/notifications/unread-count — عدّاد الشارة */
+export function useNotificationsUnreadCount(enabled = true) {
+  return useQuery({
+    queryKey: mokafaatKeys.notificationsUnread,
+    queryFn: () => notificationsApi.unreadCount().then((r) => r.data),
+    enabled,
+    staleTime: 60 * 1000,
+  });
+}
+
+function useInvalidateNotifications() {
+  const queryClient = useQueryClient();
+  return () => {
+    queryClient.invalidateQueries({ queryKey: ["mokafaat", "notifications"] });
+  };
+}
+
+export function useMarkNotificationRead() {
+  const invalidate = useInvalidateNotifications();
+  return useMutation({
+    mutationFn: (id: string | number) =>
+      notificationsApi.markRead(id).then((r) => r.data),
+    onSuccess: invalidate,
+  });
+}
+
+export function useMarkAllNotificationsRead() {
+  const invalidate = useInvalidateNotifications();
+  return useMutation({
+    mutationFn: () => notificationsApi.markAllRead().then((r) => r.data),
+    onSuccess: invalidate,
+  });
+}
+
+export function useDeleteNotification() {
+  const invalidate = useInvalidateNotifications();
+  return useMutation({
+    mutationFn: (id: string | number) =>
+      notificationsApi.remove(id).then((r) => r.data),
+    onSuccess: invalidate,
+  });
+}
+
+// ========== Notification settings — إعدادات الإشعارات ==========
+/** GET /api/settings/notifications */
+export function useNotificationSettings(enabled = true) {
+  return useQuery({
+    queryKey: mokafaatKeys.notificationSettings,
+    queryFn: () => settingsApi.getNotifications().then((r) => r.data),
+    enabled,
+  });
+}
+
+/** POST /api/settings/notifications — تحديث المفاتيح */
+export function useUpdateNotificationSettings() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (body: Record<string, boolean>) =>
+      settingsApi.updateNotifications(body).then((r) => r.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: mokafaatKeys.notificationSettings,
+      });
+    },
+  });
+}
+
+// ========== Account deletion — حذف الحساب ==========
+export function useDeleteAccount() {
+  return useMutation({
+    mutationFn: (reason?: string) => profileApi.remove(reason).then((r) => r.data),
   });
 }

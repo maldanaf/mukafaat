@@ -47,7 +47,10 @@
       "brand": "Mukafaat",
       "choose_city": "Choose your city",
       "points_balance": "Your points",
-      "saved": "Saved"
+      "saved": "Saved",
+      "membership_tier": "सदस्यता स्तर",
+      "tier_renewal_discount": "सब्सक्रिप्शन नवीनीकरण छूट",
+      "tier_progress": "{{tier}} तक पहुँचने के लिए {{count}} और ऑर्डर"
     },
     "login": {
       "welcome_title": "मुकाफ़ात में आपका स्वागत है",
@@ -77,7 +80,9 @@
     },
     "common": {
       "success": "सफलता",
-      "error": "गलती"
+      "error": "गलती",
+      "prev": "पिछला",
+      "next": "अगला"
     },
     "subscription": {
       "offerForSubscribersOnly": "ऑफर केवल सब्सक्राइबर्स के लिए",
@@ -382,12 +387,17 @@
       "body": "Exclusive offers, coupons and discount codes, digital cards and services that save you more every day.",
       "tag": "Featured offers",
       "cta": "Explore offers",
-      "app": "Get the app"
+      "app": "Get the app",
+      "prev": "पिछली स्लाइड",
+      "next": "अगली स्लाइड",
+      "slide": "स्लाइड"
     },
     "search_new": {
       "all_cities": "All cities",
       "placeholder": "Search for a store, restaurant, offer, coupon or card...",
-      "empty": "No results match your search."
+      "empty": "No results match your search.",
+      "submit": "खोजें",
+      "city_label": "शहर चुनें"
     },
     "services_new": {
       "offers": {
@@ -415,7 +425,8 @@
       "all": "All",
       "eyebrow": "Quick browse",
       "title": "Categories",
-      "all_link": "View all categories"
+      "all_link": "View all categories",
+      "subtitle": "अपनी पसंद की श्रेणी चुनें और उसके ऑफ़र तुरंत देखें।"
     },
     "offers_new": {
       "eyebrow": "Picked for you",
@@ -425,7 +436,8 @@
       "ended": "Ended",
       "today": "Ends today",
       "ends_in": "Ends in",
-      "days": "days"
+      "days": "days",
+      "subtitle": "अभी उपलब्ध सबसे बड़ी छूट — हर दिन अपडेट होती हैं।"
     },
     "coupons_new": {
       "title": "Featured coupons & promo codes",
@@ -434,7 +446,9 @@
       "copied": "Copied",
       "discount": "Save",
       "with_code": "with code",
-      "use_code": "Use the code at checkout to get the discount"
+      "use_code": "Use the code at checkout to get the discount",
+      "eyebrow": "और बचत करें",
+      "subtitle": "कोड कॉपी करें और भुगतान के समय इस्तेमाल कर तुरंत छूट पाएँ।"
     },
     "nearby_new": {
       "eyebrow": "Around you",
@@ -444,7 +458,13 @@
       "use_location": "Use my location",
       "locating": "Locating...",
       "km": "km",
-      "up_to": "Up to"
+      "up_to": "Up to",
+      "subtitle": "अपने आसपास छूट देने वाले सबसे नज़दीकी स्टोर और रेस्तराँ देखें।",
+      "enable_title": "सबसे नज़दीकी जगहें देखने के लिए अपनी लोकेशन चालू करें",
+      "enable_body": "हम आपकी लोकेशन सिर्फ़ एक बार दूरी के अनुसार क्रम लगाने के लिए इस्तेमाल करते हैं — न सहेजी जाती है, न साझा।",
+      "privacy": "हम आपकी लोकेशन कभी नहीं रखते।",
+      "denied": "लोकेशन अनुमति अस्वीकृत — ब्राउज़र सेटिंग्स से चालू करके फिर कोशिश करें।",
+      "sort_hint": "स्टोर को नज़दीकी के अनुसार क्रम में लगाने के लिए अपनी लोकेशन चालू करें।"
     },
     "stores_new": {
       "eyebrow": "Most popular",
@@ -495,6 +515,17 @@
       "about": "The offers, discounts and coupons platform in Saudi Arabia.",
       "rights": "All rights reserved © Mukafaat",
       "country": "Saudi Arabia"
+    },
+    "cards_new": {
+      "subtitle": "गेमिंग, मनोरंजन और शॉपिंग कार्ड — कोड आपको तुरंत मिल जाता है।"
+    },
+    "topbar": {
+      "deals": "सैकड़ों ब्रांड्स पर 70% तक की छूट",
+      "coupons": "रोज़ अपडेट होने वाले डिस्काउंट कोड — कॉपी करें और तुरंत इस्तेमाल करें",
+      "cards": "डिजिटल कार्ड खरीदते ही आपको मिल जाते हैं"
+    },
+    "stats_new": {
+      "trust": "एक भरोसेमंद सऊदी प्लेटफ़ॉर्म — रोज़ नए ऑफ़र और पूरे हफ़्ते सहायता"
     }
   },
   "about": {
@@ -1387,7 +1418,9 @@
       "shareLocation": "स्थान साझा करें",
       "emptyTitle": "कोई ऑफ़र उपलब्ध नहीं",
       "emptyHint": "दूसरा फ़िल्टर आज़माएँ या बाद में फिर देखें"
-    }
+    },
+    "heroEyebrow": "और बचत करें",
+    "heroSubtitle": "आपकी पसंदीदा दुकानों से हज़ारों ऑफ़र — देखें, तुलना करें और मिनटों में खरीदें।"
   },
   "categoryOffers": {
     "not_found": "श्रेणी नहीं मिली",
@@ -1425,8 +1458,37 @@
       "topSellingTitle": "सर्वाधिक बिक्री",
       "topSellingSubtitle": "ग्राहकों द्वारा सबसे अधिक मांगे गए कार्ड",
       "mostViewedTitle": "सबसे अधिक देखे गए",
-      "mostViewedSubtitle": "सबसे अधिक देखे और ब्राउज़ किए गए कार्ड"
-    }
+      "mostViewedSubtitle": "सबसे अधिक देखे और ब्राउज़ किए गए कार्ड",
+      "resultsTitle": "खोज परिणाम",
+      "recommendedTitle": "आपके लिए चुना",
+      "recommendedSubtitle": "कार्ड जो आपको पसंद आ सकते हैं",
+      "featuredTitle": "विशेष कार्ड",
+      "featuredSubtitle": "हमारी पसंद"
+    },
+    "resultsCount": "{{count}} कार्ड",
+    "validity": {
+      "daily": "दैनिक",
+      "weekly": "साप्ताहिक",
+      "monthly": "मासिक",
+      "quarterly": "त्रैमासिक",
+      "semi_annual": "अर्धवार्षिक",
+      "annual": "वार्षिक",
+      "unlimited": "असीमित"
+    },
+    "allCountries": "सभी देश",
+    "noResults": "कोई मेल खाता कार्ड नहीं",
+    "sortLabel": "क्रमबद्ध",
+    "sort": {
+      "newest": "नवीनतम",
+      "best_selling": "सर्वाधिक बिकने वाले",
+      "highest_discount": "सर्वाधिक छूट",
+      "price_low_high": "कीमत: कम से अधिक",
+      "price_high_low": "कीमत: अधिक से कम",
+      "most_viewed": "सर्वाधिक देखे गए"
+    },
+    "cards_suffix": "कार्ड",
+    "heroEyebrow": "एक बार खरीदें, साल भर बचाएं",
+    "heroSubtitle": "बेहतरीन दुकानों के डिस्काउंट कार्ड — एक ही कीमत में बार-बार बचत।"
   },
   "saved": {
     "title": "सहेजे गए आइटम",
@@ -1435,14 +1497,17 @@
       "all": "सभी",
       "offers": "ऑफर",
       "cards": "कार्ड",
-      "bookings": "बुकिंग के"
+      "bookings": "बुकिंग के",
+      "coupons": "कूपन",
+      "stores": "स्टोर"
     },
     "types": {
       "offer": "प्रस्ताव",
       "card": "कार्ड",
       "coupon": "कूपन",
       "booking": "बुकिंग",
-      "item": "वस्तु"
+      "item": "वस्तु",
+      "merchant": "स्टोर"
     },
     "saved_since": "तब से सहेजा गया",
     "empty": {
@@ -1450,7 +1515,11 @@
       "title_filtered": "कोई सहेजा नहीं गया {{प्रकार}}",
       "description": "अपने पसंदीदा ऑफ़र और कार्ड सहेजना प्रारंभ करें",
       "browse_offers": "ऑफ़र ब्राउज़ करें"
-    }
+    },
+    "eyebrow": "आपकी लाइब्रेरी",
+    "results_suffix": "सहेजे गए आइटम",
+    "remove": "पसंदीदा से हटाएं",
+    "view_details": "विवरण देखें"
   },
   "orders": {
     "title": "मेरे आदेश",
@@ -1501,7 +1570,9 @@
       "title_filtered": "कोई {{स्थिति}} आदेश नहीं",
       "description": "अपने कार्ट में ऑफ़र और कार्ड जोड़ना प्रारंभ करें",
       "browse_offers": "ऑफ़र ब्राउज़ करें"
-    }
+    },
+    "eyebrow": "आपकी खरीदारी",
+    "results_suffix": "ऑर्डर"
   },
   "sideMenu": {
     "logoAlt": "मुकाफ़ात लोगो",
@@ -1624,7 +1695,27 @@
     "redeem_success": "अंक सफलतापूर्वक भुनाए गए",
     "redeem_error": "अंक भुनाने में विफल",
     "loading": "लोड हो रहा है...",
-    "no_transactions": "कोई लेनदेन नहीं"
+    "no_transactions": "कोई लेनदेन नहीं",
+    "topupTitle": "अंक रिचार्ज करें",
+    "topupSubtitle": "अपने वॉलेट में अंक जोड़ें",
+    "pointsRateTitle": "1 अंक = 1 सऊदी रियाल",
+    "pointsRateDesc": "बैलेंस अंकों में दिखाया जाता है और रियाल में लिया जाता है — 1 अंक = 1 SAR।",
+    "pointsCountLabel": "अंकों की संख्या",
+    "otherAmount": "अन्य राशि",
+    "enterPointsAmount": "अंकों की संख्या",
+    "enterAmount": "अंकों की संख्या दर्ज करें",
+    "amountRange": "अंक {{min}} और {{max}} के बीच होने चाहिए",
+    "topupGoesToCash": "अंक आपके कैश बैलेंस में जोड़े जाएंगे।",
+    "payAmount": "भुगतान करें {{amount}}",
+    "topupSuccess": "आपका बैलेंस सफलतापूर्वक रिचार्ज हो गया।",
+    "topupFailed": "रिचार्ज पूरा नहीं हुआ — कोई राशि नहीं कटी, पुनः प्रयास करें।",
+    "totalBalance": "कुल बैलेंस",
+    "promotionalBalance": "प्रोमोशनल बैलेंस",
+    "cashBalance": "कैश बैलेंस",
+    "pointsUnitOne": "अंक",
+    "pointsUnitTwo": "अंक",
+    "pointsUnitFew": "अंक",
+    "pointsUnitMany": "अंक"
   },
   "profile": {
     "subscription_active": "सक्रिय सदस्यता",
@@ -1682,7 +1773,13 @@
     "menu_subscribe_other": "किसी और के लिए सदस्यता",
     "menu_upgrade": "सदस्यता प्लान अपग्रेड करें",
     "menu_contact": "संपर्क करें",
-    "menu_logout": "लॉग आउट"
+    "menu_logout": "लॉग आउट",
+    "group_account": "मेरा खाता",
+    "group_membership": "सदस्यता और लाभ",
+    "group_help": "सहायता",
+    "menu_card": "मेरा कार्ड और स्तर",
+    "menu_notifications": "सूचनाएं",
+    "menu_store_request": "स्टोर के रूप में जुड़ें"
   },
   "subscribeForOther": {
     "meta_title": "किसी और के लिए सदस्यता",
@@ -1752,7 +1849,9 @@
     "coupons_suffix": "कूपन",
     "discount_min_tag": "छूट ≥ {{min}}%",
     "clear_all": "सभी साफ़ करें",
-    "image_cut_coupon": "कूपन विभाजक"
+    "image_cut_coupon": "कूपन विभाजक",
+    "hero_eyebrow": "कॉपी करें और तुरंत इस्तेमाल करें",
+    "hero_subtitle": "सैकड़ों ब्रांड्स पर रोज़ अपडेट होने वाले प्रोमो कोड — बस एक टैप दूर।"
   },
   "languageToggle": {
     "languagesTab": "बोली",
@@ -1822,7 +1921,11 @@
     "purchases_few": "{{count}} खरीदारी",
     "purchases_many": "{{count}} खरीदारी",
     "purchases_two": "{{count}} खरीदारी",
-    "purchases_zero": "0 खरीदारी"
+    "purchases_zero": "0 खरीदारी",
+    "subscribersOnly": "केवल सब्सक्राइबर्स के लिए",
+    "save": "बचत",
+    "endsToday": "आज समाप्त",
+    "endsInDays": "{{days}} दिन में समाप्त"
   },
   "couponModal": {
     "removedFromFavorites": "पसंदीदा से हटाया गया",
@@ -1843,6 +1946,284 @@
     "expiresOn": "{{तारीख}} समाप्त हो रही है",
     "validityUnknown": "वैधता निर्दिष्ट नहीं है",
     "noExpiryDate": "कोई समाप्ति तिथि नहीं",
-    "goToStore": "दुकान पर जाओ"
+    "goToStore": "दुकान पर जाओ",
+    "usedCount": "उपयोग ({{count}})",
+    "usedCountOne": "उपयोग (एक बार)",
+    "usedCountTwo": "उपयोग ({{count}} बार)",
+    "usedCountFew": "उपयोग ({{count}} बार)",
+    "usedCountMany": "उपयोग ({{count}} बार)"
+  },
+  "ui": {
+    "viewAll": "सभी देखें",
+    "loading": "लोड हो रहा है…",
+    "retry": "पुनः प्रयास करें",
+    "showMore": "और दिखाएँ",
+    "showLess": "कम दिखाएँ",
+    "next": "आगे",
+    "previous": "पीछे",
+    "empty": {
+      "title": "यहाँ अभी कुछ नहीं है",
+      "description": "फ़िल्टर बदलें या बाद में फिर आएँ।",
+      "offers": "अभी कोई मिलता-जुलता ऑफ़र नहीं है।",
+      "coupons": "अभी कोई कूपन उपलब्ध नहीं है।",
+      "cards": "अभी कोई कार्ड उपलब्ध नहीं है।",
+      "stores": "दिखाने के लिए कोई स्टोर नहीं।",
+      "search": "आपकी खोज का कोई परिणाम नहीं।",
+      "saved": "अभी कोई सहेजा गया आइटम नहीं है।",
+      "orders": "अभी कोई ऑर्डर नहीं है।"
+    },
+    "error": {
+      "title": "डेटा लोड नहीं हो सका",
+      "description": "अपना कनेक्शन जाँचें और फिर प्रयास करें।",
+      "retry": "पुनः प्रयास करें"
+    },
+    "filters": "फ़िल्टर",
+    "clearFilters": "फ़िल्टर हटाएँ",
+    "gridView": "ग्रिड व्यू",
+    "listView": "लिस्ट व्यू",
+    "results": "परिणाम",
+    "searchPlaceholder": "खोजें…",
+    "share": "साझा करें",
+    "notifications": "सूचनाएँ",
+    "favorite": {
+      "add": "पसंदीदा में जोड़ें",
+      "remove": "पसंदीदा से हटाएँ"
+    },
+    "loginRequired": {
+      "title": "लॉगिन आवश्यक है",
+      "cta": "लॉगिन"
+    },
+    "save": "बचत",
+    "flag": {
+      "hot": "सबसे ज़्यादा माँग",
+      "new": "नया",
+      "ending": "जल्द समाप्त"
+    },
+    "results_count": "{{count}} परिणाम"
+  },
+  "couponCard": {
+    "copies": "कॉपी"
+  },
+  "storePage": {
+    "delivery_time": "डिलीवरी समय",
+    "minimum_order": "न्यूनतम ऑर्डर",
+    "delivery_fee": "डिलीवरी शुल्क",
+    "whatsapp": "व्हाट्सएप",
+    "working_hours": "कार्य समय",
+    "open_now": "अभी खुला है",
+    "closed_now": "अभी बंद है",
+    "temporarily_closed": "अस्थायी रूप से बंद",
+    "closed_today": "बंद",
+    "today": "आज",
+    "hours_unavailable": "कार्य समय उपलब्ध नहीं",
+    "content_tab_default": "सामग्री",
+    "minute_unit": "मिनट",
+    "working_hours_today": "आज का समय",
+    "verified": "सत्यापित स्टोर",
+    "coming_soon": "जल्द आ रहा है",
+    "delivery_details": "डिलीवरी विवरण"
+  },
+  "homeBuilder": {
+    "categoryOffers": "चुनिंदा ऑफ़र",
+    "viewAll": "सभी देखें",
+    "cards": {
+      "title": "रिचार्ज कार्ड",
+      "eyebrow": "तुरंत रिचार्ज",
+      "allLink": "सभी कार्ड देखें",
+      "digital": "डिजिटल कार्ड",
+      "currency": "SAR"
+    }
+  },
+  "membershipCard": {
+    "meta_title": "मेरा कार्ड और स्तर",
+    "title": "मेरा कार्ड और स्तर",
+    "subtitle": "आपका सदस्यता नंबर, QR कोड, स्तर और उसके लाभ।",
+    "number_label": "सदस्यता नंबर",
+    "copy_number": "सदस्यता नंबर कॉपी करें",
+    "copy_link": "सत्यापन लिंक कॉपी करें",
+    "copied": "कॉपी हो गया",
+    "share": "साझा करें",
+    "load_error": "कार्ड लोड नहीं हो सका।",
+    "no_membership": "अभी कोई सदस्यता कार्ड नहीं — सब्सक्राइब करें।",
+    "subscribe_cta": "पैकेज देखें"
+  },
+  "notificationsPage": {
+    "meta_title": "सूचनाएं",
+    "title": "सूचनाएं",
+    "unread_badge": "{{count}} अपठित",
+    "unread": "अपठित",
+    "mark_all": "सभी को पढ़ा हुआ चिह्नित करें",
+    "mark_all_done": "सभी सूचनाएं पढ़ी हुई चिह्नित कर दी गईं",
+    "action_failed": "कार्रवाई विफल, पुनः प्रयास करें",
+    "settings_cta": "सूचना सेटिंग्स",
+    "tab_general": "सामान्य",
+    "tab_nearby": "निकटतम",
+    "tab_orders": "ऑर्डर",
+    "tab_empty": "इस श्रेणी में कोई सूचना नहीं",
+    "empty_title": "कोई सूचना नहीं",
+    "load_error": "सूचनाएं लोड नहीं हो सकीं।",
+    "delete": "सूचना हटाएं",
+    "prev": "पिछला",
+    "next": "अगला",
+    "page_of": "पृष्ठ {{page}} / {{total}}"
+  },
+  "notificationSettings": {
+    "meta_title": "सूचना सेटिंग्स",
+    "title": "सूचना सेटिंग्स",
+    "subtitle": "चुनें कि आप क्या प्राप्त करना चाहते हैं।",
+    "back_to_list": "सूचनाएं",
+    "group_general": "सामान्य",
+    "group_offers": "ऑफ़र और अलर्ट",
+    "group_channels": "चैनल",
+    "key_app_notifications": "सूचनाएं और अलर्ट",
+    "key_new_offers": "नए ऑफ़र",
+    "key_discount_offers": "छूट ऑफ़र",
+    "key_trip_offers": "कार्ड ऑफ़र",
+    "key_shopping_sections_offers": "शॉपिंग वाउचर ऑफ़र",
+    "key_offers_and_alerts": "गिफ़्ट कार्ड ऑफ़र",
+    "key_email_newsletters": "ईमेल न्यूज़लेटर",
+    "key_sms_notifications": "एसएमएस सूचनाएं",
+    "key_whatsapp_notifications": "व्हाट्सएप सूचनाएं",
+    "saved": "सेटिंग्स सहेजी गईं",
+    "save_failed": "सेटिंग्स सहेजी नहीं जा सकीं",
+    "load_error": "सेटिंग्स लोड नहीं हो सकीं।",
+    "hint": "«सूचनाएं और अलर्ट» बंद करने से सब कुछ एक साथ बंद हो जाता है।"
+  },
+  "contactUs": {
+    "prefill_note": "हमने आपके खाते की जानकारी भर दी है — भेजने से पहले बदल सकते हैं।"
+  },
+  "accountDelete": {
+    "title": "खाता हटाएं",
+    "description": "खाता हटाने से सक्रिय सदस्यताएं रद्द हो जाएंगी और यह वापस नहीं किया जा सकता।",
+    "cta": "मेरा खाता हटाएं",
+    "confirm_title": "खाता हटाने की पुष्टि",
+    "confirm_hint": "पुष्टि के लिए «हटाएं» लिखें",
+    "confirm_word": "हटाएं",
+    "reason_label": "कारण (वैकल्पिक)",
+    "cancel": "रद्द करें",
+    "submit": "हटाने की पुष्टि करें",
+    "submitting": "हटाया जा रहा है…",
+    "success": "आपका खाता हटा दिया गया",
+    "failed": "खाता नहीं हटाया जा सका, पुनः प्रयास करें"
+  },
+  "subscription": {
+    "close": "बंद करें",
+    "back": "वापस",
+    "features": "विशेषताएँ",
+    "discountBadge": "{{percent}}% छूट",
+    "familyMembersUpTo": "परिवार के {{count}} सदस्यों तक शामिल",
+    "currentPlanBadge": "आपका वर्तमान पैकेज",
+    "previousPlanBadge": "आपका पिछला पैकेज",
+    "renewSubscription": "सदस्यता नवीनीकृत करें",
+    "activeUntil": "आपकी सदस्यता {{date}} तक सक्रिय है",
+    "subscriptionEndedOn": "आपकी सदस्यता {{date}} को समाप्त हो गई",
+    "daysRemaining": "{{count}} दिन शेष",
+    "expiringSoon": "जल्द समाप्त हो रही है",
+    "guestSubscriptionHint": "अपनी वर्तमान सदस्यता देखने के लिए लॉग इन करें",
+    "guestLogin": "लॉग इन",
+    "duration": {
+      "monthly": "मासिक",
+      "3_months": "हर 3 महीने",
+      "6_months": "हर 6 महीने",
+      "yearly": "वार्षिक",
+      "2_years": "2 वर्ष"
+    }
+  },
+  "payment": {
+    "title": "भुगतान का तरीका",
+    "electronicPayment": "इलेक्ट्रॉनिक भुगतान",
+    "payThrough": "इसके माध्यम से भुगतान",
+    "method": {
+      "mada": "mada",
+      "applePay": "Apple Pay",
+      "card": "क्रेडिट कार्ड / mada",
+      "wallet": "वॉलेट से भुगतान"
+    },
+    "walletBalanceNote": "आपका बैलेंस: {{points}} अंक",
+    "couponLabel": "कूपन",
+    "couponPlaceholder": "कूपन दर्ज करें",
+    "couponApplied": "कूपन लागू हो गया",
+    "couponInvalid": "अमान्य कूपन",
+    "couponRemove": "कूपन हटाएँ",
+    "discountCodeLabel": "डिस्काउंट कोड",
+    "apply": "लागू करें",
+    "applying": "हो रहा है...",
+    "total": "कुल",
+    "currency": "SAR",
+    "completePayment": "भुगतान पूरा करें",
+    "completePaymentDesc": "सुरक्षित भुगतान के लिए कार्ड विवरण दर्ज करें।",
+    "gatewayLoadFailed": "भुगतान गेटवे लोड नहीं हो सका, पुनः प्रयास करें।",
+    "gatewayInitFailed": "भुगतान गेटवे प्रारंभ नहीं हो सका। सहायता से संपर्क करें।",
+    "paymentDataIncomplete": "भुगतान जानकारी अधूरी है। सहायता से संपर्क करें।",
+    "applePayUnavailable": "Apple Pay केवल Apple डिवाइस पर Safari में उपलब्ध है।",
+    "promoLabel": "Discount or coupon code",
+    "promoPlaceholder": "Enter code",
+    "promoApply": "Apply",
+    "promoRemove": "Remove code",
+    "promoInvalid": "Invalid or expired code"
+  },
+  "invoice": {
+    "title": "चालान",
+    "number": "चालान संख्या",
+    "notIssuedYet": "चालान अभी जारी नहीं हुआ",
+    "plan": "प्लान",
+    "startDate": "प्रारंभ तिथि",
+    "endDate": "समाप्ति तिथि",
+    "paymentMethod": "भुगतान का तरीका",
+    "transactionNumber": "लेन-देन संख्या",
+    "date": "तिथि",
+    "subscriptionId": "सदस्यता आईडी",
+    "total": "कुल भुगतान",
+    "downloadPdf": "PDF चालान डाउनलोड करें",
+    "pdfUnavailable": "चालान फ़ाइल अभी उपलब्ध नहीं है — भुगतान निपटान के बाद दिखाई देगी।",
+    "allTransactions": "सभी लेन-देन"
+  },
+  "referralLanding": {
+    "title": "एक मित्र का निमंत्रण",
+    "subtitle": "हमने निमंत्रण कोड सहेज लिया — पंजीकरण पूरा करें ताकि आपको और आपके मित्र दोनों को इनाम मिले।",
+    "cta_register": "खाता बनाएं",
+    "cta_home": "होम पर जाएं",
+    "redirecting": "आपको स्वतः पुनर्निर्देशित किया जा रहा है…"
+  },
+  "qrLanding": {
+    "eyebrow": "आपके पास विशेष ऑफ़र",
+    "title": "अभी आपके आसपास के ऑफ़र",
+    "subtitle": "अपना लोकेशन चालू करें और कुछ ही सेकंड में पास की दुकानों के ऑफ़र देखें।",
+    "cta": "पास के ऑफ़र दिखाएं",
+    "cta_loading": "आपका स्थान पता किया जा रहा है…",
+    "radius_note": "हम खोज रहे हैं",
+    "radius_note_suffix": "के दायरे में।",
+    "unit_m": "मी",
+    "unit_km": "किमी",
+    "download_hint": "या तेज़ अनुभव के लिए ऐप डाउनलोड करें",
+    "step1_title": "कोड स्कैन करें",
+    "step1_body": "दुकान में लगे मुकाफ़आत कोड को स्कैन करें या लिंक खोलें।",
+    "step2_title": "लोकेशन चालू करें",
+    "step2_body": "ब्राउज़र को अपना स्थान पढ़ने दें ताकि हम आपके आसपास खोज सकें।",
+    "step3_title": "छूट का आनंद लें",
+    "step3_body": "पास की दुकानों के ऑफ़र देखें और तुरंत अपनी छूट पाएं।",
+    "error_fetch": "पास के ऑफ़र लोड नहीं हो सके, फिर कोशिश करें।",
+    "error_network": "सेवा से संपर्क नहीं हो सका, फिर कोशिश करें।",
+    "error_unsupported": "आपका ब्राउज़र लोकेशन का समर्थन नहीं करता।",
+    "error_denied": "लोकेशन की अनुमति नहीं मिली। ब्राउज़र सेटिंग्स में अनुमति दें और फिर कोशिश करें।",
+    "error_locate": "आपका स्थान पता नहीं चल सका, फिर कोशिश करें।",
+    "disabled": "यह सेवा अभी उपलब्ध नहीं है।",
+    "offers_in": "ऑफ़र,",
+    "merchants_around": "दुकानों में आपके आसपास",
+    "verified": "सत्यापित",
+    "open_now": "अभी खुला",
+    "closed_now": "अभी बंद",
+    "empty_title": "आपके आसपास कोई ऑफ़र नहीं",
+    "empty_body": "बाद में कोशिश करें, या सभी ऑफ़र देखने के लिए ऐप डाउनलोड करें।",
+    "nearest_prefix": "निकटतम दुकान",
+    "nearest_suffix": "की दूरी"
+  },
+  "account": {
+    "hero_fallback_name": "आपका स्वागत है",
+    "quick_links": "त्वरित लिंक",
+    "upsell_desc": "एक ही जगह सभी ऑफ़र और छूट अनलॉक करने के लिए अपनी सदस्यता सक्रिय करें।",
+    "card_upsell_desc": "अपने निजी नंबर और व्यापारियों द्वारा स्कैन किए जा सकने वाले QR कोड के साथ डिजिटल सदस्यता कार्ड पाने के लिए सब्सक्राइब करें।",
+    "card_actions": "कार्ड साझा करें",
+    "gifts_subtitle": "आपके द्वारा उपहार में दी गई सदस्यताएँ और उनके चालान"
   }
 }

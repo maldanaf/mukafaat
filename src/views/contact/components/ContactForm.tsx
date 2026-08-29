@@ -7,7 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { webApi } from "@network/services/mokafaatService";
 import { contactFormSchema } from "@validations";
 import { t } from "i18next";
-import { useEffect } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { FaRegUser } from "react-icons/fa";
@@ -15,6 +15,8 @@ import { IoMailOutline, IoLocationOutline } from "react-icons/io5";
 import { FiPhone } from "react-icons/fi";
 import { BsSendSlash } from "react-icons/bs";
 import { useIsRTL } from "@hooks";
+import { useUserStore } from "@stores/userStore";
+import { useProfile } from "@hooks/api/useMokafaatQueries";
 
 type ContactFormValues = {
   fullName: string;
@@ -28,10 +30,33 @@ const ContactForm = () => {
   const { translateValidationMessage } = useTranslate();
   const isRTL = useIsRTL();
 
+  // تعبئة تلقائية لبيانات المستخدم المسجّل (قابلة للتعديل قبل الإرسال)
+  const storeUser = useUserStore((s) => s.user);
+  const token = useUserStore((s) => s.token);
+  const { data: profileData, isFetched: profileFetched } = useProfile(!!token);
+  const prefill = useMemo(() => {
+    const raw = profileData as Record<string, unknown> | undefined;
+    const data = (raw?.data ?? raw) as Record<string, unknown> | undefined;
+    const u = (data?.user ?? data) as Record<string, unknown> | undefined;
+    const fullName =
+      [u?.first_name, u?.last_name].filter(Boolean).join(" ").trim() ||
+      (u?.name as string) ||
+      storeUser?.name ||
+      "";
+    const phone = String(u?.phone ?? storeUser?.phone ?? "").trim();
+    const dial = String(u?.country_code ?? "").replace(/^\+/, "").trim();
+    return {
+      fullName,
+      email: String(u?.email ?? storeUser?.email ?? "").trim(),
+      mobileNumber: phone && dial ? `+${dial}${phone}` : phone,
+    };
+  }, [profileData, storeUser]);
+
   const {
     register,
     handleSubmit,
     reset,
+    getValues,
     formState: { errors },
   } = useForm<ContactFormValues>({
     // Casting resolver due to mismatch between yup and RHF resolver generics
@@ -46,6 +71,25 @@ const ContactForm = () => {
       message: "",
     },
   });
+
+  // تُطبَّق مرة واحدة فقط ولا تمسح ما كتبه المستخدم
+  const prefilled = useRef(false);
+  useEffect(() => {
+    if (prefilled.current) return;
+    // ننتظر وصول بيانات البروفايل حتى لا نعبّئ رقماً بلا مقدمة الدولة
+    if (token && !profileFetched) return;
+    if (!prefill.fullName && !prefill.email && !prefill.mobileNumber) return;
+    const current = getValues();
+    if (current.fullName || current.email || current.mobileNumber) return;
+    prefilled.current = true;
+    reset({
+      fullName: prefill.fullName,
+      email: prefill.email,
+      mobileNumber: prefill.mobileNumber,
+      companyName: null,
+      message: "",
+    });
+  }, [prefill, getValues, reset, token, profileFetched]);
 
   const {
     mutate,
@@ -69,16 +113,16 @@ const ContactForm = () => {
     if (body?.status === true) {
       toast(t("messages.messageSent"));
       reset({
-        fullName: "",
-        email: "",
-        mobileNumber: "",
+        fullName: prefill.fullName,
+        email: prefill.email,
+        mobileNumber: prefill.mobileNumber,
         companyName: null,
         message: "",
       });
     } else if (body?.status === false && body?.message) {
       toast(body.message);
     }
-  }, [body?.status, body?.message, reset]);
+  }, [body?.status, body?.message, reset, prefill]);
 
   const submitForm = (data: ContactFormValues) => {
     mutate({
@@ -92,6 +136,11 @@ const ContactForm = () => {
 
   return (
     <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-8 lg:w-2/3 w-full">
+      {prefilled.current && (
+        <p className="mb-4 rounded-mk-md bg-mk-tint3 px-4 py-2.5 text-[13px] text-mk-muted">
+          {t("contactUs.prefill_note")}
+        </p>
+      )}
       <form onSubmit={handleSubmit(submitForm)} className="space-y-4">
         {/* Two Column Input Section */}
         <div className="grid md:grid-cols-2 grid-cols-1 gap-4">

@@ -198,6 +198,10 @@ export interface Offer {
   requiresSubscription?: boolean;
   /** عدد مرات شراء المستخدم الحالي لهذا العرض (من API - offer detail) */
   userPurchaseCount?: number;
+  /** عدد الإضافات للمفضلة (من API `favorites_count`) */
+  favoritesCount?: number;
+  /** عدد المشاركات (من API `shares_count`) */
+  sharesCount?: number;
   /** الحد الأقصى لعدد مرات بيع العرض (من API usage_limit) - null = غير محدود */
   usageLimit?: number | null;
   /** للفلتر: التصنيف الفرعي (من API subcategory_id) */
@@ -402,7 +406,7 @@ export const restaurants: Restaurant[] = [
     views: 270,
     saves: 7168,
     color: "#7c3aed",
-    topColor: "bg-purple-500",
+    topColor: "bg-mk-primary-light",
     isOpen: true,
     deliveryTime: "30-40 دقيقة",
     minimumOrder: 40,

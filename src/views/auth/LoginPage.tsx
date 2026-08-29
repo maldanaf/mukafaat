@@ -197,7 +197,7 @@ const LoginPage: React.FC = () => {
 
           {!otpSent ? (
             <>
-              <h2 className="text-2xl font-bold text-[#440798] mb-2">
+              <h2 className="text-2xl font-bold text-[#400198] mb-2">
                 {isRegisterMode
                   ? t("home.login.register_title")
                   : t("home.login.login_title")}
@@ -233,7 +233,7 @@ const LoginPage: React.FC = () => {
                     inputMode="numeric"
                     pattern="[0-9]*"
                     autoComplete="tel"
-                    className={`text-start flex-1 border border-gray-300 px-4 py-2 text-base rounded-full focus:outline-none focus:ring-[#440798] focus:border-[#440798] ${
+                    className={`text-start flex-1 border border-gray-300 px-4 py-2 text-base rounded-full focus:outline-none focus:ring-[#400198] focus:border-[#400198] ${
                       error ? "text-red-500 placeholder-red-400" : ""
                     }`}
                     placeholder={
@@ -264,7 +264,7 @@ const LoginPage: React.FC = () => {
             </>
           ) : (
             <div className="w-full flex flex-col items-center">
-              <h2 className="text-2xl font-bold text-[#440798] mb-2 font-sans">
+              <h2 className="text-2xl font-bold text-[#400198] mb-2 font-sans">
                 {isRegisterMode
                   ? t("home.login.register_title")
                   : t("home.login.login_title")}
@@ -281,7 +281,7 @@ const LoginPage: React.FC = () => {
                     inputMode="numeric"
                     maxLength={1}
                     dir="ltr"
-                    className="w-14 h-14 text-2xl text-center border border-gray-300 bg-white focus:border-[#440798] focus:ring-2 focus:ring-[#440798] outline-none rounded-md"
+                    className="w-14 h-14 text-2xl text-center border border-gray-300 bg-white focus:border-[#400198] focus:ring-2 focus:ring-[#400198] outline-none rounded-md"
                     value={v}
                     onChange={(e) => handleCodeChange(i, e.target.value)}
                     onKeyDown={(e) => handleCodeKeyDown(i, e)}
@@ -291,7 +291,7 @@ const LoginPage: React.FC = () => {
               <div className="mb-6 text-center text-gray-500">
                 {t("home.login.verify_not_received")}{" "}
                 <button
-                  className="text-[#440798] underline disabled:text-gray-400"
+                  className="text-[#400198] underline disabled:text-gray-400"
                   disabled={timer > 0 || loading}
                   onClick={() => {
                     sendOtp(phone.trim(), countryCode);
@@ -333,7 +333,7 @@ const LoginPage: React.FC = () => {
                   navigate("/register");
                 }
               }}
-              className="mr-2 text-[#440798] font-bold hover:underline"
+              className="mr-2 text-[#400198] font-bold hover:underline"
             >
               {isRegisterMode
                 ? t("home.login.sign_in_now")

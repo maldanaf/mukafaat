@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useMemo, useEffect, useRef } from "react";
-import { useNavigate, Link } from "@/lib/router-compat";
 import { useTranslation } from "react-i18next";
 import { useIsRTL } from "@hooks";
 import { useUserStore } from "@stores/userStore";
@@ -16,229 +15,63 @@ import {
   IoSparklesOutline,
   IoEarthOutline,
   IoLocationOutline,
+  IoFlashOutline,
+  IoWalletOutline,
+  IoHeartOutline,
+  IoReceiptOutline,
 } from "react-icons/io5";
 import {
   useProfile,
   useProfileUpdate,
   useSubscriptionStatus,
   useCountries,
+  useGeoCountries,
   useCitiesByCountry,
   mokafaatKeys,
 } from "@hooks/api/useMokafaatQueries";
 import { useQueryClient } from "@tanstack/react-query";
 import { isUserSubscribed } from "@utils/subscription";
 import CountryCodeSelect from "@components/CountryCodeSelect";
+import MembershipTierCard from "@components/MembershipTierCard";
+import MembershipCard from "@components/account/MembershipCard";
+import DeleteAccountSection from "@components/account/DeleteAccountSection";
+import { Badge, Button, EmptyState, FOCUS } from "@ui";
+import { parseMembershipTier } from "@utils/subscriptionPricing";
+import { parseGeoCountries } from "@utils/geo";
+import {
+  AccountPageHead,
+  AccountPanel,
+  AccountRow,
+  AccountUpsell,
+} from "./components/AccountKit";
 
-/** تجميع الأرقام بمسافات (مثل 242 325 678 122) */
-function formatDigitsSpaced(raw: string) {
-  const d = String(raw).replace(/\D/g, "");
-  if (!d) return raw;
-  const parts: string[] = [];
-  let i = d.length;
-  while (i > 0) {
-    parts.unshift(d.slice(Math.max(0, i - 3), i));
-    i -= 3;
-  }
-  return parts.join(" ");
-}
+/**
+ * حقل بيانات موحّد — عرض أو تحرير بنفس الإطار.
+ * مُعرَّف على مستوى الوحدة حتى لا يُعاد بناء الحقول عند كل ضغطة مفتاح.
+ */
+const Field: React.FC<{
+  icon: React.ReactNode;
+  label: string;
+  children: React.ReactNode;
+}> = ({ icon, label, children }) => (
+  <div className="rounded-mk-md border border-mk-border bg-grad-mist p-3.5">
+    <span className="mb-2 flex items-center gap-1.5 text-[11.5px] font-bold text-mk-muted">
+      <span aria-hidden className="text-mk-primary">
+        {icon}
+      </span>
+      {label}
+    </span>
+    {children}
+  </div>
+);
 
-/** بطاقة تعريفية — مطابقة التصميم المرجعي (فعالة أخضر / منتهية رمادي) */
-function ProfileMembershipCard({
-  fullName,
-  membershipNumber,
-  idNumber,
-  isActive = true,
-  membershipQrUrl,
-}: {
-  fullName: string;
-  membershipNumber: string;
-  /** يظهر في سطر «رقم إثبات»؛ إن لم يُمرَّر يُستخدم رقم العضوية */
-  idNumber?: string;
-  /** إن false تُعرض «الحالة منتهية» بتصميم رمادي */
-  isActive?: boolean;
-  /** رابط صورة QR من API البروفايل (membership_qr_url) — يُستخدم عند توفره */
-  membershipQrUrl?: string | null;
-}) {
-  const { t } = useTranslation();
-  const isRTL = useIsRTL();
-  const proofLine = String(idNumber || membershipNumber || "").trim();
-  const qrValue = useMemo(
-    () =>
-      JSON.stringify({
-        type: "mokafaat_member",
-        membership_number: membershipNumber,
-      }),
-    [membershipNumber],
-  );
-  const qrSrcFallback = useMemo(() => {
-    const enc = encodeURIComponent(qrValue);
-    return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&ecc=M&data=${enc}`;
-  }, [qrValue]);
-  const qrSrc = membershipQrUrl?.trim() || qrSrcFallback;
-  const displayBig = formatDigitsSpaced(membershipNumber);
-  /** تدرج خلفية: فوق #6A0DAD → تحت #4B0082 */
-  const cardGradient = "linear-gradient(180deg, #6A0DAD 0%, #4B0082 100%)";
-  const purpleDeep = "#4B0082";
-
-  return (
-    <div
-      className="mb-6 rounded-2xl px-3 py-4 shadow-xl sm:px-4 sm:py-5"
-      style={{
-        backgroundImage: cardGradient,
-        backgroundAttachment: "fixed",
-      }}
-      dir={isRTL ? "rtl" : "ltr"}
-    >
-      <div
-        className="px-4 py-3.5 text-center text-white sm:py-4"
-        style={{
-          backgroundImage: cardGradient,
-          backgroundAttachment: "fixed",
-        }}
-      >
-        <h3 className="text-base font-bold tracking-wide sm:text-lg">
-          {t("profile.membership_card_title")}
-        </h3>
-      </div>
-      <div className="relative mx-auto max-w-sm overflow-hidden rounded-2xl bg-white shadow-[0_8px_32px_rgba(0,0,0,0.18)] sm:rounded-3xl">
-        {/* شريط العنوان — نفس تدرج الخلفية */}
-
-        {/* قصّ تذكرة — يكمل التدرج مع بقية الصفحة */}
-        <div
-          className="pointer-events-none absolute left-0 top-1/2 z-10 h-9 w-4 -translate-y-1/2 rounded-r-full sm:h-10 sm:w-5"
-          style={{
-            marginLeft: "-2px",
-            backgroundImage: cardGradient,
-            backgroundAttachment: "fixed",
-            boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06)",
-          }}
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute right-0 top-1/2 z-10 h-9 w-4 -translate-y-1/2 rounded-l-full sm:h-10 sm:w-5"
-          style={{
-            marginRight: "-2px",
-            backgroundImage: cardGradient,
-            backgroundAttachment: "fixed",
-            boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06)",
-          }}
-          aria-hidden
-        />
-
-        <div className="px-5 pb-8 pt-5 text-center sm:px-6 sm:pb-10 sm:pt-6">
-          <p className="mb-4 text-xs leading-relaxed text-gray-600 sm:text-sm">
-            {t("profile.membership_card_hint")}
-          </p>
-
-          <div className="mb-5 flex justify-center sm:mb-6">
-            <img
-              src={qrSrc}
-              alt=""
-              width={200}
-              height={200}
-              className="block h-[180px] w-[180px] sm:h-[200px] sm:w-[200px]"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-
-          <div className="my-4 border-t border-dashed border-gray-300 sm:my-5" />
-
-          <p className="mb-3 text-lg font-bold text-gray-900 sm:text-xl">
-            {fullName}
-          </p>
-          <p className="mb-4 text-xs text-gray-600 sm:mb-4 sm:text-sm">
-            {t("profile.membership_proof_label")} /{" "}
-            <span className="font-mono font-semibold text-gray-800">
-              {proofLine}
-            </span>
-          </p>
-
-          <p
-            className="mb-5 font-mono text-2xl font-bold leading-snug sm:mb-5 sm:text-2xl "
-            style={{
-              wordBreak: "break-word",
-              color: purpleDeep,
-            }}
-          >
-            {displayBig}
-          </p>
-
-          {/* حالة البطاقة — فعالة (أخضر) أو منتهية (رمادي) */}
-          <div
-            className={`mx-auto flex max-w-[150px] flex-col items-center gap-1 rounded-2xl px-5 py-4 ${
-              isActive ? "" : "bg-gray-100"
-            }`}
-            style={isActive ? { backgroundColor: "#EAF8EE" } : undefined}
-          >
-            <div
-              className={`flex items-center justify-center rounded-xl p-2 sm:p-2 ${
-                isActive ? "" : "bg-gray-200"
-              }`}
-              style={
-                isActive
-                  ? { backgroundColor: "rgb(4 120 87 / 15%)" }
-                  : undefined
-              }
-            >
-              {isActive ? (
-                <svg
-                  className="h-8 w-8 sm:h-8 sm:w-8"
-                  viewBox="0 0 32 32"
-                  fill="none"
-                  aria-hidden
-                >
-                  <path
-                    d="M16 2.5L5.5 6.2v7.8c0 6.2 4.3 12 10.5 13.5 6.2-1.5 10.5-7.3 10.5-13.5V6.2L16 2.5z"
-                    fill="#047857"
-                  />
-                  <path
-                    d="M14 16.2l2.2 2.2 4.8-4.8"
-                    stroke="white"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className="h-8 w-8 sm:h-8 sm:w-8 text-gray-500"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M12 6v6l4 2" />
-                </svg>
-              )}
-            </div>
-            <span className="text-[11px] text-gray-500 sm:text-xs">
-              {t("profile.membership_status_label")}
-            </span>
-            <span
-              className={`text-base font-bold sm:text-lg ${
-                isActive ? "text-gray-900" : "text-gray-600"
-              }`}
-            >
-              {isActive
-                ? t("profile.membership_status_active")
-                : t("profile.membership_status_expired")}
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+/** أصناف حقول الإدخال في منطقة الحساب */
+const INPUT_CLASS =
+  "w-full rounded-mk-sm border border-mk-border-strong bg-white px-3.5 py-2.5 text-[13.5px] text-mk-text outline-none transition-colors focus:border-mk-primary focus:ring-2 focus:ring-[#400198]/15";
 
 const ProfilePage: React.FC = () => {
   const { t, i18n } = useTranslation();
   const isRTL = useIsRTL();
-  const navigate = useNavigate();
   const dateLocale = useMemo(() => {
     const b = i18n.language?.split("-")[0] || "en";
     if (b === "ar") return "ar-SA";
@@ -287,6 +120,12 @@ const ProfilePage: React.FC = () => {
       followingCount: stats.following_count ?? 0,
     };
   }, [profileData, user]);
+
+  // مستوى العضوية (تصنيف العميل) — يأتي مع /api/profile
+  const membershipTier = useMemo(
+    () => parseMembershipTier(profileData),
+    [profileData],
+  );
 
   const userMeta = useMemo(() => {
     const raw = profileData as Record<string, unknown> | undefined;
@@ -386,8 +225,22 @@ const ProfilePage: React.FC = () => {
 
   // Location dropdowns — كل مدن الدولة بدون فلتر بالمنطقة
   const { data: countries = [] } = useCountries();
+  // «دولة واحدة مفعّلة» → لا نعرض خطوة اختيار الدولة إطلاقاً
+  const { data: geoData } = useGeoCountries();
+  const geo = useMemo(() => parseGeoCountries(geoData), [geoData]);
+  const singleCountry = geo.loaded && geo.singleCountry && !!geo.onlyCountry;
   const { data: cities = [] } = useCitiesByCountry(formData.countryId);
   const queryClient = useQueryClient();
+  // في وضع «الدولة الواحدة» نثبّت الدولة تلقائياً بلا خطوة اختيار
+  useEffect(() => {
+    if (!singleCountry || !geo.onlyCountry) return;
+    setFormData((p) =>
+      p.countryId === geo.onlyCountry!.id
+        ? p
+        : { ...p, countryId: geo.onlyCountry!.id },
+    );
+  }, [singleCountry, geo.onlyCountry, isEditing]);
+
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
@@ -548,434 +401,401 @@ const ProfilePage: React.FC = () => {
 
   const avatarSrc = avatarPreview ?? displayUser.avatar;
 
+
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            {t("profile.guest_title")}
-          </h2>
-          <p className="text-gray-600">{t("profile.guest_subtitle")}</p>
-        </div>
+      <div className="flex min-h-[45vh] items-center justify-center px-4">
+        <EmptyState
+          icon={<IoPersonOutline />}
+          title={t("profile.guest_title")}
+          description={t("profile.guest_subtitle")}
+          actionLabel={t("home.navbar.login", "تسجيل الدخول")}
+          actionTo="/login"
+        />
       </div>
     );
   }
 
   return (
-    <div className="min-h-[50vh] bg-transparent py-0 lg:py-0">
-      <div className="container mx-auto px-4 sm:px-4 lg:px-4">
-        {/* هيدر: يمين = المستخدم | يسار = إحصائيات (بدون عنوان) + تعديل */}
-        <div
-          className="mb-6 rounded-2xl border border-gray-200/80 bg-white shadow-md overflow-hidden"
-          dir={isRTL ? "rtl" : "ltr"}
-        >
-          <div className="p-5 sm:p-6 lg:p-8">
-            <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
-              {/* يمين الشاشة: صورة + اسم + بريد + موثق */}
-              <div className="flex items-center gap-4 sm:gap-5 min-w-0 shrink-0">
-                <div className="relative shrink-0">
-                  <input
-                    ref={avatarInputRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleAvatarChange}
-                  />
-                  <img
-                    src={
-                      avatarSrc ||
-                      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
-                    }
-                    alt={displayUser.name}
-                    className="w-[4.5rem] h-[4.5rem] sm:w-24 sm:h-24 rounded-2xl object-cover ring-4 ring-[#440798]/10 shadow-inner"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleAvatarClick}
-                    disabled={isUploadingAvatar}
-                    className="absolute -bottom-1 -left-1 bg-[#440798] text-white p-2 rounded-xl shadow-lg hover:bg-[#350775] transition-colors disabled:opacity-70"
-                    title={t("profile.change_photo")}
-                  >
-                    {isUploadingAvatar ? (
-                      <span className="w-4 h-4 block border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    ) : (
-                      <IoCameraOutline className="w-4 h-4" />
-                    )}
-                  </button>
-                </div>
-                <div
-                  className={`min-w-0 ${isRTL ? "text-right" : "text-left"}`}
-                >
-                  <h1 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">
-                    {displayUser.name}
-                  </h1>
-                  <p className="text-sm sm:text-base text-gray-500 truncate mt-0.5">
-                    {displayUser.email}
-                  </p>
-                  <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-emerald-700 text-xs sm:text-sm font-medium border border-emerald-100">
-                    {displayUser.isVerified ? (
-                      <>
-                        <IoCheckmarkCircleOutline className="w-4 h-4 shrink-0" />
-                        {t("profile.account_verified")}
-                      </>
-                    ) : (
-                      <span className="text-amber-700">
-                        {t("profile.account_unverified")}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
+    <div className="space-y-5" dir={isRTL ? "rtl" : "ltr"}>
+      <AccountPageHead
+        title={t("profile.profile_info")}
+        subtitle={
+          isEditing ? t("profile.edit_mode_badge") : t("profile.view_mode_hint")
+        }
+        icon={<IoPersonOutline />}
+        tint="purple"
+        actions={
+          <Button
+            size="sm"
+            variant={isEditing ? "outline" : "primary"}
+            onClick={() => setIsEditing(!isEditing)}
+          >
+            {isEditing ? t("profile.cancel_editing") : t("profile.edit_profile")}
+          </Button>
+        }
+      />
 
-              {/* يسار الشاشة: إحصائيات (بدون عنوان) ثم زر التعديل — بترتيب DOM مع RTL يصير تعديل أقصى اليسار */}
-              <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 lg:flex-1 lg:justify-end lg:min-w-0">
-                <div className="grid grid-cols-3 gap-2 sm:gap-2.5 flex-1 sm:max-w-[340px] lg:max-w-[380px] order-2 sm:order-1">
-                  {(
-                    [
-                      {
-                        labelKey: "profile.stat_favorites",
-                        to: "/saved",
-                        value:
-                          (displayUser as { favoritesCount?: number })
-                            .favoritesCount ?? 0,
-                      },
-                      {
-                        labelKey: "profile.stat_orders",
-                        to: "/orders",
-                        value:
-                          (displayUser as { ordersCount?: number })
-                            .ordersCount ?? 0,
-                      },
-                      {
-                        labelKey: "profile.stat_wallet",
-                        to: "/wallet",
-                        value: `${walletBalance}`,
-                        suffixKey: "profile.wallet_currency_suffix",
-                      },
-                    ] as const
-                  ).map((item) => (
-                    <Link
-                      key={item.labelKey}
-                      to={item.to}
-                      className={`rounded-xl bg-white border border-gray-100 px-2 py-2 sm:py-2.5 text-center hover:border-[#440798]/40 hover:shadow-md hover:bg-[#440798]/[0.03] transition-all cursor-pointer block focus:outline-none focus-visible:ring-2 focus-visible:ring-[#440798]/50 ${
-                        isRTL ? "sm:text-right" : "sm:text-left"
-                      }`}
-                    >
-                      <p className="text-[10px] sm:text-[11px] text-gray-500 mb-0.5 truncate">
-                        {t(item.labelKey)}
-                      </p>
-                      <p className="text-sm sm:text-base font-bold text-[#440798] tabular-nums leading-tight">
-                        {item.value}
-                        {"suffixKey" in item
-                          ? t(item.suffixKey as "profile.wallet_currency_suffix")
-                          : ""}
-                      </p>
-                    </Link>
-                  ))}
-                </div>
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
+        {/* ===== العمود الرئيسي: البيانات ===== */}
+        <div className="space-y-5 lg:col-span-7 xl:col-span-8">
+          <AccountPanel
+            title={t("profile.profile_info")}
+            subtitle={t("profile.label_full_name")}
+            icon={<IoPersonOutline />}
+            tint="purple"
+          >
+            {/* صورة الحساب + حالة التوثيق */}
+            <div className="mb-4 flex items-center gap-4 rounded-mk-lg border border-mk-border bg-grad-mist p-3">
+              <div className="relative shrink-0">
+                <input
+                  ref={avatarInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleAvatarChange}
+                />
+                {avatarSrc ? (
+                  <img
+                    src={avatarSrc}
+                    alt=""
+                    className="h-16 w-16 rounded-mk-md object-cover ring-2 ring-[#400198]/15"
+                  />
+                ) : (
+                  <span className="flex h-16 w-16 items-center justify-center rounded-mk-md bg-grad-brand text-[24px] font-bold text-white shadow-mk-glow">
+                    {(displayUser.name || "?").trim().charAt(0)}
+                  </span>
+                )}
                 <button
                   type="button"
-                  onClick={() => setIsEditing(!isEditing)}
-                  className="shrink-0 rounded-xl bg-[#440798] px-5 py-3 text-sm font-bold text-white shadow-md hover:bg-[#350775] transition-colors w-full sm:w-auto order-1 sm:order-2"
+                  onClick={handleAvatarClick}
+                  disabled={isUploadingAvatar}
+                  title={t("profile.change_photo")}
+                  aria-label={t("profile.change_photo")}
+                  className={`absolute -bottom-1.5 -end-1.5 flex h-8 w-8 items-center justify-center rounded-full bg-grad-accent text-white shadow-mk-badge transition-transform hover:scale-105 active:scale-95 disabled:opacity-70 ${FOCUS}`}
                 >
-                  {isEditing
-                    ? t("profile.cancel_editing")
-                    : t("profile.edit_profile")}
+                  {isUploadingAvatar ? (
+                    <span className="block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  ) : (
+                    <IoCameraOutline className="h-4 w-4" />
+                  )}
                 </button>
               </div>
+
+              <div className="min-w-0 flex-1">
+                <p className="m-0 truncate text-[15px] font-bold text-mk-text">
+                  {displayUser.name}
+                </p>
+                <p className="m-0 mt-0.5 truncate text-[12px] text-mk-muted">
+                  {displayUser.email}
+                </p>
+                <span className="mt-1.5 inline-flex">
+                  <Badge
+                    size="sm"
+                    tone={displayUser.isVerified ? "grad-success" : "warning"}
+                    icon={
+                      displayUser.isVerified ? (
+                        <IoCheckmarkCircleOutline className="h-3.5 w-3.5" />
+                      ) : undefined
+                    }
+                  >
+                    {displayUser.isVerified
+                      ? t("profile.account_verified")
+                      : t("profile.account_unverified")}
+                  </Badge>
+                </span>
+              </div>
             </div>
-          </div>
+
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <Field
+                icon={<IoPersonOutline className="h-4 w-4" />}
+                label={t("profile.label_full_name")}
+              >
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    className={INPUT_CLASS}
+                  />
+                ) : (
+                  <p className="m-0 text-[13.5px] font-bold text-mk-text">
+                    {displayUser.name}
+                  </p>
+                )}
+              </Field>
+
+              <Field
+                icon={<IoMailOutline className="h-4 w-4" />}
+                label={t("profile.label_email")}
+              >
+                {isEditing ? (
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className={INPUT_CLASS}
+                  />
+                ) : (
+                  <p className="m-0 break-all text-[13.5px] text-mk-text">
+                    {displayUser.email}
+                  </p>
+                )}
+              </Field>
+
+              <Field
+                icon={<IoCallOutline className="h-4 w-4" />}
+                label={t("profile.label_phone")}
+              >
+                {isEditing ? (
+                  <div
+                    className="flex items-stretch gap-2 rounded-mk-sm border border-mk-border-strong bg-white px-2 focus-within:border-mk-primary focus-within:ring-2 focus-within:ring-[#400198]/15"
+                    dir="ltr"
+                  >
+                    <div className="flex items-center border-e border-mk-border">
+                      <CountryCodeSelect
+                        value={formData.countryCode}
+                        onChange={(dial) =>
+                          setFormData((prev) => ({ ...prev, countryCode: dial }))
+                        }
+                      />
+                    </div>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      placeholder="5XXXXXXXX"
+                      className="flex-1 bg-transparent px-2 py-2 text-[13.5px] outline-none"
+                    />
+                  </div>
+                ) : (
+                  <p className="m-0 text-[13.5px] text-mk-text" dir="ltr">
+                    {displayUser.phone
+                      ? `+${(displayUser.countryCode || "966").replace(/^\+/, "")} ${displayUser.phone}`
+                      : t("profile.phone_not_set")}
+                  </p>
+                )}
+              </Field>
+
+              <Field
+                icon={<IoCalendarOutline className="h-4 w-4" />}
+                label={t("profile.label_join_date")}
+              >
+                <p className="m-0 text-[13.5px] text-mk-text">
+                  {displayUser.createdAt
+                    ? new Date(displayUser.createdAt).toLocaleDateString(dateLocale)
+                    : t("profile.date_em_dash")}
+                </p>
+              </Field>
+
+              <Field
+                icon={<IoEarthOutline className="h-4 w-4" />}
+                label={t("profile.label_country", "الدولة")}
+              >
+                {isEditing && !singleCountry ? (
+                  <select
+                    value={formData.countryId ?? ""}
+                    onChange={(e) => {
+                      const v = e.target.value ? Number(e.target.value) : null;
+                      setFormData((p) => ({
+                        ...p,
+                        countryId: v,
+                        regionId: null,
+                        cityId: null,
+                      }));
+                    }}
+                    className={INPUT_CLASS}
+                  >
+                    <option value="">
+                      {t("profile.select_country", "اختر الدولة")}
+                    </option>
+                    {(countries as Array<{ id: number | string; name?: string }>).map(
+                      (c) => (
+                        <option key={String(c.id)} value={c.id}>
+                          {c.name}
+                        </option>
+                      ),
+                    )}
+                  </select>
+                ) : (
+                  <p className="m-0 text-[13.5px] text-mk-text">
+                    {(singleCountry ? geo.onlyCountry?.name : undefined) ||
+                      ((profileUserObj?.country as Record<string, unknown> | undefined)
+                        ?.name as string | undefined) ||
+                      t("profile.not_set", "غير محدد")}
+                  </p>
+                )}
+              </Field>
+
+              <Field
+                icon={<IoLocationOutline className="h-4 w-4" />}
+                label={t("profile.label_city", "المدينة")}
+              >
+                {isEditing ? (
+                  <select
+                    value={formData.cityId ?? ""}
+                    onChange={(e) => {
+                      const v = e.target.value ? Number(e.target.value) : null;
+                      setFormData((p) => ({ ...p, cityId: v }));
+                    }}
+                    disabled={!formData.countryId}
+                    className={`${INPUT_CLASS} disabled:bg-mk-tint2 disabled:text-mk-faint`}
+                  >
+                    <option value="">
+                      {formData.countryId
+                        ? t("profile.select_city", "اختر المدينة")
+                        : t("profile.select_country_first", "اختر الدولة أولاً")}
+                    </option>
+                    {(cities as Array<{ id: number | string; name?: string }>).map(
+                      (c) => (
+                        <option key={String(c.id)} value={c.id}>
+                          {c.name}
+                        </option>
+                      ),
+                    )}
+                  </select>
+                ) : (
+                  <p className="m-0 text-[13.5px] text-mk-text">
+                    {((profileUserObj?.city as Record<string, unknown> | undefined)
+                      ?.name as string | undefined) ||
+                      t("profile.not_set", "غير محدد")}
+                  </p>
+                )}
+              </Field>
+            </div>
+
+            {isEditing && (
+              <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-end">
+                <Button onClick={handleSave} loading={isLoading} variant="accent">
+                  {isLoading ? t("profile.saving") : t("profile.save_changes")}
+                </Button>
+                <Button onClick={handleCancel} variant="outline">
+                  {t("profile.cancel")}
+                </Button>
+              </div>
+            )}
+          </AccountPanel>
+
+          {/* روابط سريعة — نفس مربّعات «المزيد» في التطبيق */}
+          <AccountPanel
+            title={t("account.quick_links", "روابط سريعة")}
+            icon={<IoFlashOutline />}
+            tint="orange"
+            flush
+          >
+            <div className="divide-y divide-mk-divider">
+              <AccountRow
+                to="/wallet"
+                icon={<IoWalletOutline className="h-[17px] w-[17px]" />}
+                tint="orange"
+                label={t("profile.stat_wallet")}
+                value={
+                  <span className="shrink-0 text-[13.5px] font-bold tabular-nums text-mk-accent-dark">
+                    {walletBalance}
+                    {t("profile.wallet_currency_suffix")}
+                  </span>
+                }
+              />
+              <AccountRow
+                to="/saved"
+                icon={<IoHeartOutline className="h-[17px] w-[17px]" />}
+                tint="red"
+                label={t("profile.stat_favorites")}
+                value={
+                  <span className="shrink-0 text-[13.5px] font-bold tabular-nums text-mk-red">
+                    {(displayUser as { favoritesCount?: number }).favoritesCount ?? 0}
+                  </span>
+                }
+              />
+              <AccountRow
+                to="/orders"
+                icon={<IoReceiptOutline className="h-[17px] w-[17px]" />}
+                tint="teal"
+                label={t("profile.stat_orders")}
+                value={
+                  <span className="shrink-0 text-[13.5px] font-bold tabular-nums text-[#0E9384]">
+                    {(displayUser as { ordersCount?: number }).ordersCount ?? 0}
+                  </span>
+                }
+              />
+            </div>
+          </AccountPanel>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-          {/* Main content */}
-          <div className="lg:col-span-8">
-            {/* Profile Information */}
-            <div
-              className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden"
-              dir={isRTL ? "rtl" : "ltr"}
+        {/* ===== العمود الجانبي: الاشتراك والعضوية ===== */}
+        <div className="space-y-5 lg:col-span-5 xl:col-span-4">
+          {isSubscribed ? (
+            <AccountPanel
+              title={t("profile.subscription_active")}
+              subtitle={planName ?? undefined}
+              icon={<IoSparklesOutline />}
+              tint="teal"
             >
-              <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between gap-3">
-                <h2 className="text-lg sm:text-xl font-bold text-gray-900">
-                  {t("profile.profile_info")}
-                </h2>
-                {!isEditing ? (
-                  <span className="text-xs sm:text-sm text-gray-500">
-                    {t("profile.view_mode_hint")}
-                  </span>
-                ) : (
-                  <span className="text-xs sm:text-sm text-[#440798] font-semibold">
-                    {t("profile.edit_mode_badge")}
-                  </span>
-                )}
-              </div>
-
-              <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-4">
-                    <label className="block text-xs font-semibold text-gray-600 mb-2">
-                      <IoPersonOutline className="inline w-4 h-4 ml-1" />
-                      {t("profile.label_full_name")}
-                    </label>
-                    {isEditing ? (
-                      <input
-                        type="text"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-[#440798] focus:border-[#440798]"
-                      />
-                    ) : (
-                      <p className="text-gray-900 font-semibold">{displayUser.name}</p>
-                    )}
-                  </div>
-
-                  <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-4">
-                    <label className="block text-xs font-semibold text-gray-600 mb-2">
-                      <IoMailOutline className="inline w-4 h-4 ml-1" />
-                      {t("profile.label_email")}
-                    </label>
-                    {isEditing ? (
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-[#440798] focus:border-[#440798]"
-                      />
-                    ) : (
-                      <p className="text-gray-900">{displayUser.email}</p>
-                    )}
-                  </div>
-
-                  <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-4">
-                    <label className="block text-xs font-semibold text-gray-600 mb-2">
-                      <IoCallOutline className="inline w-4 h-4 ml-1" />
-                      {t("profile.label_phone")}
-                    </label>
-                    {isEditing ? (
-                      <div
-                        className="flex items-stretch gap-2 bg-white border border-gray-300 rounded-lg px-2 focus-within:ring-1 focus-within:ring-[#440798] focus-within:border-[#440798]"
-                        dir="ltr"
-                      >
-                        <div className="flex items-center border-e border-gray-200">
-                          <CountryCodeSelect
-                            value={formData.countryCode}
-                            onChange={(dial) =>
-                              setFormData((prev) => ({
-                                ...prev,
-                                countryCode: dial,
-                              }))
-                            }
-                          />
-                        </div>
-                        <input
-                          type="tel"
-                          name="phone"
-                          value={formData.phone}
-                          onChange={handleInputChange}
-                          placeholder="5XXXXXXXX"
-                          className="flex-1 px-2 py-2 bg-transparent focus:outline-none"
-                        />
-                      </div>
-                    ) : (
-                      <p className="text-gray-900" dir="ltr">
-                        {displayUser.phone
-                          ? `+${(displayUser.countryCode || "966").replace(/^\+/, "")} ${displayUser.phone}`
-                          : t("profile.phone_not_set")}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-4">
-                    <label className="block text-xs font-semibold text-gray-600 mb-2">
-                      <IoCalendarOutline className="inline w-4 h-4 ml-1" />
-                      {t("profile.label_join_date")}
-                    </label>
-                    <p className="text-gray-900">
-                      {displayUser.createdAt
-                        ? new Date(displayUser.createdAt).toLocaleDateString(
-                            dateLocale,
-                          )
-                        : t("profile.date_em_dash")}
-                    </p>
-                  </div>
-
-                  {/* الدولة */}
-                  <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-4">
-                    <label className="block text-xs font-semibold text-gray-600 mb-2">
-                      <IoEarthOutline className="inline w-4 h-4 ml-1" />
-                      {t("profile.label_country", "الدولة")}
-                    </label>
-                    {isEditing ? (
-                      <select
-                        value={formData.countryId ?? ""}
-                        onChange={(e) => {
-                          const v = e.target.value ? Number(e.target.value) : null;
-                          setFormData((p) => ({
-                            ...p,
-                            countryId: v,
-                            regionId: null,
-                            cityId: null,
-                          }));
-                        }}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-[#440798] focus:border-[#440798]"
-                      >
-                        <option value="">
-                          {t("profile.select_country", "اختر الدولة")}
-                        </option>
-                        {(countries as Array<{ id: number | string; name?: string }>).map(
-                          (c) => (
-                            <option key={String(c.id)} value={c.id}>
-                              {c.name}
-                            </option>
-                          ),
-                        )}
-                      </select>
-                    ) : (
-                      <p className="text-gray-900">
-                        {(profileUserObj?.country as Record<string, unknown> | undefined)
-                          ?.name as string | undefined ||
-                          t("profile.not_set", "غير محدد")}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* المدينة */}
-                  <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-4">
-                    <label className="block text-xs font-semibold text-gray-600 mb-2">
-                      <IoLocationOutline className="inline w-4 h-4 ml-1" />
-                      {t("profile.label_city", "المدينة")}
-                    </label>
-                    {isEditing ? (
-                      <select
-                        value={formData.cityId ?? ""}
-                        onChange={(e) => {
-                          const v = e.target.value ? Number(e.target.value) : null;
-                          setFormData((p) => ({ ...p, cityId: v }));
-                        }}
-                        disabled={!formData.countryId}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-[#440798] focus:border-[#440798] disabled:bg-gray-100 disabled:text-gray-400"
-                      >
-                        <option value="">
-                          {formData.countryId
-                            ? t("profile.select_city", "اختر المدينة")
-                            : t("profile.select_country_first", "اختر الدولة أولاً")}
-                        </option>
-                        {(cities as Array<{ id: number | string; name?: string }>).map(
-                          (c) => (
-                            <option key={String(c.id)} value={c.id}>
-                              {c.name}
-                            </option>
-                          ),
-                        )}
-                      </select>
-                    ) : (
-                      <p className="text-gray-900">
-                        {(profileUserObj?.city as Record<string, unknown> | undefined)
-                          ?.name as string | undefined ||
-                          t("profile.not_set", "غير محدد")}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {isEditing && (
-                  <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4 sm:justify-end">
-                    <button
-                      onClick={handleSave}
-                      disabled={isLoading}
-                      className="bg-[#440798] text-white px-6 py-3 rounded-xl hover:bg-[#350775] transition-colors disabled:opacity-50 font-bold"
-                    >
-                      {isLoading
-                        ? t("profile.saving")
-                        : t("profile.save_changes")}
-                    </button>
-                    <button
-                      onClick={handleCancel}
-                      className="bg-gray-100 text-gray-800 px-6 py-3 rounded-xl hover:bg-gray-200 transition-colors font-bold border border-gray-200"
-                    >
-                      {t("profile.cancel")}
-                    </button>
+              <div className="space-y-2 text-[13px]">
+                {planName && (
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-mk-muted">{t("profile.subscription_plan")}</span>
+                    <span className="font-bold text-mk-text">{planName}</span>
                   </div>
                 )}
-              </div>
-            </div>
-          </div>
-
-          {/* Sidebar */}
-          <div className="lg:col-span-4">
-            <div className="lg:sticky lg:top-[96px] space-y-6">
-              {/* Subscription status card */}
-              <div
-                className={`rounded-2xl shadow-sm p-5 border-2 ${
-                  isSubscribed
-                    ? "bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200"
-                    : "bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200"
-                }`}
-                dir={isRTL ? "rtl" : "ltr"}
-              >
-              <div className="flex items-start gap-4">
-                <div
-                  className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${
-                    isSubscribed
-                      ? "bg-emerald-500 text-white"
-                      : "bg-amber-400 text-white"
-                  }`}
-                >
-                  <IoSparklesOutline className="w-6 h-6" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p
-                    className={`font-bold text-lg ${
-                      isSubscribed ? "text-emerald-800" : "text-amber-800"
-                    }`}
-                  >
-                    {isSubscribed
-                      ? t("profile.subscription_active")
-                      : t("profile.subscription_inactive")}
-                  </p>
-                  {isSubscribed && planName && (
-                    <p className="text-sm text-emerald-700 mt-0.5">
-                      {t("profile.subscription_plan")}: {planName}
-                    </p>
-                  )}
-                  {isSubscribed && expiresAt && (
-                    <p className="text-sm text-emerald-600 mt-0.5">
-                      {t("profile.subscription_expires")}:{" "}
+                {expiresAt && (
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-mk-muted">{t("profile.subscription_expires")}</span>
+                    <span className="font-bold text-mk-text">
                       {new Date(expiresAt).toLocaleDateString(dateLocale)}
-                    </p>
-                  )}
-                  {!isSubscribed && (
-                    <button
-                      onClick={() =>
-                        navigate(`/subscription/plans?from=${encodeURIComponent(location.pathname)}`, {
-                          state: { from: "/profile" },
-                        })
-                      }
-                      className="mt-3 text-sm font-medium bg-[#440798] text-white px-4 py-2 rounded-lg hover:bg-[#440798c9] transition-colors"
-                    >
-                      {t("profile.subscribe_now")}
-                    </button>
-                  )}
-                </div>
+                    </span>
+                  </div>
+                )}
+                <Button
+                  to="/subscription/plans?from=/profile"
+                  variant="soft"
+                  size="sm"
+                  block
+                  className="mt-2"
+                >
+                  {t("profileDashboard.menu_upgrade")}
+                </Button>
               </div>
-              </div>
-
-              {showMembershipCard && membershipNumber && (
-                <ProfileMembershipCard
-                  fullName={cardFullName}
-                  membershipNumber={membershipNumber}
-                  idNumber={String(profileUserObj?.id_number ?? "").trim()}
-                  membershipQrUrl={
-                    profileUserObj?.membership_qr_url != null
-                      ? String(profileUserObj.membership_qr_url)
-                      : undefined
-                  }
-                />
+            </AccountPanel>
+          ) : (
+            <AccountUpsell
+              icon={<IoSparklesOutline />}
+              title={t("profile.subscription_inactive")}
+              description={t(
+                "account.upsell_desc",
+                "فعّل اشتراكك لتفتح كل العروض والخصومات في مكان واحد.",
               )}
-            </div>
-          </div>
+              ctaLabel={t("profile.subscribe_now")}
+              to={`/subscription/plans?from=${encodeURIComponent("/profile")}`}
+            />
+          )}
+
+          <MembershipTierCard tier={membershipTier} />
+
+          {showMembershipCard && membershipNumber && (
+            <MembershipCard
+              fullName={cardFullName}
+              membershipNumber={membershipNumber}
+              idNumber={String(profileUserObj?.id_number ?? "").trim()}
+              membershipQrUrl={
+                profileUserObj?.membership_qr_url != null
+                  ? String(profileUserObj.membership_qr_url)
+                  : undefined
+              }
+            />
+          )}
+
+          {membershipNumber && (
+            <Button to="/profile/card" variant="outline" block>
+              {t("membershipCard.title")}
+            </Button>
+          )}
+
+          <DeleteAccountSection />
         </div>
       </div>
     </div>

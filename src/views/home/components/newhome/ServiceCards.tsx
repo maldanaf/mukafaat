@@ -1,9 +1,22 @@
 "use client";
 
 import { Link } from "@/lib/router-compat";
-import { LuTag, LuTicketPercent, LuCreditCard, LuMapPin } from "react-icons/lu";
+import { LuTag, LuTicketPercent, LuCreditCard, LuMapPin, LuArrowRight } from "react-icons/lu";
 import { t } from "i18next";
-import { CONTAINER, pick } from "./tokens";
+import { CONTAINER } from "./tokens";
+import { FOCUS } from "@ui";
+import Reveal from "./Reveal";
+
+/**
+ * تدرّج مخصّص لكل خدمة — الاتجاه «الحيوي التجاري» يعتمد
+ * سطحاً ملوّناً كاملاً بدل الكرت الأبيض الهادئ.
+ */
+const GRADIENTS = [
+  "linear-gradient(135deg,#400198 0%,#6703EB 100%)",
+  "linear-gradient(135deg,#FFA23A 0%,#FD671A 45%,#E01F3D 100%)",
+  "linear-gradient(135deg,#0E9384 0%,#0B7268 100%)",
+  "linear-gradient(135deg,#C2246E 0%,#7A1146 100%)",
+];
 
 /** أربع بطاقات خدمات تحت شريط البحث */
 const ServiceCards: React.FC = () => {
@@ -39,29 +52,48 @@ const ServiceCards: React.FC = () => {
   ];
 
   return (
-    <section className={`${CONTAINER} pt-[22px]`}>
+    <section className={`${CONTAINER} pt-9 sm:pt-11`}>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {services.map((service, i) => {
-          const color = pick(i);
           const Icon = service.icon;
           return (
-            <Link
-              key={service.to}
-              to={service.to}
-              className="flex flex-col gap-2.5 rounded-[18px] border border-[#EDE9F7] bg-white p-[22px] transition-all hover:border-[#C9BCEC] hover:shadow-[0_10px_28px_rgba(46,16,101,0.08)]"
-            >
-              <span
-                className="flex h-11 w-11 items-center justify-center rounded-[12px]"
-                style={{ background: color.bg, color: color.c }}
+            <Reveal key={service.to} delay={i * 70} className="h-full">
+              <Link
+                to={service.to}
+                className={`mk-lift group relative flex h-full flex-col gap-3 overflow-hidden rounded-mk-2xl p-6 text-white shadow-[0_16px_34px_-18px_rgba(46,16,101,0.55)] ${FOCUS}`}
+                style={{ backgroundImage: GRADIENTS[i % GRADIENTS.length] }}
               >
-                <Icon size={22} />
-              </span>
-              <h3 className="m-0 text-[16px] font-bold text-[#17122A]">{service.title}</h3>
-              <p className="m-0 text-[13px] leading-[1.7] text-[#6B6480]">{service.body}</p>
-              <span className="mt-1 text-[13px] font-semibold" style={{ color: color.c }}>
-                {service.cta} ←
-              </span>
-            </Link>
+                {/* لمعة قطرية تعبر الكرت عند المرور */}
+                <span className="mk-shine pointer-events-none absolute inset-0" aria-hidden />
+
+                {/* هالة بيضاء ناعمة تكسر التدرّج المسطّح */}
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute -top-16 -end-12 h-40 w-40 rounded-full bg-white/20 blur-3xl transition-opacity duration-500 group-hover:opacity-80"
+                />
+
+                <span className="relative flex h-14 w-14 items-center justify-center rounded-mk-lg border border-white/25 bg-white/20 text-white backdrop-blur-sm transition-transform duration-200 group-hover:scale-110">
+                  <Icon size={27} aria-hidden />
+                </span>
+
+                <h3 className="relative m-0 text-[18px] font-extrabold leading-snug tracking-[-0.01em]">
+                  {service.title}
+                </h3>
+
+                <p className="relative m-0 text-[13px] leading-[1.75] text-white/80">
+                  {service.body}
+                </p>
+
+                <span className="relative mt-auto inline-flex items-center gap-1.5 pt-2 text-[13.5px] font-extrabold text-white">
+                  {service.cta}
+                  <LuArrowRight
+                    size={15}
+                    aria-hidden
+                    className="transition-transform duration-200 group-hover:translate-x-1 rtl:-scale-x-100"
+                  />
+                </span>
+              </Link>
+            </Reveal>
           );
         })}
       </div>

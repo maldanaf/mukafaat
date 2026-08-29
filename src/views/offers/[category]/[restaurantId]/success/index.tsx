@@ -270,14 +270,14 @@ const SuccessPage: React.FC = () => {
           background: "linear-gradient(to bottom, #521A93, #33005D)",
         }}
       >
-        <div className="text-center bg-white/10 rounded-2xl p-8 max-w-md">
+        <div className="text-center bg-white/10 rounded-mk-xl p-8 max-w-md">
           <h2 className="text-xl font-bold text-white mb-4">
             {t("offerCheckoutSuccess.order_unknown")}
           </h2>
           <button
             type="button"
             onClick={() => navigate("/offers")}
-            className="bg-white text-[#1D0843] px-6 py-3 rounded-xl font-medium hover:bg-white/90 transition-colors"
+            className="bg-white text-[#1D0843] px-6 py-3 rounded-mk-md font-medium hover:bg-white/90 transition-colors"
           >
             {t("offerCheckoutSuccess.back_to_offers")}
           </button>
@@ -294,13 +294,13 @@ const SuccessPage: React.FC = () => {
           background: "linear-gradient(to bottom, #521A93, #33005D)",
         }}
       >
-        <div className="text-center bg-white/10 rounded-2xl p-8 max-w-md mx-4">
+        <div className="text-center bg-white/10 rounded-mk-xl p-8 max-w-md mx-4">
           <h2 className="text-xl font-bold text-white mb-4">
             {t("offerCheckoutSuccess.login_required")}
           </h2>
           <Link
             to={`/login?returnUrl=${encodeURIComponent(location.pathname + location.search)}`}
-            className="bg-white text-[#1D0843] px-6 py-3 rounded-xl font-medium hover:bg-white/90 transition-colors inline-block"
+            className="bg-white text-[#1D0843] px-6 py-3 rounded-mk-md font-medium hover:bg-white/90 transition-colors inline-block"
           >
             {t("offerCheckoutSuccess.login")}
           </Link>
@@ -330,7 +330,7 @@ const SuccessPage: React.FC = () => {
           background: "linear-gradient(to bottom, #521A93, #33005D)",
         }}
       >
-        <div className="text-center bg-white/10 rounded-2xl p-8 max-w-md">
+        <div className="text-center bg-white/10 rounded-mk-xl p-8 max-w-md">
           <h2 className="text-xl font-bold text-white mb-2">
             {t("offerCheckoutSuccess.order_not_found")}
           </h2>
@@ -340,7 +340,7 @@ const SuccessPage: React.FC = () => {
           <button
             type="button"
             onClick={() => navigate("/orders")}
-            className="bg-white text-[#1D0843] px-6 py-3 rounded-xl font-medium hover:bg-white/90 transition-colors"
+            className="bg-white text-[#1D0843] px-6 py-3 rounded-mk-md font-medium hover:bg-white/90 transition-colors"
           >
             {t("offerCheckoutSuccess.back_to_orders")}
           </button>
@@ -488,13 +488,13 @@ const SuccessPage: React.FC = () => {
         </div>
 
         {/* كارد واحد في المنتصف — نفس تصميم صفحة /orders/:id */}
-        <div className="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden flex-shrink-0">
+        <div className="w-full max-w-md bg-white rounded-mk-xl shadow-xl overflow-hidden flex-shrink-0">
           <div className="pt-6 pb-8 px-5">
             <div className="flex justify-end mb-4">
               <button
                 type="button"
                 onClick={() => navigate("/orders")}
-                className="w-10 h-10 flex items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 transition-colors"
+                className="w-10 h-10 flex items-center justify-center rounded-full text-mk-muted hover:bg-mk-tint2 transition-colors"
                 aria-label={t("offerCheckoutSuccess.close")}
               >
                 <IoClose className="w-6 h-6" />
@@ -515,10 +515,10 @@ const SuccessPage: React.FC = () => {
             {/* رقم القسيمة */}
             {voucherNumber && (
               <div className="text-center mb-2">
-                <p className="text-2xl font-bold text-gray-900 tracking-widest font-mono">
+                <p className="text-2xl font-bold text-mk-text tracking-widest font-mono">
                   {formatVoucherNumber(voucherNumber)}
                 </p>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-mk-muted mt-1">
                   {t("offerCheckoutSuccess.voucher_number")}
                 </p>
               </div>
@@ -529,23 +529,23 @@ const SuccessPage: React.FC = () => {
               <div
                 className={`flex justify-between items-center text-sm gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
               >
-                <span className="text-gray-900 font-medium">
+                <span className="text-mk-text font-medium">
                   {formatOrderDate(
                     rawOrderData?.created_at ?? order.createdAt,
                     langBase,
                   )}
                 </span>
-                <span className="text-gray-500">
+                <span className="text-mk-muted">
                   {t("offerCheckoutSuccess.purchase_date")}
                 </span>
               </div>
               <div
                 className={`flex justify-between items-center text-sm gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
               >
-                <span className="text-gray-900 font-medium">
+                <span className="text-mk-text font-medium">
                   {formatOrderDate(rawOrderData?.expires_at, langBase)}
                 </span>
-                <span className="text-gray-500">
+                <span className="text-mk-muted">
                   {t("offerCheckoutSuccess.coupon_expiry")}
                 </span>
               </div>
@@ -553,10 +553,10 @@ const SuccessPage: React.FC = () => {
                 <div
                   className={`flex justify-between items-center text-sm gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
                 >
-                  <span className="text-gray-900 font-medium">
+                  <span className="text-mk-text font-medium">
                     {pickLocalized(order.items[0].title, langBase)}
                   </span>
-                  <span className="text-gray-500">
+                  <span className="text-mk-muted">
                     {t("offerCheckoutSuccess.offer")}
                   </span>
                 </div>
@@ -565,10 +565,10 @@ const SuccessPage: React.FC = () => {
                 <div
                   className={`flex justify-between items-center text-sm gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
                 >
-                  <span className="text-gray-900 font-medium">
+                  <span className="text-mk-text font-medium">
                     {rawOrderData.item.name as string}
                   </span>
-                  <span className="text-gray-500">
+                  <span className="text-mk-muted">
                     {t("offerCheckoutSuccess.offer")}
                   </span>
                 </div>
@@ -576,21 +576,21 @@ const SuccessPage: React.FC = () => {
               <div
                 className={`flex justify-between items-center text-sm gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
               >
-                <span className="text-gray-900 font-medium">
+                <span className="text-mk-text font-medium">
                   {t("offerCheckoutSuccess.deals_count", {
                     count:
                       order.items?.reduce((s, i) => s + i.quantity, 0) ??
                       Number(rawOrderData?.quantity ?? 1),
                   })}
                 </span>
-                <span className="text-gray-500">
+                <span className="text-mk-muted">
                   {t("offerCheckoutSuccess.deals_label")}
                 </span>
               </div>
             </div>
 
             {/* خط متقطع ثم السعر الإجمالي */}
-            <div className="border-t border-dashed border-gray-200 mt-6 pt-6">
+            <div className="border-t border-dashed border-mk-border mt-6 pt-6">
               <div
                 className={`flex justify-between items-center gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
               >
@@ -598,7 +598,7 @@ const SuccessPage: React.FC = () => {
                   {totalPrice}
                   <CurrencyIcon size={20} className="text-[#fd671a]" />
                 </span>
-                <span className="text-gray-500">
+                <span className="text-mk-muted">
                   {t("offerCheckoutSuccess.total_price")}
                 </span>
               </div>
@@ -609,7 +609,7 @@ const SuccessPage: React.FC = () => {
               <div className="mt-4">
                 <Link
                   to="/privacy-policy"
-                  className="text-sm text-gray-500 hover:text-[#fd671a] transition-colors inline-flex items-center gap-1"
+                  className="text-sm text-mk-muted hover:text-[#fd671a] transition-colors inline-flex items-center gap-1"
                 >
                   {t("offerCheckoutSuccess.privacy_terms")}
                   <span className="rtl:rotate-180" aria-hidden>
@@ -621,7 +621,7 @@ const SuccessPage: React.FC = () => {
 
             {isOrderAlreadyActivated && (
               <div
-                className={`mt-6 p-3 rounded-xl bg-emerald-50 border border-emerald-200 ${isRTL ? "text-right" : "text-left"}`}
+                className={`mt-6 p-3 rounded-mk-md bg-emerald-50 border border-emerald-200 ${isRTL ? "text-right" : "text-left"}`}
               >
                 <p className="text-sm font-semibold text-emerald-900">
                   {t("offerCheckoutSuccess.offer_activated")}
@@ -637,12 +637,12 @@ const SuccessPage: React.FC = () => {
             )}
 
             {/* أزرار الإجراءات — مثل صفحة الطلب */}
-            <div className="border-t border-dashed border-gray-200 mt-6 pt-6 flex gap-3">
+            <div className="border-t border-dashed border-mk-border mt-6 pt-6 flex gap-3">
               {showActivateOfferButton ? (
                 <button
                   type="button"
                   onClick={openVerificationSheet}
-                  className="flex-1 py-3 px-4 rounded-xl border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                  className="flex-1 py-3 px-4 rounded-mk-md border border-mk-border-2 text-mk-text-strong font-medium hover:bg-mk-tint3 transition-colors"
                 >
                   {t("offerCheckoutSuccess.activate_offer")}
                 </button>
@@ -650,7 +650,7 @@ const SuccessPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => navigate("/orders")}
-                  className="flex-1 py-3 px-4 rounded-xl border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                  className="flex-1 py-3 px-4 rounded-mk-md border border-mk-border-2 text-mk-text-strong font-medium hover:bg-mk-tint3 transition-colors"
                 >
                   {t("offerCheckoutSuccess.return_store")}
                 </button>
@@ -659,7 +659,7 @@ const SuccessPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleDownloadVoucher}
-                  className="flex-1 py-3 px-4 rounded-xl bg-[#fd671a] text-white font-medium hover:bg-[#e55c18] transition-colors flex items-center justify-center gap-2"
+                  className="flex-1 py-3 px-4 rounded-mk-md bg-[#fd671a] text-white font-medium hover:bg-[#D9500B] transition-colors flex items-center justify-center gap-2"
                 >
                   <IoDownloadOutline className="w-5 h-5" />
                   {t("offerCheckoutSuccess.download_pdf")}
@@ -684,26 +684,26 @@ const SuccessPage: React.FC = () => {
             onClick={() => setVerifySheetOpen(false)}
           />
           <div
-            className={`relative w-full max-w-md bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl p-6 pb-8 pb-[max(2rem,env(safe-area-inset-bottom))] ${isRTL ? "text-right" : "text-left"}`}
+            className={`relative w-full max-w-md bg-white rounded-t-3xl sm:rounded-mk-2xl shadow-2xl p-6 pb-8 pb-[max(2rem,env(safe-area-inset-bottom))] ${isRTL ? "text-right" : "text-left"}`}
             dir={isRTL ? "rtl" : "ltr"}
           >
             <div className="relative flex items-center justify-center mb-4">
               <button
                 type="button"
                 onClick={() => setVerifySheetOpen(false)}
-                className="absolute start-0 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full text-gray-500 hover:bg-gray-100"
+                className="absolute start-0 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full text-mk-muted hover:bg-mk-tint2"
                 aria-label={t("offerCheckoutSuccess.close")}
               >
                 <IoClose className="w-6 h-6" />
               </button>
               <h2
                 id="verify-sheet-title"
-                className="text-lg font-bold text-gray-900 px-10 text-center"
+                className="text-lg font-bold text-mk-text px-10 text-center"
               >
                 {t("offerCheckoutSuccess.verification_title")}
               </h2>
             </div>
-            <p className="text-sm text-gray-600 mb-6 text-center leading-relaxed">
+            <p className="text-sm text-mk-muted mb-6 text-center leading-relaxed">
               {t("offerCheckoutSuccess.verification_hint")}
             </p>
             <div
@@ -723,7 +723,7 @@ const SuccessPage: React.FC = () => {
                   value={verifyDigits[i]}
                   onChange={(e) => setVerifyDigitAt(i, e.target.value)}
                   onKeyDown={(e) => onVerifyDigitKeyDown(i, e)}
-                  className="w-12 h-14 sm:w-14 sm:h-16 text-center text-xl font-semibold rounded-xl border border-gray-300 focus:border-[#fd671a] focus:ring-2 focus:ring-[#fd671a]/25 outline-none transition-colors"
+                  className="w-12 h-14 sm:w-14 sm:h-16 text-center text-xl font-semibold rounded-mk-md border border-mk-border-2 focus:border-[#fd671a] focus:ring-2 focus:ring-[#fd671a]/25 outline-none transition-colors"
                   dir="ltr"
                   aria-label={`${t("offerCheckoutSuccess.verification_title")} ${i + 1}/4`}
                 />
@@ -733,7 +733,7 @@ const SuccessPage: React.FC = () => {
               type="button"
               disabled={verifyMerchantCode.isPending}
               onClick={submitVerificationCode}
-              className="w-full py-3.5 rounded-xl bg-[#fd671a] text-white font-semibold hover:bg-[#e55c18] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full py-3.5 rounded-mk-md bg-[#fd671a] text-white font-semibold hover:bg-[#D9500B] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {verifyMerchantCode.isPending
                 ? t("offerCheckoutSuccess.verification_submitting")

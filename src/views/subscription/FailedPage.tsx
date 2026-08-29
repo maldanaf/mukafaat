@@ -1,13 +1,23 @@
 "use client";
 
 import React from "react";
-import { useNavigate } from "@/lib/router-compat";
+import { useNavigate, useSearchParams } from "@/lib/router-compat";
 import { Helmet } from "@/lib/helmet-compat";
 import { useTranslation } from "react-i18next";
+import { Button } from "@ui";
 
+/** فشل الدفع — رسالة صريحة من البوابة إن وُجدت، مع إعادة المحاولة بنفس الباقة */
 const SubscriptionFailedPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const message = searchParams.get("message");
+  const planId = searchParams.get("plan_id");
+
+  const hasStoredPlan =
+    typeof window !== "undefined" &&
+    !!window.sessionStorage.getItem("subscription_plan");
 
   return (
     <>
@@ -15,33 +25,53 @@ const SubscriptionFailedPage: React.FC = () => {
         <title>{t("home.subscription.paymentFailed")} | Mokafaat</title>
       </Helmet>
 
-      <section className="min-h-screen bg-[#1D0843] flex flex-col items-center justify-center px-4 py-12">
-        <div className="w-20 h-20 rounded-full bg-red-500/20 flex items-center justify-center mb-8" aria-hidden>
+      <section className="flex min-h-screen flex-col items-center justify-center bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] px-4 py-12">
+        <div
+          className="mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-red-500/20"
+          aria-hidden
+        >
           <span className="text-4xl">⚠️</span>
         </div>
 
-        <h1 className="text-2xl md:text-3xl font-bold text-white text-center mb-4">
+        <h1 className="mb-4 text-center text-2xl font-bold text-white md:text-3xl">
           {t("home.subscription.paymentFailed")}
         </h1>
-        <p className="text-white/80 text-center max-w-md mb-10">
+        <p className="mb-4 max-w-md text-center text-white/80">
           {t("home.subscription.paymentFailedDesc")}
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-3">
-          <button
-            type="button"
-            onClick={() => navigate("/subscription/plans")}
-            className="px-8 py-3 rounded-full bg-[#fd671a] text-white font-medium hover:bg-[#e55c18] transition-colors"
+        {message && (
+          <p
+            role="alert"
+            className="mb-8 max-w-md rounded-mk-md border border-red-400/50 bg-red-500/20 px-4 py-3 text-center text-sm text-white"
+          >
+            {message}
+          </p>
+        )}
+
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <Button
+            variant="accent"
+            size="lg"
+            className="rounded-full"
+            onClick={() =>
+              navigate(
+                hasStoredPlan && planId
+                  ? `/subscription/payment?plan_id=${planId}`
+                  : "/subscription/plans",
+              )
+            }
           >
             {t("home.subscription.tryAgain")}
-          </button>
-          <button
-            type="button"
+          </Button>
+          <Button
+            variant="outline"
+            size="lg"
+            className="rounded-full"
             onClick={() => navigate("/")}
-            className="px-8 py-3 rounded-full border border-white/50 text-white font-medium hover:bg-white/10 transition-colors"
           >
             {t("home.subscription.backToHome")}
-          </button>
+          </Button>
         </div>
       </section>
     </>

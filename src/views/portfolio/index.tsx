@@ -66,7 +66,7 @@ const PortfolioPage = () => {
                 key={cat.key}
                 className={`style-portfolio-button-mobile px-5 py-2 text-sm rounded-full font-medium transition-all duration-300 border-2 ${
                   cat.key === "All"
-                    ? "bg-white text-[#fd671a] border-purple-600 shadow-sm cursor-default"
+                    ? "bg-white text-[#fd671a] border-mk-primary shadow-sm cursor-default"
                     : "bg-white/60 text-gray-700 border-gray-200 cursor-default opacity-50"
                 }`}
                 disabled
@@ -87,7 +87,7 @@ const PortfolioPage = () => {
               placeholder={
                 t("portfolio.searchPlaceholder") || "Search projects..."
               }
-              className="w-full rounded-md bg-gray-100 px-5 py-3 outline-none focus:ring-2 focus:ring-purple-300"
+              className="w-full rounded-md bg-gray-100 px-5 py-3 outline-none focus:ring-2 focus:ring-mk-lilac"
             />
           </div>
         </div>
@@ -95,7 +95,7 @@ const PortfolioPage = () => {
         {/* Grid */}
         {isFetching && currentPage === 1 ? (
           <div className="text-center py-20">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-mk-primary"></div>
             <p className="text-gray-500 mt-4 text-lg">{t("common.loading")}</p>
           </div>
         ) : projects && projects.length > 0 ? (

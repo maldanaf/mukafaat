@@ -7,6 +7,8 @@ import { useIsRTL } from "@hooks";
 import OwlCarousel from "@components/DynamicOwlCarousel";
 import { type Offer } from "@data/offers";
 import OfferCard from "./OfferCard";
+import { EmptyState } from "@ui";
+import { SectionTitle, Chip, ChipBar } from "./CatalogKit";
 import { FiEye, FiStar } from "react-icons/fi";
 import { IoLocationOutline } from "react-icons/io5";
 import { useWebHome } from "@hooks/api/useMokafaatQueries";
@@ -150,70 +152,62 @@ const SuggestedOffersSection: React.FC = () => {
 
   // Skeleton component
   const SkeletonCard = () => (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden animate-pulse">
-      <div className="h-48 bg-gray-200"></div>
+    <div className="bg-white rounded-mk-md shadow-mk-raised overflow-hidden animate-pulse">
+      <div className="h-48 bg-mk-border-strong/50"></div>
       <div className="p-4">
-        <div className="h-6 bg-gray-200 rounded mb-2"></div>
-        <div className="h-4 bg-gray-200 rounded mb-3 w-3/4"></div>
+        <div className="h-6 bg-mk-border-strong/50 rounded mb-2"></div>
+        <div className="h-4 bg-mk-border-strong/50 rounded mb-3 w-3/4"></div>
         <div className="flex gap-1 mb-4">
-          <div className="h-6 bg-gray-200 rounded-full w-16"></div>
-          <div className="h-6 bg-gray-200 rounded-full w-20"></div>
+          <div className="h-6 bg-mk-border-strong/50 rounded-full w-16"></div>
+          <div className="h-6 bg-mk-border-strong/50 rounded-full w-20"></div>
         </div>
-        <div className="h-4 bg-gray-200 rounded mb-4 w-1/2"></div>
+        <div className="h-4 bg-mk-border-strong/50 rounded mb-4 w-1/2"></div>
         <div className="flex justify-between items-center">
-          <div className="h-6 bg-gray-200 rounded w-20"></div>
-          <div className="h-6 bg-gray-200 rounded w-24"></div>
+          <div className="h-6 bg-mk-border-strong/50 rounded w-20"></div>
+          <div className="h-6 bg-mk-border-strong/50 rounded w-24"></div>
         </div>
       </div>
     </div>
   );
 
   return (
-    <section className="container mx-auto px-4 py-10">
-      <div className="text-start mb-4">
-        <h2 className="text-[#400198] text-3xl font-bold">
-          {t("offersPage.suggestedOffers.title")}
-        </h2>
-        <p className="text-md text-gray-700 leading-relaxed">
-          {t("offersPage.suggestedOffers.subtitle")}
-        </p>
-      </div>
+    <section className="container mx-auto overflow-hidden px-4 py-10">
+      <SectionTitle
+        title={t("offersPage.suggestedOffers.title")}
+        subtitle={t("offersPage.suggestedOffers.subtitle")}
+      />
 
-      {/* Filter Tabs */}
-      <div className="flex justify-start mb-8 gap-3 relative z-10 w-1/2">
+      {/* شرائح الترتيب/التصفية — قابلة للتمرير أفقياً */}
+      <ChipBar className="relative z-[1] mb-8" label={t("ui.filters", "الفلاتر")}>
         {filters.map((filter) => (
-          <button
+          <Chip
             key={filter.key}
+            active={activeFilter === filter.key}
             onClick={() => handleFilterChange(filter.key)}
-            className={`px-5 py-3 rounded-full font-medium text-sm shadow-md transition-all duration-300 flex items-center gap-2 ${
-              activeFilter === filter.key
-                ? "bg-[#400198] text-white shadow-lg"
-                : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
-            }`}
+            icon={<span aria-hidden>{filter.icon}</span>}
           >
-            <span>{filter.icon}</span>
-            <span>{t(filter.labelKey)}</span>
-          </button>
+            {t(filter.labelKey)}
+          </Chip>
         ))}
-      </div>
+      </ChipBar>
 
       {/* Location Request for Nearby */}
       {activeFilter === "nearby" && !userLocation && (
         <div className="text-center mb-8">
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 max-w-md mx-auto">
-            <div className="text-blue-600 text-4xl mb-4">
-              {" "}
-              <IoLocationOutline className=" mx-auto" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+          <div className="mx-auto max-w-md rounded-mk-lg border border-mk-border bg-[linear-gradient(150deg,#F7F5FC,#EFEAF8)] p-6 shadow-mk-card">
+            <span className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[linear-gradient(135deg,#400198,#6703EB)] text-white">
+              <IoLocationOutline size={26} aria-hidden />
+            </span>
+            <h3 className="m-0 mb-2 text-[17px] font-extrabold text-mk-text">
               {t("offersPage.suggestedOffers.locationTitle")}
             </h3>
-            <p className="text-gray-600 text-sm mb-4">
+            <p className="m-0 mb-4 text-[13px] leading-relaxed text-mk-muted">
               {t("offersPage.suggestedOffers.locationDescription")}
             </p>
             <button
+              type="button"
               onClick={handleLocationRequest}
-              className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+              className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[linear-gradient(135deg,#FD671A,#E2560D)] px-6 text-[13.5px] font-extrabold text-white shadow-[0_10px_24px_-10px_rgba(226,86,13,0.9)] transition-transform hover:-translate-y-0.5"
             >
               {t("offersPage.suggestedOffers.shareLocation")}
             </button>
@@ -257,23 +251,19 @@ const SuggestedOffersSection: React.FC = () => {
             ))}
           </OwlCarousel>
         ) : (
-          <div className="text-center py-12">
-            <div className="text-gray-400 text-6xl mb-4">
-              {activeFilter === "nearby" ? (
-                <IoLocationOutline className=" mx-auto" />
+          <EmptyState
+            icon={
+              activeFilter === "nearby" ? (
+                <IoLocationOutline />
               ) : activeFilter === "most-viewed" ? (
-                <FiEye className=" mx-auto" />
+                <FiEye />
               ) : (
-                <FiStar className=" mx-auto" />
-              )}
-            </div>
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">
-              {t("offersPage.suggestedOffers.emptyTitle")}
-            </h3>
-            <p className="text-gray-500">
-              {t("offersPage.suggestedOffers.emptyHint")}
-            </p>
-          </div>
+                <FiStar />
+              )
+            }
+            title={t("offersPage.suggestedOffers.emptyTitle")}
+            description={t("offersPage.suggestedOffers.emptyHint")}
+          />
         )}
       </div>
 

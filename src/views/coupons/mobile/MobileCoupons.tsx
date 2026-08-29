@@ -2,21 +2,33 @@
 
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { LuCopy, LuCheck } from "react-icons/lu";
 import MobilePageHeader from "@components/mobile/MobilePageHeader";
 import MobileChips from "@components/mobile/MobileChips";
-import BrandImage from "@views/home/components/newhome/BrandImage";
-import { pick } from "@views/home/components/newhome/tokens";
-import { useWebCoupons, useWebHome } from "@hooks/api/useMokafaatQueries";
+import {
+  CouponTile,
+  EmptyState,
+  ErrorState,
+  Skeleton,
+  type CouponTileData,
+} from "@ui";
+import { LuTicketPercent } from "react-icons/lu";
+import {
+  useCouponCopy,
+  useWebCoupons,
+  useWebHome,
+} from "@hooks/api/useMokafaatQueries";
 
 type Dict = Record<string, any>;
 
-/** صفحة الكوبونات — نسخة الموبايل */
+/** صفحة الكوبونات — نسخة الموبايل (الاتجاه الحيوي التجاري) */
 const MobileCoupons: React.FC = () => {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<number | string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
+  const couponCopy = useCouponCopy();
+  /** تجاوزات محلية لعدّاد النسخ (زيادة تفاؤلية) */
+  const [copies, setCopies] = useState<Record<string, number>>({});
 
   const { data: homeData } = useWebHome();
   const categories: Dict[] = (homeData as Dict)?.data?.categories ?? [];
@@ -31,10 +43,21 @@ const MobileCoupons: React.FC = () => {
     [category, search],
   );
 
-  const { data, isLoading } = useWebCoupons(params);
+  const { data, isLoading, isError, refetch } = useWebCoupons(params);
   const coupons: Dict[] = (data as Dict)?.data?.coupons ?? (data as Dict)?.data?.data ?? [];
 
-  const copy = async (code: string) => {
+  const copy = async (coupon: Dict, code: string) => {
+    // زيادة تفاؤلية فورية ثم تسجيل النسخة في الخادم (fire-and-forget)
+    const key = String(coupon.id);
+    const base = Number(coupon.copies_count ?? 0) || 0;
+    setCopies((prev) => ({ ...prev, [key]: (prev[key] ?? base) + 1 }));
+    couponCopy.mutate(coupon.id, {
+      onSuccess: (serverCount) => {
+        if (typeof serverCount === "number")
+          setCopies((prev) => ({ ...prev, [key]: serverCount }));
+      },
+    });
+
     try {
       await navigator.clipboard.writeText(code);
     } catch {
@@ -50,10 +73,18 @@ const MobileCoupons: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FBFAFE] pb-6 lg:hidden">
+    <div className="min-h-screen overflow-x-clip bg-mk-bg pb-6 lg:hidden">
       <MobilePageHeader
         title={t("home.navbar.coupons", "كوبونز")}
         subtitle={t("home.coupons_new.title", "أكواد خصم مميزة")}
+        eyebrow={
+          <>
+            <LuTicketPercent size={12} className="text-mk-accent-light" aria-hidden />
+            {coupons.length > 0
+              ? t("ui.results_count", { count: coupons.length })
+              : t("home.hero_new.tag", "عروض مختارة")}
+          </>
+        }
         searchValue={search}
         onSearchChange={setSearch}
         searchPlaceholder={t("home.search_new.placeholder", "ابحث عن كوبون أو متجر...")}
@@ -61,68 +92,42 @@ const MobileCoupons: React.FC = () => {
         <MobileChips chips={chips} active={category} onSelect={setCategory} />
       </MobilePageHeader>
 
-      <div className="flex flex-col gap-3 px-4 pt-4">
+      <div className="flex flex-col gap-3 px-4 pt-5">
         {isLoading &&
           Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="h-[86px] animate-pulse rounded-2xl bg-[#F1EBFB]" />
+            <Skeleton key={i} className="h-[132px] w-full rounded-mk-lg" />
           ))}
 
+        {!isLoading && isError && <ErrorState compact onRetry={() => refetch()} />}
+
         {!isLoading &&
+          !isError &&
           coupons.map((coupon, i) => {
-            const color = pick(i);
             const code = coupon.coupon_code ?? coupon.code ?? "";
-            const isCopied = copied === code && !!code;
-            const pct = Number(coupon.discount_percentage ?? 0);
             return (
-              <div
+              <CouponTile
                 key={coupon.id}
-                className="overflow-hidden rounded-2xl border border-[#EDE9F7] bg-white"
-              >
-                <div className="h-1 w-full" style={{ background: color.c }} />
-                <div className="flex items-center gap-3 p-3">
-                  <BrandImage
-                    src={coupon.image || coupon.merchant?.logo}
-                    name={coupon.merchant?.name ?? coupon.title ?? coupon.name ?? ""}
-                    className="h-14 w-14 shrink-0 rounded-xl text-[18px]"
-                  />
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      {pct > 0 && (
-                        <span className="text-[15px] font-bold" style={{ color: color.c }}>
-                          {Math.round(pct)}%
-                        </span>
-                      )}
-                      <span className="line-clamp-1 text-[13.5px] font-bold text-[#17122A]">
-                        {coupon.merchant?.name ?? coupon.title ?? coupon.name}
-                      </span>
-                    </div>
-                    <p className="m-0 mt-0.5 line-clamp-1 text-[11.5px] text-[#8B84A0]">
-                      {coupon.description ?? coupon.terms ?? ""}
-                    </p>
-                  </div>
-                </div>
-                {code && (
-                  <button
-                    onClick={() => copy(code)}
-                    className="flex w-full items-center justify-between gap-2 border-t border-dashed border-[#E1D9F3] bg-[#FBF9FF] px-4 py-3"
-                  >
-                    <span className="font-mono text-[13.5px] font-bold tracking-widest text-[#2E1065]">
-                      {code}
-                    </span>
-                    <span
-                      className="flex items-center gap-1 rounded-xl px-3 py-1.5 text-[11.5px] font-bold text-white"
-                      style={{ background: isCopied ? "#0E9384" : color.c }}
-                    >
-                      {isCopied ? <LuCheck size={14} /> : <LuCopy size={14} />}
-                      {isCopied
-                        ? t("home.coupons_new.copied", "تم النسخ")
-                        : t("home.coupons_new.copy", "نسخ")}
-                    </span>
-                  </button>
-                )}
-              </div>
+                coupon={coupon as CouponTileData}
+                index={i}
+                copiesCount={copies[String(coupon.id)]}
+                copied={!!code && copied === code}
+                onCopy={(c) => copy(coupon, c)}
+              />
             );
           })}
+
+        {!isLoading && !isError && coupons.length === 0 && (
+          <EmptyState
+            compact
+            title={t("ui.empty.coupons", "لا توجد كوبونات متاحة حالياً.")}
+            description={t("ui.empty.description", "جرّب تغيير الفلاتر أو عُد لاحقاً.")}
+            actionLabel={search || category ? t("ui.clearFilters", "مسح الفلاتر") : undefined}
+            onAction={() => {
+              setSearch("");
+              setCategory(null);
+            }}
+          />
+        )}
       </div>
     </div>
   );

@@ -121,12 +121,12 @@ const CategoryCardsPage = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+          <h2 className="text-2xl font-bold text-mk-text mb-4">
             {isRTL ? "التصنيف غير موجود" : "Category not found"}
           </h2>
           <button
             onClick={() => navigate("/cards")}
-            className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+            className="bg-mk-primary text-white px-6 py-2 rounded-mk-sm hover:bg-mk-primary transition-colors"
           >
             {isRTL ? "العودة للبطاقات" : "Back to Cards"}
           </button>
@@ -148,7 +148,7 @@ const CategoryCardsPage = () => {
       </Helmet>
 
       {/* Header */}
-      <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[200px] flex items-center justify-center">
+      <section className="relative w-full bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] overflow-hidden min-h-[200px] flex items-center justify-center">
         {category?.image ? (
           <div className="absolute inset-0">
             <img
@@ -156,7 +156,7 @@ const CategoryCardsPage = () => {
               alt=""
               className="w-full h-full object-cover opacity-40"
             />
-            <div className="absolute inset-0 bg-[#1D0843]/80" />
+            <div className="absolute inset-0 bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)]/80" />
           </div>
         ) : (
           <div className="absolute inset-0 bg-primary opacity-30" />
@@ -164,7 +164,7 @@ const CategoryCardsPage = () => {
         <div className="relative pt-24 pb-10 px-6 mx-auto max-w-site text-center lg:pt-24 lg:pb-10 lg:px-12 flex flex-col justify-center z-10">
           <button
             onClick={() => navigate("/cards")}
-            className={`absolute top-4 ${isRTL ? "right-4" : "left-4"} text-white hover:text-purple-300 transition-colors flex items-center gap-2`}
+            className={`absolute top-4 ${isRTL ? "right-4" : "left-4"} text-white hover:text-mk-lilac transition-colors flex items-center gap-2`}
           >
             <FiArrowLeft className={`text-xl ${isRTL ? "rotate-180" : ""}`} />
             <span className="text-sm">{isRTL ? "العودة" : "Back"}</span>
@@ -252,7 +252,7 @@ const CategoryCardsPage = () => {
               className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
                 selectedCountryId === "all"
                   ? "bg-[#400198] text-white border-[#400198]"
-                  : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                  : "bg-white text-mk-text-strong border-mk-border hover:bg-mk-tint3"
               }`}
             >
               {isRTL ? "كل الدول" : "All countries"}
@@ -271,7 +271,7 @@ const CategoryCardsPage = () => {
                   className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
                     selected
                       ? "bg-[#400198] text-white border-[#400198]"
-                      : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                      : "bg-white text-mk-text-strong border-mk-border hover:bg-mk-tint3"
                   }`}
                 >
                   {isEmoji ? (
@@ -298,7 +298,7 @@ const CategoryCardsPage = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={t("cardsPage.searchPlaceholder")}
-          className="w-full md:w-96 px-5 py-3 rounded-full font-medium text-sm shadow-md transition-all duration-300 bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#400198] focus:border-transparent"
+          className="w-full md:w-96 px-5 py-3 rounded-full font-medium text-sm shadow-mk-raised transition-all duration-300 bg-white text-mk-text-strong hover:bg-mk-tint2 border border-mk-border focus:outline-none focus:ring-2 focus:ring-[#400198] focus:border-transparent"
         />
       </section>
 
@@ -309,7 +309,7 @@ const CategoryCardsPage = () => {
             <LoadingSpinner />
           </div>
         ) : filteredCards.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
+          <div className="text-center py-12 text-mk-muted">
             {isRTL
               ? "لا توجد بطاقات متاحة حالياً"
               : "No cards available at the moment"}
@@ -338,11 +338,11 @@ const CategoryCardsPage = () => {
               type="button"
               disabled={currentPage <= 1}
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              className="px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 rounded-mk-sm bg-white border border-mk-border text-mk-text-strong hover:bg-mk-tint3 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isRTL ? "السابق" : "Previous"}
             </button>
-            <span className="text-sm text-gray-700">
+            <span className="text-sm text-mk-text-strong">
               {currentPage} / {pagination.lastPage}
             </span>
             <button
@@ -351,7 +351,7 @@ const CategoryCardsPage = () => {
               onClick={() =>
                 setCurrentPage((p) => Math.min(pagination.lastPage, p + 1))
               }
-              className="px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 rounded-mk-sm bg-white border border-mk-border text-mk-text-strong hover:bg-mk-tint3 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isRTL ? "التالي" : "Next"}
             </button>

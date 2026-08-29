@@ -78,6 +78,8 @@ const Footer: React.FC = () => {
       title: t("home.footer_new.business", "الشركات والجهات"),
       links: [
         { to: "/business-registration", label: t("home.footer_new.join", "انضم كشريك") },
+        { to: "/store-request", label: t("storeRequest.tab_join") },
+        { to: "/store-request?tab=suggest", label: t("storeRequest.tab_suggest") },
         { to: "/contact", label: t("home.corporate_new.cta", "اطلب عرض سعر") },
       ],
     },
@@ -92,8 +94,21 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="mt-12 bg-[#17161A] text-[#B9B6C2]">
-      <div className="mx-auto grid w-full max-w-site grid-cols-1 gap-7 px-4 sm:px-6 pb-7 pt-[52px] sm:grid-cols-2 lg:grid-cols-[1.3fr_repeat(4,1fr)]">
+    <footer className="relative mt-12 overflow-hidden bg-[#17161A] text-[#B9B6C2]">
+      {/* شريط تدرّج الهوية أعلى الفوتر */}
+      <span aria-hidden className="block h-[5px] w-full bg-grad-accent" />
+
+      {/* هالات هوية ناعمة تكسر السواد المسطّح */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -top-28 start-[10%] h-[280px] w-[280px] rounded-full bg-[#400198]/35 blur-[110px]"
+      />
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -bottom-28 end-[8%] h-[240px] w-[240px] rounded-full bg-[#FD671A]/14 blur-[110px]"
+      />
+
+      <div className="relative mx-auto grid w-full max-w-site grid-cols-1 gap-7 px-4 sm:px-6 pb-7 pt-[52px] sm:grid-cols-2 lg:grid-cols-[1.3fr_repeat(4,1fr)]">
         <div className="flex flex-col gap-3.5">
           <div className="flex items-center">
             <img
@@ -117,7 +132,7 @@ const Footer: React.FC = () => {
                 href={`tel:${contact.phone}`}
                 className="group flex items-center gap-2.5 text-[#B9B6C2] transition-colors hover:text-white"
               >
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-white transition-colors group-hover:bg-[#4C1D95]">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-white transition-all duration-200 ease-out group-hover:scale-110 group-hover:bg-grad-brand">
                   <FaPhoneAlt size={12} />
                 </span>
                 <span dir="ltr" className="[unicode-bidi:isolate]">
@@ -130,7 +145,7 @@ const Footer: React.FC = () => {
                 href={`mailto:${contact.email}`}
                 className="group flex items-center gap-2.5 text-[#B9B6C2] transition-colors hover:text-white"
               >
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-white transition-colors group-hover:bg-[#4C1D95]">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-white transition-all duration-200 ease-out group-hover:scale-110 group-hover:bg-grad-brand">
                   <FaEnvelope size={12} />
                 </span>
                 <span dir="ltr" className="[unicode-bidi:isolate]">
@@ -150,7 +165,7 @@ const Footer: React.FC = () => {
                   title={label}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-[38px] w-[38px] items-center justify-center rounded-full border border-white/[0.14] bg-white/[0.06] text-white transition-colors hover:border-[#4C1D95] hover:bg-[#4C1D95]"
+                  className="flex h-[40px] w-[40px] items-center justify-center rounded-full border border-white/[0.14] bg-white/[0.06] text-white transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-transparent hover:bg-grad-brand hover:shadow-mk-glow"
                 >
                   <Icon size={17} />
                 </a>
@@ -162,7 +177,7 @@ const Footer: React.FC = () => {
                 title="WhatsApp"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-[38px] w-[38px] items-center justify-center rounded-full border border-white/[0.14] bg-white/[0.06] text-white transition-colors hover:border-[#4C1D95] hover:bg-[#4C1D95]"
+                className="flex h-[40px] w-[40px] items-center justify-center rounded-full border border-white/[0.14] bg-white/[0.06] text-white transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-transparent hover:bg-grad-success hover:shadow-[0_14px_30px_-12px_rgba(18,160,106,0.8)]"
               >
                 <FaWhatsapp size={17} />
               </a>
@@ -172,13 +187,20 @@ const Footer: React.FC = () => {
 
         {columns.map((column) => (
           <div key={column.title} className="flex flex-col gap-3">
-            <span className="text-[14px] font-bold text-white">{column.title}</span>
+            <span className="flex flex-col gap-2 text-[14.5px] font-extrabold text-white">
+              {column.title}
+              <span aria-hidden className="h-[3px] w-8 rounded-full bg-grad-accent" />
+            </span>
             {column.links.map((link) => (
               <Link
                 key={`${column.title}-${link.to}-${link.label}`}
                 to={link.to}
-                className="text-[13px] text-[#A7A4B0] transition-colors hover:text-white"
+                className="group/link inline-flex w-fit items-center gap-1.5 text-[13px] font-medium text-[#A7A4B0] transition-colors duration-200 hover:text-white"
               >
+                <span
+                  aria-hidden
+                  className="h-1 w-0 rounded-full bg-grad-accent transition-all duration-200 group-hover/link:w-2.5"
+                />
                 {link.label}
               </Link>
             ))}
@@ -186,7 +208,7 @@ const Footer: React.FC = () => {
         ))}
       </div>
 
-      <div className="border-t border-white/[0.12]">
+      <div className="relative border-t border-white/[0.12]">
         <div className="mx-auto flex w-full max-w-site flex-col items-center justify-between gap-2 px-4 sm:px-6 py-[18px] text-[12px] text-[#807D8A] sm:flex-row">
           <span>
             {t("home.footer_new.rights", "جميع الحقوق محفوظة © مكافآت")}{" "}

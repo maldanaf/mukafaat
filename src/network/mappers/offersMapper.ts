@@ -178,6 +178,13 @@ export function mapApiOfferToModel(
         apiOffer.user_purchase_count != null
           ? Number(apiOffer.user_purchase_count)
           : undefined,
+      // إحصائيات العرض — تظهر بأيقونات على الكرت (قد تغيب في مسارات قديمة)
+      favoritesCount:
+        apiOffer.favorites_count != null
+          ? Number(apiOffer.favorites_count)
+          : undefined,
+      sharesCount:
+        apiOffer.shares_count != null ? Number(apiOffer.shares_count) : undefined,
       usageLimit:
         apiOffer.usage_limit != null
           ? Number(apiOffer.usage_limit)

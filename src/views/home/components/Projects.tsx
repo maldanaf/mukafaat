@@ -55,9 +55,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       {/* Overlay for better text readability */}
       <div className="absolute inset-0 bg-[#342155f5] rounded-lg transition-all duration-300 group-hover:bg-[#34215594]">
         {/* Purple light spots */}
-        <div className="absolute top-1/4 left-1/4 w-16 h-16 bg-purple-400/30 rounded-full blur-lg group-hover:bg-purple-300/40 transition-all duration-300"></div>
-        <div className="absolute bottom-1/3 right-1/3 w-12 h-12 bg-purple-300/25 rounded-full blur-md group-hover:bg-purple-200/35 transition-all duration-300"></div>
-        <div className="absolute top-1/2 right-1/4 w-8 h-8 bg-purple-500/20 rounded-full blur-sm group-hover:bg-purple-400/30 transition-all duration-300"></div>
+        <div className="absolute top-1/4 left-1/4 w-16 h-16 bg-mk-primary-soft/30 rounded-full blur-lg group-hover:bg-mk-lilac/40 transition-all duration-300"></div>
+        <div className="absolute bottom-1/3 right-1/3 w-12 h-12 bg-mk-lilac/25 rounded-full blur-md group-hover:bg-mk-border-strong/35 transition-all duration-300"></div>
+        <div className="absolute top-1/2 right-1/4 w-8 h-8 bg-mk-primary-light/20 rounded-full blur-sm group-hover:bg-mk-primary-soft/30 transition-all duration-300"></div>
       </div>
 
       {/* Content with relative positioning */}
@@ -74,7 +74,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           </div>
           {/* Date Column */}
           <div className="flex flex-col items-center text-white min-w-[50px]">
-            <span className="text-xl font-bold text-purple-300">{date}</span>
+            <span className="text-xl font-bold text-mk-lilac">{date}</span>
             <span className="text-xs font-medium">{day}</span>
             <span className="text-xs font-medium">{year}</span>
           </div>
@@ -92,7 +92,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           </div>
           {/* Date Column */}
           <div className="flex flex-col items-center text-white min-w-[60px]">
-            <span className="text-2xl font-bold text-purple-300">{date}</span>
+            <span className="text-2xl font-bold text-mk-lilac">{date}</span>
             <span className="text-xs font-medium">{day}</span>
             <span className="text-xs font-medium">{year}</span>
           </div>
@@ -106,14 +106,14 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                 {tags.map((tag, index) => (
                   <span
                     key={index}
-                    className="inline-block bg-[#1D0843] text-white text-xs px-3 py-1 rounded-full group-hover:bg-[#fd671a] transition-all duration-300"
+                    className="inline-block bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] text-white text-xs px-3 py-1 rounded-full group-hover:bg-[#fd671a] transition-all duration-300"
                   >
                     {isRTL ? tag.arTitle : tag.enTitle}
                   </span>
                 ))}
               </div>
             ) : (
-              <span className="inline-block bg-[#1D0843] text-white text-xs px-3 py-1 rounded-full mb-2 group-hover:bg-[#fd671a] transition-all duration-300">
+              <span className="inline-block bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] text-white text-xs px-3 py-1 rounded-full mb-2 group-hover:bg-[#fd671a] transition-all duration-300">
                 {category}
               </span>
             )}
@@ -147,7 +147,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         </div>
         <button
           onClick={() => navigate(`${APP_ROUTES.portfolio}/${slug}`)}
-          className="w-full lg:w-auto border border-white text-white px-4 py-2 rounded-md text-sm hover:bg-white hover:text-purple-900 transition-all duration-300 opacity-70 group-hover:opacity-100 text-center"
+          className="w-full lg:w-auto border border-white text-white px-4 py-2 rounded-md text-sm hover:bg-white hover:text-mk-deepest transition-all duration-300 opacity-70 group-hover:opacity-100 text-center"
         >
           {t("common.moreDetails")}
         </button>
@@ -313,7 +313,7 @@ const Projects = () => {
         ];
 
   return (
-    <section className="bg-[#1D0843] pt-12 pb-20 relative overflow-hidden projects-mobile">
+    <section className="bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] pt-12 pb-20 relative overflow-hidden projects-mobile">
       <div className={`absolute top-0  transform  z-0`}>
         <img
           src={ProjectsPattern}
@@ -327,7 +327,7 @@ const Projects = () => {
           className={`flex flex-col lg:flex-row lg:items-center lg:justify-between mt-8 mb-16`}
         >
           <div className="mb-6 lg:mb-0 ">
-            <p className="text-purple-300 text-sm font-medium mb-2">
+            <p className="text-mk-lilac text-sm font-medium mb-2">
               {t("home.projects.subtitle")}
             </p>
             <h2 className="font-size-mobile-heading text-white text-4xl lg:text-4xl font-bold mb-0">
@@ -344,7 +344,7 @@ const Projects = () => {
           <div className="lg:text-right">
             <a
               href="/portfolio"
-              className="text-white hover:text-purple-300 transition-colors duration-300 font-medium"
+              className="text-white hover:text-mk-lilac transition-colors duration-300 font-medium"
             >
               {t("common.viewAll")} →
             </a>

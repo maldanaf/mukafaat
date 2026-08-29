@@ -250,7 +250,7 @@ const OurGallery = () => {
             <div className="lg:text-right">
               <a
                 href="/gallery"
-                className=" hover:text-purple-300 transition-colors duration-300 font-medium"
+                className=" hover:text-mk-lilac transition-colors duration-300 font-medium"
               >
                 {t("common.viewAll")} →
               </a>

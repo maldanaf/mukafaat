@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "@/lib/router-compat";
+import { LuArrowUpRight, LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { t } from "i18next";
 import { CONTAINER } from "./tokens";
+
 
 interface Slide {
   id?: number | string;
@@ -26,28 +28,48 @@ interface Props {
   slides: Slide[];
 }
 
+/** مدة عرض الشريحة الواحدة — نفس مدة شريط التقدّم في المؤشرات */
+const SLIDE_MS = 6500;
+
+/** حلقة تركيز بيضاء — نسخة الهيرو من حلقة التركيز الموحّدة (خلفية داكنة) */
+const HERO_FOCUS =
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#2B1B5E]";
+
 /**
  * بانر الرئيسية — كل محتواه من لوحة التحكم (البانرات):
  * الصورة حسب اللغة، ونوع السلايد يحدد هل تظهر طبقة التعتيم والنصوص والأزرار.
+ *
+ * التصميم: أرضية بتدرّج الهوية + تلاشٍ متقاطع بين الشرائح + عنوان كبير متدرّج
+ * + زر رئيسي برتقالي وزر ثانوي شفاف + مؤشرات بشريط تقدّم.
  */
 const HeroSlider: React.FC<Props> = ({ slides }) => {
   const navigate = useNavigate();
   const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
   const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const items = slides ?? [];
+  const count = items.length;
+
+  const go = useCallback(
+    (next: number) => setIndex((i) => (count ? (next + count) % count : 0)),
+    [count],
+  );
 
   useEffect(() => {
-    if (items.length < 2) return;
-    const timer = setInterval(() => setIndex((i) => (i + 1) % items.length), 6500);
-    return () => clearInterval(timer);
-  }, [items.length]);
+    if (count < 2 || paused) return;
+    timerRef.current = setInterval(() => setIndex((i) => (i + 1) % count), SLIDE_MS);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [count, paused]);
 
-  if (items.length === 0) return null;
+  if (count === 0) return null;
 
-  const slide = items[Math.min(index, items.length - 1)];
+  const active = Math.min(index, count - 1);
+  const slide = items[active];
   const imageOnly = slide?.display_type === "image";
-  const slideKey = String(slide?.id ?? index);
 
   /** وجهة السلايد: رابط مباشر ثم تصنيف ثم صفحة العروض */
   const targetOf = (item: Slide): string | null => {
@@ -69,61 +91,103 @@ const HeroSlider: React.FC<Props> = ({ slides }) => {
   const target = targetOf(slide);
 
   return (
-    <section className={`${CONTAINER} pt-6`}>
+    <section
+      className={`${CONTAINER} pt-5`}
+      aria-roledescription="carousel"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocusCapture={() => setPaused(true)}
+      onBlurCapture={() => setPaused(false)}
+    >
       <div
-        className={`relative overflow-hidden rounded-[24px] bg-[#2E1065] aspect-[1200/620] sm:aspect-[1200/440] ${
+        className={`relative isolate overflow-hidden rounded-[28px] bg-grad-brand-deep shadow-[0_24px_60px_-24px_rgba(46,16,101,0.55)] aspect-[1200/700] sm:aspect-[1200/455] ${
           imageOnly && target ? "cursor-pointer" : ""
         }`}
         onClick={imageOnly ? () => openTarget(target) : undefined}
       >
-        {slide?.image && !brokenImages[slideKey] && (
-          <img
-            src={slide.image}
-            alt={slide.title ?? ""}
-            onError={() => setBrokenImages((c) => ({ ...c, [slideKey]: true }))}
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-        )}
+        {/* طبقات الصور — تلاشٍ متقاطع، الصورة النشطة فقط مرئية */}
+        {items.map((item, i) => {
+          const key = String(item.id ?? i);
+          if (!item.image || brokenImages[key]) return null;
+          return (
+            <img
+              key={key}
+              src={item.image}
+              alt={i === active ? (item.title ?? "") : ""}
+              aria-hidden={i !== active}
+              loading={i === 0 ? "eager" : "lazy"}
+              onError={() => setBrokenImages((c) => ({ ...c, [key]: true }))}
+              className={`mk-slide-fade absolute inset-0 h-full w-full object-cover ${
+                i === active ? "is-active" : ""
+              }`}
+            />
+          );
+        })}
+
+        {/* لمعة هوية خفيفة فوق الصورة — تُبقي البانر داخل لوحة العلامة */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute -top-24 -start-16 h-[320px] w-[320px] rounded-full bg-[#7C4DE0]/35 blur-[90px]"
+        />
+        <span
+          aria-hidden
+          className="pointer-events-none absolute -bottom-24 end-[12%] h-[280px] w-[280px] rounded-full bg-[#FD671A]/25 blur-[90px]"
+        />
 
         {/* طبقة التعتيم والنصوص تظهر فقط في نوع «صورة ونصوص» */}
         {!imageOnly && (
           <>
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(46,16,101,0.94),rgba(46,16,101,0.62)_55%,rgba(46,16,101,0.2))]" />
+            <div
+              aria-hidden
+              className="absolute inset-0 bg-[linear-gradient(to_right,rgba(17,6,50,0.97)_0%,rgba(24,8,70,0.9)_40%,rgba(41,14,92,0.58)_72%,rgba(46,16,101,0.2)_100%)] rtl:bg-[linear-gradient(to_left,rgba(17,6,50,0.97)_0%,rgba(24,8,70,0.9)_40%,rgba(41,14,92,0.58)_72%,rgba(46,16,101,0.2)_100%)]"
+            />
+            <div
+              aria-hidden
+              className="absolute inset-x-0 bottom-0 h-1/2 bg-[linear-gradient(to_top,rgba(15,6,44,0.6),transparent)]"
+            />
 
-            <div className="relative flex h-full max-w-full flex-col items-start justify-center gap-3 px-6 sm:max-w-[62%] sm:gap-4 sm:px-16">
+            <div
+              key={`content-${active}`}
+              className="mk-rise relative flex h-full max-w-full flex-col items-start justify-center gap-3.5 px-6 py-8 sm:max-w-[62%] sm:gap-4 sm:px-16 lg:px-20"
+            >
               {slide?.subtitle && (
-                <span className="rounded-full bg-white/[0.12] px-3.5 py-1.5 text-[12px] font-semibold text-[#C4B5FD]">
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/[0.14] px-4 py-2 text-[12.5px] font-extrabold uppercase tracking-[0.05em] text-[#E9E0FF] backdrop-blur-sm">
+                  <span aria-hidden className="mk-badge-pulse h-2 w-2 rounded-full bg-grad-accent" />
                   {slide.subtitle}
                 </span>
               )}
 
               {slide?.title && (
-                <h1 className="m-0 text-[26px] font-bold leading-[1.2] text-white sm:text-[44px]">
+                <h1 className="m-0 bg-[linear-gradient(100deg,#FFFFFF_0%,#FFFFFF_45%,#D6CBFF_100%)] bg-clip-text text-[32px] font-extrabold leading-[1.1] tracking-[-0.01em] text-transparent drop-shadow-[0_2px_18px_rgba(9,3,32,0.35)] sm:text-[50px] lg:text-[60px]">
                   {slide.title}
                 </h1>
               )}
 
               {slide?.description && (
-                <p className="m-0 max-w-[46ch] text-[13px] leading-[1.8] text-[#E3DCF4] sm:text-[16px]">
+                <p className="m-0 max-w-[48ch] text-[14px] leading-[1.85] text-[#E3DCF4] sm:text-[16.5px]">
                   {slide.description}
                 </p>
               )}
 
               {(slide?.button_text || slide?.secondary_button_text) && (
-                <div className="mt-1.5 flex flex-wrap gap-3">
+                <div className="mt-2 flex flex-wrap gap-3">
                   {slide?.button_text && (
                     <button
                       onClick={() => openTarget(slide.button_url || target)}
-                      className="h-[46px] rounded-[14px] bg-[#E2680F] px-5 text-[13px] font-bold text-white shadow-[0_10px_26px_rgba(226,104,15,0.35)] transition-colors hover:bg-[#C85A0B] sm:h-[50px] sm:px-[26px] sm:text-[14.5px]"
+                      className={`mk-shine group inline-flex h-[52px] items-center gap-2 rounded-mk-lg bg-grad-accent px-7 text-[15px] font-extrabold text-white shadow-mk-glow-accent transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-[0_20px_44px_-8px_rgba(226,86,13,0.9)] active:translate-y-0 sm:h-[56px] sm:px-9 sm:text-[16px] ${HERO_FOCUS}`}
                     >
-                      {slide.button_text} ↗
+                      {slide.button_text}
+                      <LuArrowUpRight
+                        size={18}
+                        className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 rtl:-scale-x-100"
+                      />
                     </button>
                   )}
 
                   {slide?.secondary_button_text && (
                     <button
                       onClick={() => openTarget(slide.secondary_button_url || null)}
-                      className="flex h-[44px] items-center rounded-[12px] border border-white/40 px-5 text-[13px] font-semibold text-white transition-colors hover:bg-white/[0.14] sm:h-[48px] sm:px-6 sm:text-[14px]"
+                      className={`inline-flex h-[52px] items-center rounded-mk-lg border-[1.5px] border-white/50 bg-white/[0.08] px-7 text-[15px] font-extrabold text-white backdrop-blur-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-white hover:bg-white hover:text-[#400198] sm:h-[56px] sm:px-8 sm:text-[16px] ${HERO_FOCUS}`}
                     >
                       {slide.secondary_button_text}
                     </button>
@@ -134,42 +198,64 @@ const HeroSlider: React.FC<Props> = ({ slides }) => {
           </>
         )}
 
-        {items.length > 1 && (
+        {count > 1 && (
           <>
+            {/* أسهم التنقّل — حضور واضح مع ضباب خلفي */}
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                setIndex((i) => (i + items.length - 1) % items.length);
+                go(active - 1);
               }}
               aria-label={t("home.hero_new.prev", "السابق")}
-              className="absolute end-4 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-[18px] text-[#2E1065] transition-colors hover:bg-white sm:flex"
+              className={`absolute start-4 top-1/2 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-white/15 text-white backdrop-blur-md transition-all duration-300 hover:scale-105 hover:border-white/70 hover:bg-white hover:text-[#400198] sm:flex ${HERO_FOCUS}`}
             >
-              ›
+              <LuChevronLeft size={22} className="rtl:-scale-x-100" />
             </button>
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                setIndex((i) => (i + 1) % items.length);
+                go(active + 1);
               }}
               aria-label={t("home.hero_new.next", "التالي")}
-              className="absolute start-4 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-[18px] text-[#2E1065] transition-colors hover:bg-white sm:flex"
+              className={`absolute end-4 top-1/2 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-white/15 text-white backdrop-blur-md transition-all duration-300 hover:scale-105 hover:border-white/70 hover:bg-white hover:text-[#400198] sm:flex ${HERO_FOCUS}`}
             >
-              ‹
+              <LuChevronRight size={22} className="rtl:-scale-x-100" />
             </button>
-            <div className="absolute inset-x-0 bottom-4 flex justify-center gap-2" dir="ltr">
-              {items.map((item, i) => (
-                <button
-                  key={item.id ?? i}
-                  aria-label={`slide-${i + 1}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIndex(i);
-                  }}
-                  className={`h-2 rounded-full transition-all ${
-                    i === index ? "w-[26px] bg-white" : "w-2 bg-white/40"
-                  }`}
-                />
-              ))}
+
+            {/* مؤشرات الشرائح — شريط تقدّم للشريحة النشطة */}
+            <div className="absolute bottom-5 end-5 sm:bottom-6 sm:end-14">
+              <div className="flex items-center gap-2.5" dir="ltr">
+              {items.map((item, i) => {
+                const isActive = i === active;
+                return (
+                  <button
+                    key={item.id ?? i}
+                    aria-label={`${t("home.hero_new.slide", "شريحة")} ${i + 1}`}
+                    aria-current={isActive}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      go(i);
+                    }}
+                    className={`h-[6px] overflow-hidden rounded-full transition-all duration-500 ${HERO_FOCUS} ${
+                      isActive
+                        ? "w-11 bg-white/30"
+                        : "w-[18px] bg-white/35 hover:w-6 hover:bg-white/60"
+                    }`}
+                  >
+                    {isActive && (
+                      <span
+                        key={`bar-${active}-${paused}`}
+                        className="mk-slide-progress block h-full w-full rounded-full bg-white"
+                        style={{
+                          animationDuration: `${SLIDE_MS}ms`,
+                          animationPlayState: paused ? "paused" : "running",
+                        }}
+                      />
+                    )}
+                  </button>
+                );
+              })}
+              </div>
             </div>
           </>
         )}

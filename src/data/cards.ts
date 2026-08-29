@@ -44,6 +44,9 @@ export interface CardOffer {
   bookmarks: number;
   isPopular?: boolean;
   isNew?: boolean;
+  /** عدّادات موحّدة من الـAPI — اختيارية، لا تُعرض إن غابت */
+  favoritesCount?: number;
+  sharesCount?: number;
 }
 
 export const cardCategories = [

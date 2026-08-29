@@ -28,10 +28,10 @@ const CardsCategoryCard: React.FC<CardsCategoryCardProps> = ({
   <button
     type="button"
     onClick={onClick}
-    className={`w-full bg-white rounded-xl py-4 px-4 flex flex-col items-center transition-all duration-300 cursor-pointer group border ${
+    className={`w-full bg-white rounded-mk-md py-4 px-4 flex flex-col items-center transition-all duration-300 cursor-pointer group border ${
       selected
-        ? "border-[#400198] shadow-md shadow-[#400198]/20 scale-[1.02]"
-        : "border-gray-100 hover:scale-105"
+        ? "border-[#400198] shadow-mk-raised shadow-[#400198]/20 scale-[1.02]"
+        : "border-mk-divider hover:scale-105"
     }`}
     style={
       selected
@@ -49,7 +49,7 @@ const CardsCategoryCard: React.FC<CardsCategoryCardProps> = ({
       className={`w-14 h-14 mb-4 flex items-center justify-center rounded-full transition-all duration-300 overflow-hidden ${
         selected
           ? "bg-gradient-to-br from-[#400198]/20 to-[#400198]/30"
-          : "bg-gradient-to-br from-purple-50 to-purple-100 group-hover:from-purple-100 group-hover:to-purple-200"
+          : "bg-gradient-to-br from-mk-tint3 to-mk-tint group-hover:from-mk-tint group-hover:to-mk-border-strong"
       }`}
     >
       {image ? (
@@ -68,13 +68,13 @@ const CardsCategoryCard: React.FC<CardsCategoryCardProps> = ({
       className={`text-[14px] font-semibold text-center transition-colors duration-300 leading-tight ${
         selected
           ? "text-[#400198]"
-          : "text-gray-800 group-hover:text-purple-700"
+          : "text-mk-text group-hover:text-mk-primary"
       }`}
     >
       {title}
     </span>
     <div
-      className={`w-8 h-1 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full mt-3 transition-opacity duration-300 ${
+      className={`w-8 h-1 bg-gradient-to-r from-mk-primary-soft to-mk-primary rounded-full mt-3 transition-opacity duration-300 ${
         selected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
       }`}
     />
@@ -136,10 +136,10 @@ const CardsCategorySection: React.FC<CardsCategorySectionProps> = ({
             {Array.from({ length: 7 }).map((_, i) => (
               <div
                 key={i}
-                className="bg-white rounded-xl py-4 px-4 border border-gray-100 animate-pulse"
+                className="bg-white rounded-mk-md py-4 px-4 border border-mk-divider animate-pulse"
               >
-                <div className="w-14 h-14 mx-auto mb-4 bg-gray-200 rounded-full" />
-                <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto" />
+                <div className="w-14 h-14 mx-auto mb-4 bg-mk-border-strong/50 rounded-full" />
+                <div className="h-4 bg-mk-border-strong/50 rounded w-3/4 mx-auto" />
               </div>
             ))}
           </div>

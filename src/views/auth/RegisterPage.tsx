@@ -192,7 +192,7 @@ const RegisterPage: React.FC = () => {
 
   /** محاذاة للعربي: النص والـ placeholder لليمين */
   const inputClass =
-    "block w-full px-4 h-[49px] py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#440798] focus:border-[#440798] text-right placeholder:text-right";
+    "block w-full px-4 h-[49px] py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#400198] focus:border-[#400198] text-right placeholder:text-right";
 
   const handleCompleteRegistration = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -316,7 +316,7 @@ const RegisterPage: React.FC = () => {
 
           {showRegistrationForm ? (
             <>
-              <h2 className="text-lg sm:text-xl font-bold text-[#440798] mb-0.5">
+              <h2 className="text-lg sm:text-xl font-bold text-[#400198] mb-0.5">
                 إكمال التسجيل
               </h2>
               <p className="text-gray-600 mb-4 text-center text-xs sm:text-sm max-w-sm px-1 leading-snug">
@@ -540,7 +540,7 @@ const RegisterPage: React.FC = () => {
                   />
                   <span className="text-sm text-gray-800 text-right leading-snug flex-1">
                     أوافق على{" "}
-                    <span className="text-[#440798] font-medium">
+                    <span className="text-[#400198] font-medium">
                       الشروط والسياسات
                     </span>
                   </span>
@@ -557,7 +557,7 @@ const RegisterPage: React.FC = () => {
             </>
           ) : !otpSent ? (
             <>
-              <h2 className="text-2xl font-bold text-[#440798] mb-2">
+              <h2 className="text-2xl font-bold text-[#400198] mb-2">
                 إنشاء حساب جديد
               </h2>
               <p className="text-gray-600 mb-6 text-center">
@@ -587,7 +587,7 @@ const RegisterPage: React.FC = () => {
                     inputMode="numeric"
                     pattern="[0-9]*"
                     autoComplete="tel"
-                    className={`text-start flex-1 border border-gray-300 px-4 py-2 text-base rounded-full focus:outline-none focus:ring-[#440798] focus:border-[#440798] min-h-[49px] ${
+                    className={`text-start flex-1 border border-gray-300 px-4 py-2 text-base rounded-full focus:outline-none focus:ring-[#400198] focus:border-[#400198] min-h-[49px] ${
                       error ? "text-red-500 placeholder-red-400" : ""
                     }`}
                     placeholder={error ? "رقم الجوال مطلوب" : "أدخل رقم الجوال"}
@@ -610,7 +610,7 @@ const RegisterPage: React.FC = () => {
             </>
           ) : (
             <div className="w-full flex flex-col items-center">
-              <h2 className="text-2xl font-bold text-[#440798] mb-2">
+              <h2 className="text-2xl font-bold text-[#400198] mb-2">
                 أدخل رمز التحقق
               </h2>
               <p className="mb-6 text-center text-gray-600">
@@ -624,7 +624,7 @@ const RegisterPage: React.FC = () => {
                     type="text"
                     inputMode="numeric"
                     maxLength={1}
-                    className="w-14 h-14 text-2xl text-center border border-gray-300 rounded-md focus:border-[#440798] focus:ring-2 focus:ring-[#440798] outline-none"
+                    className="w-14 h-14 text-2xl text-center border border-gray-300 rounded-md focus:border-[#400198] focus:ring-2 focus:ring-[#400198] outline-none"
                     value={v}
                     onChange={(e) => handleCodeChange(i, e.target.value)}
                     onKeyDown={(e) => handleCodeKeyDown(i, e)}
@@ -635,7 +635,7 @@ const RegisterPage: React.FC = () => {
                 لم تستلم الرمز؟{" "}
                 <button
                   type="button"
-                  className="text-[#440798] underline disabled:text-gray-400"
+                  className="text-[#400198] underline disabled:text-gray-400"
                   disabled={timer > 0 || loading}
                   onClick={() => {
                     sendOtp(phone.trim(), countryCode);
@@ -663,7 +663,7 @@ const RegisterPage: React.FC = () => {
             <button
               type="button"
               onClick={() => navigate("/login")}
-              className="mr-2 text-[#440798] font-bold hover:underline"
+              className="mr-2 text-[#400198] font-bold hover:underline"
             >
               تسجيل الدخول الآن
             </button>

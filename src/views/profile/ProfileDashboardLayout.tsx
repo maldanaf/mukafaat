@@ -82,7 +82,7 @@ const ProfileDashboardLayout: React.FC<{ children: React.ReactNode }> = ({
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50" style={{ marginTop: "77px" }}>
+      <div className="min-h-screen bg-mk-tint3" style={{ marginTop: "77px" }}>
         {children}
       </div>
     );
@@ -90,11 +90,11 @@ const ProfileDashboardLayout: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <div
-      className="min-h-screen bg-gray-50 pb-12"
+      className="min-h-screen bg-mk-tint3 pb-12"
       style={{ marginTop: "77px", minHeight: "calc(-76px + 70vh)" }}
     >
       <div className="container mx-auto px-4 pt-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">
+        <h1 className="text-2xl font-bold text-mk-text mb-6">
           {t("profileDashboard.title")}
         </h1>
         <div
@@ -103,10 +103,10 @@ const ProfileDashboardLayout: React.FC<{ children: React.ReactNode }> = ({
         >
           <aside className="w-full shrink-0 lg:w-64 lg:order-1">
             <nav
-              className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden"
+              className="rounded-mk-xl border border-mk-border bg-white shadow-mk-card overflow-hidden"
               dir={isRTL ? "rtl" : "ltr"}
             >
-              <ul className="divide-y divide-gray-100">
+              <ul className="divide-y divide-mk-divider">
                 {menu.map((item) => {
                   const Icon = item.icon;
                   const isActive = item.end
@@ -118,8 +118,8 @@ const ProfileDashboardLayout: React.FC<{ children: React.ReactNode }> = ({
                         href={item.to}
                         className={`flex items-center gap-3 px-4 py-3.5 text-sm font-medium transition-colors ${
                           isActive
-                            ? "bg-[#440798]/10 text-[#440798]"
-                            : "text-gray-700 hover:bg-gray-50"
+                            ? "bg-[#400198]/10 text-[#400198]"
+                            : "text-mk-text-strong hover:bg-mk-tint3"
                         }`}
                       >
                         <Icon className="w-5 h-5 shrink-0 opacity-90" />
@@ -127,7 +127,7 @@ const ProfileDashboardLayout: React.FC<{ children: React.ReactNode }> = ({
                           {t(item.labelKey)}
                         </span>
                         <IoChevronBack
-                          className={`w-4 h-4 shrink-0 text-gray-400 ${
+                          className={`w-4 h-4 shrink-0 text-mk-faint ${
                             isRTL ? "" : "rotate-180"
                           }`}
                         />

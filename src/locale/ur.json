@@ -47,7 +47,10 @@
       "brand": "Mukafaat",
       "choose_city": "Choose your city",
       "points_balance": "Your points",
-      "saved": "Saved"
+      "saved": "Saved",
+      "membership_tier": "ممبرشپ لیول",
+      "tier_renewal_discount": "سبسکرپشن تجدید پر رعایت",
+      "tier_progress": "{{tier}} تک پہنچنے کے لیے مزید {{count}} آرڈرز"
     },
     "login": {
       "welcome_title": "مکافات میں خوش آمدید",
@@ -77,7 +80,9 @@
     },
     "common": {
       "success": "کامیابی",
-      "error": "خرابی"
+      "error": "خرابی",
+      "prev": "پچھلا",
+      "next": "اگلا"
     },
     "subscription": {
       "offerForSubscribersOnly": "پیشکش صرف سبسکرائبرز کے لیے",
@@ -382,12 +387,17 @@
       "body": "Exclusive offers, coupons and discount codes, digital cards and services that save you more every day.",
       "tag": "Featured offers",
       "cta": "Explore offers",
-      "app": "Get the app"
+      "app": "Get the app",
+      "prev": "پچھلی سلائیڈ",
+      "next": "اگلی سلائیڈ",
+      "slide": "سلائیڈ"
     },
     "search_new": {
       "all_cities": "All cities",
       "placeholder": "Search for a store, restaurant, offer, coupon or card...",
-      "empty": "No results match your search."
+      "empty": "No results match your search.",
+      "submit": "تلاش کریں",
+      "city_label": "شہر منتخب کریں"
     },
     "services_new": {
       "offers": {
@@ -415,7 +425,8 @@
       "all": "All",
       "eyebrow": "Quick browse",
       "title": "Categories",
-      "all_link": "View all categories"
+      "all_link": "View all categories",
+      "subtitle": "اپنی پسند کا زمرہ منتخب کریں اور اس کی آفرز فوراً دیکھیں۔"
     },
     "offers_new": {
       "eyebrow": "Picked for you",
@@ -425,7 +436,8 @@
       "ended": "Ended",
       "today": "Ends today",
       "ends_in": "Ends in",
-      "days": "days"
+      "days": "days",
+      "subtitle": "ابھی دستیاب سب سے بڑی رعایتیں — روزانہ اپ ڈیٹ ہوتی ہیں۔"
     },
     "coupons_new": {
       "title": "Featured coupons & promo codes",
@@ -434,7 +446,9 @@
       "copied": "Copied",
       "discount": "Save",
       "with_code": "with code",
-      "use_code": "Use the code at checkout to get the discount"
+      "use_code": "Use the code at checkout to get the discount",
+      "eyebrow": "مزید بچت کریں",
+      "subtitle": "کوڈ کاپی کریں اور ادائیگی کے وقت استعمال کر کے فوراً رعایت حاصل کریں۔"
     },
     "nearby_new": {
       "eyebrow": "Around you",
@@ -444,7 +458,13 @@
       "use_location": "Use my location",
       "locating": "Locating...",
       "km": "km",
-      "up_to": "Up to"
+      "up_to": "Up to",
+      "subtitle": "اپنے اردگرد رعایت دینے والے قریب ترین اسٹورز اور ریستوران دیکھیں۔",
+      "enable_title": "قریب ترین مقامات دیکھنے کے لیے اپنی لوکیشن آن کریں",
+      "enable_body": "ہم آپ کی لوکیشن صرف ایک بار فاصلے کے مطابق ترتیب کے لیے استعمال کرتے ہیں — نہ محفوظ، نہ شیئر۔",
+      "privacy": "ہم آپ کی لوکیشن کبھی محفوظ نہیں کرتے۔",
+      "denied": "لوکیشن کی اجازت مسترد ہو گئی — براؤزر کی ترتیبات سے فعال کر کے دوبارہ کوشش کریں۔",
+      "sort_hint": "اسٹورز کو قربت کے مطابق ترتیب دینے کے لیے اپنی لوکیشن آن کریں۔"
     },
     "stores_new": {
       "eyebrow": "Most popular",
@@ -495,6 +515,17 @@
       "about": "The offers, discounts and coupons platform in Saudi Arabia.",
       "rights": "All rights reserved © Mukafaat",
       "country": "Saudi Arabia"
+    },
+    "cards_new": {
+      "subtitle": "گیمنگ، تفریح اور شاپنگ کارڈز — کوڈ آپ کو فوراً مل جاتا ہے۔"
+    },
+    "topbar": {
+      "deals": "سیکڑوں برانڈز پر 70% تک رعایت",
+      "coupons": "روزانہ اپ ڈیٹ ہونے والے ڈسکاؤنٹ کوڈ — کاپی کریں اور فوراً استعمال کریں",
+      "cards": "ڈیجیٹل کارڈز خریدتے ہی آپ کو مل جاتے ہیں"
+    },
+    "stats_new": {
+      "trust": "ایک قابلِ اعتماد سعودی پلیٹ فارم — روزانہ نئی پیشکشیں اور پورے ہفتے سپورٹ"
     }
   },
   "about": {
@@ -1387,7 +1418,9 @@
       "shareLocation": "مقام شیئر کریں",
       "emptyTitle": "کوئی پیشکش دستیاب نہیں",
       "emptyHint": "دوسرا فلٹر آزمائیں یا بعد میں دوبارہ چیک کریں"
-    }
+    },
+    "heroEyebrow": "مزید بچت کریں",
+    "heroSubtitle": "آپ کے پسندیدہ اسٹورز سے ہزاروں آفرز — دیکھیں، موازنہ کریں اور منٹوں میں خریدیں۔"
   },
   "categoryOffers": {
     "not_found": "زمرہ نہیں ملا",
@@ -1425,8 +1458,37 @@
       "topSellingTitle": "سب سے زیادہ فروخت",
       "topSellingSubtitle": "گاہکوں کی جانب سے سب سے زیادہ مانگ والے کارڈز",
       "mostViewedTitle": "سب سے زیادہ دیکھے گئے",
-      "mostViewedSubtitle": "سب سے زیادہ دیکھے گئے اور براؤز کیے گئے کارڈز"
-    }
+      "mostViewedSubtitle": "سب سے زیادہ دیکھے گئے اور براؤز کیے گئے کارڈز",
+      "resultsTitle": "تلاش کے نتائج",
+      "recommendedTitle": "آپ کے لیے منتخب",
+      "recommendedSubtitle": "کارڈز جو آپ کو پسند آ سکتے ہیں",
+      "featuredTitle": "نمایاں کارڈز",
+      "featuredSubtitle": "ہمارا انتخاب"
+    },
+    "resultsCount": "{{count}} کارڈز",
+    "validity": {
+      "daily": "روزانہ",
+      "weekly": "ہفتہ وار",
+      "monthly": "ماہانہ",
+      "quarterly": "سہ ماہی",
+      "semi_annual": "ششماہی",
+      "annual": "سالانہ",
+      "unlimited": "لامحدود"
+    },
+    "allCountries": "تمام ممالک",
+    "noResults": "کوئی مماثل کارڈ نہیں",
+    "sortLabel": "ترتیب",
+    "sort": {
+      "newest": "تازہ ترین",
+      "best_selling": "سب سے زیادہ فروخت",
+      "highest_discount": "سب سے زیادہ رعایت",
+      "price_low_high": "قیمت: کم سے زیادہ",
+      "price_high_low": "قیمت: زیادہ سے کم",
+      "most_viewed": "سب سے زیادہ دیکھے گئے"
+    },
+    "cards_suffix": "کارڈز",
+    "heroEyebrow": "ایک بار خریدیں، سال بھر بچائیں",
+    "heroSubtitle": "بہترین اسٹورز کے ڈسکاؤنٹ کارڈز — ایک قیمت میں بار بار بچت۔"
   },
   "saved": {
     "title": "محفوظ کردہ اشیاء",
@@ -1435,14 +1497,17 @@
       "all": "تمام",
       "offers": "پیشکش کرتا ہے۔",
       "cards": "کارڈز",
-      "bookings": "بکنگ"
+      "bookings": "بکنگ",
+      "coupons": "کوپنز",
+      "stores": "اسٹورز"
     },
     "types": {
       "offer": "پیشکش",
       "card": "کارڈ",
       "coupon": "کوپن",
       "booking": "بکنگ",
-      "item": "آئٹم"
+      "item": "آئٹم",
+      "merchant": "اسٹور"
     },
     "saved_since": "کے بعد سے محفوظ کیا گیا ہے۔",
     "empty": {
@@ -1450,7 +1515,11 @@
       "title_filtered": "کوئی محفوظ نہیں کیا گیا {{type}}",
       "description": "اپنی پسند کی پیشکشوں اور کارڈز کو محفوظ کرنا شروع کریں۔",
       "browse_offers": "آفرز کو براؤز کریں۔"
-    }
+    },
+    "eyebrow": "آپ کی لائبریری",
+    "results_suffix": "محفوظ آئٹمز",
+    "remove": "پسندیدہ سے ہٹائیں",
+    "view_details": "تفصیلات دیکھیں"
   },
   "orders": {
     "title": "میرے احکامات",
@@ -1501,7 +1570,9 @@
       "title_filtered": "کوئی {{status}} آرڈر نہیں ہیں۔",
       "description": "اپنی کارٹ میں پیشکشیں اور کارڈز شامل کرنا شروع کریں۔",
       "browse_offers": "آفرز کو براؤز کریں۔"
-    }
+    },
+    "eyebrow": "آپ کی خریداری",
+    "results_suffix": "آرڈرز"
   },
   "sideMenu": {
     "logoAlt": "مکافات لوگو",
@@ -1624,7 +1695,27 @@
     "redeem_success": "پوائنٹس کو کامیابی کے ساتھ بھنایا گیا۔",
     "redeem_error": "پوائنٹس کو بھنانے میں ناکام",
     "loading": "لوڈ ہو رہا ہے...",
-    "no_transactions": "کوئی لین دین نہیں۔"
+    "no_transactions": "کوئی لین دین نہیں۔",
+    "topupTitle": "پوائنٹس ری چارج کریں",
+    "topupSubtitle": "اپنے والٹ میں پوائنٹس شامل کریں",
+    "pointsRateTitle": "1 پوائنٹ = 1 سعودی ریال",
+    "pointsRateDesc": "بیلنس پوائنٹس میں دکھایا جاتا ہے اور ریال میں وصول کیا جاتا ہے — 1 پوائنٹ = 1 SAR۔",
+    "pointsCountLabel": "پوائنٹس کی تعداد",
+    "otherAmount": "دوسری رقم",
+    "enterPointsAmount": "پوائنٹس کی تعداد",
+    "enterAmount": "پوائنٹس کی تعداد درج کریں",
+    "amountRange": "پوائنٹس {{min}} اور {{max}} کے درمیان ہونے چاہئیں",
+    "topupGoesToCash": "پوائنٹس آپ کے کیش بیلنس میں شامل ہوں گے۔",
+    "payAmount": "ادا کریں {{amount}}",
+    "topupSuccess": "آپ کا بیلنس کامیابی سے ری چارج ہو گیا۔",
+    "topupFailed": "ری چارج مکمل نہیں ہوا — کوئی رقم نہیں کٹی، دوبارہ کوشش کریں۔",
+    "totalBalance": "کل بیلنس",
+    "promotionalBalance": "پروموشنل بیلنس",
+    "cashBalance": "کیش بیلنس",
+    "pointsUnitOne": "پوائنٹ",
+    "pointsUnitTwo": "پوائنٹس",
+    "pointsUnitFew": "پوائنٹس",
+    "pointsUnitMany": "پوائنٹس"
   },
   "profile": {
     "subscription_active": "فعال رکنیت",
@@ -1682,7 +1773,13 @@
     "menu_subscribe_other": "کسی اور کی سبسکرپشن",
     "menu_upgrade": "سبسکرپشن پلان اپ گریڈ",
     "menu_contact": "رابطہ کریں",
-    "menu_logout": "لاگ آؤٹ"
+    "menu_logout": "لاگ آؤٹ",
+    "group_account": "میرا اکاؤنٹ",
+    "group_membership": "رکنیت اور فوائد",
+    "group_help": "مدد",
+    "menu_card": "میرا کارڈ اور درجات",
+    "menu_notifications": "اطلاعات",
+    "menu_store_request": "بطور اسٹور شامل ہوں"
   },
   "subscribeForOther": {
     "meta_title": "کسی اور کی سبسکرپشن",
@@ -1752,7 +1849,9 @@
     "coupons_suffix": "کوپن",
     "discount_min_tag": "رعایت ≥ {{min}}%",
     "clear_all": "سب صاف کریں",
-    "image_cut_coupon": "کوپن جداکار"
+    "image_cut_coupon": "کوپن جداکار",
+    "hero_eyebrow": "کاپی کریں اور فوراً استعمال کریں",
+    "hero_subtitle": "سینکڑوں برانڈز پر روزانہ اپ ڈیٹ ہونے والے پرومو کوڈز — صرف ایک ٹیپ پر۔"
   },
   "languageToggle": {
     "languagesTab": "زبانیں",
@@ -1822,7 +1921,11 @@
     "purchases_few": "{{count}} خریداریاں",
     "purchases_many": "{{count}} خریداری",
     "purchases_two": "{{count}} خریداریاں",
-    "purchases_zero": "0 خریداری"
+    "purchases_zero": "0 خریداری",
+    "subscribersOnly": "صرف سبسکرائبرز کے لیے",
+    "save": "بچت",
+    "endsToday": "آج ختم",
+    "endsInDays": "{{days}} دن میں ختم"
   },
   "couponModal": {
     "removedFromFavorites": "پسندیدہ سے ہٹا دیا گیا۔",
@@ -1843,6 +1946,284 @@
     "expiresOn": "میعاد {{date}} کو ختم ہو رہی ہے",
     "validityUnknown": "درستگی کی وضاحت نہیں کی گئی ہے۔",
     "noExpiryDate": "کوئی میعاد ختم ہونے کی تاریخ نہیں۔",
-    "goToStore": "اسٹور پر جائیں۔"
+    "goToStore": "اسٹور پر جائیں۔",
+    "usedCount": "استعمال ({{count}})",
+    "usedCountOne": "استعمال (ایک بار)",
+    "usedCountTwo": "استعمال ({{count}} بار)",
+    "usedCountFew": "استعمال ({{count}} بار)",
+    "usedCountMany": "استعمال ({{count}} بار)"
+  },
+  "ui": {
+    "viewAll": "سب دیکھیں",
+    "loading": "لوڈ ہو رہا ہے…",
+    "retry": "دوبارہ کوشش کریں",
+    "showMore": "مزید دکھائیں",
+    "showLess": "کم دکھائیں",
+    "next": "اگلا",
+    "previous": "پچھلا",
+    "empty": {
+      "title": "ابھی یہاں کچھ نہیں ہے",
+      "description": "فلٹر تبدیل کریں یا بعد میں دوبارہ آئیں۔",
+      "offers": "اس وقت کوئی مماثل آفر نہیں۔",
+      "coupons": "اس وقت کوئی کوپن دستیاب نہیں۔",
+      "cards": "اس وقت کوئی کارڈ دستیاب نہیں۔",
+      "stores": "دکھانے کے لیے کوئی اسٹور نہیں۔",
+      "search": "آپ کی تلاش کا کوئی نتیجہ نہیں۔",
+      "saved": "ابھی کوئی محفوظ آئٹم نہیں۔",
+      "orders": "ابھی کوئی آرڈر نہیں۔"
+    },
+    "error": {
+      "title": "ڈیٹا لوڈ نہیں ہو سکا",
+      "description": "اپنا انٹرنیٹ کنکشن چیک کر کے دوبارہ کوشش کریں۔",
+      "retry": "دوبارہ کوشش کریں"
+    },
+    "filters": "فلٹرز",
+    "clearFilters": "فلٹر صاف کریں",
+    "gridView": "گرڈ ویو",
+    "listView": "لسٹ ویو",
+    "results": "نتائج",
+    "searchPlaceholder": "تلاش کریں…",
+    "share": "شیئر کریں",
+    "notifications": "اطلاعات",
+    "favorite": {
+      "add": "پسندیدہ میں شامل کریں",
+      "remove": "پسندیدہ سے ہٹائیں"
+    },
+    "loginRequired": {
+      "title": "لاگ اِن ضروری ہے",
+      "cta": "لاگ اِن"
+    },
+    "save": "بچائیں",
+    "flag": {
+      "hot": "سب سے زیادہ مقبول",
+      "new": "نیا",
+      "ending": "جلد ختم"
+    },
+    "results_count": "{{count}} نتائج"
+  },
+  "couponCard": {
+    "copies": "کاپیاں"
+  },
+  "storePage": {
+    "delivery_time": "ڈیلیوری کا وقت",
+    "minimum_order": "کم از کم آرڈر",
+    "delivery_fee": "ڈیلیوری فیس",
+    "whatsapp": "واٹس ایپ",
+    "working_hours": "اوقاتِ کار",
+    "open_now": "ابھی کھلا ہے",
+    "closed_now": "ابھی بند ہے",
+    "temporarily_closed": "عارضی طور پر بند",
+    "closed_today": "بند",
+    "today": "آج",
+    "hours_unavailable": "اوقاتِ کار دستیاب نہیں",
+    "content_tab_default": "مواد",
+    "minute_unit": "منٹ",
+    "working_hours_today": "آج کے اوقات",
+    "verified": "تصدیق شدہ اسٹور",
+    "coming_soon": "جلد آ رہا ہے",
+    "delivery_details": "ڈیلیوری کی تفصیلات"
+  },
+  "homeBuilder": {
+    "categoryOffers": "منتخب آفرز",
+    "viewAll": "سب دیکھیں",
+    "cards": {
+      "title": "مختلف ری چارج کارڈز",
+      "eyebrow": "فوری ری چارج",
+      "allLink": "تمام کارڈز دیکھیں",
+      "digital": "ڈیجیٹل کارڈ",
+      "currency": "ریال"
+    }
+  },
+  "membershipCard": {
+    "meta_title": "میرا کارڈ اور درجات",
+    "title": "میرا کارڈ اور درجات",
+    "subtitle": "آپ کا رکنیت نمبر، QR کوڈ، درجہ اور اس کے فوائد۔",
+    "number_label": "رکنیت نمبر",
+    "copy_number": "رکنیت نمبر کاپی کریں",
+    "copy_link": "تصدیقی لنک کاپی کریں",
+    "copied": "کاپی ہو گیا",
+    "share": "شیئر کریں",
+    "load_error": "کارڈ کی معلومات لوڈ نہیں ہو سکیں۔",
+    "no_membership": "ابھی کوئی رکنیت کارڈ نہیں — سبسکرائب کریں۔",
+    "subscribe_cta": "پیکجز دیکھیں"
+  },
+  "notificationsPage": {
+    "meta_title": "اطلاعات",
+    "title": "اطلاعات",
+    "unread_badge": "{{count}} غیر پڑھی",
+    "unread": "غیر پڑھی",
+    "mark_all": "سب کو پڑھا ہوا نشان زد کریں",
+    "mark_all_done": "تمام اطلاعات پڑھی ہوئی نشان زد ہو گئیں",
+    "action_failed": "کارروائی ناکام، دوبارہ کوشش کریں",
+    "settings_cta": "اطلاعات کی ترتیبات",
+    "tab_general": "عام",
+    "tab_nearby": "قریب ترین",
+    "tab_orders": "آرڈرز",
+    "tab_empty": "اس زمرے میں کوئی اطلاع نہیں",
+    "empty_title": "کوئی اطلاع نہیں",
+    "load_error": "اطلاعات لوڈ نہیں ہو سکیں۔",
+    "delete": "اطلاع حذف کریں",
+    "prev": "پچھلا",
+    "next": "اگلا",
+    "page_of": "صفحہ {{page}} از {{total}}"
+  },
+  "notificationSettings": {
+    "meta_title": "اطلاعات کی ترتیبات",
+    "title": "اطلاعات کی ترتیبات",
+    "subtitle": "منتخب کریں کہ آپ کیا وصول کرنا چاہتے ہیں۔",
+    "back_to_list": "اطلاعات",
+    "group_general": "عام",
+    "group_offers": "پیشکشیں اور الرٹس",
+    "group_channels": "رابطے کے ذرائع",
+    "key_app_notifications": "اطلاعات اور الرٹس",
+    "key_new_offers": "نئی پیشکشیں",
+    "key_discount_offers": "رعایتی پیشکشیں",
+    "key_trip_offers": "کارڈ پیشکشیں",
+    "key_shopping_sections_offers": "شاپنگ واؤچر پیشکشیں",
+    "key_offers_and_alerts": "گفٹ کارڈ پیشکشیں",
+    "key_email_newsletters": "ای میل نیوز لیٹر",
+    "key_sms_notifications": "ایس ایم ایس اطلاعات",
+    "key_whatsapp_notifications": "واٹس ایپ اطلاعات",
+    "saved": "ترتیبات محفوظ ہو گئیں",
+    "save_failed": "ترتیبات محفوظ نہیں ہو سکیں",
+    "load_error": "ترتیبات لوڈ نہیں ہو سکیں۔",
+    "hint": "«اطلاعات اور الرٹس» بند کرنے سے سب کچھ بند ہو جاتا ہے۔"
+  },
+  "contactUs": {
+    "prefill_note": "ہم نے آپ کی معلومات خود بھر دی ہیں — بھیجنے سے پہلے تبدیل کر سکتے ہیں۔"
+  },
+  "accountDelete": {
+    "title": "اکاؤنٹ حذف کریں",
+    "description": "اکاؤنٹ حذف کرنے سے فعال سبسکرپشنز منسوخ ہو جائیں گی اور یہ ناقابل واپسی ہے۔",
+    "cta": "میرا اکاؤنٹ حذف کریں",
+    "confirm_title": "حذف کی تصدیق",
+    "confirm_hint": "تصدیق کے لیے «حذف» لکھیں",
+    "confirm_word": "حذف",
+    "reason_label": "وجہ (اختیاری)",
+    "cancel": "منسوخ",
+    "submit": "حذف کی تصدیق",
+    "submitting": "حذف ہو رہا ہے…",
+    "success": "آپ کا اکاؤنٹ حذف ہو گیا",
+    "failed": "اکاؤنٹ حذف نہیں ہو سکا، دوبارہ کوشش کریں"
+  },
+  "subscription": {
+    "close": "بند کریں",
+    "back": "واپس",
+    "features": "خصوصیات",
+    "discountBadge": "{{percent}}% رعایت",
+    "familyMembersUpTo": "خاندان کے {{count}} افراد تک شامل",
+    "currentPlanBadge": "آپ کا موجودہ پیکیج",
+    "previousPlanBadge": "آپ کا سابقہ پیکیج",
+    "renewSubscription": "سبسکرپشن تجدید کریں",
+    "activeUntil": "آپ کی سبسکرپشن {{date}} تک فعال ہے",
+    "subscriptionEndedOn": "آپ کی سبسکرپشن {{date}} کو ختم ہو گئی",
+    "daysRemaining": "{{count}} دن باقی ہیں",
+    "expiringSoon": "جلد ختم ہو رہی ہے",
+    "guestSubscriptionHint": "اپنی موجودہ سبسکرپشن دیکھنے کے لیے لاگ ان کریں",
+    "guestLogin": "لاگ ان",
+    "duration": {
+      "monthly": "ماہانہ",
+      "3_months": "ہر 3 ماہ",
+      "6_months": "ہر 6 ماہ",
+      "yearly": "سالانہ",
+      "2_years": "2 سال"
+    }
+  },
+  "payment": {
+    "title": "ادائیگی کا طریقہ",
+    "electronicPayment": "الیکٹرانک ادائیگی",
+    "payThrough": "اس کے ذریعے ادائیگی",
+    "method": {
+      "mada": "mada",
+      "applePay": "Apple Pay",
+      "card": "کریڈٹ کارڈ / mada",
+      "wallet": "والٹ سے ادائیگی"
+    },
+    "walletBalanceNote": "آپ کا بیلنس: {{points}} پوائنٹس",
+    "couponLabel": "کوپن",
+    "couponPlaceholder": "کوپن درج کریں",
+    "couponApplied": "کوپن لاگو ہو گیا",
+    "couponInvalid": "کوپن درست نہیں",
+    "couponRemove": "کوپن ہٹائیں",
+    "discountCodeLabel": "ڈسکاؤنٹ کوڈ",
+    "apply": "لاگو کریں",
+    "applying": "جاری ہے...",
+    "total": "کل",
+    "currency": "SAR",
+    "completePayment": "ادائیگی مکمل کریں",
+    "completePaymentDesc": "محفوظ ادائیگی کے لیے کارڈ کی تفصیلات درج کریں۔",
+    "gatewayLoadFailed": "ادائیگی گیٹ وے لوڈ نہیں ہو سکا، دوبارہ کوشش کریں۔",
+    "gatewayInitFailed": "ادائیگی گیٹ وے تیار نہیں ہو سکا۔ سپورٹ سے رابطہ کریں۔",
+    "paymentDataIncomplete": "ادائیگی کی معلومات نامکمل ہیں۔ سپورٹ سے رابطہ کریں۔",
+    "applePayUnavailable": "Apple Pay صرف Apple ڈیوائسز پر Safari میں دستیاب ہے۔",
+    "promoLabel": "Discount or coupon code",
+    "promoPlaceholder": "Enter code",
+    "promoApply": "Apply",
+    "promoRemove": "Remove code",
+    "promoInvalid": "Invalid or expired code"
+  },
+  "invoice": {
+    "title": "انوائس",
+    "number": "انوائس نمبر",
+    "notIssuedYet": "انوائس ابھی جاری نہیں ہوئی",
+    "plan": "پیکیج",
+    "startDate": "آغاز کی تاریخ",
+    "endDate": "اختتام کی تاریخ",
+    "paymentMethod": "ادائیگی کا طریقہ",
+    "transactionNumber": "ٹرانزیکشن نمبر",
+    "date": "تاریخ",
+    "subscriptionId": "سبسکرپشن نمبر",
+    "total": "کل ادا شدہ",
+    "downloadPdf": "PDF انوائس ڈاؤن لوڈ کریں",
+    "pdfUnavailable": "انوائس فائل ابھی دستیاب نہیں — ادائیگی کی تصدیق کے بعد ظاہر ہوگی۔",
+    "allTransactions": "تمام ٹرانزیکشنز"
+  },
+  "referralLanding": {
+    "title": "دوست کی دعوت",
+    "subtitle": "ہم نے دعوتی کوڈ محفوظ کر لیا — رجسٹریشن مکمل کریں تاکہ آپ اور آپ کے دوست کو انعام ملے۔",
+    "cta_register": "اکاؤنٹ بنائیں",
+    "cta_home": "ہوم پر جائیں",
+    "redirecting": "آپ کو خودکار طور پر منتقل کیا جا رہا ہے…"
+  },
+  "qrLanding": {
+    "eyebrow": "آپ کے قریب خصوصی آفرز",
+    "title": "ابھی آپ کے اردگرد کی آفرز",
+    "subtitle": "اپنی لوکیشن آن کریں اور چند سیکنڈ میں قریبی اسٹورز کی آفرز دیکھیں۔",
+    "cta": "قریبی آفرز دکھائیں",
+    "cta_loading": "آپ کی لوکیشن معلوم کی جا رہی ہے…",
+    "radius_note": "ہم تلاش کر رہے ہیں",
+    "radius_note_suffix": "کے دائرے میں۔",
+    "unit_m": "میٹر",
+    "unit_km": "کلومیٹر",
+    "download_hint": "یا تیز تجربے کے لیے ایپ ڈاؤن لوڈ کریں",
+    "step1_title": "کوڈ اسکین کریں",
+    "step1_body": "اسٹور میں لگا مکافآت کوڈ اسکین کریں یا لنک کھولیں۔",
+    "step2_title": "لوکیشن آن کریں",
+    "step2_body": "براؤزر کو اپنی لوکیشن پڑھنے دیں تاکہ ہم آپ کے اردگرد تلاش کریں۔",
+    "step3_title": "رعایت سے لطف اٹھائیں",
+    "step3_body": "قریبی اسٹورز کی آفرز دیکھیں اور فوراً اپنی رعایت حاصل کریں۔",
+    "error_fetch": "قریبی آفرز لوڈ نہ ہو سکیں، دوبارہ کوشش کریں۔",
+    "error_network": "سروس سے رابطہ نہ ہو سکا، دوبارہ کوشش کریں۔",
+    "error_unsupported": "آپ کا براؤزر لوکیشن کی سہولت نہیں رکھتا۔",
+    "error_denied": "لوکیشن کی اجازت نہیں ملی۔ براؤزر سیٹنگز سے اجازت دیں اور دوبارہ کوشش کریں۔",
+    "error_locate": "آپ کی لوکیشن معلوم نہ ہو سکی، دوبارہ کوشش کریں۔",
+    "disabled": "یہ سروس فی الحال دستیاب نہیں۔",
+    "offers_in": "آفرز،",
+    "merchants_around": "اسٹورز آپ کے اردگرد",
+    "verified": "تصدیق شدہ",
+    "open_now": "ابھی کھلا",
+    "closed_now": "ابھی بند",
+    "empty_title": "آپ کے اردگرد کوئی آفر نہیں",
+    "empty_body": "بعد میں کوشش کریں، یا تمام آفرز دیکھنے کے لیے ایپ ڈاؤن لوڈ کریں۔",
+    "nearest_prefix": "قریب ترین اسٹور",
+    "nearest_suffix": "کا فاصلہ"
+  },
+  "account": {
+    "hero_fallback_name": "خوش آمدید",
+    "quick_links": "فوری لنکس",
+    "upsell_desc": "ایک ہی جگہ تمام آفرز اور رعایتیں کھولنے کے لیے اپنی سبسکرپشن فعال کریں۔",
+    "card_upsell_desc": "اپنے مخصوص نمبر اور تاجروں کے ہاں اسکین ہونے والے QR کوڈ کے ساتھ ڈیجیٹل ممبرشپ کارڈ حاصل کرنے کے لیے سبسکرائب کریں۔",
+    "card_actions": "کارڈ شیئر کریں",
+    "gifts_subtitle": "وہ سبسکرپشنز جو آپ نے تحفے میں دیں اور ان کے انوائسز"
   }
 }

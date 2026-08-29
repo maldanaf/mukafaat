@@ -176,14 +176,14 @@ const ContractPage: React.FC = () => {
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <button
               onClick={() => navigate(APP_ROUTES.home)}
-              className="flex-1 bg-[#fd671a] text-white font-semibold py-3 px-6 rounded-lg hover:bg-purple-700 transition-all duration-200 transform hover:scale-105 shadow-lg"
+              className="flex-1 bg-[#fd671a] text-white font-semibold py-3 px-6 rounded-lg hover:bg-mk-primary transition-all duration-200 transform hover:scale-105 shadow-lg"
             >
               {t("contract.notFound.goHome") || "Go to Homepage"}
             </button>
 
             <button
               onClick={() => navigate(APP_ROUTES.contact)}
-              className="flex-1 border-2 border-purple-600 text-[#fd671a] font-semibold py-3 px-6 rounded-lg hover:bg-[#fd671a] hover:text-white transition-all duration-200"
+              className="flex-1 border-2 border-mk-primary text-[#fd671a] font-semibold py-3 px-6 rounded-lg hover:bg-[#fd671a] hover:text-white transition-all duration-200"
             >
               {t("contract.notFound.contactSupport") || "Contact Support"}
             </button>

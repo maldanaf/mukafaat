@@ -69,7 +69,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title, description }) => {
           </div>
         </div>
       </div>
-      {/* <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[100px] flex items-center justify-center">
+      {/* <section className="relative w-full bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] overflow-hidden min-h-[100px] flex items-center justify-center">
         <div className="absolute inset-0 bg-primary opacity-30" />
         <div className="relative pt-20 pb-16 px-6 mx-auto max-w-site text-center lg:pt-20 lg:pb-16 lg:px-12 flex flex-col justify-center z-10">
           <h1
@@ -78,11 +78,11 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title, description }) => {
             {t(`${title}`)}
           </h1>
           <div className="flex items-center justify-center space-x-2 text-xs">
-            <Link to="/" className="text-white hover:text-purple-300">
+            <Link to="/" className="text-white hover:text-mk-lilac">
               {t("home.navbar.home")}
             </Link>
             <span className="text-white">|</span>
-            <span className="text-purple-300">{t(`${title}`)}</span>
+            <span className="text-mk-lilac">{t(`${title}`)}</span>
           </div>
         </div>
         <div className="absolute -bottom-10 transform z-9">

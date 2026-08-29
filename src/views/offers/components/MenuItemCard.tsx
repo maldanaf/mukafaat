@@ -2,7 +2,7 @@
 
 import React from "react";
 import { MenuItem } from "@data/offers";
-import { BsHeart, BsShare } from "react-icons/bs";
+import { ShareIcon, HeartIcon } from "@ui";
 import { FaStar, FaEye } from "react-icons/fa";
 import { useIsRTL } from "@hooks";
 import CurrencyIcon from "@components/CurrencyIcon";
@@ -25,7 +25,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
 
   return (
     <div
-      className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer group"
+      className="bg-white rounded-mk-md shadow-mk-raised overflow-hidden hover:shadow-mk-hover transition-all duration-300 cursor-pointer group"
       onClick={handleClick}
     >
       {/* Image Section with Background Color */}
@@ -61,15 +61,15 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
 
         {/* Bookmark Icon */}
         <div className="absolute top-3 left-3">
-          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md">
-            <BsHeart className="w-4 h-4 text-gray-600 hover:text-red-500 transition-colors" />
+          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-mk-raised">
+            <HeartIcon size={16} className="text-mk-muted transition-colors hover:text-mk-red" />
           </div>
         </div>
 
         {/* Share Icon */}
         <div className="absolute top-3 right-3">
-          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md">
-            <BsShare className="w-4 h-4 text-gray-600 hover:text-blue-500 transition-colors" />
+          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-mk-raised">
+            <ShareIcon size={16} className="text-mk-muted transition-colors hover:text-mk-primary" />
           </div>
         </div>
 
@@ -86,7 +86,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
             </span>
           )}
           {menuItem.isBestSeller && (
-            <span className="bg-purple-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+            <span className="bg-mk-primary-light text-white text-xs px-2 py-1 rounded-full font-medium">
               {isRTL ? "الأكثر مبيعاً" : "Best Seller"}
             </span>
           )}
@@ -96,12 +96,12 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
       {/* Content Section */}
       <div className="p-4">
         {/* Title */}
-        <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-2">
+        <h3 className="text-lg font-bold text-mk-text mb-2 line-clamp-2">
           {isRTL ? menuItem.title.ar : menuItem.title.en}
         </h3>
 
         {/* Description */}
-        <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+        <p className="text-sm text-mk-muted mb-3 line-clamp-2">
           {stripHtml(isRTL ? menuItem.description.ar : menuItem.description.en)}
         </p>
 
@@ -110,13 +110,13 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
           {menuItem.features.slice(0, 3).map((feature, index) => (
             <span
               key={index}
-              className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full"
+              className="text-xs bg-mk-tint2 text-mk-text-strong px-2 py-1 rounded-full"
             >
               {feature}
             </span>
           ))}
           {menuItem.features.length > 3 && (
-            <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">
+            <span className="text-xs bg-mk-tint2 text-mk-text-strong px-2 py-1 rounded-full">
               +{menuItem.features.length - 3}
             </span>
           )}
@@ -126,16 +126,16 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-1">
             <FaStar className="w-4 h-4 text-yellow-500" />
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm font-medium text-mk-text-strong">
               {menuItem.rating}
             </span>
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-mk-muted">
               ({menuItem.reviewsCount})
             </span>
           </div>
           <div className="flex items-center gap-1">
-            <FaEye className="w-4 h-4 text-gray-400" />
-            <span className="text-xs text-gray-500">{menuItem.views}</span>
+            <FaEye className="w-4 h-4 text-mk-faint" />
+            <span className="text-xs text-mk-muted">{menuItem.views}</span>
           </div>
         </div>
 
@@ -149,14 +149,14 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
           </div>
           {menuItem.originalPrice &&
             menuItem.originalPrice > menuItem.price && (
-              <span className="text-sm text-gray-500 line-through">
+              <span className="text-sm text-mk-muted line-through">
                 {menuItem.originalPrice}
               </span>
             )}
         </div>
 
         {/* Preparation Time */}
-        <div className="mt-2 text-xs text-gray-500">
+        <div className="mt-2 text-xs text-mk-muted">
           {isRTL ? "وقت التحضير:" : "Prep time:"} {menuItem.preparationTime}
         </div>
       </div>

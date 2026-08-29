@@ -2,16 +2,8 @@
 
 import React, { useMemo } from "react";
 import { Link, useNavigate } from "@/lib/router-compat";
-import { IoIosArrowRoundForward } from "react-icons/io";
-import {
-  FiStar,
-  FiEye,
-  FiDownload,
-  FiClock,
-  FiGift,
-  FiShoppingBag,
-} from "react-icons/fi";
-import { BsHeart, BsHeartFill, BsShare } from "react-icons/bs";
+import { FiGift, FiClock, FiShoppingBag, FiStar } from "react-icons/fi";
+import { ShareIcon, HeartIcon } from "@ui";
 import { useIsRTL } from "@hooks";
 import { useTranslation } from "react-i18next";
 import {
@@ -29,12 +21,29 @@ import { toast } from "react-toastify";
 import { stripHtml } from "@utils/stripHtml";
 import { useShareSheetStore } from "@stores/shareSheetStore";
 import { pickLocalized } from "@utils/pickLocalized";
+import { Badge, PriceTag, StatChips, SmartImage, Ratio, FOCUS } from "@ui";
+import {
+  VIVID_CARD,
+  VIVID_MEDIA,
+  VIVID_SCRIM,
+  DiscountBadge,
+  Ribbon,
+  CornerButton,
+  daysLeft,
+  discountPercentOf,
+} from "./CatalogKit";
 
 interface OfferCardProps {
   offer: Offer;
   onOfferClick?: (offer: Offer) => void;
 }
 
+/**
+ * كرت العرض الرئيسي في الموقع — بلغة تصميم التطبيق:
+ * صورة بأبعاد محفوظة، شارات موحّدة، سعر مشطوب عند الخصم،
+ * عدّادات (مشاهدات/مفضلة/مشاركات) بأيقونات، وحواف 18px مع ظل بنفسجي ناعم.
+ * كل وظائف الكرت السابقة محفوظة (مفضلة، مشاركة، مميزات، حصري للمشتركين).
+ */
 const OfferCard: React.FC<OfferCardProps> = ({ offer }) => {
   const isRTL = useIsRTL();
   const { t, i18n } = useTranslation();
@@ -44,6 +53,7 @@ const OfferCard: React.FC<OfferCardProps> = ({ offer }) => {
   const isAuthenticated = useUserStore((s) => !!s.token);
   const { data: favoritesData } = useFavorites();
   const toggleFavorite = useFavoriteToggle();
+
   const favoritesList = useMemo(
     () => normalizeFavoritesList(favoritesData ?? null),
     [favoritesData],
@@ -83,19 +93,12 @@ const OfferCard: React.FC<OfferCardProps> = ({ offer }) => {
   };
 
   const company = getRestaurantById(offer.companyId);
-  const categoryInfo = offerCategories.find(
-    (cat) => cat.key === offer.category,
-  );
+  const categoryInfo = offerCategories.find((cat) => cat.key === offer.category);
   const displayCategoryName =
     offer.categoryName ||
-    (categoryInfo
-      ? langBase === "ar"
-        ? categoryInfo.ar
-        : categoryInfo.en
-      : "");
+    (categoryInfo ? (langBase === "ar" ? categoryInfo.ar : categoryInfo.en) : "");
   const displayMerchantName =
-    offer.merchantName ||
-    (company ? pickLocalized(company.name, langBase) : "");
+    offer.merchantName || (company ? pickLocalized(company.name, langBase) : "");
 
   const storeImageUrl = useMemo(() => {
     if (offer.merchantLogo) {
@@ -117,60 +120,30 @@ const OfferCard: React.FC<OfferCardProps> = ({ offer }) => {
     return null;
   }, [offer.merchantLogo, company?.logo]);
 
-  const validityText = pickLocalized(offer.validity, langBase) || "";
+  /** شارة نوع العرض: الأكثر مبيعاً / جديد / عرض */
+  const typeBadge = offer.isBestSeller
+    ? { icon: <FiGift />, label: t("offerCard.bestSeller"), tone: "solid-accent" as const }
+    : offer.isNew
+      ? { icon: <FiClock />, label: t("offerCard.new"), tone: "success" as const }
+      : { icon: <FiGift />, label: t("offerCard.typeOffer"), tone: "primary" as const };
 
-  const getOfferTypeIcon = () => {
-    if (offer.isBestSeller) {
-      return <FiGift className="w-3 h-3 text-white" />;
-    }
-    if (offer.isNew) {
-      return <FiClock className="w-3 h-3 text-white" />;
-    }
-    return <FiGift className="w-3 h-3 text-white" />;
-  };
-
-  const getOfferTypeText = () => {
-    if (offer.isBestSeller) {
-      return t("offerCard.bestSeller");
-    }
-    if (offer.isNew) {
-      return t("offerCard.new");
-    }
-    return t("offerCard.typeOffer");
-  };
-
-  const getOfferTypeColor = () => {
-    if (offer.isBestSeller) {
-      return "bg-orange-500";
-    }
-    if (offer.isNew) {
-      return "bg-green-500";
-    }
-    return "bg-purple-500";
-  };
-
-  // هل العرض مجاني للمستخدم الحالي؟ (free + no sub required, OR free + user subscribed)
   const userObj = useUserStore((s) => s.user) as
     | (Record<string, unknown> & { has_subscription?: boolean })
     | null;
   const isSubscriber = Boolean(userObj?.has_subscription);
   const isFreeForUser =
-    offer.pricingType === "free" &&
-    (!offer.requiresSubscription || isSubscriber);
+    offer.pricingType === "free" && (!offer.requiresSubscription || isSubscriber);
   const visitButtonText = isFreeForUser
     ? t("home.product.viewNow")
     : t("home.product.buyNow");
+
   const purchasesCount = Number.isFinite(Number(offer.purchases))
     ? Number(offer.purchases)
     : 0;
-  const purchaseText = t("offerCard.purchases", {
-    count: purchasesCount,
-  });
+  const purchaseText = t("offerCard.purchases", { count: purchasesCount });
   const featuresMoreText =
     offer.features.length > 3
-      ? t("offerCard.moreFeatures", {
-          count: offer.features.length - 3,
-        })
+      ? t("offerCard.moreFeatures", { count: offer.features.length - 3 })
       : "";
 
   const offerDetailPath = `/offers/${offer.category}/${offer.merchantSlug || offer.companyId}/${offer.slug || offer.id}`;
@@ -178,115 +151,120 @@ const OfferCard: React.FC<OfferCardProps> = ({ offer }) => {
   const priceAfter = Number(offer.priceAfter ?? offer.discountPrice ?? 0);
   /** من API `price_before` (مع fallback لـ originalPrice) */
   const priceBefore = Number(offer.priceBefore ?? offer.originalPrice ?? 0);
-  // const platform = offer.platformPrice;
-  // const isFree =
-  //   platform !== undefined && platform !== null
-  //     ? Number(platform) <= 0
-  //     : !(priceAfter > 0);
-  // const showStrikethrough =
-  //   !isFree && priceBefore > 0 && priceBefore > priceAfter;
+  const saving = priceBefore > priceAfter ? priceBefore - priceAfter : 0;
 
-  const cardContent = (
-    <>
-      {/* Image Section - مثل كارد البطاقات */}
-      <div className="relative h-[185px] overflow-hidden">
-        <img
-          src={getOfferImage(offer.image)}
-          alt={pickLocalized(offer.title, langBase)}
-          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-        />
+  const title = pickLocalized(offer.title, langBase);
 
-        <div className="absolute top-3 right-3 flex gap-2">
-          <button
-            type="button"
+  /** نسبة الخصم — من الحقل أو محسوبة من السعرين */
+  const discountPercent = discountPercentOf(
+    offer.discountPercentage,
+    priceBefore,
+    priceAfter,
+  );
+
+  /** شارات الحالة — كلٌّ منها يظهر فقط عند توفّر بياناته من الـAPI */
+  const endsIn = daysLeft(offer.availableUntil);
+  const endingSoon = endsIn !== null && endsIn >= 0 && endsIn <= 3;
+  const endingLabel = endingSoon
+    ? endsIn === 0
+      ? t("offerCard.endsToday", "ينتهي اليوم")
+      : t("offerCard.endsInDays", { days: endsIn as number })
+    : "";
+
+  return (
+    <Link
+      to={offerDetailPath}
+      dir={isRTL ? "rtl" : "ltr"}
+      className={`${VIVID_CARD} text-inherit no-underline ${FOCUS}`}
+    >
+      {/* الصورة — أبعاد محفوظة فلا تقفز الشبكة أثناء التحميل */}
+      <div className={VIVID_MEDIA}>
+        <Ratio ratio="aspect-[16/10]">
+          <SmartImage
+            src={getOfferImage(offer.image)}
+            alt={stripHtml(title ?? "")}
+            name={stripHtml(title ?? "")}
+            variant="name"
+          />
+        </Ratio>
+
+        <span aria-hidden className={VIVID_SCRIM} />
+
+        {/* شارة الخصم البارزة */}
+        <DiscountBadge percent={discountPercent} size="lg" floating />
+
+        {/* إجراءات سريعة — أهداف لمس 44px */}
+        <div className="absolute end-2 top-2 z-[2] flex gap-1.5">
+          <CornerButton
+            label={t("offerCard.shares", "المشاركات")}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
               openShare({
-                title: stripHtml(pickLocalized(offer.title, langBase) ?? ""),
+                title: stripHtml(title ?? ""),
                 url: `${window.location.origin}${offerDetailPath}`,
               });
             }}
-            className="w-8 h-8 bg-white bg-opacity-90 rounded-full flex items-center justify-center text-gray-700 hover:bg-opacity-100 transition-all duration-200"
           >
-            <BsShare className="text-sm" />
-          </button>
-          <button
-            type="button"
-            onClick={handleFavoriteClick}
-            className="w-8 h-8 bg-white bg-opacity-90 rounded-full flex items-center justify-center text-gray-700 hover:bg-opacity-100 transition-all disabled:opacity-50"
+            <ShareIcon size={15} />
+          </CornerButton>
+          <CornerButton
+            label={t("offerCard.favorites", "المفضلة")}
+            pressed={isFavorite}
             disabled={toggleFavorite.isPending}
+            onClick={handleFavoriteClick}
+            className="hover:text-mk-red"
           >
             {isFavorite ? (
-              <BsHeartFill className="text-sm text-red-500" />
+              <HeartIcon size={15} filled className="text-mk-red" />
             ) : (
-              <BsHeart className="text-sm" />
+              <HeartIcon size={15} />
             )}
-          </button>
+          </CornerButton>
         </div>
 
-        {/* نوع العرض - يسار الصورة */}
-        <div className="absolute top-3 left-3">
-          <div
-            className={`${getOfferTypeColor()} text-white px-2 py-1 rounded text-xs font-medium`}
-          >
-            {getOfferTypeText()}
-          </div>
-        </div>
-
-        {/* خصم أو صلاحية - أسفل يسار الصورة */}
-        <div className="absolute bottom-3 left-3 flex gap-2">
-          {offer.discountPercentage > 0 && (
-            <span className="bg-red-500 text-white px-2 py-1 rounded text-xs font-medium">
-              {offer.discountPercentage}% {t("offerCard.discountOff")}
-            </span>
+        {/* شارات: جديد / الأكثر طلباً / ينتهي قريباً / حصري للمشتركين */}
+        <div className="absolute bottom-2 start-2 z-[2] flex max-w-[88%] flex-wrap gap-1.5">
+          {offer.isNew && <Ribbon tone="new">{t("offerCard.new")}</Ribbon>}
+          {(offer.isBestSeller || offer.isPopular) && (
+            <Ribbon tone="hot">{t("offerCard.bestSeller")}</Ribbon>
           )}
+          {endingSoon && <Ribbon tone="ending">{endingLabel}</Ribbon>}
           {offer.requiresSubscription && (
-            <span className="bg-[#400198] text-white px-2 py-1 rounded text-xs font-medium">
-              {langBase === "ar" ? "حصري للمشتركين" : "Subscribers Only"}
-            </span>
+            <Ribbon tone="vip">{t("offerCard.subscribersOnly", "حصري للمشتركين")}</Ribbon>
           )}
         </div>
       </div>
 
-      {/* Content Section - نفس هيكل كارد البطاقات */}
-      <div className="px-4 py-6">
-        <div className="flex items-center gap-2 mb-2">
-          <div className="w-5 h-5 bg-[#fd671a] rounded-full flex items-center justify-center">
-            {getOfferTypeIcon()}
-          </div>
-          <span className="text-sm text-[#fd671a] font-medium">
-            {getOfferTypeText()}
+      <div className="flex flex-1 flex-col gap-2.5 p-4">
+        <Badge tone={typeBadge.tone} size="sm" className="w-fit">
+          <span aria-hidden className="text-[11px]">
+            {typeBadge.icon}
           </span>
-        </div>
+          {typeBadge.label}
+        </Badge>
 
-        <h3 className="text-md font-bold text-gray-900 mb-2 line-clamp-2">
-          {pickLocalized(offer.title, langBase)}
+        <h3 className="mk-clamp-2 m-0 text-[15px] font-bold leading-snug text-mk-text">
+          {title}
         </h3>
 
-        <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+        <p className="mk-clamp-2 m-0 text-[12.5px] leading-relaxed text-mk-muted">
           {stripHtml(pickLocalized(offer.description, langBase))}
         </p>
 
-        {/* التصنيف والمتجر - مع الأيقونة وصورة المتجر */}
+        {/* التصنيف والمتجر */}
         {(displayCategoryName || displayMerchantName) && (
-          <div className="mb-3 flex flex-wrap items-center gap-1.5 text-xs">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11.5px] text-mk-text-strong">
             {displayCategoryName && (
-              <span className="flex items-center gap-1.5 text-gray-600 font-medium">
+              <span className="flex items-center gap-1.5 font-medium">
                 {categoryInfo?.icon != null && (
-                  <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded bg-[#400198]/10">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded bg-mk-tint">
                     {typeof categoryInfo.icon === "string" ? (
-                      <img
-                        src={categoryInfo.icon}
-                        alt=""
-                        className="h-full w-full object-contain"
-                      />
+                      <img src={categoryInfo.icon} alt="" className="h-full w-full object-contain" />
                     ) : (
                       React.createElement(
-                        categoryInfo.icon as React.ComponentType<{
-                          className?: string;
-                        }>,
-                        { className: "h-3 w-3 text-[#400198]" },
+                        categoryInfo.icon as React.ComponentType<{ className?: string }>,
+                        { className: "h-3 w-3 text-mk-primary" },
                       )
                     )}
                   </span>
@@ -295,21 +273,19 @@ const OfferCard: React.FC<OfferCardProps> = ({ offer }) => {
               </span>
             )}
             {displayCategoryName && displayMerchantName && (
-              <span className="text-gray-300">•</span>
+              <span aria-hidden className="text-mk-faint">
+                •
+              </span>
             )}
             {displayMerchantName && (
-              <span className="flex items-center gap-1.5 text-gray-600 font-medium">
+              <span className="flex items-center gap-1.5 font-medium">
                 {storeImageUrl ? (
-                  <span className="relative h-5 w-5 flex-shrink-0 overflow-hidden rounded-full bg-gray-100 ring-1 ring-gray-200">
-                    <img
-                      src={storeImageUrl}
-                      alt=""
-                      className="h-full w-full object-cover"
-                    />
+                  <span className="relative h-5 w-5 shrink-0 overflow-hidden rounded-full bg-mk-tint2 ring-1 ring-mk-border">
+                    <img src={storeImageUrl} alt="" className="h-full w-full object-cover" />
                   </span>
                 ) : (
-                  <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-[#400198]/10">
-                    <FiShoppingBag className="h-3 w-3 text-[#400198]" />
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-mk-tint">
+                    <FiShoppingBag className="h-3 w-3 text-mk-primary" />
                   </span>
                 )}
                 <span>{displayMerchantName}</span>
@@ -318,92 +294,74 @@ const OfferCard: React.FC<OfferCardProps> = ({ offer }) => {
           </div>
         )}
 
-        {/* المميزات - pills */}
-        <div className="mb-4">
-          <div className="flex flex-wrap gap-2">
+        {/* المميزات */}
+        {offer.features.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
             {offer.features.slice(0, 3).map((feature, index) => (
-              <div
+              <span
                 key={index}
-                className="flex items-center gap-1 text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full"
+                className="flex items-center gap-1 rounded-full bg-mk-tint2 px-2 py-1 text-[11px] text-mk-text-strong"
               >
-                <div className="w-1 h-1 bg-purple-500 rounded-full" />
-                <span>{feature}</span>
-              </div>
+                <span aria-hidden className="h-1 w-1 rounded-full bg-mk-primary" />
+                {feature}
+              </span>
             ))}
             {offer.features.length > 3 && (
-              <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+              <span className="rounded-full bg-mk-tint2 px-2 py-1 text-[11px] text-mk-faint">
                 {featuresMoreText}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* الإحصائيات */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1">
-              <FiStar className="w-4 h-4 text-[#B3B3B3]" />
-              <span className="text-sm text-[#B3B3B3]">{offer.rating}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <FiEye className="w-4 h-4 text-[#B3B3B3]" />
-              <span className="text-sm text-[#B3B3B3]">{offer.views}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <FiDownload className="w-4 h-4 text-[#B3B3B3]" />
-              <span className="text-sm text-[#B3B3B3]">{offer.downloads}</span>
-            </div>
-          </div>
-          <div className="text-xs text-gray-500">{purchaseText}</div>
-        </div>
-
-        <hr className="my-4 border-t border-[#e6e6e6]" />
-
-        {/* السعر (قبل / بعد / قيمة الخصم) والزر */}
-        <div className="flex items-center justify-between gap-1">
-          <div className="flex flex-col gap-1">
-            {/* السعر قبل الخصم — مشطوب */}
-            {priceBefore > 0 && priceBefore > priceAfter && (
-              <span className="text-xs text-gray-400 line-through flex items-center gap-0.5">
-                {langBase === "ar" ? "قبل" : "Before"}: {priceBefore}
-                <CurrencyIcon className="text-gray-400" size={10} />
               </span>
             )}
-            <div className="flex items-center gap-2 flex-wrap">
-              {/* السعر بعد الخصم */}
-              <span className="text-base font-bold text-[#400198] flex items-center gap-0.5">
-                {priceAfter}
-                <CurrencyIcon className="text-[#400198]" size={14} />
-              </span>
-              {/* قيمة الخصم (المبلغ الموفَّر) */}
-              {priceBefore > priceAfter && (
-                <span className="text-xs text-green-700 bg-green-50 px-1.5 py-0.5 rounded flex items-center gap-0.5">
-                  {langBase === "ar" ? "خصم" : "Save"} {priceBefore - priceAfter}
-                  <CurrencyIcon className="text-green-700" size={10} />
-                </span>
-              )}
-            </div>
           </div>
-          <span className="flex items-center gap-1 text-sm font-semibold text-[#400198] cursor-pointer hover:text-[#fd671a] transition-colors">
-            {visitButtonText}
-            <IoIosArrowRoundForward
-              className={`text-2xl transform ${
-                isRTL ? "rotate-[225deg]" : "-rotate-45"
-              }`}
+        )}
+
+        {/* التقييم + العدّادات + عدد المشتريات */}
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            {Number(offer.rating) > 0 && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#FDF4DE] px-2 py-1 text-[11.5px] font-bold text-[#8A6209]">
+                <FiStar className="h-3.5 w-3.5" aria-hidden />
+                {offer.rating}
+              </span>
+            )}
+            <StatChips
+              compact
+              views={offer.views}
+              favorites={offer.favoritesCount}
+              shares={offer.sharesCount}
             />
+          </div>
+          {purchasesCount > 0 && (
+            <span className="text-[11px] text-mk-faint">{purchaseText}</span>
+          )}
+        </div>
+
+        {/* السعر والزر — السعر الجديد كبير والقديم مشطوب */}
+        <div className="mt-auto flex flex-wrap items-end justify-between gap-2 border-t border-mk-divider pt-3">
+          <div className="flex flex-col gap-1">
+            <PriceTag
+              price={priceAfter}
+              priceBefore={priceBefore}
+              size="lg"
+              stacked
+              freeLabel={
+                offer.pricingType === "free" ? t("offerCard.free", "بدون رسوم") : undefined
+              }
+            />
+            {saving > 0 && (
+              <span className="inline-flex w-fit items-center gap-0.5 rounded bg-[#E4F6EF] px-1.5 py-0.5 text-[11px] font-semibold text-mk-green">
+                {t("offerCard.save", "توفير")} {saving}
+                <CurrencyIcon className="text-mk-green" size={10} />
+              </span>
+            )}
+          </div>
+          <span className="inline-flex items-center gap-1 rounded-full bg-mk-tint px-3.5 py-2 text-[13px] font-extrabold text-mk-primary transition-colors group-hover/vivid:bg-mk-primary group-hover/vivid:text-white">
+            {visitButtonText}
+            <span aria-hidden className="rtl:-scale-x-100">
+              &#8594;
+            </span>
           </span>
         </div>
       </div>
-    </>
-  );
-
-  return (
-    <Link
-      to={offerDetailPath}
-      className="block bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl cursor-pointer flex flex-col h-full no-underline text-inherit"
-      style={{ direction: isRTL ? "rtl" : "ltr" }}
-    >
-      {cardContent}
     </Link>
   );
 };

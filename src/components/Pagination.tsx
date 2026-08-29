@@ -57,8 +57,8 @@ const Pagination: React.FC<PaginationProps> = ({
         disabled={currentPage === 1 || isLoading}
         className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium text-sm transition-all duration-200 ${
           currentPage === 1 || isLoading
-            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-            : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+            ? "bg-mk-tint2 text-mk-faint cursor-not-allowed"
+            : "bg-white text-mk-text-strong border border-gray-300 hover:bg-mk-tint3"
         }`}
       >
         {t("pagination.previous")}
@@ -74,7 +74,7 @@ const Pagination: React.FC<PaginationProps> = ({
             className={`w-8 h-8 rounded-full font-medium text-sm transition-all duration-200 flex items-center justify-center ${
               currentPage === page
                 ? "bg-[#fd671a] text-white"
-                : "text-gray-700 hover:bg-gray-100"
+                : "text-mk-text-strong hover:bg-mk-tint2"
             } ${isLoading ? "cursor-not-allowed opacity-50" : ""}`}
           >
             {page}
@@ -88,8 +88,8 @@ const Pagination: React.FC<PaginationProps> = ({
         disabled={currentPage === totalPages || isLoading}
         className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium text-sm transition-all duration-200 ${
           currentPage === totalPages || isLoading
-            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-            : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+            ? "bg-mk-tint2 text-mk-faint cursor-not-allowed"
+            : "bg-white text-mk-text-strong border border-gray-300 hover:bg-mk-tint3"
         }`}
       >
         {t("pagination.next")}

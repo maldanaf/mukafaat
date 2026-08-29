@@ -430,7 +430,7 @@ const BookingResults: React.FC<BookingResultsProps> = ({
 
             {/* Class Tags */}
             {appliedFilters.class && (
-              <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
+              <span className="inline-flex items-center gap-1 px-3 py-1 bg-mk-tint text-mk-primary rounded-full text-xs font-medium">
                 {isRTL ? "الدرجة" : "Class"}: {appliedFilters.class}
                 <button
                   onClick={() => {
@@ -438,7 +438,7 @@ const BookingResults: React.FC<BookingResultsProps> = ({
                     delete newFilters.class;
                     onApplyFilters(newFilters);
                   }}
-                  className="ml-1 hover:bg-purple-200 rounded-full p-0.5"
+                  className="ml-1 hover:bg-mk-border-strong rounded-full p-0.5"
                 >
                   ×
                 </button>
@@ -447,7 +447,7 @@ const BookingResults: React.FC<BookingResultsProps> = ({
 
             {/* Price Range Tags */}
             {appliedFilters.priceRange && (
-              <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
+              <span className="inline-flex items-center gap-1 px-3 py-1 bg-mk-tint text-mk-primary rounded-full text-xs font-medium">
                 ${appliedFilters.priceRange[0]} - $
                 {appliedFilters.priceRange[1]}
                 <button
@@ -456,7 +456,7 @@ const BookingResults: React.FC<BookingResultsProps> = ({
                     delete newFilters.priceRange;
                     onApplyFilters(newFilters);
                   }}
-                  className="ml-1 hover:bg-purple-200 rounded-full p-0.5"
+                  className="ml-1 hover:bg-mk-border-strong rounded-full p-0.5"
                 >
                   ×
                 </button>
@@ -616,7 +616,7 @@ const BookingResults: React.FC<BookingResultsProps> = ({
 
             {/* Rooms Tags */}
             {appliedFilters.rooms && (
-              <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
+              <span className="inline-flex items-center gap-1 px-3 py-1 bg-mk-tint text-mk-primary rounded-full text-xs font-medium">
                 {isRTL ? "الغرف" : "Rooms"}: {appliedFilters.rooms}
                 <button
                   onClick={() => {
@@ -624,7 +624,7 @@ const BookingResults: React.FC<BookingResultsProps> = ({
                     delete newFilters.rooms;
                     onApplyFilters(newFilters);
                   }}
-                  className="ml-1 hover:bg-purple-200 rounded-full p-0.5"
+                  className="ml-1 hover:bg-mk-border-strong rounded-full p-0.5"
                 >
                   ×
                 </button>
@@ -766,7 +766,7 @@ const BookingResults: React.FC<BookingResultsProps> = ({
 
             {/* Car Type Tags */}
             {appliedFilters.carType && (
-              <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
+              <span className="inline-flex items-center gap-1 px-3 py-1 bg-mk-tint text-mk-primary rounded-full text-xs font-medium">
                 {isRTL ? "نوع السيارة" : "Car Type"}: {appliedFilters.carType}
                 <button
                   onClick={() => {
@@ -774,7 +774,7 @@ const BookingResults: React.FC<BookingResultsProps> = ({
                     delete newFilters.carType;
                     onApplyFilters(newFilters);
                   }}
-                  className="ml-1 hover:bg-purple-200 rounded-full p-0.5"
+                  className="ml-1 hover:bg-mk-border-strong rounded-full p-0.5"
                 >
                   ×
                 </button>
@@ -850,7 +850,7 @@ const BookingResults: React.FC<BookingResultsProps> = ({
 
             {/* Car Price Range Tags */}
             {appliedFilters.carPriceRange && (
-              <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
+              <span className="inline-flex items-center gap-1 px-3 py-1 bg-mk-tint text-mk-primary rounded-full text-xs font-medium">
                 ${appliedFilters.carPriceRange[0]} - $
                 {appliedFilters.carPriceRange[1]}
                 <button
@@ -859,7 +859,7 @@ const BookingResults: React.FC<BookingResultsProps> = ({
                     delete newFilters.carPriceRange;
                     onApplyFilters(newFilters);
                   }}
-                  className="ml-1 hover:bg-purple-200 rounded-full p-0.5"
+                  className="ml-1 hover:bg-mk-border-strong rounded-full p-0.5"
                 >
                   ×
                 </button>
@@ -927,7 +927,7 @@ const BookingResults: React.FC<BookingResultsProps> = ({
       {/* Load More Button */}
       {results.length > 0 && (
         <div className="flex justify-center pt-6">
-          <button className="bg-[#fd671a] hover:bg-[#e55a17] text-white px-8 py-3 rounded-full font-medium transition-all duration-300 shadow-md hover:shadow-lg">
+          <button className="bg-[#fd671a] hover:bg-[#D9500B] text-white px-8 py-3 rounded-full font-medium transition-all duration-300 shadow-md hover:shadow-lg">
             {isRTL ? "عرض المزيد" : "Load More"}
           </button>
         </div>

@@ -8,7 +8,7 @@ function pickArEnField(pair: { ar: string; en: string }, lang: string) {
   return m[lang] ?? pair.en ?? pair.ar;
 }
 import { FiStar, FiEye, FiDownload } from "react-icons/fi";
-import { BsHeart, BsShare } from "react-icons/bs";
+import { ShareIcon, HeartIcon } from "@ui";
 import { Offer } from "@data/offers";
 
 interface Restaurant {
@@ -48,7 +48,7 @@ const RestaurantListView: React.FC<RestaurantListViewProps> = ({
       {restaurants.map((restaurant) => (
         <div
           key={restaurant.id}
-          className="bg-white rounded-xl border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer"
+          className="bg-white rounded-mk-md border border-mk-border shadow-mk-raised hover:shadow-mk-hover transition-all duration-300 overflow-hidden cursor-pointer"
           onClick={() => navigate(`/offers/${category}/${restaurant.slug}`)}
         >
           <div className="flex">
@@ -63,16 +63,16 @@ const RestaurantListView: React.FC<RestaurantListViewProps> = ({
               {/* Action Buttons */}
               <div className="absolute top-2 right-2 flex gap-1">
                 <button
-                  className="w-6 h-6 bg-white bg-opacity-90 rounded-full flex items-center justify-center text-gray-700 hover:bg-opacity-100 transition-all duration-200"
+                  className="w-6 h-6 bg-white bg-opacity-90 rounded-full flex items-center justify-center text-mk-text-strong hover:bg-opacity-100 transition-all duration-200"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <BsShare className="text-xs" />
+                  <ShareIcon size={13} />
                 </button>
                 <button
-                  className="w-6 h-6 bg-white bg-opacity-90 rounded-full flex items-center justify-center text-gray-700 hover:bg-opacity-100 transition-all duration-200"
+                  className="w-6 h-6 bg-white bg-opacity-90 rounded-full flex items-center justify-center text-mk-text-strong hover:bg-opacity-100 transition-all duration-200"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <BsHeart className="text-xs" />
+                  <HeartIcon size={13} />
                 </button>
               </div>
 
@@ -96,17 +96,17 @@ const RestaurantListView: React.FC<RestaurantListViewProps> = ({
             {/* Content Section - Left */}
             <div className="flex-1 px-4 h-32 py-3 flex flex-col justify-center">
               <div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">
+                <h3 className="text-xl font-bold text-mk-text mb-2">
                   {pickArEnField(restaurant.name, langBase)}
                 </h3>
-                <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                <p className="text-mk-muted text-sm mb-3 line-clamp-2">
                   {pickArEnField(restaurant.description, langBase)}
                 </p>
 
                 {/* Location and Distance */}
                 <div className="flex items-center justify-between gap-2 mb-0">
                   {/* Stats */}
-                  <div className="flex items-center gap-4 text-sm text-gray-600">
+                  <div className="flex items-center gap-4 text-sm text-mk-muted">
                     <div className="flex items-center gap-1">
                       <FiStar className="text-yellow-400" />
                       <span>{restaurant.rating}</span>
@@ -121,10 +121,10 @@ const RestaurantListView: React.FC<RestaurantListViewProps> = ({
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="px-2 py-1 bg-gray-100 rounded-full text-xs text-gray-600">
+                    <span className="px-2 py-1 bg-mk-tint2 rounded-full text-xs text-mk-muted">
                       {pickArEnField(restaurant.location, langBase)}
                     </span>
-                    <span className="px-2 py-1 bg-gray-100 rounded-full text-xs text-gray-600">
+                    <span className="px-2 py-1 bg-mk-tint2 rounded-full text-xs text-mk-muted">
                       {restaurant.distance}
                     </span>
                   </div>

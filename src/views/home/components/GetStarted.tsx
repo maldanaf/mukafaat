@@ -31,9 +31,9 @@ const GetStarted: React.FC<GetStartedProps> = ({ className = "" }) => {
       </div>
       {/* Abstract shapes */}
       {/* <div className="absolute top-0 right-0 w-1/2 h-full opacity-20">
-        <div className="absolute top-20 right-20 w-32 h-32 bg-purple-400 rounded-full blur-xl"></div>
+        <div className="absolute top-20 right-20 w-32 h-32 bg-mk-primary-soft rounded-full blur-xl"></div>
         <div className="absolute top-40 right-40 w-24 h-24 bg-pink-400 rounded-full blur-lg"></div>
-        <div className="absolute top-60 right-60 w-40 h-40 bg-purple-500 rounded-full blur-xl"></div>
+        <div className="absolute top-60 right-60 w-40 h-40 bg-mk-primary-light rounded-full blur-xl"></div>
         <div className="absolute top-80 right-80 w-20 h-20 bg-pink-500 rounded-full blur-md"></div>
       </div> */}
 

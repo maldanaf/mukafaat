@@ -14,7 +14,7 @@ const BusinessRegistrationCustomInput = ({
         type={type}
         placeholder={placeholder}
         value={value}
-        className={`h-12 rounded-md border border-gray-200 bg-gray-50 px-4 w-full text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
+        className={`h-12 rounded-md border border-gray-200 bg-gray-50 px-4 w-full text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-mk-primary-light focus:border-transparent`}
         onChange={(e) => onValueChange(e.target.value)}
       />
 
