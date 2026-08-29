@@ -5,14 +5,26 @@ import { useParams, useNavigate, useSearchParams, Link } from "@/lib/router-comp
 import { useLoadMoreOnScroll } from "@hooks/useLoadMoreOnScroll";
 import { Helmet } from "@/lib/helmet-compat";
 import { useTranslation } from "react-i18next";
-import { FiArrowLeft, FiFilter, FiGrid, FiList } from "react-icons/fi";
+import { FiFilter, FiGrid, FiList, FiSearch, FiX } from "react-icons/fi";
 import { offerCategories, type Offer } from "@data/offers";
-import { AboutPattern } from "@assets";
+import {
+  CONTAINER,
+  PageHero,
+  Button,
+
+  EmptyState,
+  ErrorState,
+  SkeletonGrid,
+  Skeleton,
+  FOCUS,
+} from "@ui";
 import GetStartedSection from "@views/home/components/GetStartedSection";
 import FilterSidebar, { type FilterState } from "../components/FilterSidebar";
 import OfferCard from "../components/OfferCard";
 import OfferCardHorizontal from "../components/OfferCardHorizontal";
 import CategoryCard from "@components/CategoryCard";
+import { PinnedChipsBar, pick } from "@ui";
+import usePinnedUnderHeader from "@hooks/usePinnedUnderHeader";
 import {
   useWebHome,
   useFilters,
@@ -43,6 +55,24 @@ function buildCategoryIconUrl(
   return url || fallback;
 }
 
+/** شريحة فلتر مطبَّق مع زر إزالة — شكل واحد لكل أنواع الفلاتر */
+const FilterChip: React.FC<{ label: string; onRemove: () => void }> = ({
+  label,
+  onRemove,
+}) => (
+  <span className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full bg-mk-tint px-3 text-[12px] font-semibold text-mk-primary">
+    <span className="max-w-[190px] truncate">{label}</span>
+    <button
+      type="button"
+      onClick={onRemove}
+      aria-label={`${label} ×`}
+      className="flex h-6 w-6 items-center justify-center rounded-full transition-colors hover:bg-white/70"
+    >
+      <FiX size={13} aria-hidden />
+    </button>
+  </span>
+);
+
 const CategoryOffersPage = () => {
   const { category } = useParams<{ category: string }>();
   const navigate = useNavigate();
@@ -62,59 +92,19 @@ const CategoryOffersPage = () => {
 
   const { data: webHomeResponse, isLoading: isWebHomeLoading } = useWebHome();
 
-  const SkeletonBlock = ({ className }: { className: string }) => (
-    <div className={`animate-pulse rounded-lg bg-gray-200 ${className}`} />
-  );
-
+  /** هيكل تحميل الصفحة بنفس أبعاد الأقسام (بلا قفزات تخطيط) */
   const CategoryPageSkeleton = () => (
-    <div className="min-h-screen bg-gray-50">
-      <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[200px] flex items-center justify-center">
-        <div className="absolute inset-0 bg-primary opacity-30" />
-        <div className="relative pt-24 pb-10 px-6 mx-auto max-w-site text-center lg:pt-24 lg:pb-10 lg:px-12 flex flex-col justify-center z-10 w-full">
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <SkeletonBlock className="w-10 h-10" />
-            <SkeletonBlock className="h-9 w-56" />
-          </div>
-          <SkeletonBlock className="h-5 w-80 mx-auto" />
+    <div className="min-h-screen bg-mk-bg">
+      <div className="bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] py-10">
+        <div className={CONTAINER}>
+          <Skeleton className="h-9 w-64 bg-white/20" />
+          <Skeleton className="mt-3 h-4 w-80 bg-white/15" />
         </div>
-        <div className="absolute -bottom-10 transform z-9">
-          <img
-            src={AboutPattern}
-            alt={t("offersPage.patternAlt")}
-            className="w-full h-96 animate-float"
-          />
-        </div>
-      </section>
-
-      <section className="container mx-auto md:py-10 py-6 px-4">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <SkeletonBlock className="h-10 w-24 mb-2" />
-            <SkeletonBlock className="h-4 w-48" />
-          </div>
-          <div className="flex items-center gap-3">
-            <SkeletonBlock className="h-12 w-64 rounded-full" />
-            <SkeletonBlock className="h-12 w-28 rounded-full" />
-            <SkeletonBlock className="h-12 w-24 rounded-full" />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div
-              key={i}
-              className="bg-white rounded-xl shadow-lg overflow-hidden"
-            >
-              <SkeletonBlock className="h-[185px] w-full" />
-              <div className="p-4">
-                <SkeletonBlock className="h-5 w-3/4 mb-3" />
-                <SkeletonBlock className="h-4 w-full mb-2" />
-                <SkeletonBlock className="h-4 w-2/3" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      </div>
+      <div className={`${CONTAINER} py-8`}>
+        <Skeleton className="mb-6 h-[68px] w-full rounded-mk-lg" />
+        <SkeletonGrid count={8} className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4" />
+      </div>
     </div>
   );
 
@@ -282,10 +272,12 @@ const CategoryOffersPage = () => {
     [categoryId, search, appliedFilters, perPage, currentPage],
   );
 
-  const { data: webOffersRes, isLoading: isOffersLoading } = useWebOffers(
-    webOffersParams,
-    { enabled: categoryId != null },
-  );
+  const {
+    data: webOffersRes,
+    isLoading: isOffersLoading,
+    isError: isOffersError,
+    refetch: refetchOffers,
+  } = useWebOffers(webOffersParams, { enabled: categoryId != null });
 
   function extractOffersArray(res: unknown): Array<Record<string, unknown>> {
     const root = (res as Record<string, unknown>) ?? {};
@@ -334,6 +326,9 @@ const CategoryOffersPage = () => {
     [categoryId, search, appliedFilters],
   );
   const prevSigRef = useRef<string>("");
+  /** صف التصنيفات الفرعية يتحوّل لشريط شرائح مثبّت تحت الهيدر عند تجاوزه */
+  const subcategoriesRef = useRef<HTMLDivElement | null>(null);
+  const subcategoriesPinned = usePinnedUnderHeader(subcategoriesRef);
   const lastIncorporatedPageRef = useRef<number>(0);
   const responsePage = pagination.currentPage || 0;
   const hasResponse = !!webOffersRes;
@@ -372,24 +367,31 @@ const CategoryOffersPage = () => {
     setCurrentPage(1);
   };
 
+  /** هل يوجد أي فلتر مطبَّق؟ (يظهر زر «مسح الكل») */
+  const hasActiveFilters = Boolean(
+    appliedFilters &&
+      (appliedFilters.sortBy !== "nearest" ||
+        appliedFilters.subcategoryIds.length > 0 ||
+        appliedFilters.offerTypeIds.length > 0 ||
+        appliedFilters.brandIds.length > 0 ||
+        appliedFilters.priceRange.min != null ||
+        appliedFilters.priceRange.max != null),
+  );
+
   if (!categoryInfo) {
     // أثناء التنقل بين التصنيفات قد تتأخر بيانات web/home أو categoryInfo لحظياً
     if (isWebHomeLoading || !webHomeResponse) {
       return <CategoryPageSkeleton />;
     }
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            {t("categoryOffers.not_found")}
-          </h2>
-          <button
-            onClick={() => navigate("/offers")}
-            className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors"
-          >
-            {t("offerDetail.back_to_offers")}
-          </button>
-        </div>
+      <div className={`${CONTAINER} flex min-h-[60vh] items-center justify-center py-16`}>
+        <EmptyState
+          title={t("categoryOffers.not_found")}
+          description=""
+          actionLabel={t("offerDetail.back_to_offers")}
+          actionTo="/offers"
+          className="w-full max-w-lg"
+        />
       </div>
     );
   }
@@ -418,90 +420,37 @@ const CategoryOffersPage = () => {
         />
       </Helmet>
 
-      {/* Header */}
-      <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[200px] flex items-center justify-center">
-        <div className="absolute inset-0 bg-primary opacity-30" />
-        <div className="relative w-full pt-10 pb-10 px-6 mx-auto max-w-site text-center lg:pt-12 lg:pb-10 lg:px-12 flex flex-col justify-center z-10">
-          {/* Back Button */}
-          <button
-            onClick={() => navigate("/offers")}
-            className="mb-5 inline-flex w-fit items-center gap-2 self-start rounded-full border border-white/25 bg-white/10 px-4 py-2 text-white transition-colors hover:bg-white/20"
-          >
-            <FiArrowLeft className="text-lg rtl:rotate-180" />
-            <span className="text-sm">{t("offerDetail.back")}</span>
-          </button>
+      {/* ترويسة الصفحة — نفس هيدر التطبيق: تدرّج بنفسجي + رجوع + مسار */}
+      <PageHero
+        backTo="/offers"
+        crumbs={[
+          { label: t("propertyDetail.breadcrumb.home"), to: "/" },
+          { label: t("home.navbar.offers"), to: "/offers" },
+          {
+            label: categoryDisplayName || t("categoryOffers.category_fallback"),
+          },
+        ]}
+        icon={
+          categoryInfo?.icon ? (
+            <img
+              src={categoryInfo.icon as string}
+              alt=""
+              className="h-7 w-7 object-contain"
+            />
+          ) : undefined
+        }
+        title={categoryDisplayName || t("categoryOffers.category_fallback")}
+        subtitle={
+          categoryDisplayName
+            ? t("categoryOffers.discover_in_category", { name: categoryDisplayName })
+            : t("categoryOffers.discover_default")
+        }
+      />
 
-          {/* Category Icon and Title */}
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <div
-              className="w-10 h-10 rounded-lg flex items-center justify-center"
-              style={{ backgroundColor: `#f8f1ff` }}
-            >
-              <img
-                src={categoryInfo?.icon}
-                alt={
-                  categoryDisplayName || t("categoryOffers.category_fallback")
-                }
-                className="w-6 h-6 object-contain"
-              />
-            </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-white">
-              {categoryDisplayName || t("categoryOffers.category_fallback")}
-            </h1>
-          </div>
-
-          {/* Description */}
-          <p className="text-white/80 text-lg mb-4">
-            {categoryDisplayName
-              ? t("categoryOffers.discover_in_category", {
-                  name: categoryDisplayName,
-                })
-              : t("categoryOffers.discover_default")}
-          </p>
-
-          {/* Breadcrumb */}
-          <div className="flex items-center justify-center text-sm md:text-base">
-            <Link
-              to="/"
-              className="text-white hover:text-purple-300 transition-colors cursor-pointer text-xs"
-            >
-              {t("propertyDetail.breadcrumb.home")}
-            </Link>
-            <span className="text-white text-xs mx-2">|</span>
-            <Link
-              to="/offers"
-              className="text-white hover:text-purple-300 transition-colors cursor-pointer text-xs"
-            >
-              {t("home.navbar.offers")}
-            </Link>
-            <span className="text-white text-xs mx-2">|</span>
-            <span className="text-[#fd671a] font-medium text-xs">
-              {categoryDisplayName || t("categoryOffers.category_fallback")}
-            </span>
-          </div>
-        </div>
-
-        {/* Pattern Background */}
-        <div className="absolute -bottom-10 transform z-9">
-          <img
-            src={AboutPattern}
-            alt={t("offersPage.patternAlt")}
-            className="w-full h-96 animate-float"
-          />
-        </div>
-      </section>
-
-      <section className="container mx-auto md:py-10 py-6 px-4">
+      <section className={`${CONTAINER} bg-mk-bg py-6 md:py-9`}>
         {/* التصنيفات الفرعية من API - فوق شريط البحث والفلتر */}
         {apiSubcategories.length > 0 && (
-          <div
-            className="mb-6"
-            style={{
-              marginTop: "-55px",
-              zIndex: 1,
-              position: "relative",
-            }}
-          >
+          <div ref={subcategoriesRef} className="relative z-[1] mb-6">
             {/* التصنيفات الفرعية — single-select عبر URL */}
             <div className="flex flex-wrap justify-center gap-2">
               {apiSubcategories.map((sub) => {
@@ -518,8 +467,8 @@ const CategoryOffersPage = () => {
                       navigate(url);
                       setCurrentPage(1);
                     }}
-                    className={`rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-[#400198]/30 min-w-[120px] ${
-                      isSelected ? "" : "hover:bg-gray-50/80"
+                    className={`rounded-mk-md transition-all focus:outline-none focus:ring-2 focus:ring-[#400198]/30 min-w-[120px] ${
+                      isSelected ? "" : "hover:bg-mk-tint3/80"
                     }`}
                   >
                     <CategoryCard
@@ -535,224 +484,92 @@ const CategoryOffersPage = () => {
           </div>
         )}
 
-        {/* Toolbar */}
-        <div className="flex items-center justify-between mb-6">
-          {/* Results Count */}
-          <div className="text-sm text-gray-600">
-            <div className="flex items-center gap-2 mb-0">
-              <h2 className="text-[#400198] text-3xl font-bold">
-                {filteredOffers.length}
-              </h2>
+        {apiSubcategories.length > 0 && (
+          <PinnedChipsBar
+            pinned={subcategoriesPinned}
+            title={categoryDisplayName}
+            items={apiSubcategories.map((sub, i) => ({
+              id: sub.id,
+              name: sub.name,
+              image: sub.icon,
+              color: pick(i).c,
+              active: activeSubSlug === sub.slug,
+              onClick: () => {
+                navigate(
+                  activeSubSlug === sub.slug
+                    ? `/offers/${category}`
+                    : `/offers/${category}?subcategory=${encodeURIComponent(sub.slug)}`,
+                );
+                setCurrentPage(1);
+              },
+            }))}
+          />
+        )}
 
-              {t("categoryOffers.offers_suffix")}
-            </div>
 
-            {/* Applied Filters Tags */}
-            {appliedFilters && (
-              <div className="flex flex-wrap gap-2">
-                {appliedFilters.sortBy !== "nearest" && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
-                    {filterOptions.sortOptions.find(
-                      (s) => s.key === appliedFilters.sortBy,
-                    )?.name ?? appliedFilters.sortBy}
-                    <button
-                      onClick={() => {
-                        const next = {
-                          ...appliedFilters,
-                          sortBy: "nearest" as const,
-                        };
-                        setAppliedFilters(next);
-                        handleApplyFilters(next);
-                      }}
-                      className="ml-1 hover:bg-purple-200 rounded-full p-0.5"
-                    >
-                      ×
-                    </button>
-                  </span>
-                )}
-                {appliedFilters.subcategoryIds.map((id) => {
-                  const sub =
-                    apiSubcategories.find((s) => s.id === id) ??
-                    filterOptions.subcategories.find((s) => s.id === id);
-                  const label = sub?.name ?? String(id);
-                  return (
-                    <span
-                      key={id}
-                      className="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium"
-                    >
-                      {label}
-                      <button
-                        onClick={() => {
-                          const next = {
-                            ...appliedFilters,
-                            subcategoryIds:
-                              appliedFilters.subcategoryIds.filter(
-                                (s) => s !== id,
-                              ),
-                          };
-                          setAppliedFilters(next);
-                          handleApplyFilters(next);
-                        }}
-                        className="ml-1 hover:bg-green-200 rounded-full p-0.5"
-                      >
-                        ×
-                      </button>
-                    </span>
-                  );
-                })}
-                {appliedFilters.offerTypeIds.map((id) => {
-                  const ot = filterOptions.offerTypes.find((o) => o.id === id);
-                  return (
-                    <span
-                      key={id}
-                      className="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-medium"
-                    >
-                      {ot?.name ?? String(id)}
-                      <button
-                        onClick={() => {
-                          const next = {
-                            ...appliedFilters,
-                            offerTypeIds: appliedFilters.offerTypeIds.filter(
-                              (o) => o !== id,
-                            ),
-                          };
-                          setAppliedFilters(next);
-                          handleApplyFilters(next);
-                        }}
-                        className="ml-1 hover:bg-orange-200 rounded-full p-0.5"
-                      >
-                        ×
-                      </button>
-                    </span>
-                  );
-                })}
-                {appliedFilters.brandIds.map((id) => {
-                  const brand = filterOptions.brands.find((b) => b.id === id);
-                  return (
-                    <span
-                      key={id}
-                      className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium"
-                    >
-                      {brand?.name ?? String(id)}
-                      <button
-                        onClick={() => {
-                          const next = {
-                            ...appliedFilters,
-                            brandIds: appliedFilters.brandIds.filter(
-                              (b) => b !== id,
-                            ),
-                          };
-                          setAppliedFilters(next);
-                          handleApplyFilters(next);
-                        }}
-                        className="ml-1 hover:bg-blue-200 rounded-full p-0.5"
-                      >
-                        ×
-                      </button>
-                    </span>
-                  );
-                })}
-                {(appliedFilters.priceRange.min != null ||
-                  appliedFilters.priceRange.max != null) && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium">
-                    {appliedFilters.priceRange.min != null &&
-                    appliedFilters.priceRange.max != null
-                      ? t("categoryOffers.price_range", {
-                          min: appliedFilters.priceRange.min,
-                          max: appliedFilters.priceRange.max,
-                        })
-                      : appliedFilters.priceRange.min != null
-                        ? t("categoryOffers.price_min", {
-                            min: appliedFilters.priceRange.min,
-                          })
-                        : t("categoryOffers.price_max", {
-                            max: appliedFilters.priceRange.max!,
-                          })}
-                    <button
-                      onClick={() => {
-                        const next = { ...appliedFilters, priceRange: {} };
-                        setAppliedFilters(next);
-                        handleApplyFilters(next);
-                      }}
-                      className="ml-1 hover:bg-gray-200 rounded-full p-0.5"
-                    >
-                      ×
-                    </button>
-                  </span>
-                )}
-                {(appliedFilters.sortBy !== "nearest" ||
-                  appliedFilters.subcategoryIds.length > 0 ||
-                  appliedFilters.offerTypeIds.length > 0 ||
-                  appliedFilters.brandIds.length > 0 ||
-                  appliedFilters.priceRange.min != null ||
-                  appliedFilters.priceRange.max != null) && (
-                  <button
-                    onClick={() => {
-                      const reset: FilterState = {
-                        sortBy: "nearest",
-                        subcategoryIds: [],
-                        offerTypeIds: [],
-                        brandIds: [],
-                        priceRange: {},
-                      };
-                      setAppliedFilters(reset);
-                      handleApplyFilters(reset);
-                    }}
-                    className="inline-flex items-center gap-1 px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium hover:bg-red-200 transition-colors"
-                  >
-                    {t("cardsPage.clearAll")}
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
+        {/* شريط الأدوات — كرت أبيض واحد يجمع العدد والبحث والفلاتر */}
+        <div className="mb-6 flex flex-col gap-3 rounded-mk-lg border border-mk-border bg-white p-3.5 shadow-mk-card lg:flex-row lg:items-center lg:justify-between">
+          <p className="m-0 flex items-baseline gap-2 text-[13px] text-mk-muted">
+            <span className="text-[26px] font-bold leading-none text-mk-primary">
+              {pagination.total || filteredOffers.length}
+            </span>
+            {t("categoryOffers.offers_suffix")}
+          </p>
 
-          {/* Filter and View Buttons */}
-          <div className="flex items-center gap-3">
-            {/* Search */}
-            <div className="max-w-md mx-auto">
+          <div className="flex flex-wrap items-center gap-2.5">
+            {/* البحث */}
+            <label className="relative flex min-w-[200px] flex-1 items-center lg:max-w-[320px]">
+              <FiSearch
+                aria-hidden
+                className="pointer-events-none absolute start-3.5 text-mk-faint"
+              />
               <input
-                type="text"
+                type="search"
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value);
                   setCurrentPage(1);
                 }}
-                placeholder={t("categoryOffers.search_in", {
-                  name: categoryDisplayName,
-                })}
-                className="w-full px-5 py-3 rounded-full font-medium text-sm shadow-md transition-all duration-300 bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#400198] focus:border-transparent"
+                aria-label={t("ui.searchPlaceholder", "ابحث…")}
+                placeholder={t("categoryOffers.search_in", { name: categoryDisplayName })}
+                className={`h-12 w-full rounded-mk-md border border-mk-border-2 bg-mk-tint3 ps-10 pe-4 text-[13.5px] text-mk-text outline-none transition-colors placeholder:text-mk-faint focus:border-mk-primary ${FOCUS}`}
               />
-            </div>
-            {/* Filter Button */}
-            <button
-              onClick={() => setIsFilterOpen(true)}
-              className="flex items-center gap-2 px-5 py-3 rounded-full font-medium text-sm shadow-md transition-all duration-300 bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#400198] focus:border-transparent"
-            >
-              <FiFilter className="text-gray-600" />
-              <span className="text-sm font-medium text-gray-700">
-                {t("cardsPage.filter")}
-              </span>
-            </button>
+            </label>
 
-            {/* View Mode Buttons */}
-            <div className="flex items-center bg-white border border-gray-200 rounded-full shadow-md p-1">
+            {/* الفلاتر */}
+            <Button
+              variant="outline"
+              size="md"
+              icon={<FiFilter />}
+              onClick={() => setIsFilterOpen(true)}
+            >
+              {t("cardsPage.filter")}
+            </Button>
+
+            {/* نمط العرض */}
+            <div className="flex items-center gap-1 rounded-mk-md border border-mk-border-2 bg-white p-1">
               <button
+                type="button"
                 onClick={() => setViewMode("grid")}
-                className={`p-2 rounded-full transition-all duration-300 ${
+                aria-label={t("ui.gridView", "عرض شبكي")}
+                aria-pressed={viewMode === "grid"}
+                className={`flex h-10 w-10 items-center justify-center rounded-mk-sm transition-colors ${FOCUS} ${
                   viewMode === "grid"
-                    ? "bg-[#400198] text-white shadow-sm"
-                    : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                    ? "bg-mk-primary text-white"
+                    : "text-mk-muted hover:bg-mk-tint2"
                 }`}
               >
                 <FiGrid size={18} />
               </button>
               <button
+                type="button"
                 onClick={() => setViewMode("list")}
-                className={`p-2 rounded-full transition-all duration-300 ${
+                aria-label={t("ui.listView", "عرض قائمة")}
+                aria-pressed={viewMode === "list"}
+                className={`flex h-10 w-10 items-center justify-center rounded-mk-sm transition-colors ${FOCUS} ${
                   viewMode === "list"
-                    ? "bg-[#400198] text-white shadow-sm"
-                    : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                    ? "bg-mk-primary text-white"
+                    : "text-mk-muted hover:bg-mk-tint2"
                 }`}
               >
                 <FiList size={18} />
@@ -761,58 +578,162 @@ const CategoryOffersPage = () => {
           </div>
         </div>
 
-        {/* عرض جميع العروض في التصنيف */}
-        {isOffersLoading ? (
-          <div className="flex items-center justify-center py-16">
-            <div className="w-10 h-10 border-2 border-[#400198] border-t-transparent rounded-full animate-spin" />
+        {/* شرائح الفلاتر المطبّقة */}
+        {appliedFilters && (
+          <div className="mb-6 flex flex-wrap items-center gap-2">
+            {appliedFilters.sortBy !== "nearest" && (
+              <FilterChip
+                label={
+                  filterOptions.sortOptions.find((o) => o.key === appliedFilters.sortBy)?.name ??
+                  appliedFilters.sortBy
+                }
+                onRemove={() =>
+                  handleApplyFilters({ ...appliedFilters, sortBy: "nearest" as const })
+                }
+              />
+            )}
+            {appliedFilters.subcategoryIds.map((id) => (
+              <FilterChip
+                key={`sub-${id}`}
+                label={
+                  (apiSubcategories.find((sc) => sc.id === id) ??
+                    filterOptions.subcategories.find((sc) => sc.id === id))?.name ?? String(id)
+                }
+                onRemove={() =>
+                  handleApplyFilters({
+                    ...appliedFilters,
+                    subcategoryIds: appliedFilters.subcategoryIds.filter((v) => v !== id),
+                  })
+                }
+              />
+            ))}
+            {appliedFilters.offerTypeIds.map((id) => (
+              <FilterChip
+                key={`type-${id}`}
+                label={filterOptions.offerTypes.find((o) => o.id === id)?.name ?? String(id)}
+                onRemove={() =>
+                  handleApplyFilters({
+                    ...appliedFilters,
+                    offerTypeIds: appliedFilters.offerTypeIds.filter((v) => v !== id),
+                  })
+                }
+              />
+            ))}
+            {appliedFilters.brandIds.map((id) => (
+              <FilterChip
+                key={`brand-${id}`}
+                label={filterOptions.brands.find((b) => b.id === id)?.name ?? String(id)}
+                onRemove={() =>
+                  handleApplyFilters({
+                    ...appliedFilters,
+                    brandIds: appliedFilters.brandIds.filter((v) => v !== id),
+                  })
+                }
+              />
+            ))}
+            {(appliedFilters.priceRange.min != null || appliedFilters.priceRange.max != null) && (
+              <FilterChip
+                label={
+                  appliedFilters.priceRange.min != null && appliedFilters.priceRange.max != null
+                    ? t("categoryOffers.price_range", {
+                        min: appliedFilters.priceRange.min,
+                        max: appliedFilters.priceRange.max,
+                      })
+                    : appliedFilters.priceRange.min != null
+                      ? t("categoryOffers.price_min", { min: appliedFilters.priceRange.min })
+                      : t("categoryOffers.price_max", { max: appliedFilters.priceRange.max! })
+                }
+                onRemove={() => handleApplyFilters({ ...appliedFilters, priceRange: {} })}
+              />
+            )}
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={() =>
+                  handleApplyFilters({
+                    sortBy: "nearest",
+                    subcategoryIds: [],
+                    offerTypeIds: [],
+                    brandIds: [],
+                    priceRange: {},
+                  })
+                }
+                className={`inline-flex min-h-[36px] items-center gap-1 rounded-full bg-[#FDE9EB] px-3 text-[12px] font-semibold text-mk-red transition-colors hover:brightness-95 ${FOCUS}`}
+              >
+                {t("cardsPage.clearAll")}
+              </button>
+            )}
           </div>
+        )}
+
+        {/* النتائج: تحميل ← خطأ ← فراغ ← شبكة/قائمة.
+            الهيكل للتحميل الأول فقط حتى لا تختفي النتائج عند «عرض المزيد» */}
+        {isOffersLoading && paginatedOffers.length === 0 ? (
+          <SkeletonGrid
+            count={8}
+            className={
+              viewMode === "grid"
+                ? "grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+                : "flex flex-col gap-4"
+            }
+          />
+        ) : isOffersError ? (
+          <ErrorState onRetry={() => refetchOffers()} />
         ) : paginatedOffers.length > 0 ? (
           <div
             className={
               viewMode === "grid"
-                ? "grid grid-cols-1 md:grid-cols-4 gap-6 grid-view"
+                ? "grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 grid-view"
                 : "flex flex-col gap-4 list-view"
             }
           >
             {paginatedOffers.map((offer) =>
               viewMode === "grid" ? (
-                <OfferCard
-                  key={offer.id}
-                  offer={offer}
-                  onOfferClick={handleOfferClick}
-                />
+                <OfferCard key={offer.id} offer={offer} onOfferClick={handleOfferClick} />
               ) : (
                 <OfferCardHorizontal
                   key={offer.id}
                   offer={offer}
                   onOfferClick={handleOfferClick}
                 />
-              )
+              ),
             )}
           </div>
         ) : (
-          <div className="text-center py-20">
-            <p className="text-gray-500 text-xl">
-              {search
+          <EmptyState
+            title={
+              search
                 ? t("categoryOffers.no_results", { search })
-                : t("categoryOffers.no_offers")}
-            </p>
-          </div>
+                : t("categoryOffers.no_offers")
+            }
+            description=""
+            actionLabel={hasActiveFilters ? t("cardsPage.clearAll") : undefined}
+            onAction={
+              hasActiveFilters
+                ? () =>
+                    handleApplyFilters({
+                      sortBy: "nearest",
+                      subcategoryIds: [],
+                      offerTypeIds: [],
+                      brandIds: [],
+                      priceRange: {},
+                    })
+                : undefined
+            }
+          />
         )}
 
         {/* Load More + Infinite Scroll Sentinel */}
         {hasMore && (
-          <div className="flex flex-col items-center justify-center mt-10 gap-3">
-            <button
-              type="button"
+          <div className="mt-10 flex flex-col items-center justify-center gap-3">
+            <Button
+              variant="primary"
+              size="lg"
+              loading={isLoadingMore}
               onClick={() => setCurrentPage((p) => p + 1)}
-              disabled={isLoadingMore}
-              className="px-6 py-3 bg-[#400198] text-white rounded-xl font-medium hover:bg-[#54015d] transition-colors disabled:opacity-60"
             >
-              {isLoadingMore
-                ? langBase === "ar" ? "جارٍ التحميل..." : "Loading..."
-                : langBase === "ar" ? "عرض المزيد" : "Load more"}
-            </button>
+              {isLoadingMore ? t("ui.loading", "جارٍ التحميل…") : t("ui.showMore", "عرض المزيد")}
+            </Button>
             <div ref={loadMoreRef} className="h-px w-full" aria-hidden="true" />
           </div>
         )}

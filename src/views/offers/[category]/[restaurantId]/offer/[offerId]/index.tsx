@@ -21,6 +21,8 @@ import {
   type Restaurant,
 } from "@data/offers";
 import CurrencyIcon from "@components/CurrencyIcon";
+import { LuCrown, LuCalendarDays, LuPercent, LuStore, LuEye, LuCheck } from "react-icons/lu";
+import { FOCUS } from "@ui";
 import QuantitySelector from "@components/QuantitySelector";
 import SubscribersOnlyModal from "@components/SubscribersOnlyModal";
 import { stripHtml } from "@utils/stripHtml";
@@ -34,6 +36,10 @@ import {
   Pro7,
   Pro8,
   AboutPattern,
+  Visa,
+  Master,
+  ApplePay,
+  Mada,
 } from "@assets";
 import { useUserStore } from "@stores/userStore";
 import { useQueryClient } from "@tanstack/react-query";
@@ -51,9 +57,11 @@ import {
 } from "@network/mappers/offersMapper";
 import { isUserSubscribed } from "@utils/subscription";
 import { normalizeFavoritesList } from "@utils/favorites";
-import { BsHeart, BsHeartFill, BsShare } from "react-icons/bs";
+import { ShareIcon, HeartIcon } from "@ui";
 import { toast } from "react-toastify";
 import OfferCard from "@views/offers/components/OfferCard";
+import OfferStats from "@components/OfferStats";
+import { PriceTag, Badge } from "@ui";
 import { useShareSheetStore } from "@stores/shareSheetStore";
 
 const getOfferImageSrc = (imageName: string) => {
@@ -399,11 +407,11 @@ const OfferDetailPage = () => {
     return (
       <>
         {/* سكيلتون الهيدر */}
-        <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[200px] flex items-center justify-center">
+        <section className="relative w-full bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] overflow-hidden min-h-[200px] flex items-center justify-center">
           <div className="absolute inset-0 bg-primary opacity-30" />
           <div className="relative pt-24 pb-10 px-6 mx-auto max-w-site w-full text-center lg:pt-24 lg:pb-10 lg:px-12 flex flex-col justify-center z-10">
             <div className="flex items-center justify-between absolute top-4 left-4 right-4">
-              <div className="h-8 w-20 bg-white/20 rounded-lg animate-pulse" />
+              <div className="h-8 w-20 bg-white/20 rounded-mk-sm animate-pulse" />
               <div className="flex items-center gap-2">
                 <div className="w-10 h-10 rounded-full bg-white/20 animate-pulse" />
                 <div className="w-10 h-10 rounded-full bg-white/20 animate-pulse" />
@@ -413,7 +421,7 @@ const OfferDetailPage = () => {
               className="absolute top-4 w-12 h-12 rounded-full bg-white/20 animate-pulse hidden sm:block"
               style={isRTL ? { left: "1rem" } : { right: "1rem" }}
             />
-            <div className="h-8 w-3/4 max-w-xl bg-white/20 rounded-lg animate-pulse mx-auto mb-2" />
+            <div className="h-8 w-3/4 max-w-xl bg-white/20 rounded-mk-sm animate-pulse mx-auto mb-2" />
             <div className="h-4 w-1/2 max-w-md bg-white/15 rounded animate-pulse mx-auto mb-4" />
             <div className="flex items-center justify-center gap-2 mb-4">
               <div className="h-4 w-16 bg-white/20 rounded animate-pulse" />
@@ -429,45 +437,45 @@ const OfferDetailPage = () => {
           </div>
         </section>
 
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-mk-tint3">
           <div className="container mx-auto px-4 py-8 max-w-site -mt-2 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* سكيلتون عمود المحتوى */}
               <div className="lg:col-span-2 space-y-6">
-                <div className="bg-white rounded-3xl shadow-lg overflow-hidden animate-pulse">
+                <div className="bg-white rounded-mk-2xl shadow-mk-raised overflow-hidden animate-pulse">
                   <div
                     className={`flex gap-3 p-4 items-stretch h-[400px] ${isRTL ? "flex-row-reverse" : ""}`}
                   >
-                    <div className="grid grid-cols-1 grid-rows-4 gap-0 w-32 flex-shrink-0 h-full overflow-hidden rounded-xl">
+                    <div className="grid grid-cols-1 grid-rows-4 gap-0 w-32 flex-shrink-0 h-full overflow-hidden rounded-mk-md">
                       {[1, 2, 3, 4].map((i) => (
                         <div
                           key={i}
-                          className={`w-full h-full bg-gray-200 ${i === 0 ? "rounded-t-xl" : ""} ${i === 3 ? "rounded-b-xl" : ""}`}
+                          className={`w-full h-full bg-mk-border-strong/50 ${i === 0 ? "rounded-t-xl" : ""} ${i === 3 ? "rounded-b-xl" : ""}`}
                         />
                       ))}
                     </div>
-                    <div className="flex-1 min-h-0 h-[365px] max-h-[365px] rounded-xl bg-gray-200" />
+                    <div className="flex-1 min-h-0 h-[365px] max-h-[365px] rounded-mk-md bg-mk-border-strong/50" />
                   </div>
                 </div>
 
-                <div className="bg-white rounded-3xl shadow-lg overflow-hidden animate-pulse">
+                <div className="bg-white rounded-mk-2xl shadow-mk-raised overflow-hidden animate-pulse">
                   <div className="flex border-b">
-                    <div className="h-12 w-32 bg-gray-100 mx-1 rounded-t" />
-                    <div className="h-12 w-36 bg-gray-100 mx-1 rounded-t" />
-                    <div className="h-12 w-28 bg-gray-100 mx-1 rounded-t" />
+                    <div className="h-12 w-32 bg-mk-tint2 mx-1 rounded-t" />
+                    <div className="h-12 w-36 bg-mk-tint2 mx-1 rounded-t" />
+                    <div className="h-12 w-28 bg-mk-tint2 mx-1 rounded-t" />
                   </div>
                   <div className="p-6 space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="h-16 bg-gray-100 rounded-lg" />
-                      <div className="h-16 bg-gray-100 rounded-lg" />
+                      <div className="h-16 bg-mk-tint2 rounded-mk-sm" />
+                      <div className="h-16 bg-mk-tint2 rounded-mk-sm" />
                     </div>
-                    <div className="h-4 w-full bg-gray-100 rounded" />
-                    <div className="h-4 w-4/5 bg-gray-100 rounded" />
-                    <div className="h-4 w-3/4 bg-gray-100 rounded" />
+                    <div className="h-4 w-full bg-mk-tint2 rounded" />
+                    <div className="h-4 w-4/5 bg-mk-tint2 rounded" />
+                    <div className="h-4 w-3/4 bg-mk-tint2 rounded" />
                     <div className="flex flex-wrap gap-2 mt-4">
-                      <div className="h-6 w-16 bg-gray-100 rounded-full" />
-                      <div className="h-6 w-20 bg-gray-100 rounded-full" />
-                      <div className="h-6 w-14 bg-gray-100 rounded-full" />
+                      <div className="h-6 w-16 bg-mk-tint2 rounded-full" />
+                      <div className="h-6 w-20 bg-mk-tint2 rounded-full" />
+                      <div className="h-6 w-14 bg-mk-tint2 rounded-full" />
                     </div>
                   </div>
                 </div>
@@ -475,35 +483,35 @@ const OfferDetailPage = () => {
 
               {/* سكيلتون الشريط الجانبي */}
               <div className="lg:col-span-1">
-                <div className="lg:sticky lg:top-6 bg-white rounded-3xl shadow-lg p-6 space-y-6 animate-pulse">
+                <div className="lg:sticky lg:top-6 bg-white rounded-mk-2xl shadow-mk-raised p-6 space-y-6 animate-pulse">
                   <div className="flex flex-wrap gap-2">
-                    <div className="h-8 w-28 bg-gray-100 rounded-full" />
-                    <div className="h-8 w-24 bg-gray-100 rounded-full" />
-                    <div className="h-8 w-20 bg-gray-100 rounded-full" />
+                    <div className="h-8 w-28 bg-mk-tint2 rounded-full" />
+                    <div className="h-8 w-24 bg-mk-tint2 rounded-full" />
+                    <div className="h-8 w-20 bg-mk-tint2 rounded-full" />
                   </div>
-                  <div className="h-6 w-48 bg-gray-100 rounded" />
-                  <div className="border border-gray-200 rounded-xl p-4 space-y-3">
-                    <div className="h-5 w-3/4 bg-gray-100 rounded" />
+                  <div className="h-6 w-48 bg-mk-tint2 rounded" />
+                  <div className="border border-mk-border rounded-mk-md p-4 space-y-3">
+                    <div className="h-5 w-3/4 bg-mk-tint2 rounded" />
                     <div className="flex items-center gap-2 flex-wrap">
-                      <div className="h-4 w-10 bg-gray-100 rounded" />
-                      <div className="h-6 w-14 bg-gray-100 rounded" />
-                      <div className="h-5 w-16 bg-gray-100 rounded-full" />
+                      <div className="h-4 w-10 bg-mk-tint2 rounded" />
+                      <div className="h-6 w-14 bg-mk-tint2 rounded" />
+                      <div className="h-5 w-16 bg-mk-tint2 rounded-full" />
                     </div>
-                    <div className="h-3 w-40 bg-gray-50 rounded" />
+                    <div className="h-3 w-40 bg-mk-tint3 rounded" />
                     <div className="flex items-center gap-2 mt-3">
-                      <div className="h-10 w-24 bg-gray-100 rounded-lg" />
+                      <div className="h-10 w-24 bg-mk-tint2 rounded-mk-sm" />
                     </div>
-                    <div className="h-4 w-20 bg-gray-100 rounded" />
+                    <div className="h-4 w-20 bg-mk-tint2 rounded" />
                   </div>
-                  <div className="h-12 w-full bg-gray-200 rounded-xl" />
-                  <div className="h-12 w-full bg-gray-50 rounded-xl" />
+                  <div className="h-12 w-full bg-mk-border-strong/50 rounded-mk-md" />
+                  <div className="h-12 w-full bg-mk-tint3 rounded-mk-md" />
                   <div>
-                    <div className="h-4 w-24 bg-gray-100 rounded mb-2" />
+                    <div className="h-4 w-24 bg-mk-tint2 rounded mb-2" />
                     <div className="flex items-center gap-2">
-                      <div className="h-4 w-12 bg-gray-50 rounded" />
-                      <div className="h-4 w-16 bg-gray-50 rounded" />
-                      <div className="h-4 w-10 bg-gray-50 rounded" />
-                      <div className="h-4 w-14 bg-gray-50 rounded" />
+                      <div className="h-4 w-12 bg-mk-tint3 rounded" />
+                      <div className="h-4 w-16 bg-mk-tint3 rounded" />
+                      <div className="h-4 w-10 bg-mk-tint3 rounded" />
+                      <div className="h-4 w-14 bg-mk-tint3 rounded" />
                     </div>
                   </div>
                 </div>
@@ -519,12 +527,12 @@ const OfferDetailPage = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+          <h2 className="text-2xl font-bold text-mk-text mb-4">
             {t("offerDetail.offer_not_found")}
           </h2>
           <button
             onClick={() => navigate("/offers")}
-            className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+            className="bg-mk-primary text-white px-6 py-2 rounded-mk-sm hover:bg-mk-primary transition-colors"
           >
             {t("offerDetail.back_to_offers")}
           </button>
@@ -581,13 +589,13 @@ const OfferDetailPage = () => {
       </Helmet>
 
       {/* هيدر: عنوان، تقييم، أيقونات، لوجو */}
-      <section className="relative w-full bg-[#1D0843] overflow-hidden min-h-[200px] flex items-center justify-center">
+      <section className="relative w-full bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] overflow-hidden min-h-[200px] flex items-center justify-center">
         <div className="absolute inset-0 bg-primary opacity-30" />
         <div className="relative pt-24 pb-10 px-6 mx-auto max-w-site w-full text-center lg:pt-24 lg:pb-10 lg:px-12 flex flex-col justify-center z-10">
           <div className="flex items-center justify-between absolute top-4 left-4 right-4">
             <button
               onClick={() => navigate(`/offers/${category}/${merchantSlug}`)}
-              className="text-white hover:text-purple-300 transition-colors flex items-center gap-2"
+              className="text-white hover:text-mk-lilac transition-colors flex items-center gap-2"
             >
               <FiArrowLeft className="text-xl" />
               <span className="text-sm">{t("offerDetail.back")}</span>
@@ -607,7 +615,7 @@ const OfferDetailPage = () => {
                 className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
                 aria-label={t("offerDetail.aria_share")}
               >
-                <BsShare className="text-lg" />
+                <ShareIcon size={18} />
               </button>
               {offer && (
                 <button
@@ -639,9 +647,9 @@ const OfferDetailPage = () => {
                   disabled={toggleFavorite.isPending}
                 >
                   {isOfferFavorite ? (
-                    <BsHeartFill className="text-lg text-red-300" />
+                    <HeartIcon size={18} filled className="text-[#FCA5A5]" />
                   ) : (
-                    <BsHeart className="text-lg" />
+                    <HeartIcon size={18} />
                   )}
                 </button>
               )}
@@ -685,6 +693,20 @@ const OfferDetailPage = () => {
                 {t("offerDetail.views_word")}
               </span>
             </div>
+            {/* المفضلة والمشاركات — تظهر عند توفرها في مخرجات الـ API */}
+            {(offer.favoritesCount != null || offer.sharesCount != null) && (
+              <>
+                <span className="text-white/50">|</span>
+                <OfferStats
+                  favorites={offer.favoritesCount}
+                  shares={offer.sharesCount}
+                  className="text-white/90"
+                  iconSize="w-4 h-4"
+                  textSize="text-sm"
+                  gap="gap-3"
+                />
+              </>
+            )}
           </div>
           <div className="flex items-center justify-center text-sm flex-wrap gap-x-1 text-white/80">
             <Link to="/" className="hover:text-white transition-colors text-xs">
@@ -733,18 +755,18 @@ const OfferDetailPage = () => {
         </div>
       </section>
 
-      <div className="min-h-screen bg-gray-50" style={{ paddingTop: "0" }}>
+      <div className="min-h-screen bg-mk-tint3" style={{ paddingTop: "0" }}>
         <div className="container mx-auto px-4 py-8 max-w-site -mt-2 relative z-10 pb-20">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* عمود المحتوى: معرض الصور + التابات */}
             <div className="lg:col-span-2 space-y-6">
               {/* معرض الصور — ديسكتوب: مصغّرات عمودية جانبية · موبايل: مصغّرات أفقية تحت الصورة */}
-              <div className="bg-white rounded-3xl shadow-lg overflow-hidden mb-6">
+              <div className="bg-white rounded-mk-2xl shadow-mk-raised overflow-hidden mb-6">
                 {/* ديسكتوب (lg فأعلى) */}
                 <div
                   className={`hidden lg:flex gap-3 p-4 items-stretch h-[400px] ${isRTL ? "flex-row-reverse" : ""}`}
                 >
-                  <div className="grid grid-cols-1 grid-rows-4 gap-0 w-32 flex-shrink-0 h-full overflow-hidden rounded-xl">
+                  <div className="grid grid-cols-1 grid-rows-4 gap-0 w-32 flex-shrink-0 h-full overflow-hidden rounded-mk-md">
                     {galleryImages.slice(0, 4).map((src, i) => (
                       <button
                         key={i}
@@ -763,7 +785,7 @@ const OfferDetailPage = () => {
                   <button
                     type="button"
                     onClick={() => setGalleryOpen(true)}
-                    className="flex-1 min-h-0 h-[365px] max-h-[365px] rounded-xl overflow-hidden border-2 border-transparent bg-gray-100 text-left cursor-zoom-in"
+                    className="flex-1 min-h-0 h-[365px] max-h-[365px] rounded-mk-md overflow-hidden border-2 border-transparent bg-mk-tint2 text-left cursor-zoom-in"
                   >
                     <img
                       src={mainImageSrc}
@@ -778,7 +800,7 @@ const OfferDetailPage = () => {
                   <button
                     type="button"
                     onClick={() => setGalleryOpen(true)}
-                    className="w-full aspect-[16/10] overflow-hidden rounded-2xl bg-gray-100 cursor-zoom-in"
+                    className="w-full aspect-[16/10] overflow-hidden rounded-mk-xl bg-mk-tint2 cursor-zoom-in"
                   >
                     <img
                       src={mainImageSrc}
@@ -796,7 +818,7 @@ const OfferDetailPage = () => {
                             type="button"
                             onClick={() => setSelectedImageIndex(i)}
                             aria-label={`صورة ${i + 1}`}
-                            className={`h-16 w-20 shrink-0 overflow-hidden rounded-xl border-2 transition-colors ${
+                            className={`h-16 w-20 shrink-0 overflow-hidden rounded-mk-md border-2 transition-colors ${
                               selectedImageIndex === i ? "border-primary" : "border-transparent"
                             }`}
                           >
@@ -817,8 +839,8 @@ const OfferDetailPage = () => {
               </div>
 
               {/* تابات: وصف العرض | الشروط والأحكام | سياسة الخصوصية */}
-              <div className="bg-white rounded-3xl shadow-lg overflow-hidden">
-                <div className={`flex border-b `}>
+              <div className="bg-white rounded-mk-2xl shadow-mk-raised overflow-hidden">
+                <div className="flex gap-2 border-b border-mk-border bg-mk-tint3 px-4 py-3">
                   {[
                     {
                       key: "description" as TabKey,
@@ -837,7 +859,12 @@ const OfferDetailPage = () => {
                       key={tab.key}
                       type="button"
                       onClick={() => setActiveTab(tab.key)}
-                      className={`px-6 py-4 font-medium border-b-2 transition-colors ${activeTab === tab.key ? "border-primary text-primary" : "border-transparent text-gray-600 hover:text-gray-800"}`}
+                      aria-pressed={activeTab === tab.key}
+                      className={`h-10 rounded-full px-4 text-[13.5px] font-extrabold transition-all duration-200 ${FOCUS} ${
+                        activeTab === tab.key
+                          ? "bg-grad-brand text-white shadow-[0_10px_22px_-12px_rgba(64,1,152,0.9)]"
+                          : "bg-white text-mk-text-strong hover:text-mk-primary"
+                      }`}
                     >
                       {tab.label}
                     </button>
@@ -846,48 +873,90 @@ const OfferDetailPage = () => {
                 <div className="p-6">
                   {activeTab === "description" && (
                     <>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                        <div className="bg-gray-100 p-3 rounded-lg">
-                          <div className="text-sm text-gray-600">
-                            {t("offerDetail.offer_validity")}
-                          </div>
-                          <div className="font-medium text-gray-800">
-                            {pickLocalized(offer.validity, langBase)}
-                          </div>
-                        </div>
-                        <div className="bg-gray-100 p-3 rounded-lg">
-                          <div className="text-sm text-gray-600">
-                            {t("offerDetail.discount")}
-                          </div>
-                          <div className="font-medium text-gray-800">
-                            {offer.discountPercentage}%
-                          </div>
-                        </div>
+                      {/* شبكة معلومات العرض — بطاقات صغيرة بأيقونة وعنوان
+                          وقيمة بدل مربّعين باهتين بلا تسلسل بصري. */}
+                      <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
+                        {[
+                          {
+                            icon: <LuCalendarDays size={16} aria-hidden />,
+                            label: t("offerDetail.offer_validity"),
+                            value: pickLocalized(offer.validity, langBase),
+                          },
+                          {
+                            icon: <LuPercent size={16} aria-hidden />,
+                            label: t("offerDetail.discount"),
+                            value: Number(offer.discountPercentage) > 0
+                              ? `${offer.discountPercentage}%`
+                              : null,
+                          },
+                          {
+                            icon: <LuStore size={16} aria-hidden />,
+                            label: t("offerDetail.merchant", "التاجر"),
+                            value: restaurant?.name
+                              ? pickLocalized(restaurant.name, langBase)
+                              : null,
+                          },
+                          {
+                            icon: <LuEye size={16} aria-hidden />,
+                            label: t("offerCard.viewsLabel", "مشاهدات"),
+                            value: Number(offer.views) > 0 ? String(offer.views) : null,
+                          },
+                        ]
+                          .filter((item) => item.value)
+                          .map((item) => (
+                            <div
+                              key={item.label}
+                              className="rounded-mk-md border border-mk-border bg-white p-3 shadow-[0_2px_10px_-6px_rgba(46,16,101,0.4)]"
+                            >
+                              <span className="mb-1.5 flex items-center gap-1.5 text-[11.5px] font-bold text-mk-muted">
+                                <span className="text-mk-primary">{item.icon}</span>
+                                {item.label}
+                              </span>
+                              <span className="block text-[14px] font-extrabold text-mk-text">
+                                {item.value}
+                              </span>
+                            </div>
+                          ))}
                       </div>
-                      <p className="text-gray-600 text-sm whitespace-pre-wrap">
+
+                      <h3 className="mb-2 text-[15px] font-extrabold text-mk-text">
+                        {t("offerDetail.tab_description")}
+                      </h3>
+                      <p className="whitespace-pre-wrap text-[14px] leading-[1.9] text-mk-text-strong">
                         {stripHtml(pickLocalized(offer.description, langBase))}
                       </p>
+
                       {offer.features.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mt-4">
-                          {offer.features.map((f, i) => (
-                            <span
-                              key={i}
-                              className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full"
-                            >
-                              {f}
-                            </span>
-                          ))}
+                        <div className="mt-5 border-t border-mk-border pt-4">
+                          <h3 className="mb-2.5 text-[15px] font-extrabold text-mk-text">
+                            {t("offerDetail.features", "ما يشمله العرض")}
+                          </h3>
+                          <ul className="m-0 grid list-none grid-cols-1 gap-2 p-0 sm:grid-cols-2">
+                            {offer.features.map((f, i) => (
+                              <li
+                                key={i}
+                                className="flex items-start gap-2 text-[13.5px] font-medium text-mk-text-strong"
+                              >
+                                <LuCheck
+                                  size={16}
+                                  aria-hidden
+                                  className="mt-0.5 shrink-0 text-mk-green"
+                                />
+                                {f}
+                              </li>
+                            ))}
+                          </ul>
                         </div>
                       )}
                     </>
                   )}
                   {activeTab === "terms" && (
-                    <p className="text-gray-600 text-sm whitespace-pre-wrap">
+                    <p className="whitespace-pre-wrap text-[14px] leading-[1.9] text-mk-text-strong">
                       {stripHtml(pickLocalized(offer.terms, langBase))}
                     </p>
                   )}
                   {activeTab === "privacy" && (
-                    <p className="text-gray-600 text-sm whitespace-pre-wrap">
+                    <p className="whitespace-pre-wrap text-[14px] leading-[1.9] text-mk-text-strong">
                       {apiDetailExtras.privacyPolicy
                         ? stripHtml(apiDetailExtras.privacyPolicy)
                         : null}
@@ -910,7 +979,7 @@ const OfferDetailPage = () => {
 
             {/* الشريط الجانبي: التسعير والكمية والأزرار */}
             <div className="lg:col-span-1">
-              <div className="lg:sticky lg:top-6 bg-white rounded-3xl shadow-lg p-6 space-y-6">
+              <div className="lg:sticky lg:top-6 bg-white rounded-mk-2xl shadow-mk-raised p-6 space-y-6">
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
@@ -923,9 +992,9 @@ const OfferDetailPage = () => {
                       const url = `${window.location.origin}/offers/${category}/${merchantSlug}/${offerSlug}`;
                       openShare({ title, url });
                     }}
-                    className="flex-1 py-2.5 rounded-xl border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
+                    className="flex-1 py-2.5 rounded-mk-md border border-mk-border bg-white text-mk-text hover:bg-mk-tint3 transition-colors flex items-center justify-center gap-2"
                   >
-                    <BsShare className="text-base" />
+                    <ShareIcon size={16} />
                     <span className="text-sm font-medium">
                       {t("offerDetail.share")}
                     </span>
@@ -957,13 +1026,13 @@ const OfferDetailPage = () => {
                         },
                       );
                     }}
-                    className="flex-1 py-2.5 rounded-xl border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
+                    className="flex-1 py-2.5 rounded-mk-md border border-mk-border bg-white text-mk-text hover:bg-mk-tint3 transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
                     disabled={toggleFavorite.isPending}
                   >
                     {isOfferFavorite ? (
-                      <BsHeartFill className="text-base text-red-500" />
+                      <HeartIcon size={16} filled className="text-mk-red" />
                     ) : (
-                      <BsHeart className="text-base" />
+                      <HeartIcon size={16} />
                     )}
                     <span className="text-sm font-medium">
                       {t("offerDetail.favorites_action")}
@@ -975,117 +1044,111 @@ const OfferDetailPage = () => {
                   {offer.features.map((feature, index) => (
                     <span
                       key={index}
-                      className="inline-flex items-center gap-1 text-sm text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full"
+                      className="inline-flex items-center gap-1 text-sm text-mk-muted bg-mk-tint2 px-3 py-1.5 rounded-full"
                     >
                       {feature}
                     </span>
                   ))}
-                  <span className="inline-flex items-center gap-1 text-sm text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">
+                  <span className="inline-flex items-center gap-1 text-sm text-mk-muted bg-mk-tint2 px-3 py-1.5 rounded-full">
                     <FiTag className="text-base" />{" "}
                     {t("offerDetail.sold_count", {
                       count: offer.purchases ?? 0,
                     })}
                   </span>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800">
+                <h3 className="text-lg font-semibold text-mk-text">
                   {t("offerDetail.choose_option")}
                 </h3>
                 <div className="space-y-3">
-                  <div className="border border-gray-200 rounded-xl p-4">
-                    <p className="text-gray-800 font-medium mb-2">
+                  <div className="border border-mk-border rounded-mk-md p-4">
+                    <p className="text-mk-text font-medium mb-2">
                       {offerTitle}
                     </p>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-gray-400 line-through text-sm">
-                        {displayPriceBefore}
-                      </span>
-                      <span className="text-xl font-bold text-gray-900">
-                        {displayPriceAfter}
-                      </span>
-                      <CurrencyIcon className="text-gray-700" size={20} />
-                      <span className="text-green-600 text-sm font-medium bg-green-50 px-2 py-0.5 rounded-full">
-                        {t("offerDetail.save_pct", {
-                          pct: offer.discountPercentage,
-                        })}
-                      </span>
+                    <div className="flex flex-wrap items-center gap-2">
+                      {/* السعر مع شطب سعر ما قبل الخصم (يظهر فقط عند وجود خصم فعلي) */}
+                      <PriceTag
+                        price={displayPriceAfter}
+                        priceBefore={displayPriceBefore}
+                        size="md"
+                      />
+                      {Number(offer.discountPercentage) > 0 && (
+                        <Badge tone="success" size="sm">
+                          {t("offerDetail.save_pct", { pct: offer.discountPercentage })}
+                        </Badge>
+                      )}
                     </div>
-                    {/* أسعار المشتركين وغير المشتركين */}
+                    {/* أسعار الاشتراك.
+                        المشترك يرى سعره وحده — لا معنى لعرض سعر غير
+                        المشتركين له. وغير المشترك يرى سعره ثم دعوة صريحة
+                        تقول ماذا يكسب بالاشتراك: مجاناً أم خصم بمقداره. */}
                     {offer.nonSubscriberPrice != null && offer.nonSubscriberPrice > 0 ? (
-                      <div className="mt-2 space-y-2">
-                        {/* سعر المشتركين */}
-                        <div className={`p-3 rounded-lg border-2 ${isSubscribed ? 'border-primary bg-primary/5' : 'border-green-500 bg-green-50'}`}>
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-xs text-gray-500 mb-0.5">
-                                {langBase === "ar" ? "سعر المشتركين" : "Subscriber Price"}
+                      <div className="mt-3 space-y-2.5">
+                        {isSubscribed ? (
+                          <div className="rounded-mk-md border-2 border-mk-primary bg-mk-tint2 p-3.5">
+                            <p className="mb-1 text-[11.5px] font-bold text-mk-muted">
+                              {langBase === "ar" ? "سعرك كمشترك" : "Your subscriber price"}
+                            </p>
+                            {(offer.subscriberPrice ?? 0) <= 0 ? (
+                              <p className="m-0 text-[20px] font-extrabold text-mk-green">
+                                {langBase === "ar" ? "مشمول بالاشتراك — مجاناً" : "Included — free"}
                               </p>
-                              {(offer.subscriberPrice ?? 0) <= 0 ? (
-                                <p className="text-lg font-bold text-green-600">
-                                  {langBase === "ar" ? "مشمول بالاشتراك" : "Included"}
-                                </p>
-                              ) : (
-                                <p className="text-lg font-bold text-primary flex items-center gap-1">
-                                  {offer.subscriberPrice} <CurrencyIcon className="inline" size={16} />
-                                </p>
-                              )}
-                            </div>
-                            {isSubscribed && (
-                              <span className="text-xs bg-primary text-white px-2 py-1 rounded-full">
-                                {langBase === "ar" ? "سعرك" : "Your price"}
-                              </span>
+                            ) : (
+                              <p className="m-0 flex items-center gap-1 text-[22px] font-extrabold text-mk-primary">
+                                {offer.subscriberPrice}
+                                <CurrencyIcon className="inline" size={17} />
+                              </p>
                             )}
                           </div>
-                        </div>
-
-                        {/* سعر غير المشتركين */}
-                        <div className={`p-3 rounded-lg border ${!isSubscribed ? 'border-orange-300 bg-orange-50' : 'border-gray-200 bg-gray-50'}`}>
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-xs text-gray-500 mb-0.5">
-                                {langBase === "ar" ? "بدون اشتراك" : "Without Subscription"}
-                              </p>
-                              <p className="text-lg font-bold text-gray-700 flex items-center gap-1">
-                                {offer.nonSubscriberPrice} <CurrencyIcon className="inline" size={16} />
-                              </p>
-                            </div>
-                            {!isSubscribed && (
-                              <span className="text-xs bg-orange-500 text-white px-2 py-1 rounded-full">
+                        ) : (
+                          <>
+                            <div className="rounded-mk-md border border-mk-border bg-mk-tint3 p-3.5">
+                              <p className="mb-1 text-[11.5px] font-bold text-mk-muted">
                                 {langBase === "ar" ? "سعرك الحالي" : "Your price"}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* بانر تشجيع الاشتراك */}
-                        {!isSubscribed && (
-                          <div className="p-3 bg-gradient-to-r from-primary/10 to-purple-100 border border-primary/20 rounded-lg">
-                            <div className="flex items-start gap-2">
-                              <span className="text-xl mt-0.5">💎</span>
-                              <div className="flex-1">
-                                <p className="text-sm font-bold text-primary mb-1">
-                                  {langBase === "ar"
-                                    ? `وفّر ${(offer.nonSubscriberPrice - (offer.subscriberPrice ?? 0)).toFixed(0)} ر.س على هذا العرض!`
-                                    : `Save ${(offer.nonSubscriberPrice - (offer.subscriberPrice ?? 0)).toFixed(0)} SAR on this offer!`}
-                                </p>
-                                <p className="text-xs text-gray-600 mb-2">
-                                  {langBase === "ar"
-                                    ? "اشترك الآن واحصل على أفضل الأسعار على جميع العروض"
-                                    : "Subscribe now and get the best prices on all offers"}
-                                </p>
-                                <Link
-                                  to={`/subscription/plans?from=${encodeURIComponent(location.pathname)}`}
-                                  className="inline-flex items-center gap-1 text-xs font-bold text-white bg-primary hover:bg-primary/90 px-3 py-1.5 rounded-lg transition-colors no-underline"
-                                >
-                                  {langBase === "ar" ? "اشترك الآن" : "Subscribe Now"} →
-                                </Link>
-                              </div>
+                              </p>
+                              <p className="m-0 flex items-center gap-1 text-[22px] font-extrabold text-mk-text">
+                                {offer.nonSubscriberPrice}
+                                <CurrencyIcon className="inline" size={17} />
+                              </p>
                             </div>
-                          </div>
+
+                            <Link
+                              to={`/subscription/plans?from=${encodeURIComponent(location.pathname)}`}
+                              className={`flex items-center justify-between gap-3 rounded-mk-md bg-grad-brand p-3.5 text-white no-underline shadow-[0_14px_30px_-16px_rgba(64,1,152,0.9)] transition-transform hover:-translate-y-0.5 ${FOCUS}`}
+                            >
+                              <span className="min-w-0">
+                                <span className="flex items-center gap-1.5 text-[14px] font-extrabold">
+                                  <LuCrown size={16} aria-hidden />
+                                  {(offer.subscriberPrice ?? 0) <= 0
+                                    ? langBase === "ar"
+                                      ? "اشترك الآن واحصل عليه مجاناً"
+                                      : "Subscribe now and get it free"
+                                    : langBase === "ar"
+                                      ? `اشترك الآن ووفّر ${(offer.nonSubscriberPrice - (offer.subscriberPrice ?? 0)).toFixed(0)} ر.س`
+                                      : `Subscribe now and save ${(offer.nonSubscriberPrice - (offer.subscriberPrice ?? 0)).toFixed(0)} SAR`}
+                                </span>
+                                <span className="mt-0.5 block text-[11.5px] text-white/85">
+                                  {(offer.subscriberPrice ?? 0) <= 0
+                                    ? langBase === "ar"
+                                      ? "هذا العرض مشمول بالاشتراك بالكامل"
+                                      : "This offer is fully included in the subscription"
+                                    : langBase === "ar"
+                                      ? `سعر المشتركين ${offer.subscriberPrice} ر.س بدل ${offer.nonSubscriberPrice} ر.س`
+                                      : `Subscribers pay ${offer.subscriberPrice} instead of ${offer.nonSubscriberPrice} SAR`}
+                                </span>
+                              </span>
+                              <span
+                                aria-hidden
+                                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/20 text-[17px] leading-none rtl:-scale-x-100"
+                              >
+                                &#8594;
+                              </span>
+                            </Link>
+                          </>
                         )}
                       </div>
                     ) : (
-                      <div className="mt-2 p-3 bg-primary/5 border border-primary/20 rounded-lg">
-                        <p className="text-sm text-gray-700 mb-1">
+                      <div className="mt-2 p-3 bg-primary/5 border border-primary/20 rounded-mk-sm">
+                        <p className="text-sm text-mk-text-strong mb-1">
                           {!isFree && unitPrice > 0
                             ? t("offerDetail.cta_price")
                             : t("offerDetail.cta_free")}
@@ -1103,12 +1166,12 @@ const OfferDetailPage = () => {
                       </div>
                     )}
                     {usedQuotaBefore && (
-                      <p className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-sm">
+                      <p className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-mk-sm text-amber-800 text-sm">
                         {t("offerDetail.already_used")}
                       </p>
                     )}
                     {offerEndedNoStock && (
-                      <p className="mt-3 p-3 bg-gray-100 border border-gray-200 rounded-lg text-gray-700 text-sm">
+                      <p className="mt-3 p-3 bg-mk-tint2 border border-mk-border rounded-mk-sm text-mk-text-strong text-sm">
                         {t("offerDetail.offer_ended")}
                       </p>
                     )}
@@ -1119,11 +1182,11 @@ const OfferDetailPage = () => {
                             maxQty={maxQty}
                             onQuantityChange={handleQuantityChange}
                           />
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="text-xs text-mk-muted mt-1">
                             {t("offerDetail.max_purchase", { max: maxQty })}
                           </p>
                         </div>
-                        <p className="text-sm font-medium text-gray-700 mt-2">
+                        <p className="text-sm font-medium text-mk-text-strong mt-2">
                           {t("offerDetail.total")}: {totalPrice}{" "}
                           <CurrencyIcon className="inline" size={14} />
                         </p>
@@ -1136,7 +1199,7 @@ const OfferDetailPage = () => {
                     <button
                       onClick={handlePurchase}
                       disabled={createOrder.isPending}
-                      className="w-full py-3 px-6 bg-primary text-white rounded-xl font-medium hover:opacity-90 transition-opacity disabled:opacity-70 disabled:cursor-not-allowed"
+                      className="w-full py-3 px-6 bg-primary text-white rounded-mk-md font-medium hover:opacity-90 transition-opacity disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                       {createOrder.isPending
                         ? t("offerDetail.creating_order")
@@ -1146,18 +1209,33 @@ const OfferDetailPage = () => {
                     </button>
                   </div>
                 )}
-                {/* <div className="text-sm text-gray-600 bg-gray-50 rounded-xl p-3">
+                {/* <div className="text-sm text-mk-muted bg-mk-tint3 rounded-mk-md p-3">
                   {isRTL ? "قسائم الهاتف المحمول" : "Mobile vouchers"}
                 </div> */}
+                {/* طرق الدفع — نفس شعارات صفحة الدفع بدل أسماء نصّية */}
                 <div>
-                  <p className="text-sm text-gray-600 mb-2">
+                  <p className="mb-2 text-[12.5px] font-bold text-mk-muted">
                     {t("offerDetail.payment_methods")}
                   </p>
-                  <div className="flex items-center gap-2 text-gray-500">
-                    <span className="text-xs font-medium">VISA</span>
-                    <span className="text-xs font-medium">MasterCard</span>
-                    <span className="text-xs font-medium">Mada</span>
-                    <span className="text-xs font-medium">Apple Pay</span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {[
+                      { src: Mada, alt: "mada" },
+                      { src: Visa, alt: "Visa" },
+                      { src: Master, alt: "Mastercard" },
+                      { src: ApplePay, alt: "Apple Pay" },
+                    ].map((brand) => (
+                      <span
+                        key={brand.alt}
+                        className="flex h-9 w-[54px] items-center justify-center rounded-mk-sm border border-mk-border bg-white px-1.5 shadow-[0_2px_8px_-4px_rgba(46,16,101,0.35)]"
+                      >
+                        <img
+                          src={brand.src}
+                          alt={brand.alt}
+                          loading="lazy"
+                          className="max-h-6 w-auto max-w-full object-contain"
+                        />
+                      </span>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -1167,7 +1245,7 @@ const OfferDetailPage = () => {
           {/* العروض المتعلقة */}
           {apiDetailExtras.relatedOffers.length > 0 && (
             <section className="mt-12">
-              <h2 className="text-xl font-bold text-gray-800 mb-6">
+              <h2 className="text-xl font-bold text-mk-text mb-6">
                 {t("offerDetail.related_offers")}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

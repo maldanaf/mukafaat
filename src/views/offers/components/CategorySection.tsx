@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import OwlCarousel from "@components/DynamicOwlCarousel";
 import {
   CarIcon,
   CoffeeIcon,
@@ -13,6 +12,8 @@ import {
   ShopIcon,
 } from "@assets";
 import CategoryCard from "@components/CategoryCard";
+import { PinnedChipsBar, pick } from "@ui";
+import usePinnedUnderHeader from "@hooks/usePinnedUnderHeader";
 import { useIsRTL } from "@hooks";
 import { useWebHome } from "@hooks/api/useMokafaatQueries";
 
@@ -20,6 +21,9 @@ const CategorySection: React.FC = () => {
   const { t } = useTranslation();
   const isRTL = useIsRTL();
   const { data: webHomeResponse, isLoading, error } = useWebHome();
+  /** صف التصنيفات يتحوّل لشريط شرائح مثبّت تحت الهيدر عند تجاوزه */
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const pinned = usePinnedUnderHeader(sectionRef);
 
   // Debug: طباعة الـ response للتأكد من الشكل
   React.useEffect(() => {
@@ -156,41 +160,7 @@ const CategorySection: React.FC = () => {
     [isRTL, fallbackCategories],
   );
 
-  const owlCarouselOptions = useMemo(
-    () => ({
-      loop: false,
-      margin: 12,
-      nav: true,
-      dots: false,
-      autoplay: false,
-      autoplayHoverPause: true,
-      rtl: isRTL ? "true" : "false",
-      responsive: {
-        0: { items: 2 },
-        640: { items: 3 },
-        1024: { items: 7 },
-      },
-    }),
-    [isRTL, categories.length],
-  );
 
-  const loadingCarouselOptions = useMemo(
-    () => ({
-      loop: false,
-      margin: 12,
-      nav: true,
-      dots: false,
-      autoplay: false,
-      autoplayHoverPause: true,
-      rtl: isRTL ? "true" : "false",
-      responsive: {
-        0: { items: 2 },
-        640: { items: 3 },
-        1024: { items: 7 },
-      },
-    }),
-    [isRTL],
-  );
 
   const shouldUseStaticOnLarge = categories.length < 7;
   const staticItems = useMemo(
@@ -209,7 +179,7 @@ const CategorySection: React.FC = () => {
         <div
           className="w-full max-w-site px-4 z-10 mx-auto"
           style={{
-            marginTop: "-80px",
+            marginTop: "-40px",
           }}
         >
           {/* Large screens: إذا أقل من 7 عناصر، اعرضهم ثابتين وموسطين (بدون سلايدر) */}
@@ -229,22 +199,14 @@ const CategorySection: React.FC = () => {
             ))}
           </div>
 
-          {/* Small/medium screens: استخدم السلايدر كما هو */}
+          {/* Small/medium screens: صف تمرير أفقي بنفس أبعاد النسخة النهائية */}
           <div
-            className="lg:hidden relative OffersCarousel PropertiesCarousel CategoryCarousel"
-            style={{
-              direction: isRTL ? "rtl" : "ltr",
-            }}
+            className="-mx-1 overflow-x-auto px-1 pb-2 lg:hidden [&::-webkit-scrollbar]:hidden"
+            style={{ scrollbarWidth: "none", direction: isRTL ? "rtl" : "ltr" }}
           >
-            <OwlCarousel
-              className="owl-theme"
-              {...loadingCarouselOptions}
-              style={{
-                direction: isRTL ? "rtl" : "ltr",
-              }}
-            >
+            <div className="flex w-max gap-3">
               {fallbackForDisplay.map((category) => (
-                <div key={category.id} className="item">
+                <div key={category.id} className="w-[120px] flex-shrink-0">
                   <CategoryCard
                     icon={category.icon}
                     title={category.title}
@@ -253,7 +215,7 @@ const CategorySection: React.FC = () => {
                   />
                 </div>
               ))}
-            </OwlCarousel>
+            </div>
           </div>
         </div>
       </section>
@@ -261,20 +223,20 @@ const CategorySection: React.FC = () => {
   }
 
   return (
-    <section className="relative container mx-auto px-4 py-8 z-10">
+    <section ref={sectionRef} className="relative container mx-auto px-4 py-8 z-10">
       <div
         className="w-full max-w-site px-4 z-10 mx-auto"
         style={{
-          marginTop: "-80px",
+          marginTop: "-40px",
         }}
       >
         {error && (
-          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-mk-sm text-red-700">
             خطأ في تحميل التصنيفات. يتم عرض البيانات الافتراضية.
           </div>
         )}
         <div
-          className="relative OffersCarousel PropertiesCarousel CategoryCarousel"
+          className="relative"
           style={{
             direction: isRTL ? "rtl" : "ltr",
           }}
@@ -298,40 +260,20 @@ const CategorySection: React.FC = () => {
             </div>
           )}
 
-          {/* الديسكتوب فقط (7+ تصنيفات): السلايدر كما هو دون تغيير */}
+          {/* شرائح التصنيفات — صف تمرير أفقي واحد لكل المقاسات.
+              (استُبدل سلايدر Owl بأسهمه لأن أسهمه كانت تطفو فوق نص الترويسة) */}
           <div
-            className={`${shouldUseStaticOnLarge ? "hidden" : "hidden lg:block"}`}
-            style={{ direction: isRTL ? "rtl" : "ltr" }}
-          >
-            <OwlCarousel
-              key={`categories-${categories.length}`}
-              className="owl-theme"
-              {...owlCarouselOptions}
-              style={{
-                direction: isRTL ? "rtl" : "ltr",
-              }}
-            >
-              {categoriesForDisplay.map((category) => (
-                <div key={category.id} className="item">
-                  <CategoryCard
-                    icon={category.icon}
-                    title={category.title}
-                    alt={category.alt}
-                    categoryKey={category.key}
-                  />
-                </div>
-              ))}
-            </OwlCarousel>
-          </div>
-
-          {/* الموبايل: صف تمرير أفقي منظّم وثابت (بدون دوران تلقائي ولا loop) */}
-          <div
-            className="lg:hidden overflow-x-auto pb-2 -mx-1 px-1 [&::-webkit-scrollbar]:hidden"
+            className={`-mx-1 overflow-x-auto px-1 pb-2 [&::-webkit-scrollbar]:hidden ${
+              shouldUseStaticOnLarge ? "lg:hidden" : ""
+            }`}
             style={{ scrollbarWidth: "none", direction: isRTL ? "rtl" : "ltr" }}
           >
-            <div className="flex gap-3 w-max">
+            <div className="flex w-max gap-3">
               {categories.map((category) => (
-                <div key={category.id} className="w-[120px] flex-shrink-0">
+                <div
+                  key={category.id}
+                  className="w-[120px] flex-shrink-0 lg:w-[160px] xl:w-[170px]"
+                >
                   <CategoryCard
                     icon={category.icon}
                     title={category.title}
@@ -344,6 +286,18 @@ const CategorySection: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <PinnedChipsBar
+        pinned={pinned}
+        title={t("home.categories_new.title", "التصنيفات")}
+        items={categories.map((category, i) => ({
+          id: category.id || category.key,
+          name: category.title,
+          image: category.icon,
+          color: pick(i).c,
+          href: `/offers/${category.key}`,
+        }))}
+      />
     </section>
   );
 };

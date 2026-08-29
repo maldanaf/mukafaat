@@ -1,10 +1,11 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "@/lib/router-compat";
 import CardsHero from "./components/CardsHero";
 import CardsSliderSection from "./components/CardsSliderSection";
+import CardOfferCard from "@views/cards/[companyId]/components/OfferCard";
 import { useIsRTL } from "@hooks";
 import { Helmet } from "@/lib/helmet-compat";
 import GetStartedSection from "@views/home/components/GetStartedSection";
@@ -13,11 +14,29 @@ import {
   mapApiHomeCardsToOffers,
   type CardOfferWithCompanyId,
 } from "@network/mappers/cardsMapper";
-import { LoadingSpinner } from "@components/LoadingSpinner";
+import {
+  CONTAINER,
+  SkeletonGrid,
+  EmptyState,
+  ErrorState,
+  Button,
+  FOCUS,
+} from "@ui";
+import {
+  Chip,
+  ChipBar,
+  ResultsCount,
+  SectionTitle,
+  SortSelect,
+  TOOLBAR_CARD,
+  TOOLBAR_FIELD,
+} from "@views/offers/components/CatalogKit";
 import { buildWebCardsParams } from "@utils/webFilters";
-import { FiFilter } from "react-icons/fi";
+import { FiFilter, FiSearch } from "react-icons/fi";
 import { IoMdClose } from "react-icons/io";
 import CategoryCard from "@components/CategoryCard";
+import { PinnedChipsBar, pick } from "@ui";
+import usePinnedUnderHeader from "@hooks/usePinnedUnderHeader";
 import MobileCards from "./mobile/MobileCards";
 
 interface ApiCategory {
@@ -41,6 +60,8 @@ const CardsPage = () => {
   const [search, setSearch] = useState<string>("");
   const [selectedCountryId, setSelectedCountryId] = useState<number | "all">("all");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [sortBy, setSortBy] = useState<string>("newest");
   const createDefaultCardsFilters = useCallback(
     () => ({ validityTypes: [] as string[] }),
     [],
@@ -70,15 +91,19 @@ const CardsPage = () => {
       priceMin: appliedCardsFilters.priceMin,
       priceMax: appliedCardsFilters.priceMax,
       search: search || undefined,
-      perPage: 30,
-      page: 1,
+      sortBy: sortBy !== "newest" ? sortBy : undefined,
+      perPage: 24,
+      page,
     }),
-    [selectedCountryId, appliedCardsFilters, search],
+    [selectedCountryId, appliedCardsFilters, search, sortBy, page],
   );
 
-  const { data: cardsRes, isLoading } = useWebCards(
-    buildWebCardsParams(baseParams),
-  );
+  const {
+    data: cardsRes,
+    isLoading,
+    isError,
+    refetch,
+  } = useWebCards(buildWebCardsParams(baseParams));
 
   const extractCardsPayload = useCallback((res: unknown) => {
     const root = (res as Record<string, unknown>) ?? {};
@@ -110,6 +135,17 @@ const CardsPage = () => {
     [categories],
   );
 
+  /** رابط صفحة التصنيف — نفس ما يستخدمه صف المربّعات */
+  const categoryHref = useCallback(
+    (id: number | string) =>
+      `/cards/${categories.find((c) => c.id === id)?.slug ?? String(id)}`,
+    [categories],
+  );
+
+  /** صف التصنيفات يتحوّل لشريط شرائح مثبّت تحت الهيدر عند تجاوزه */
+  const categoriesRef = useRef<HTMLElement | null>(null);
+  const categoriesPinned = usePinnedUnderHeader(categoriesRef);
+
   const latestCards = useMemo((): CardOfferWithCompanyId[] => {
     const arr = (payload?.latest_cards ?? payload?.cards) as
       | Array<Record<string, unknown>>
@@ -136,9 +172,59 @@ const CardsPage = () => {
     return mapApiHomeCardsToOffers(Array.isArray(arr) ? arr : []);
   }, [payload]);
 
+  const pagination = useMemo(() => {
+    const pg = (payload?.pagination as Record<string, unknown> | undefined) ?? {};
+    return {
+      currentPage: Number(pg.current_page ?? 0) || 0,
+      lastPage: Number(pg.last_page ?? 1) || 1,
+      total: Number(pg.total ?? 0) || 0,
+    };
+  }, [payload]);
+
+  /**
+   * تراكم نتائج البحث/الفلترة عبر الصفحات — يُصفَّر عند تغيّر أي فلتر
+   * فقط، لا عند «عرض المزيد»، تماماً كصفحة العروض.
+   */
+  const [accumulatedCards, setAccumulatedCards] = useState<CardOfferWithCompanyId[]>([]);
+  const filterSignature = useMemo(
+    () =>
+      JSON.stringify({ search, selectedCountryId, appliedCardsFilters, sortBy }),
+    [search, selectedCountryId, appliedCardsFilters, sortBy],
+  );
+  const prevSigRef = useRef<string>("");
+  const lastPageRef = useRef<number>(0);
+
+  useEffect(() => {
+    if (prevSigRef.current !== filterSignature) {
+      prevSigRef.current = filterSignature;
+      lastPageRef.current = 0;
+      setAccumulatedCards([]);
+      setPage(1);
+    }
+  }, [filterSignature]);
+
+  useEffect(() => {
+    if (!cardsRes) return;
+    const responsePage = pagination.currentPage;
+    if (responsePage <= lastPageRef.current) return;
+    lastPageRef.current = responsePage;
+    setAccumulatedCards((prev) =>
+      responsePage === 1 ? filteredCards : [...prev, ...filteredCards],
+    );
+  }, [cardsRes, filteredCards, pagination.currentPage]);
+
+  const hasMore = page < pagination.lastPage;
+  const isLoadingMore = page > lastPageRef.current;
+
+  const validityLabel = useCallback(
+    (key: string) => t(`cardsPage.validity.${key}`, key),
+    [t],
+  );
+
   const hasFilters =
     !!search ||
     selectedCountryId !== "all" ||
+    sortBy !== "newest" ||
     appliedCardsFilters.validityTypes.length > 0 ||
     appliedCardsFilters.isRenewable ||
     appliedCardsFilters.priceMin != null ||
@@ -156,8 +242,11 @@ const CardsPage = () => {
 
         <div className="hidden lg:block">
           <CardsHero />
-          <div className="min-h-[40vh] flex items-center justify-center">
-            <LoadingSpinner />
+          <div className={`${CONTAINER} py-10`}>
+            <SkeletonGrid
+              count={8}
+              className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+            />
           </div>
         </div>
       </>
@@ -180,10 +269,10 @@ const CardsPage = () => {
 
       {/* Main Categories — single-row horizontal scroll */}
       {categoryItems.length > 0 && (
-        <section className="relative container mx-auto px-4 py-8 z-10">
+        <section ref={categoriesRef} className="relative container mx-auto px-4 py-8 z-10">
           <div
             className="w-full max-w-site mx-auto"
-            style={{ marginTop: "-80px" }}
+            style={{ marginTop: "-40px" }}
           >
             <div
               className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide"
@@ -196,13 +285,10 @@ const CardsPage = () => {
               }}
             >
               {categoryItems.map((cat) => {
-                const slug =
-                  categories.find((c) => c.id === cat.id)?.slug ??
-                  String(cat.id);
                 return (
                   <Link
                     key={cat.id}
-                    to={`/cards/${slug}`}
+                    to={categoryHref(cat.id)}
                     className="flex-shrink-0 w-[150px] md:w-[160px] xl:w-[170px]"
                     style={{ scrollSnapAlign: "start" }}
                   >
@@ -219,77 +305,110 @@ const CardsPage = () => {
         </section>
       )}
 
-      {/* Search + Filter trigger */}
+      <PinnedChipsBar
+        pinned={categoriesPinned}
+        title={t("cardsPage.categories", "التصنيفات")}
+        items={categoryItems.map((cat, i) => ({
+          id: cat.id,
+          name: cat.name,
+          image: cat.image,
+          color: pick(i).c,
+          href: categoryHref(cat.id),
+        }))}
+      />
+
+      {/* شريط الأدوات — بحث + ترتيب + فلاتر + عدّاد */}
       <section className="container mx-auto px-4 pb-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="w-full md:w-80">
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder={t("cardsPage.searchPlaceholder")}
-              className="w-full px-5 py-3 rounded-full font-medium text-sm shadow-md transition-all duration-300 bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#400198] focus:border-transparent"
+        <div className={`${TOOLBAR_CARD} flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between`}>
+          <ResultsCount
+            count={pagination.total}
+            label={t("cardsPage.cards_suffix", "بطاقة")}
+          />
+
+          <div className="flex flex-wrap items-center gap-2.5">
+            <label className="relative flex min-w-[200px] flex-1 items-center lg:max-w-[300px]">
+              <FiSearch aria-hidden className="pointer-events-none absolute start-3.5 text-mk-faint" />
+              <input
+                type="search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                aria-label={t("cardsPage.searchPlaceholder")}
+                placeholder={t("cardsPage.searchPlaceholder")}
+                className={`${TOOLBAR_FIELD} w-full ps-10 pe-4`}
+              />
+            </label>
+
+            {/* الترتيب — من خيارات sort_by المدعومة في /api/web/cards */}
+            <SortSelect
+              value={sortBy}
+              onChange={setSortBy}
+              label={t("cardsPage.sortLabel", "الترتيب")}
+              options={[
+                "newest",
+                "best_selling",
+                "highest_discount",
+                "price_low_high",
+                "price_high_low",
+                "most_viewed",
+              ].map((key) => ({
+                value: key,
+                label: t(`cardsPage.sort.${key}`, key),
+              }))}
             />
+
+            <Button
+              variant="outline"
+              size="md"
+              icon={<FiFilter />}
+              onClick={() => {
+                setDraftCardsFilters(appliedCardsFilters);
+                setIsFilterOpen(true);
+              }}
+            >
+              {t("cardsPage.filter")}
+            </Button>
           </div>
-          <button
-            type="button"
-            onClick={() => {
-              setDraftCardsFilters(appliedCardsFilters);
-              setIsFilterOpen(true);
-            }}
-            className="px-5 py-3 rounded-full font-medium text-sm shadow-md transition-all duration-300 bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 inline-flex items-center gap-2"
-          >
-            <FiFilter size={18} />
-            {t("cardsPage.filter")}
-          </button>
         </div>
 
-        {/* Country chips */}
+        {/* شرائح الدول — قابلة للتمرير أفقياً */}
         {countries.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2">
-            <button
-              type="button"
+          <ChipBar className="mt-4" label={t("cardsPage.allCountries", "كل الدول")}>
+            <Chip
+              active={selectedCountryId === "all"}
               onClick={() => setSelectedCountryId("all")}
-              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
-                selectedCountryId === "all"
-                  ? "bg-[#400198] text-white border-[#400198]"
-                  : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
-              }`}
             >
               {t("cardsPage.allCountries", "كل الدول")}
-            </button>
+            </Chip>
             {countries.map((c) => {
-              const selected = selectedCountryId === c.id;
               const isEmoji = c.flag && c.flag.length <= 4;
               return (
-                <button
+                <Chip
                   key={c.id}
-                  type="button"
+                  active={selectedCountryId === c.id}
                   onClick={() => setSelectedCountryId(c.id)}
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
-                    selected
-                      ? "bg-[#400198] text-white border-[#400198]"
-                      : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
-                  }`}
+                  icon={
+                    isEmoji ? (
+                      <span aria-hidden className="text-lg leading-none">
+                        {c.flag}
+                      </span>
+                    ) : c.flag_url ? (
+                      <img
+                        src={c.flag_url}
+                        alt=""
+                        className="h-4 w-5 rounded-sm object-cover"
+                      />
+                    ) : undefined
+                  }
                 >
-                  {isEmoji ? (
-                    <span className="text-lg leading-none">{c.flag}</span>
-                  ) : c.flag_url ? (
-                    <img
-                      src={c.flag_url}
-                      alt={c.name}
-                      className="w-5 h-4 object-cover rounded-sm"
-                    />
-                  ) : null}
-                  <span>{c.name}</span>
-                </button>
+                  {c.name}
+                </Chip>
               );
             })}
-          </div>
+          </ChipBar>
         )}
 
         {hasFilters && (
-          <div className="text-sm text-gray-600 mt-4">
+          <div className="mt-4">
             <button
               type="button"
               onClick={() => {
@@ -298,9 +417,11 @@ const CardsPage = () => {
                 setDraftCardsFilters(reset);
                 setSearch("");
                 setSelectedCountryId("all");
+                setSortBy("newest");
               }}
-              className="inline-flex items-center gap-1 px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium hover:bg-red-200 transition-colors"
+              className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-full bg-[#FDE9EB] px-4 text-[12.5px] font-bold text-mk-red transition-colors hover:brightness-95 ${FOCUS}`}
             >
+              <IoMdClose size={15} aria-hidden />
               {t("cardsPage.clearAll")}
             </button>
           </div>
@@ -325,14 +446,14 @@ const CardsPage = () => {
               : "-left-full -translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between py-4 px-6 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-800">
+        <div className="flex items-center justify-between py-4 px-6 border-b border-mk-border">
+          <h2 className="text-lg font-semibold text-mk-text">
             {t("cardsPage.filterSidebarTitle")}
           </h2>
           <button
             type="button"
             onClick={() => setIsFilterOpen(false)}
-            className="text-gray-400 hover:text-gray-600 transition-colors duration-200 bg-gray-100 rounded-full p-2"
+            className="text-mk-faint hover:text-mk-muted transition-colors duration-200 bg-mk-tint2 rounded-full p-2"
           >
             <IoMdClose size={20} />
           </button>
@@ -342,7 +463,7 @@ const CardsPage = () => {
           <div className="space-y-6">
             {/* Validity types */}
             <div>
-              <p className="text-sm font-semibold text-gray-800 mb-3">
+              <p className="text-sm font-semibold text-mk-text mb-3">
                 {t("cardsPage.validityType")}
               </p>
               <div className="flex flex-wrap gap-2">
@@ -370,21 +491,21 @@ const CardsPage = () => {
                             : [...p.validityTypes, v],
                         }))
                       }
-                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors border ${
+                      className={`px-3 py-2 rounded-mk-sm text-sm font-medium transition-colors border ${
                         selected
-                          ? "bg-purple-100 text-purple-700 border-purple-200"
-                          : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                          ? "bg-mk-tint text-mk-primary border-mk-border-strong"
+                          : "bg-white text-mk-text-strong border-mk-border hover:bg-mk-tint3"
                       }`}
                     >
-                      {v}
+                      {validityLabel(v)}
                     </button>
                   );
                 })}
               </div>
             </div>
 
-            <div className="border-t border-gray-200 pt-5">
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-800">
+            <div className="border-t border-mk-border pt-5">
+              <label className="flex items-center gap-2 text-sm font-medium text-mk-text">
                 <input
                   type="checkbox"
                   checked={Boolean(draftCardsFilters.isRenewable)}
@@ -399,8 +520,8 @@ const CardsPage = () => {
               </label>
             </div>
 
-            <div className="border-t border-gray-200 pt-5">
-              <p className="text-sm font-semibold text-gray-800 mb-3">
+            <div className="border-t border-mk-border pt-5">
+              <p className="text-sm font-semibold text-mk-text mb-3">
                 {t("cardsPage.priceRange")}
               </p>
               <div className="grid grid-cols-2 gap-3">
@@ -417,7 +538,7 @@ const CardsPage = () => {
                           : Number(e.target.value),
                     }))
                   }
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#400198]/30"
+                  className="w-full px-4 py-3 rounded-mk-md border border-mk-border focus:outline-none focus:ring-2 focus:ring-[#400198]/30"
                   placeholder={t("cardsPage.min")}
                 />
                 <input
@@ -433,7 +554,7 @@ const CardsPage = () => {
                           : Number(e.target.value),
                     }))
                   }
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#400198]/30"
+                  className="w-full px-4 py-3 rounded-mk-md border border-mk-border focus:outline-none focus:ring-2 focus:ring-[#400198]/30"
                   placeholder={t("cardsPage.max")}
                 />
               </div>
@@ -441,7 +562,7 @@ const CardsPage = () => {
           </div>
         </div>
 
-        <div className="border-t border-gray-200 p-6">
+        <div className="border-t border-mk-border p-6">
           <div className="flex gap-3">
             <button
               type="button"
@@ -451,8 +572,9 @@ const CardsPage = () => {
                 setAppliedCardsFilters(reset);
                 setSearch("");
                 setSelectedCountryId("all");
+                setSortBy("newest");
               }}
-              className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+              className="min-h-[44px] flex-1 rounded-mk-md bg-mk-tint2 px-4 font-bold text-mk-text-strong transition-colors hover:bg-mk-border-strong/60"
             >
               {t("cardsPage.reset")}
             </button>
@@ -462,7 +584,7 @@ const CardsPage = () => {
                 setAppliedCardsFilters(draftCardsFilters);
                 setIsFilterOpen(false);
               }}
-              className="flex-1 px-4 py-2 bg-[#fd671a] text-white rounded-lg font-medium hover:bg-[#e55a17] transition-colors"
+              className="min-h-[44px] flex-1 rounded-mk-md bg-[linear-gradient(135deg,#FD671A,#E2560D)] px-4 font-bold text-white shadow-[0_10px_24px_-10px_rgba(226,86,13,0.9)] transition-transform hover:-translate-y-0.5"
             >
               {t("cardsPage.apply")}
             </button>
@@ -470,14 +592,70 @@ const CardsPage = () => {
         </div>
       </div>
 
-      {hasFilters ? (
-        <CardsSliderSection
-          title={t("cardsPage.sections.resultsTitle", "نتائج البحث")}
-          subtitle=""
-          cards={filteredCards}
-          isLoading={isLoading}
-          categories={categoryItems}
-        />
+      {isError ? (
+        <div className={`${CONTAINER} py-10`}>
+          <ErrorState onRetry={() => refetch()} />
+        </div>
+      ) : hasFilters ? (
+        /* نتائج البحث/الفلترة — شبكة بعدّاد وحالة فراغ وزر «عرض المزيد» */
+        <section className={`${CONTAINER} py-10`}>
+          <SectionTitle
+            title={t("cardsPage.sections.resultsTitle", "نتائج البحث")}
+            subtitle={
+              pagination.total > 0
+                ? t("cardsPage.resultsCount", { count: pagination.total })
+                : undefined
+            }
+          />
+
+          {isLoading && accumulatedCards.length === 0 ? (
+            <SkeletonGrid
+              count={8}
+              className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+            />
+          ) : accumulatedCards.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                {accumulatedCards.map((card) => (
+                  <CardOfferCard
+                    key={card.id}
+                    offer={card}
+                    companyId={card.companyId}
+                    categories={categoryItems}
+                  />
+                ))}
+              </div>
+              {hasMore && (
+                <div className="mt-10 flex justify-center">
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    loading={isLoadingMore}
+                    onClick={() => setPage((p) => p + 1)}
+                  >
+                    {isLoadingMore
+                      ? t("ui.loading", "جارٍ التحميل…")
+                      : t("ui.showMore", "عرض المزيد")}
+                  </Button>
+                </div>
+              )}
+            </>
+          ) : (
+            <EmptyState
+              title={t("cardsPage.noResults", "لا توجد بطاقات مطابقة")}
+              description=""
+              actionLabel={t("cardsPage.clearAll")}
+              onAction={() => {
+                const reset = createDefaultCardsFilters();
+                setAppliedCardsFilters(reset);
+                setDraftCardsFilters(reset);
+                setSearch("");
+                setSelectedCountryId("all");
+                setSortBy("newest");
+              }}
+            />
+          )}
+        </section>
       ) : (
         <>
           <CardsSliderSection

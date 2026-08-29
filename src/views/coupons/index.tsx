@@ -6,12 +6,23 @@ import { useLoadMoreOnScroll } from "@hooks/useLoadMoreOnScroll";
 import { useTranslation } from "react-i18next";
 import { Helmet } from "@/lib/helmet-compat";
 import { IoCalendarOutline, IoFlashOutline } from "react-icons/io5";
-import { BsHeart, BsHeartFill } from "react-icons/bs";
+import { HeartIcon } from "@ui";
 import { FaTag, FaPercent, FaUtensils } from "react-icons/fa";
-import { FiFilter, FiGrid, FiList } from "react-icons/fi";
-import OwlCarousel from "@components/DynamicOwlCarousel";
+import { FiFilter, FiGrid, FiList, FiSearch } from "react-icons/fi";
 import { copon1, copon2, copon3, copon4, cutCopon } from "@assets";
 import CouponsHero from "./components/CouponsHero";
+import { CONTAINER, Button, EmptyState, SkeletonGrid, StatChips, FOCUS } from "@ui";
+import {
+  VIVID_CARD,
+  DiscountBadge,
+  Ribbon,
+  CornerButton,
+  Chip,
+  ChipBar,
+  ResultsCount,
+  TOOLBAR_CARD,
+  TOOLBAR_FIELD,
+} from "@views/offers/components/CatalogKit";
 import GetStartedSection from "@views/home/components/GetStartedSection";
 import CouponModal, {
   type CouponWithIcon,
@@ -23,12 +34,15 @@ import {
 } from "@hooks/api/useMokafaatQueries";
 import { mapApiCouponsToModels } from "@network/mappers/couponsMapper";
 import { stripHtml } from "@utils/stripHtml";
+import { usedCountText } from "@utils/usedCount";
 import { useIsRTL } from "@hooks";
 import { useUserStore } from "@stores/userStore";
 import { useFavorites, useFavoriteToggle } from "@hooks/api/useMokafaatQueries";
 import { normalizeFavoritesList } from "@utils/favorites";
 import { toast } from "react-toastify";
 import CategoryCard from "@components/CategoryCard";
+import { PinnedChipsBar, pick } from "@ui";
+import usePinnedUnderHeader from "@hooks/usePinnedUnderHeader";
 import { buildWebCouponsParams } from "@utils/webFilters";
 import { IoMdClose } from "react-icons/io";
 import MobileCoupons from "./mobile/MobileCoupons";
@@ -100,11 +114,13 @@ const CouponsPage = () => {
     "latest",
   );
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  /** صف التصنيفات يتحوّل لشريط شرائح مثبّت تحت الهيدر عند تجاوزه */
+  const categoriesRef = useRef<HTMLElement | null>(null);
+  const categoriesPinned = usePinnedUnderHeader(categoriesRef);
   const [selectedCoupon, setSelectedCoupon] = useState<CouponWithIcon | null>(
     null,
   );
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
-  const [categoriesCarouselKey, setCategoriesCarouselKey] = useState(0);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const defaultCouponFilters = useMemo(
     () => ({
@@ -173,29 +189,6 @@ const CouponsPage = () => {
     // Match CardsCategorySection behavior: reverse items for RTL
     return isRTL ? [...normalized].reverse() : normalized;
   }, [categoriesList, isRTL]);
-
-  useEffect(() => {
-    setCategoriesCarouselKey((prev) => prev + 1);
-  }, [isRTL]);
-
-  const categoriesOwlCarouselOptions = useMemo(
-    () => ({
-      loop: categoriesCarouselItems.length > 4,
-      margin: 0,
-      nav: true,
-      dots: false,
-      autoplay: true,
-      autoplayTimeout: 4000,
-      autoplayHoverPause: true,
-      rtl: isRTL && categoriesCarouselItems.length < 4 ? "true" : "false",
-      responsive: {
-        0: { items: 2 },
-        640: { items: 3 },
-        1024: { items: 7 },
-      },
-    }),
-    [isRTL, categoriesCarouselItems.length],
-  );
 
   const listParams = useMemo(
     () =>
@@ -297,8 +290,11 @@ const CouponsPage = () => {
       return merchantLogo ? String(merchantLogo) : "";
     };
 
+    // عدّاد الاستخدام = عدد مرات نسخ الكود (copies_count) — هو ما يزيده
+    // POST /web/coupons/{id}/copy، وusage_count يبقى بديلاً للمخرجات القديمة.
     const pickUses = (raw: Record<string, unknown> | undefined): number => {
-      const v = raw?.usage_count ?? raw?.uses ?? raw?.used_count ?? 0;
+      const v =
+        raw?.copies_count ?? raw?.usage_count ?? raw?.uses ?? raw?.used_count ?? 0;
       const n = typeof v === "number" ? v : parseInt(String(v ?? "0"), 10);
       return Number.isFinite(n) ? n : 0;
     };
@@ -335,11 +331,15 @@ const CouponsPage = () => {
       const logoUrl = pickLogo(raw);
       const uses = pickUses(raw);
       const expiry = pickExpiry(raw, "");
+      // شارة الخصم: display_value يغطّي النسبة والمبلغ الثابت معاً
+      const displayValue =
+        typeof raw.display_value === "string" ? raw.display_value.trim() : "";
       const discountPct =
         raw.discount_percentage != null
           ? Number(raw.discount_percentage)
           : null;
-      const discount = discountPct != null ? `${discountPct}%` : "";
+      const discount =
+        displayValue || (discountPct != null ? `${discountPct}%` : "");
       const offer = (raw.name as string) ?? (raw.description as string) ?? "";
 
       return {
@@ -501,8 +501,8 @@ const CouponsPage = () => {
       <CouponsHero />
 
       {isLoadingCoupons ? (
-        <div className="container mx-auto md:p-10 p-6 flex justify-center min-h-[300px] items-center">
-          <LoadingSpinner />
+        <div className={`${CONTAINER} py-10`}>
+          <SkeletonGrid count={8} className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4" />
         </div>
       ) : (
         <>
@@ -524,14 +524,14 @@ const CouponsPage = () => {
                   : "-left-full -translate-x-full"
             }`}
           >
-            <div className="flex items-center justify-between py-4 px-6 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-800">
+            <div className="flex items-center justify-between py-4 px-6 border-b border-mk-border">
+              <h2 className="text-lg font-semibold text-mk-text">
                 {t("coupons.filter_sidebar_title")}
               </h2>
               <button
                 type="button"
                 onClick={() => setIsFilterOpen(false)}
-                className="text-gray-400 hover:text-gray-600 transition-colors duration-200 bg-gray-100 rounded-full p-2"
+                className="text-mk-faint hover:text-mk-muted transition-colors duration-200 bg-mk-tint2 rounded-full p-2"
               >
                 <IoMdClose size={20} />
               </button>
@@ -541,7 +541,7 @@ const CouponsPage = () => {
               <div className="space-y-6">
                 {/* Sort */}
                 <div>
-                  <p className="text-sm font-semibold text-gray-800 mb-3">
+                  <p className="text-sm font-semibold text-mk-text mb-3">
                     {t("coupons.sort_by")}
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -567,10 +567,10 @@ const CouponsPage = () => {
                             sortBy: opt.key,
                           }))
                         }
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border ${
+                        className={`px-4 py-2 rounded-mk-sm text-sm font-medium transition-colors border ${
                           draftCouponFilters.sortBy === opt.key
-                            ? "bg-purple-100 text-purple-700 border-purple-200"
-                            : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                            ? "bg-mk-tint text-mk-primary border-mk-border-strong"
+                            : "bg-white text-mk-text-strong border-mk-border hover:bg-mk-tint3"
                         }`}
                       >
                         {opt.label}
@@ -580,8 +580,8 @@ const CouponsPage = () => {
                 </div>
 
                 {/* Coupon Types */}
-                <div className="border-t border-gray-200 pt-5">
-                  <p className="text-sm font-semibold text-gray-800 mb-3">
+                <div className="border-t border-mk-border pt-5">
+                  <p className="text-sm font-semibold text-mk-text mb-3">
                     {t("coupons.coupon_type")}
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -609,10 +609,10 @@ const CouponsPage = () => {
                                 : [...p.couponTypes, opt.key],
                             }))
                           }
-                          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border ${
+                          className={`px-4 py-2 rounded-mk-sm text-sm font-medium transition-colors border ${
                             selected
-                              ? "bg-purple-100 text-purple-700 border-purple-200"
-                              : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                              ? "bg-mk-tint text-mk-primary border-mk-border-strong"
+                              : "bg-white text-mk-text-strong border-mk-border hover:bg-mk-tint3"
                           }`}
                         >
                           {opt.label}
@@ -623,8 +623,8 @@ const CouponsPage = () => {
                 </div>
 
                 {/* Discount min */}
-                <div className="border-t border-gray-200 pt-5">
-                  <p className="text-sm font-semibold text-gray-800 mb-3">
+                <div className="border-t border-mk-border pt-5">
+                  <p className="text-sm font-semibold text-mk-text mb-3">
                     {t("coupons.min_discount_pct")}
                   </p>
                   <input
@@ -638,15 +638,15 @@ const CouponsPage = () => {
                         discountMin: v === "" ? undefined : Number(v),
                       }));
                     }}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#400198]/30"
+                    className="w-full px-4 py-3 rounded-mk-md border border-mk-border focus:outline-none focus:ring-2 focus:ring-[#400198]/30"
                     placeholder={t("coupons.min_discount_placeholder")}
                   />
                 </div>
 
                 {/* Merchants */}
                 {merchantsList.length > 0 && (
-                  <div className="border-t border-gray-200 pt-5">
-                    <p className="text-sm font-semibold text-gray-800 mb-3">
+                  <div className="border-t border-mk-border pt-5">
+                    <p className="text-sm font-semibold text-mk-text mb-3">
                       {t("coupons.merchants")}
                     </p>
                     <div className="grid grid-cols-2 gap-2">
@@ -668,10 +668,10 @@ const CouponsPage = () => {
                                   : [...p.merchantIds, id],
                               }))
                             }
-                            className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors border ${
+                            className={`px-3 py-2 rounded-mk-sm text-sm font-medium transition-colors border ${
                               selected
-                                ? "bg-purple-100 text-purple-700 border-purple-200"
-                                : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                                ? "bg-mk-tint text-mk-primary border-mk-border-strong"
+                                : "bg-white text-mk-text-strong border-mk-border hover:bg-mk-tint3"
                             }`}
                           >
                             {name}
@@ -684,7 +684,7 @@ const CouponsPage = () => {
               </div>
             </div>
 
-            <div className="border-t border-gray-200 p-6">
+            <div className="border-t border-mk-border p-6">
               <div className="flex gap-3">
                 <button
                   type="button"
@@ -694,7 +694,7 @@ const CouponsPage = () => {
                     setSelectedFilter("latest");
                     setCurrentPage(1);
                   }}
-                  className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+                  className="flex-1 px-4 py-2 bg-mk-tint2 text-mk-text-strong rounded-mk-sm font-medium hover:bg-mk-border-strong/60 transition-colors"
                 >
                   {t("cardsPage.reset")}
                 </button>
@@ -705,7 +705,7 @@ const CouponsPage = () => {
                     setCurrentPage(1);
                     setIsFilterOpen(false);
                   }}
-                  className="flex-1 px-4 py-2 bg-[#fd671a] text-white rounded-lg font-medium hover:bg-[#e55a17] transition-colors"
+                  className="flex-1 px-4 py-2 bg-[#fd671a] text-white rounded-mk-sm font-medium hover:bg-[#D9500B] transition-colors"
                 >
                   {t("cardsPage.apply")}
                 </button>
@@ -713,202 +713,158 @@ const CouponsPage = () => {
             </div>
           </div>
 
-          {/* Categories (>=7 => slider, <7 => centered grid) */}
+          {/* التصنيفات — صف أفقي واحد بنفس تخطيط الرئيسية وصفحة البطاقات.
+              كان كاروسيل Owl بحاوية مزدوجة وهامش علوي سالب، فكانت أسهمه
+              تطفو فوق الهيرو ويختلّ محاذاته مع شريط الأدوات والشبكة. */}
           {categoriesCarouselItems.length > 0 && (
-            <section className="relative container mx-auto px-4 py-8 z-10">
-              <div
-                className="w-full max-w-site px-4 z-10 mx-auto"
-                style={{ marginTop: "-80px" }}
-              >
-                {categoriesCarouselItems.length >= 7 ? (
-                  <div
-                    className="relative OffersCarousel PropertiesCarousel CategoryCarousel"
-                    style={{
-                      direction:
-                        isRTL && categoriesCarouselItems.length < 4
-                          ? "rtl"
-                          : "ltr",
+            <section ref={categoriesRef} className="mx-auto w-full max-w-site px-4 pb-4 pt-8 sm:px-6">
+              <div className="mk-scroll-x -mx-1 gap-3 px-1 py-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedCategoryId("");
+                    setCurrentPage(1);
+                  }}
+                  className="w-[124px] shrink-0 sm:w-[140px]"
+                >
+                  <CategoryCard
+                    icon="https://api.iconify.design/mdi:shape-outline.svg?color=%23400198"
+                    title={t("coupons.all_categories")}
+                    alt={t("coupons.all_categories")}
+                    selected={!selectedCategoryId}
+                  />
+                </button>
+
+                {categoriesCarouselItems.map((cat) => (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => {
+                      setSelectedCategoryId(cat.id);
+                      setCurrentPage(1);
                     }}
+                    className="w-[124px] shrink-0 sm:w-[140px]"
                   >
-                    <OwlCarousel
-                      key={`coupons-categories-${categoriesCarouselKey}-${categoriesCarouselItems.length}`}
-                      className="owl-theme"
-                      {...categoriesOwlCarouselOptions}
-                      style={{
-                        direction:
-                          isRTL && categoriesCarouselItems.length < 4
-                            ? "rtl"
-                            : "ltr",
-                      }}
-                    >
-                      {/* All categories */}
-                      <div key="all" className="item">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSelectedCategoryId("");
-                            setCurrentPage(1);
-                          }}
-                          className="w-full"
-                        >
-                          <CategoryCard
-                            icon="https://api.iconify.design/mdi:shape-outline.svg?color=%23400198"
-                            title={t("coupons.all_categories")}
-                            alt={t("coupons.all_categories")}
-                            selected={!selectedCategoryId}
-                          />
-                        </button>
-                      </div>
-
-                      {categoriesCarouselItems.map((cat) => (
-                        <div key={cat.id} className="item">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setSelectedCategoryId(cat.id);
-                              setCurrentPage(1);
-                            }}
-                            className="w-full"
-                          >
-                            <CategoryCard
-                              icon={
-                                cat.icon ||
-                                "https://api.iconify.design/mdi:shape-outline.svg?color=%23400198"
-                              }
-                              title={cat.name}
-                              alt={cat.name}
-                              selected={selectedCategoryId === cat.id}
-                            />
-                          </button>
-                        </div>
-                      ))}
-                    </OwlCarousel>
-                  </div>
-                ) : (
-                  <div
-                    className="flex flex-wrap justify-center gap-2"
-                    style={{ direction: isRTL ? "rtl" : "ltr" }}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedCategoryId("");
-                        setCurrentPage(1);
-                      }}
-                      className="rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-[#400198]/30 min-w-[120px]"
-                    >
-                      <CategoryCard
-                        icon="https://api.iconify.design/mdi:shape-outline.svg?color=%23400198"
-                        title={t("coupons.all_categories")}
-                        alt={t("coupons.all_categories")}
-                        selected={!selectedCategoryId}
-                      />
-                    </button>
-
-                    {categoriesCarouselItems.map((cat) => (
-                      <button
-                        key={cat.id}
-                        type="button"
-                        onClick={() => {
-                          setSelectedCategoryId(cat.id);
-                          setCurrentPage(1);
-                        }}
-                        className="rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-[#400198]/30 min-w-[120px]"
-                      >
-                        <CategoryCard
-                          icon={
-                            cat.icon ||
-                            "https://api.iconify.design/mdi:shape-outline.svg?color=%23400198"
-                          }
-                          title={cat.name}
-                          alt={cat.name}
-                          selected={selectedCategoryId === cat.id}
-                        />
-                      </button>
-                    ))}
-                  </div>
-                )}
+                    <CategoryCard
+                      icon={
+                        cat.icon ||
+                        "https://api.iconify.design/mdi:shape-outline.svg?color=%23400198"
+                      }
+                      title={cat.name}
+                      alt={cat.name}
+                      selected={selectedCategoryId === cat.id}
+                    />
+                  </button>
+                ))}
               </div>
             </section>
           )}
 
-          <section className="container mx-auto md:p-10 p-6 portfolio-mobile">
-            {/* Filters + Search + View Mode */}
-            <div className="flex items-center justify-between flex-wrap gap-4 mb-8">
-              <div className="flex items-center gap-3 style-portfolio-button-mobile-container">
-                <button
+          <PinnedChipsBar
+            pinned={categoriesPinned}
+            title={t("coupons.all_categories", "التصنيفات")}
+            items={[
+              {
+                id: "all",
+                name: t("coupons.all_categories"),
+                active: !selectedCategoryId,
+                onClick: () => {
+                  setSelectedCategoryId("");
+                  setCurrentPage(1);
+                },
+              },
+              ...categoriesCarouselItems.map((cat, i) => ({
+                id: cat.id,
+                name: cat.name,
+                image: cat.icon || null,
+                color: pick(i + 1).c,
+                active: selectedCategoryId === cat.id,
+                onClick: () => {
+                  setSelectedCategoryId(cat.id);
+                  setCurrentPage(1);
+                },
+              })),
+            ]}
+          />
+
+          <section className="mx-auto w-full max-w-site px-4 pb-10 pt-2 sm:px-6 portfolio-mobile">
+            {/* شريط الأدوات — ترتيب + بحث + فلاتر + نمط العرض */}
+            <div className={`${TOOLBAR_CARD} mb-6 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between`}>
+              <ChipBar label={t("ui.filters", "الفلاتر")} className="lg:flex-1">
+                <Chip
+                  active={selectedFilter === "latest"}
                   onClick={() => {
                     setSelectedFilter("latest");
                     setCurrentPage(1);
                   }}
-                  className={`px-5 py-3 rounded-full font-medium text-sm shadow-md transition-all duration-300 ${
-                    selectedFilter === "latest"
-                      ? "bg-[#400198] text-white shadow-lg"
-                      : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
-                  }`}
                 >
                   {t("coupons.latest")}
-                </button>
-                <button
+                </Chip>
+                <Chip
+                  active={selectedFilter === "top_used"}
                   onClick={() => {
                     setSelectedFilter("top_used");
                     setCurrentPage(1);
                   }}
-                  className={`px-5 py-3 rounded-full font-medium text-sm shadow-md transition-all duration-300 ${
-                    selectedFilter === "top_used"
-                      ? "bg-[#400198] text-white shadow-lg"
-                      : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
-                  }`}
                 >
                   {t("coupons.filters.most_visited")}
-                </button>
-              </div>
+                </Chip>
+              </ChipBar>
 
-              <div className="flex items-center gap-3">
-                {/* Filter button */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setDraftCouponFilters(appliedCouponFilters);
-                    setIsFilterOpen(true);
-                  }}
-                  className="px-5 py-3 rounded-full font-medium text-sm shadow-md transition-all duration-300 bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 inline-flex items-center gap-2"
-                >
-                  <FiFilter size={18} />
-                  {t("coupons.filter")}
-                </button>
-                {/* Search Input */}
-                <div className="w-full md:w-64">
+              <div className="flex flex-wrap items-center gap-2.5">
+                {/* البحث */}
+                <label className="relative flex min-w-[200px] flex-1 items-center lg:max-w-[280px]">
+                  <FiSearch aria-hidden className="pointer-events-none absolute start-3.5 text-mk-faint" />
                   <input
-                    type="text"
+                    type="search"
                     value={search}
                     onChange={(e) => {
                       setSearch(e.target.value);
                       setCurrentPage(1);
                     }}
+                    aria-label={t("coupons.search_placeholder")}
                     placeholder={t("coupons.search_placeholder")}
-                    className="w-full px-5 py-3 rounded-full font-medium text-sm shadow-md transition-all duration-300 bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#400198] focus:border-transparent"
+                    className={`${TOOLBAR_FIELD} w-full ps-10 pe-4`}
                   />
-                </div>
+                </label>
 
-                {/* View Mode Buttons */}
-                <div className="flex items-center bg-white border border-gray-200 rounded-full shadow-md p-1">
+                {/* الفلاتر */}
+                <Button
+                  variant="outline"
+                  size="md"
+                  icon={<FiFilter />}
+                  onClick={() => {
+                    setDraftCouponFilters(appliedCouponFilters);
+                    setIsFilterOpen(true);
+                  }}
+                >
+                  {t("coupons.filter")}
+                </Button>
+
+                {/* نمط العرض */}
+                <div className="flex items-center gap-1 rounded-mk-md border border-mk-border-2 bg-white p-1">
                   <button
+                    type="button"
                     onClick={() => setViewMode("grid")}
-                    className={`p-2 rounded-full transition-all duration-300 ${
+                    aria-label={t("ui.gridView", "عرض شبكي")}
+                    aria-pressed={viewMode === "grid"}
+                    className={`flex h-10 w-10 items-center justify-center rounded-mk-sm transition-colors ${FOCUS} ${
                       viewMode === "grid"
-                        ? "bg-[#400198] text-white shadow-sm"
-                        : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                        ? "bg-mk-primary text-white"
+                        : "text-mk-muted hover:bg-mk-tint2"
                     }`}
                   >
                     <FiGrid size={18} />
                   </button>
                   <button
+                    type="button"
                     onClick={() => setViewMode("list")}
-                    className={`p-2 rounded-full transition-all duration-300 ${
+                    aria-label={t("ui.listView", "عرض قائمة")}
+                    aria-pressed={viewMode === "list"}
+                    className={`flex h-10 w-10 items-center justify-center rounded-mk-sm transition-colors ${FOCUS} ${
                       viewMode === "list"
-                        ? "bg-[#400198] text-white shadow-sm"
-                        : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                        ? "bg-mk-primary text-white"
+                        : "text-mk-muted hover:bg-mk-tint2"
                     }`}
                   >
                     <FiList size={18} />
@@ -917,14 +873,12 @@ const CouponsPage = () => {
               </div>
             </div>
 
-            {/* Results Count + Applied Filters Tags (like Offers page) */}
-            <div className="text-sm text-gray-600 mb-6">
-              <div className="flex items-center gap-2 mb-0">
-                <h2 className="text-[#400198] text-3xl font-bold">
-                  {pagination.total || paginated.length}
-                </h2>
-                {t("coupons.coupons_suffix")}
-              </div>
+            {/* عدّاد النتائج + شرائح الفلاتر المطبّقة */}
+            <div className="mb-6 text-sm text-mk-muted">
+              <ResultsCount
+                count={pagination.total || paginated.length}
+                label={t("coupons.coupons_suffix")}
+              />
 
               <div className="flex flex-wrap gap-2 mt-3">
                 {(() => {
@@ -947,7 +901,7 @@ const CouponsPage = () => {
                   return (
                     <>
                       {effectiveSort !== "newest" && (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
+                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-mk-tint text-mk-primary rounded-full text-xs font-medium">
                           {sortLabel}
                           <button
                             type="button"
@@ -959,7 +913,7 @@ const CouponsPage = () => {
                               setSelectedFilter("latest");
                               setCurrentPage(1);
                             }}
-                            className="ml-1 hover:bg-purple-200 rounded-full p-0.5"
+                            className="ml-1 hover:bg-mk-border-strong rounded-full p-0.5"
                           >
                             ×
                           </button>
@@ -1023,7 +977,7 @@ const CouponsPage = () => {
                       })}
 
                       {appliedCouponFilters.discountMin != null && (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium">
+                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-mk-tint2 text-mk-text-strong rounded-full text-xs font-medium">
                           {t("coupons.discount_min_tag", {
                             min: appliedCouponFilters.discountMin,
                           })}
@@ -1036,7 +990,7 @@ const CouponsPage = () => {
                               }));
                               setCurrentPage(1);
                             }}
-                            className="ml-1 hover:bg-gray-200 rounded-full p-0.5"
+                            className="ml-1 hover:bg-mk-border-strong/60 rounded-full p-0.5"
                           >
                             ×
                           </button>
@@ -1063,11 +1017,17 @@ const CouponsPage = () => {
               </div>
             </div>
 
-            {/* Coupons Display */}
-            {isLoadingList ? (
-              <div className="container mx-auto md:p-10 p-6 flex justify-center min-h-[200px] items-center">
-                <LoadingSpinner />
-              </div>
+            {/* Coupons Display — الهيكل يظهر للتحميل الأول فقط، أما «عرض
+                المزيد» فيُبقي النتائج الحالية ظاهرة */}
+            {isLoadingList && paginated.length === 0 ? (
+              <SkeletonGrid
+                count={8}
+                className={
+                  viewMode === "grid"
+                    ? "grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+                    : "space-y-4"
+                }
+              />
             ) : paginated.length > 0 ? (
               <div
                 className={
@@ -1076,7 +1036,48 @@ const CouponsPage = () => {
                     : "space-y-4"
                 }
               >
-                {paginated.map((coupon) => (
+                {paginated.map((coupon) => {
+                  const isFav = isCouponFavorite(coupon.id);
+                  /* شارة الخصم: نسبة مئوية → شارة متدرّجة، وأي صيغة أخرى
+                     (مبلغ ثابت مثلاً) → شارة نصية بلا علامة «٪» */
+                  const pctMatch = /^\s*(\d+(?:\.\d+)?)\s*%\s*$/.exec(coupon.discount || "");
+                  const discountBadge = pctMatch ? (
+                    <DiscountBadge percent={Number(pctMatch[1])} size="md" className="absolute end-3 top-3" />
+                  ) : coupon.discount ? (
+                    <span className="absolute end-3 top-3">
+                      <Ribbon tone="hot">{coupon.discount}</Ribbon>
+                    </span>
+                  ) : null;
+                  const favButton = (
+                    <CornerButton
+                      className="relative shrink-0 hover:text-mk-red"
+                      label={
+                        isFav
+                          ? t("couponModal.removeFavorite")
+                          : t("couponModal.addFavorite")
+                      }
+                      pressed={isFav}
+                      disabled={toggleFavorite.isPending}
+                      onClick={(e) => handleFavoriteClick(e, coupon.id)}
+                    >
+                      <HeartIcon size={15} filled={isFav} className={isFav ? "text-mk-red" : ""} />
+                    </CornerButton>
+                  );
+                  const showButton = (
+                    <span className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-[linear-gradient(135deg,#FD671A,#E2560D)] px-4 text-[13px] font-extrabold text-white shadow-[0_10px_24px_-10px_rgba(226,86,13,0.95)] transition-transform group-hover/vivid:-translate-y-0.5">
+                      {t("coupons.show_coupon")}
+                      {coupon.couponCode && (
+                        <span
+                          dir="ltr"
+                          className="rounded-full bg-white/20 px-2 py-1 font-mono text-[11.5px] tracking-widest"
+                        >
+                          {coupon.couponCode.slice(0, 3)}···
+                        </span>
+                      )}
+                    </span>
+                  );
+
+                  return (
                   <div
                     key={coupon.id}
                     role="button"
@@ -1088,295 +1089,161 @@ const CouponsPage = () => {
                         openCouponModal(coupon);
                       }
                     }}
-                    className={`bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer ${
-                      viewMode === "list" ? "flex items-center p-4" : ""
+                    className={`${VIVID_CARD} ${FOCUS} cursor-pointer ${
+                      viewMode === "list" ? "!flex-row items-stretch" : ""
                     }`}
                   >
-                    {/* Coupon Card */}
-                    <div className={viewMode === "list" ? "flex-1 p-0" : "p-6"}>
-                      {viewMode === "list" ? (
-                        // List View Layout
-                        <div className="flex items-center justify-between w-full">
-                          {/* Left Section - Store Info */}
-                          <div className="flex items-center gap-4">
-                            <div className="w-16 h-16 rounded-lg overflow-hidden">
-                              <img
-                                src={getCouponImage(coupon.logo)}
-                                alt={coupon.storeName}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
+                    {viewMode === "list" ? (
+                      /* ===== عرض القائمة ===== */
+                      <>
+                        <div className="relative flex w-[230px] min-w-[230px] flex-col justify-center gap-2 bg-[linear-gradient(150deg,#1B1150,#400198_60%,#6703EB)] p-4">
+                          {discountBadge}
+                          <span className="h-14 w-14 overflow-hidden rounded-mk-md bg-white/95 p-1.5">
+                            <img
+                              src={getCouponImage(coupon.logo)}
+                              alt={coupon.storeName}
+                              className="h-full w-full object-contain"
+                            />
+                          </span>
+                          <span className="mk-clamp-1 text-[14px] font-extrabold text-white">
+                            {stripHtml(coupon.storeName)}
+                          </span>
+                          <span className="mk-clamp-1 text-[11.5px] text-white/70">
+                            {stripHtml(coupon.storeCategory)}
+                          </span>
+                        </div>
 
-                            <div>
-                              <h3 className="font-bold text-gray-900 text-base">
-                                {stripHtml(coupon.storeName)}
-                              </h3>
-                              <p className="text-sm text-gray-500">
-                                {stripHtml(coupon.storeCategory)}
-                              </p>
-                              <h4 className="text-sm font-bold text-gray-900 mt-1">
-                                {stripHtml(coupon.offer)}
-                              </h4>
+                        <div className="flex min-w-0 flex-1 flex-col justify-between gap-3 p-4">
+                          <div className="min-w-0">
+                            <h3 className="mk-clamp-2 m-0 mb-2 text-[15px] font-extrabold text-mk-text">
+                              {stripHtml(coupon.offer)}
+                            </h3>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <StatChips
+                                compact
+                                views={coupon.views}
+                                shares={coupon.downloads}
+                                copies={coupon.uses}
+                              />
+                              {coupon.rating > 0 && (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-[#FDF4DE] px-2 py-1 text-[11px] font-bold text-[#8A6209]">
+                                  ★ {coupon.rating}
+                                </span>
+                              )}
+                              {coupon.uses > 0 && (
+                                <Ribbon tone="muted" icon={<IoFlashOutline aria-hidden />}>
+                                  {usedCountText(coupon.uses)}
+                                </Ribbon>
+                              )}
+                              {coupon.expiry && (
+                                <Ribbon tone="ending" icon={<IoCalendarOutline aria-hidden />}>
+                                  {coupon.expiry}
+                                </Ribbon>
+                              )}
                             </div>
                           </div>
 
-                          {/* Middle Section - Usage and Expiry */}
-                          <div className="flex items-center gap-6">
-                            <div className="flex items-center gap-2">
-                              <IoFlashOutline className="text-orange-500 text-xl" />
-                              <div>
-                                <p className="text-xs text-gray-500">
-                                  {t("coupons.usage")}
-                                </p>
-                                <p className="text-sm font-semibold text-gray-900">
-                                  {coupon.uses} {t("coupons.uses_for_code")}
-                                </p>
-                              </div>
-                            </div>
-                            {coupon.expiry && (
-                              <div className="flex items-center gap-2">
-                                <IoCalendarOutline className="text-orange-500 text-xl" />
-                                <div>
-                                  <p className="text-xs text-gray-500">
-                                    {t("coupons.expires")}
-                                  </p>
-                                  <p className="text-sm font-semibold text-gray-900">
-                                    {coupon.expiry}
-                                  </p>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Right Section - Action Button */}
-                          <div className="flex items-center justify-between gap-3 w-1/3">
-                            <div className="relative">
-                              <div
-                                style={{
-                                  top: "-3rem",
-                                  position: "absolute",
-                                  borderRight: "3px dashed rgb(221, 221, 221)",
-                                  width: "1px",
-                                  height: "108px",
-                                }}
-                              />
-                            </div>
-                            <button className="flex items-center overflow-hidden rounded-full font-medium text-base hover:opacity-90 transition-all duration-200">
-                              {/* Right section - Purple with text */}
-                              <div
-                                className="bg-[#400198] h-[45px] text-white px-4 py-2 flex items-center justify-center"
-                                style={{
-                                  borderBottomLeftRadius: "60px",
-                                  paddingLeft: "30px",
-                                  zIndex: 1,
-                                }}
-                              >
-                                <span
-                                  className="font-medium text-sm"
-                                  style={{ marginTop: "-4px" }}
-                                >
-                                  {t("coupons.show_coupon")}
-                                </span>
-                              </div>
-                              {/* Left section - Gray with number */}
-                              <div
-                                className="bg-[#EBEBEC] h-[45px] text-gray-700 px-6 py-2 flex items-center justify-center"
-                                style={{
-                                  paddingRight: "38px",
-                                  marginRight: "-48px",
-                                }}
-                              >
-                                <span className="font-bold text-lg">
-                                  {coupon.couponCode
-                                    ? coupon.couponCode.slice(0, 3)
-                                    : coupon.uses}
-                                </span>
-                              </div>
-                            </button>
-                            <div className="flex gap-2">
-                              <button
-                                type="button"
-                                onClick={(e) =>
-                                  handleFavoriteClick(e, coupon.id)
-                                }
-                                className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-200 transition-all duration-200 disabled:opacity-50"
-                                disabled={toggleFavorite.isPending}
-                              >
-                                {isCouponFavorite(coupon.id) ? (
-                                  <BsHeartFill className="text-sm text-red-500" />
-                                ) : (
-                                  <BsHeart className="text-sm" />
-                                )}
-                              </button>
-                            </div>
+                          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-dashed border-mk-border-strong pt-3">
+                            {showButton}
+                            {favButton}
                           </div>
                         </div>
-                      ) : (
-                        // Grid View Layout
-                        <>
-                          {/* Header */}
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-3">
-                              <div className="w-12 h-12 rounded-lg overflow-hidden">
-                                <img
-                                  src={getCouponImage(coupon.logo)}
-                                  alt={coupon.storeName}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                              <div>
-                                <h3 className="font-bold text-gray-900 text-sm">
-                                  {stripHtml(coupon.storeName)}
-                                </h3>
-                                <p className="text-sm text-gray-500">
-                                  {stripHtml(coupon.storeCategory)}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Offer */}
-                          <div className="mb-3">
-                            <h4 className="text-base font-bold text-gray-900 mb-2">
-                              {stripHtml(coupon.offer)}
-                            </h4>
-                            {/* Stats - same as modal */}
-                            <div className="flex items-center gap-4 text-sm text-gray-500 mt-1">
-                              <span className="flex items-center gap-1">
-                                <IoFlashOutline className="w-3.5 h-3.5" /> {coupon.downloads}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <IoCalendarOutline className="w-3.5 h-3.5" /> {coupon.views}
-                              </span>
-                              <span className="flex items-center gap-1">★ {coupon.rating || 5}</span>
-                            </div>
-                          </div>
-
-                          {/* Divider */}
-                          <div className="flex items-center justify-between mb-4">
-                            <div className="px-0">
-                              <button className="flex items-center overflow-hidden rounded-full font-medium text-base hover:opacity-90 transition-all duration-200">
-                                {/* Right section - Purple with text */}
-                                <div
-                                  className="bg-[#400198] h-[45px] text-white px-4 py-2 flex items-center justify-center"
-                                  style={{
-                                    borderBottomLeftRadius: "60px",
-                                    paddingLeft: "30px",
-                                    zIndex: 1,
-                                  }}
-                                >
-                                  <span
-                                    className="font-medium text-sm"
-                                    style={{ marginTop: "-4px" }}
-                                  >
-                                    {t("coupons.show_coupon")}
-                                  </span>
-                                </div>
-                                {/* Left section - Gray with number */}
-                                <div
-                                  className="bg-[#EBEBEC] h-[45px] text-gray-700 px-6 py-2 flex items-center justify-center"
-                                  style={{
-                                    paddingRight: "38px",
-                                    marginRight: "-48px",
-                                  }}
-                                >
-                                  <span className="font-bold text-lg">
-                                    {coupon.couponCode
-                                      ? coupon.couponCode.slice(0, 3)
-                                      : coupon.uses}
-                                  </span>
-                                </div>
-                              </button>
-                            </div>
-
-                            <div className="flex gap-2">
-                              <button
-                                type="button"
-                                onClick={(e) =>
-                                  handleFavoriteClick(e, coupon.id)
-                                }
-                                className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-200 transition-all duration-200 disabled:opacity-50"
-                                disabled={toggleFavorite.isPending}
-                              >
-                                {isCouponFavorite(coupon.id) ? (
-                                  <BsHeartFill className="text-sm text-red-500" />
-                                ) : (
-                                  <BsHeart className="text-sm" />
-                                )}
-                              </button>
-                            </div>
-                          </div>
-                          <div
-                            className="mb-4 relative"
-                            style={{
-                              height: "20px",
-                              width: "calc(100% + 3rem)",
-                              right: "-1.5rem",
-                            }}
-                          >
+                      </>
+                    ) : (
+                      /* ===== عرض الشبكة ===== */
+                      <>
+                        {/* ترويسة ملوّنة: شعار التاجر + شارة الخصم البارزة */}
+                        <div className="relative flex items-center gap-3 bg-[linear-gradient(150deg,#1B1150,#400198_60%,#6703EB)] p-4 pb-6">
+                          <span className="h-14 w-14 shrink-0 overflow-hidden rounded-mk-md bg-white/95 p-1.5">
                             <img
-                              src={cutCopon}
-                              alt={t("coupons.image_cut_coupon")}
-                              className="w-full h-full object-cover"
+                              src={getCouponImage(coupon.logo)}
+                              alt={coupon.storeName}
+                              className="h-full w-full object-contain"
                             />
-                          </div>
+                          </span>
+                          <span className="min-w-0 flex-1">
+                            <span className="mk-clamp-1 block text-[14.5px] font-extrabold text-white">
+                              {stripHtml(coupon.storeName)}
+                            </span>
+                            <span className="mk-clamp-1 block text-[11.5px] text-white/70">
+                              {stripHtml(coupon.storeCategory)}
+                            </span>
+                          </span>
+                          {discountBadge}
+                        </div>
 
-                          {/* Usage and Expiry */}
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-start gap-2">
-                              <IoFlashOutline className="text-orange-500 text-xl" />
-                              <div>
-                                <p className="text-xs text-gray-500">
-                                  {t("coupons.usage")}
-                                </p>
-                                <p className="text-sm font-bold text-gray-900">
-                                  {coupon.uses} {t("coupons.uses_for_code")}
-                                </p>
-                              </div>
-                            </div>
-                            {coupon.expiry && (
-                              <div className="flex items-start gap-2">
-                                <IoCalendarOutline className="text-orange-500 text-xl" />
-                                <div>
-                                  <p className="text-xs text-gray-500">
-                                    {t("coupons.expires")}
-                                  </p>
-                                  <p className="text-sm font-bold text-gray-900">
-                                    {coupon.expiry}
-                                  </p>
-                                </div>
-                              </div>
+                        {/* حافة القصّ المسنّنة */}
+                        <div aria-hidden className="relative -mt-3 h-5 w-full">
+                          <img
+                            src={cutCopon}
+                            alt=""
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+
+                        <div className="flex flex-1 flex-col gap-2.5 p-4 pt-1">
+                          <h4 className="mk-clamp-2 m-0 text-[15px] font-extrabold leading-snug text-mk-text">
+                            {stripHtml(coupon.offer)}
+                          </h4>
+
+                          <div className="flex flex-wrap items-center gap-2">
+                            <StatChips
+                              compact
+                              views={coupon.views}
+                              shares={coupon.downloads}
+                              copies={coupon.uses}
+                            />
+                            {coupon.rating > 0 && (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-[#FDF4DE] px-2 py-1 text-[11px] font-bold text-[#8A6209]">
+                                ★ {coupon.rating}
+                              </span>
                             )}
                           </div>
-                        </>
-                      )}
-                    </div>
+
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            {coupon.expiry && (
+                              <Ribbon tone="ending" icon={<IoCalendarOutline aria-hidden />}>
+                                {coupon.expiry}
+                              </Ribbon>
+                            )}
+                            {coupon.uses > 0 && (
+                              <Ribbon tone="muted" icon={<IoFlashOutline aria-hidden />}>
+                                {usedCountText(coupon.uses)}
+                              </Ribbon>
+                            )}
+                          </div>
+
+                          <div className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-dashed border-mk-border-strong pt-3">
+                            {showButton}
+                            {favButton}
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
-              <div className="text-center py-20">
-                <p className="text-gray-500 text-xl">
-                  {search
-                    ? t("coupons.no_results", { search })
-                    : t("coupons.no_coupons")}
-                </p>
-              </div>
+              <EmptyState
+                title={
+                  search ? t("coupons.no_results", { search }) : t("coupons.no_coupons")
+                }
+                description=""
+              />
             )}
 
             {/* Load More + Infinite Scroll */}
             {hasMore && (
-              <div className="flex flex-col items-center justify-center mt-10 gap-3">
-                <button
-                  type="button"
+              <div className="mt-10 flex flex-col items-center justify-center gap-3">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  loading={isLoadingMore}
                   onClick={() => setCurrentPage((p) => p + 1)}
-                  disabled={isLoadingMore}
-                  className="px-6 py-3 bg-[#400198] text-white rounded-xl font-medium hover:bg-[#54015d] transition-colors disabled:opacity-60"
                 >
-                  {isLoadingMore
-                    ? langBase === "ar" ? "جارٍ التحميل..." : "Loading..."
-                    : langBase === "ar" ? "عرض المزيد" : "Load more"}
-                </button>
+                  {isLoadingMore ? t("ui.loading", "جارٍ التحميل…") : t("ui.showMore", "عرض المزيد")}
+                </Button>
                 <div ref={loadMoreRef} className="h-px w-full" aria-hidden="true" />
               </div>
             )}

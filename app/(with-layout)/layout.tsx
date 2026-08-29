@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import Footer from "@components/Footer";
 import Navbar from "@components/Navbar";
 import ScrollToTop from "@components/ScrollToTop";
+import StickyHeaderSlot from "@components/StickyHeaderSlot";
 import ScrollToTopButton from "@components/ScrollToTopButton";
 import WhatsAppButton from "@components/WhatsAppButton";
 import GlobalStyles from "@components/GlobalStyles";
@@ -38,10 +39,10 @@ export default function WithLayout({
         {/* قشرة الموبايل: شريط علوي + تبويبات سفلية بأسلوب التطبيق */}
         <MobileTopBar />
 
-        {/* هيدر وفوتر الديسكتوب */}
-        <div className="hidden lg:block">
+        {/* هيدر الديسكتوب اللاصق (الغلاف يشرح سبب وضع الالتصاق عليه) */}
+        <StickyHeaderSlot>
           <Navbar />
-        </div>
+        </StickyHeaderSlot>
 
         <ScrollToTop />
 
