@@ -144,6 +144,14 @@ export const API_ENDPOINTS = {
   arbPay: `${API}/payment/arb/pay`,
   arbVerify: `${API}/payment/arb/verify`,
 
+  // ========== Tamara BNPL (hosted checkout redirect) ==========
+  tamaraPay: `${API}/payment/tamara/pay`,
+  tamaraVerify: `${API}/payment/tamara/verify`,
+
+  // ========== تغيير رقم الجوال (بتوثيق الرقم الجديد) ==========
+  phoneChangeRequest: `${API}/profile/phone/request`,
+  phoneChangeVerify: `${API}/profile/phone/verify`,
+
   // ========== Orders ==========
   orders: `${API}/orders`,
   orderDetail: (id: string | number) => `${API}/orders/${id}`,

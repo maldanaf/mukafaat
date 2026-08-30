@@ -9,7 +9,7 @@ import {
   Link,
 } from "@/lib/router-compat";
 import { Helmet } from "@/lib/helmet-compat";
-import { useIsRTL } from "@hooks";
+import { useIsRTL, useTamara } from "@hooks";
 import { FiArrowLeft } from "react-icons/fi";
 import CurrencyIcon from "@components/CurrencyIcon";
 import {
@@ -44,8 +44,9 @@ import { AxiosError } from "axios";
 import { isUserSubscribed } from "@utils/subscription";
 import { useQueryClient } from "@tanstack/react-query";
 import { mokafaatKeys } from "@hooks/api/useMokafaatQueries";
-import { initMoyasarPayment } from "@utils/moyasar";
+import { initMoyasarPayment, isApplePayAvailable } from "@utils/moyasar";
 import { startArbPayment } from "@utils/arbPayment";
+import { startTamaraPayment } from "@utils/tamaraPayment";
 import { getPaymentGateway, gatewayFromPaymentInfo } from "@utils/paymentGateway";
 import type { CardCompany, CardOffer } from "@data/cards";
 
@@ -90,6 +91,10 @@ const PaymentPage = () => {
   })();
 
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
+  // آبل باي متاح في Safari/أجهزة آبل فقط — نفحصه بعد التركيب تفادياً
+  // لاختلاف تصيير الخادم عن العميل.
+  const [applePayReady, setApplePayReady] = useState(false);
+  useEffect(() => setApplePayReady(isApplePayAvailable()), []);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [showMoyasarForm, setShowMoyasarForm] = useState(false);
   const [discount, setDiscount] = useState<DiscountCodeResult | null>(null);
@@ -101,6 +106,8 @@ const PaymentPage = () => {
     publishableKey: string;
     callbackUrl: string;
     metadata: Record<string, unknown>;
+    methods?: string[];
+    supportedNetworks?: string[];
   } | null>(null);
 
   const state = location.state as {
@@ -203,7 +210,7 @@ const PaymentPage = () => {
     initMoyasarPayment({
       ...config,
       elementSelector: ".mysr-form-card",
-      methods: ["creditcard"],
+      applePay: { country: "SA", label: config.description },
     }).catch(() => {
       setErrorMsg(
         isRTL
@@ -246,10 +253,28 @@ const PaymentPage = () => {
   const walletEmpty = walletBalance <= 0;
   const remainingAfterWallet = Math.max(0, effectivePrice - walletBalance);
 
+  // تمارا تدفع المبلغ كاملاً — لا تُدمج مع رصيد المحفظة
+  const { available: tamaraAvailable, instalments: tamaraInstalments } =
+    useTamara(effectivePrice);
+
   const paymentMethods = [
     { id: "card", name: { ar: "بطاقة ائتمانية", en: "Credit Card" }, icons: [Visa, Master], disabled: false },
-    { id: "applepay", name: { ar: "آبل باي", en: "Apple Pay" }, icons: [ApplePay], disabled: false },
+    ...(applePayReady
+      ? [{ id: "applepay", name: { ar: "آبل باي", en: "Apple Pay" }, icons: [ApplePay], disabled: false }]
+      : []),
     { id: "mada", name: { ar: "مدى", en: "Mada" }, icons: [Mada], disabled: false },
+    // تمارا: خيار إضافي يظهر عند تفعيله من اللوحة وكون المبلغ داخل حدود الحساب
+    ...(tamaraAvailable
+      ? [{
+          id: "tamara",
+          name: {
+            ar: `تمارا — قسّمها على ${tamaraInstalments} دفعات`,
+            en: `tamara — Split in ${tamaraInstalments}`,
+          },
+          icons: [] as string[],
+          disabled: false,
+        }]
+      : []),
     {
       id: "wallet",
       name: {
@@ -279,15 +304,27 @@ const PaymentPage = () => {
       ...(companyId ? { company_id: String(companyId) } : {}),
     }).toString();
 
-  // رابط عودة الراجحي بعد الدفع → صفحة الكول باك في الفرونت
-  const buildCardReturnUrl = (orderId: string | number) =>
+  // رابط العودة لبوابات إعادة التوجيه (الراجحي / تمارا) → صفحة الكول باك في الفرونت
+  const buildCardReturnUrl = (
+    orderId: string | number,
+    gateway: "arb" | "tamara" = "arb",
+  ) =>
     `${window.location.origin}/orders/callback?` +
     new URLSearchParams({
-      gateway: "arb",
+      gateway,
       type: "card",
       order_id: String(orderId),
       ...(companyId ? { company_id: String(companyId) } : {}),
     }).toString();
+
+  /** بدء الدفع عبر تمارا لطلب قائم */
+  const startTamaraForOrder = (orderId: string | number) =>
+    startTamaraPayment({
+      orderId,
+      returnUrl: buildCardReturnUrl(orderId, "tamara"),
+    }).then((r) => {
+      if (!r.ok) setErrorMsg(r.error || (isRTL ? "تعذّر بدء الدفع عبر تمارا" : "Failed to start Tamara payment"));
+    });
 
   const submitPayment = async (useWalletPayment = false) => {
     if (!offerId || !offer) return;
@@ -347,6 +384,12 @@ const PaymentPage = () => {
 
     // 💳 طلب pending موجود → ادفع عليه مباشرة بالبوابة الفعّالة
     if (!useWalletPayment && orderIdFromState != null && !discount) {
+      // تمارا: اختيار صريح من المستخدم — يسبق البوابة الافتراضية
+      if (selectedMethod === "tamara") {
+        await startTamaraForOrder(orderIdFromState);
+        return;
+      }
+
       const paymentInfoFromState = orderFromState?.payment_info as
         | Record<string, unknown>
         | undefined;
@@ -384,6 +427,9 @@ const PaymentPage = () => {
             publishableKey,
             callbackUrl: buildMoyasarCallbackUrl(orderIdFromState),
             metadata: (paymentInfoFromState.metadata as Record<string, unknown>) || {},
+            methods: selectedMethod === "applepay" ? ["applepay"] : ["creditcard"],
+            supportedNetworks:
+              selectedMethod === "mada" ? ["mada"] : ["visa", "mastercard", "mada"],
           };
           moyasarInitedRef.current = false;
           setShowMoyasarForm(true);
@@ -443,6 +489,12 @@ const PaymentPage = () => {
             const paymentInfo = (order?.payment_info ?? inner?.payment_info) as
               | Record<string, unknown>
               | undefined;
+            // تمارا: اختيار صريح من المستخدم — يسبق البوابة الافتراضية
+            if (selectedMethod === "tamara") {
+              void startTamaraForOrder(orderId);
+              return;
+            }
+
             const gatewayFromOrder = gatewayFromPaymentInfo(paymentInfo);
 
             const startArb = () => {
@@ -483,6 +535,9 @@ const PaymentPage = () => {
                 publishableKey,
                 callbackUrl: buildMoyasarCallbackUrl(orderId),
                 metadata: (paymentInfo?.metadata as Record<string, unknown>) || {},
+                methods: selectedMethod === "applepay" ? ["applepay"] : ["creditcard"],
+                supportedNetworks:
+                  selectedMethod === "mada" ? ["mada"] : ["visa", "mastercard", "mada"],
               };
               moyasarInitedRef.current = false;
               setShowMoyasarForm(true);

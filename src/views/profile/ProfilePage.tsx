@@ -32,6 +32,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { isUserSubscribed } from "@utils/subscription";
 import CountryCodeSelect from "@components/CountryCodeSelect";
+import ChangePhoneModal from "@components/ChangePhoneModal";
 import MembershipTierCard from "@components/MembershipTierCard";
 import MembershipCard from "@components/account/MembershipCard";
 import DeleteAccountSection from "@components/account/DeleteAccountSection";
@@ -199,6 +200,7 @@ const ProfilePage: React.FC = () => {
       .trim() || displayUser.name;
 
   const [isEditing, setIsEditing] = useState(false);
+  const [showPhoneModal, setShowPhoneModal] = useState(false);
   const initialCountryId = useMemo(() => {
     const c = profileUserObj?.country as Record<string, unknown> | undefined;
     return c?.id != null ? Number(c.id) : null;
@@ -546,39 +548,25 @@ const ProfilePage: React.FC = () => {
                 )}
               </Field>
 
+              {/* الجوال لا يُعدَّل كنصّ — تغييره يمرّ بتوثيق الرقم الجديد برمز تحقق */}
               <Field
                 icon={<IoCallOutline className="h-4 w-4" />}
                 label={t("profile.label_phone")}
               >
-                {isEditing ? (
-                  <div
-                    className="flex items-stretch gap-2 rounded-mk-sm border border-mk-border-strong bg-white px-2 focus-within:border-mk-primary focus-within:ring-2 focus-within:ring-[#400198]/15"
-                    dir="ltr"
-                  >
-                    <div className="flex items-center border-e border-mk-border">
-                      <CountryCodeSelect
-                        value={formData.countryCode}
-                        onChange={(dial) =>
-                          setFormData((prev) => ({ ...prev, countryCode: dial }))
-                        }
-                      />
-                    </div>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      placeholder="5XXXXXXXX"
-                      className="flex-1 bg-transparent px-2 py-2 text-[13.5px] outline-none"
-                    />
-                  </div>
-                ) : (
+                <div className="flex items-center justify-between gap-3">
                   <p className="m-0 text-[13.5px] text-mk-text" dir="ltr">
                     {displayUser.phone
                       ? `+${(displayUser.countryCode || "966").replace(/^\+/, "")} ${displayUser.phone}`
                       : t("profile.phone_not_set")}
                   </p>
-                )}
+                  <button
+                    type="button"
+                    onClick={() => setShowPhoneModal(true)}
+                    className={`shrink-0 rounded-mk-sm bg-mk-primary px-3 py-1.5 text-[11.5px] font-bold text-white ${FOCUS}`}
+                  >
+                    {t("profile.phone_change_button", "تغيير")}
+                  </button>
+                </div>
               </Field>
 
               <Field
@@ -798,6 +786,21 @@ const ProfilePage: React.FC = () => {
           <DeleteAccountSection />
         </div>
       </div>
+
+      {showPhoneModal && (
+        <ChangePhoneModal
+          currentPhone={
+            displayUser.phone
+              ? `+${(displayUser.countryCode || "966").replace(/^\+/, "")} ${displayUser.phone}`
+              : undefined
+          }
+          currentCountryCode={displayUser.countryCode || "966"}
+          onClose={() => setShowPhoneModal(false)}
+          onChanged={() => {
+            void refetchProfile();
+          }}
+        />
+      )}
     </div>
   );
 };

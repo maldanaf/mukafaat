@@ -1761,7 +1761,24 @@
     "toast_image_too_large": "تصویر 5 MB سے کم ہونی چاہیے",
     "toast_avatar_ok": "پروفائل تصویر اپ ڈیٹ ہو گئی",
     "toast_avatar_failed": "تصویر اپ ڈیٹ نہیں ہو سکی",
-    "toast_avatar_error": "تصویر اپ ڈیٹ کرتے وقت خرابی"
+    "toast_avatar_error": "تصویر اپ ڈیٹ کرتے وقت خرابی",
+    "phone_change_button": "تبدیل کریں",
+    "phone_change_title": "فون نمبر تبدیل کریں",
+    "phone_change_sub": "اپنا نیا نمبر درج کریں، ہم تصدیقی کوڈ بھیجیں گے۔",
+    "phone_change_current": "موجودہ:",
+    "phone_change_new_number": "نیا نمبر",
+    "phone_change_send_via": "کوڈ بھیجیں بذریعہ",
+    "phone_change_send_code": "تصدیقی کوڈ بھیجیں",
+    "phone_change_verify_title": "نئے نمبر کی تصدیق",
+    "phone_change_verify_sub": "کوڈ درج کریں جو بھیجا گیا",
+    "phone_change_code": "تصدیقی کوڈ",
+    "phone_change_confirm": "تصدیق کریں اور تبدیل کریں",
+    "phone_change_resend": "کوڈ دوبارہ بھیجیں",
+    "phone_change_resend_in": "دوبارہ بھیجیں",
+    "phone_change_edit_number": "نمبر میں ترمیم",
+    "phone_change_err_code": "براہ کرم تصدیقی کوڈ درج کریں",
+    "otp_whatsapp": "واٹس ایپ",
+    "otp_sms": "ایس ایم ایس"
   },
   "profileDashboard": {
     "title": "میرا اکاؤنٹ",
@@ -2137,7 +2154,8 @@
       "mada": "mada",
       "applePay": "Apple Pay",
       "card": "کریڈٹ کارڈ / mada",
-      "wallet": "والٹ سے ادائیگی"
+      "wallet": "والٹ سے ادائیگی",
+      "tamara": "tamara — قسطوں میں تقسیم کریں"
     },
     "walletBalanceNote": "آپ کا بیلنس: {{points}} پوائنٹس",
     "couponLabel": "کوپن",
@@ -2160,7 +2178,9 @@
     "promoPlaceholder": "Enter code",
     "promoApply": "Apply",
     "promoRemove": "Remove code",
-    "promoInvalid": "Invalid or expired code"
+    "promoInvalid": "Invalid or expired code",
+    "tamaraNote": "{{count}} بلا سود اقساط میں تقسیم کریں",
+    "tamaraError": "تمارا سے ادائیگی شروع نہیں ہو سکی"
   },
   "invoice": {
     "title": "انوائس",

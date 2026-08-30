@@ -86,8 +86,9 @@ const OrderPaymentCallbackPage: React.FC = () => {
   );
 
   useEffect(() => {
-    // بوابة الراجحي: الباك-إند فعّل الطلب مسبقاً وأعاد التوجيه بـ status مباشرة
-    if (gateway === "arb") {
+    // بوابات إعادة التوجيه (الراجحي / تمارا): الباك-إند فعّل الطلب مسبقاً
+    // وأعاد التوجيه هنا بـ status جاهز — لا حاجة لاستدعاء كول باك ميسر
+    if (gateway === "arb" || gateway === "tamara") {
       if (calledRef.current) return;
       calledRef.current = true;
       redirectToResult(status?.toLowerCase() === "success");

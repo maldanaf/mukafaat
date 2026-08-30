@@ -1148,7 +1148,8 @@
       "mada": "mada",
       "applePay": "Apple Pay",
       "card": "Carte bancaire / mada",
-      "wallet": "Payer avec le portefeuille"
+      "wallet": "Payer avec le portefeuille",
+      "tamara": "tamara — Payer en plusieurs fois"
     },
     "walletBalanceNote": "Votre solde : {{points}} points",
     "couponLabel": "Coupon",
@@ -1171,7 +1172,9 @@
     "promoPlaceholder": "Enter code",
     "promoApply": "Apply",
     "promoRemove": "Remove code",
-    "promoInvalid": "Invalid or expired code"
+    "promoInvalid": "Invalid or expired code",
+    "tamaraNote": "Divisez en {{count}} paiements sans intérêts",
+    "tamaraError": "Impossible de démarrer le paiement Tamara"
   },
   "invoice": {
     "title": "Facture",
@@ -1270,5 +1273,24 @@
     "card_upsell_desc": "Abonnez-vous pour obtenir une carte de membre numérique avec votre propre numéro et un QR code scannable chez les commerçants.",
     "card_actions": "Partager la carte",
     "gifts_subtitle": "Les abonnements que vous avez offerts et leurs factures"
+  },
+  "profile": {
+    "phone_change_button": "Modifier",
+    "phone_change_title": "Modifier le numéro de téléphone",
+    "phone_change_sub": "Saisissez votre nouveau numéro, nous enverrons un code de vérification.",
+    "phone_change_current": "Actuel :",
+    "phone_change_new_number": "Nouveau numéro",
+    "phone_change_send_via": "Envoyer le code via",
+    "phone_change_send_code": "Envoyer le code",
+    "phone_change_verify_title": "Confirmer le nouveau numéro",
+    "phone_change_verify_sub": "Saisissez le code envoyé à",
+    "phone_change_code": "Code de vérification",
+    "phone_change_confirm": "Confirmer et modifier",
+    "phone_change_resend": "Renvoyer le code",
+    "phone_change_resend_in": "Renvoyer dans",
+    "phone_change_edit_number": "Modifier le numéro",
+    "phone_change_err_code": "Veuillez saisir le code de vérification",
+    "otp_whatsapp": "WhatsApp",
+    "otp_sms": "SMS"
   }
 }

@@ -1,9 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import PaymentBrandLogo, { type PaymentBrand } from "./PaymentBrandLogo";
 import { FOCUS } from "@ui";
+import { isApplePayAvailable } from "@utils/moyasar";
 
 /**
  * وسائل الدفع كما في التطبيق
@@ -11,9 +12,15 @@ import { FOCUS } from "@ui";
  *  mada      → بطاقة مدى عبر ميسر
  *  applePay  → آبل باي عبر ميسر
  *  card      → بطاقة ائتمانية/مدى عبر ميسر
+ *  tamara    → قسّمها على دفعات عبر تمارا (BNPL) — خيار إضافي مستقل
  *  wallet    → الدفع من رصيد النقاط (المحفظة)
  */
-export type PaymentMethodType = "mada" | "applePay" | "card" | "wallet";
+export type PaymentMethodType =
+  | "mada"
+  | "applePay"
+  | "card"
+  | "tamara"
+  | "wallet";
 
 interface MethodDef {
   type: PaymentMethodType;
@@ -36,6 +43,10 @@ export interface PaymentMethodSelectorProps {
   onChange: (value: PaymentMethodType) => void;
   /** إخفاء «الدفع من النقاط» (غير متاح في بعض المسارات) */
   walletAllowed?: boolean;
+  /** إظهار «قسّمها على دفعات» عبر تمارا — يعتمد على إعداد اللوحة وحدود المبلغ */
+  tamaraAllowed?: boolean;
+  /** عدد الدفعات المعروض في وصف خيار تمارا */
+  tamaraInstalments?: number;
   /** رصيد النقاط المتاح — يُعرض تحت خيار المحفظة */
   walletBalance?: number | null;
   /** تعطيل خيار المحفظة مع إبقائه ظاهراً (رصيد غير كافٍ مثلاً) */
@@ -48,12 +59,23 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
   value,
   onChange,
   walletAllowed = true,
+  tamaraAllowed = false,
+  tamaraInstalments = 3,
   walletBalance = null,
   walletDisabled = false,
   disabled = false,
   className = "",
 }) => {
   const { t } = useTranslation();
+
+  // آبل باي متاح في Safari/أجهزة آبل فقط. نفحصه بعد التركيب لا أثناء
+  // التصيير على الخادم، وإلا اختلف HTML الخادم عن العميل (hydration).
+  const [applePayReady, setApplePayReady] = useState(false);
+  useEffect(() => setApplePayReady(isApplePayAvailable()), []);
+
+  const methods = ELECTRONIC.filter(
+    (m) => m.type !== "applePay" || applePayReady,
+  );
 
   const card = (def: MethodDef, isDisabled: boolean, note?: string) => {
     const selected = value === def.type;
@@ -106,7 +128,14 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
       <p className="mb-3 text-[15px] text-mk-muted">
         {t("payment.electronicPayment")}
       </p>
-      {ELECTRONIC.map((def) => card(def, false))}
+      {methods.map((def) => card(def, false))}
+
+      {tamaraAllowed &&
+        card(
+          { type: "tamara", labelKey: "payment.method.tamara", brands: ["tamara"] },
+          false,
+          t("payment.tamaraNote").replace("{{count}}", String(tamaraInstalments)),
+        )}
 
       {walletAllowed && (
         <>

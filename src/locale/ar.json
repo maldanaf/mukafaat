@@ -1765,7 +1765,24 @@
     "toast_image_too_large": "حجم الصورة يجب أن يكون أقل من 5 ميجابايت",
     "toast_avatar_ok": "تم تحديث الصورة بنجاح",
     "toast_avatar_failed": "فشل تحديث الصورة",
-    "toast_avatar_error": "حدث خطأ أثناء تحديث الصورة"
+    "toast_avatar_error": "حدث خطأ أثناء تحديث الصورة",
+    "phone_change_button": "تغيير",
+    "phone_change_title": "تغيير رقم الجوال",
+    "phone_change_sub": "أدخل رقمك الجديد وسنرسل لك رمز تحقق للتأكد من ملكيته.",
+    "phone_change_current": "الحالي:",
+    "phone_change_new_number": "الرقم الجديد",
+    "phone_change_send_via": "إرسال الرمز عبر",
+    "phone_change_send_code": "إرسال رمز التحقق",
+    "phone_change_verify_title": "تأكيد الرقم الجديد",
+    "phone_change_verify_sub": "أدخل الرمز المُرسل إلى",
+    "phone_change_code": "رمز التحقق",
+    "phone_change_confirm": "تأكيد وتغيير الرقم",
+    "phone_change_resend": "إعادة إرسال الرمز",
+    "phone_change_resend_in": "إعادة الإرسال بعد",
+    "phone_change_edit_number": "تعديل الرقم",
+    "phone_change_err_code": "يرجى إدخال رمز التحقق",
+    "otp_whatsapp": "واتساب",
+    "otp_sms": "رسالة نصية"
   },
   "profileDashboard": {
     "title": "حسابي",
@@ -2332,7 +2349,8 @@
       "mada": "مدى",
       "applePay": "Apple Pay",
       "card": "بطاقة ائتمانية / مدى",
-      "wallet": "دفع من المحفظة"
+      "wallet": "دفع من المحفظة",
+      "tamara": "تمارا — قسّمها على دفعات"
     },
     "walletBalanceNote": "رصيدك: {{points}} نقطة",
     "couponLabel": "كوبون خصم",
@@ -2355,7 +2373,9 @@
     "promoPlaceholder": "أدخل الكود",
     "promoApply": "تطبيق",
     "promoRemove": "إزالة الكود",
-    "promoInvalid": "الكود غير صالح أو منتهي"
+    "promoInvalid": "الكود غير صالح أو منتهي",
+    "tamaraNote": "قسّمها على {{count}} دفعات بدون فوائد",
+    "tamaraError": "تعذّر بدء الدفع عبر تمارا"
   },
   "invoice": {
     "title": "الفاتورة",

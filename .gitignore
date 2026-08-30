@@ -30,3 +30,10 @@ dist-ssr
 .env.*.local
 .env.staging
 .env.production
+
+# ملفات عمل محلية لا تخصّ المستودع
+.env*.bak
+*.legacy.tsx.bak
+scratchpad/
+tmp/
+tsconfig.tsbuildinfo

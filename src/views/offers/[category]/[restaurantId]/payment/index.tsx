@@ -8,7 +8,7 @@ import {
   useLocation,
   Link,
 } from "@/lib/router-compat";
-import { useIsRTL } from "@hooks";
+import { useIsRTL, useTamara } from "@hooks";
 import { FiArrowLeft } from "react-icons/fi";
 import CurrencyIcon from "@components/CurrencyIcon";
 import {
@@ -38,8 +38,9 @@ import { AxiosError } from "axios";
 import { isUserSubscribed } from "@utils/subscription";
 import { useQueryClient } from "@tanstack/react-query";
 import { mokafaatKeys } from "@hooks/api/useMokafaatQueries";
-import { initMoyasarPayment } from "@utils/moyasar";
+import { initMoyasarPayment, isApplePayAvailable } from "@utils/moyasar";
 import { startArbPayment } from "@utils/arbPayment";
+import { startTamaraPayment } from "@utils/tamaraPayment";
 import { getPaymentGateway, gatewayFromPaymentInfo } from "@utils/paymentGateway";
 
 const PaymentPage: React.FC = () => {
@@ -65,6 +66,10 @@ const PaymentPage: React.FC = () => {
   })();
 
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
+  // آبل باي متاح في Safari/أجهزة آبل فقط — نفحصه بعد التركيب تفادياً
+  // لاختلاف تصيير الخادم عن العميل.
+  const [applePayReady, setApplePayReady] = useState(false);
+  useEffect(() => setApplePayReady(isApplePayAvailable()), []);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [showMoyasarForm, setShowMoyasarForm] = useState(false);
   const [discount, setDiscount] = useState<DiscountCodeResult | null>(null);
@@ -76,6 +81,8 @@ const PaymentPage: React.FC = () => {
     publishableKey: string;
     callbackUrl: string;
     metadata: Record<string, unknown>;
+    methods?: string[];
+    supportedNetworks?: string[];
   } | null>(null);
 
   // Get data from URL parameters
@@ -178,7 +185,7 @@ const PaymentPage: React.FC = () => {
     initMoyasarPayment({
       ...config,
       elementSelector: ".mysr-form-offer",
-      methods: ["creditcard"],
+      applePay: { country: "SA", label: config.description },
     }).catch(() => {
       setErrorMsg(isRTL ? "تعذر تحميل بوابة الدفع. حدّث الصفحة أو تواصل مع الدعم." : "Failed to load payment gateway. Refresh or contact support.");
       setShowMoyasarForm(false);
@@ -211,12 +218,30 @@ const PaymentPage: React.FC = () => {
   const walletCoversAll = walletBalance >= effectivePrice && effectivePrice > 0;
   const walletPartial = walletBalance > 0 && walletBalance < effectivePrice;
   const walletEmpty = walletBalance <= 0;
+
+  // تمارا تدفع المبلغ كاملاً — لا تُدمج مع رصيد المحفظة
+  const { available: tamaraAvailable, instalments: tamaraInstalments } =
+    useTamara(effectivePrice);
   const remainingAfterWallet = Math.max(0, effectivePrice - walletBalance);
 
   const paymentMethods = [
     { id: "card", name: { ar: "بطاقة ائتمانية", en: "Credit Card" }, icons: [Visa, Master], disabled: false },
-    { id: "applepay", name: { ar: "آبل باي", en: "Apple Pay" }, icons: [ApplePay], disabled: false },
+    ...(applePayReady
+      ? [{ id: "applepay", name: { ar: "آبل باي", en: "Apple Pay" }, icons: [ApplePay], disabled: false }]
+      : []),
     { id: "mada", name: { ar: "مدى", en: "Mada" }, icons: [Mada], disabled: false },
+    // تمارا: خيار إضافي يظهر عند تفعيله من اللوحة وكون المبلغ داخل حدود الحساب
+    ...(tamaraAvailable
+      ? [{
+          id: "tamara",
+          name: {
+            ar: `تمارا — قسّمها على ${tamaraInstalments} دفعات`,
+            en: `tamara — Split in ${tamaraInstalments}`,
+          },
+          icons: [] as string[],
+          disabled: false,
+        }]
+      : []),
     {
       id: "wallet",
       name: {
@@ -247,16 +272,28 @@ const PaymentPage: React.FC = () => {
       ...(merchantSlug ? { restaurant_id: String(merchantSlug) } : {}),
     }).toString();
 
-  // رابط عودة الراجحي بعد الدفع → صفحة الكول باك في الفرونت
-  const buildOfferReturnUrl = (orderId: string | number) =>
+  // رابط العودة لبوابات إعادة التوجيه (الراجحي / تمارا) → صفحة الكول باك في الفرونت
+  const buildOfferReturnUrl = (
+    orderId: string | number,
+    gateway: "arb" | "tamara" = "arb",
+  ) =>
     `${window.location.origin}/orders/callback?` +
     new URLSearchParams({
-      gateway: "arb",
+      gateway,
       type: "offer",
       order_id: String(orderId),
       ...(category ? { category } : {}),
       ...(merchantSlug ? { restaurant_id: String(merchantSlug) } : {}),
     }).toString();
+
+  /** بدء الدفع عبر تمارا لطلب قائم */
+  const startTamaraForOrder = (orderId: string | number) =>
+    startTamaraPayment({
+      orderId,
+      returnUrl: buildOfferReturnUrl(orderId, "tamara"),
+    }).then((r) => {
+      if (!r.ok) setErrorMsg(r.error || (isRTL ? "تعذّر بدء الدفع عبر تمارا" : "Failed to start Tamara payment"));
+    });
 
   const submitPayment = async (useWalletPayment = false) => {
     if (!offerSlug || !offer) return;
@@ -315,6 +352,12 @@ const PaymentPage: React.FC = () => {
     // 💳 طلب pending موجود → ادفع عليه مباشرة بالبوابة الفعّالة
     // (لو في كود خصم متطبّق نعدّي على createOrder ليحدّث الطلب أولاً)
     if (!useWalletPayment && orderIdFromState != null && !discount) {
+      // تمارا: اختيار صريح من المستخدم — يسبق البوابة الافتراضية
+      if (selectedMethod === "tamara") {
+        await startTamaraForOrder(orderIdFromState);
+        return;
+      }
+
       const paymentInfoFromState = orderFromState?.payment_info as
         | Record<string, unknown>
         | undefined;
@@ -353,6 +396,9 @@ const PaymentPage: React.FC = () => {
             publishableKey,
             callbackUrl,
             metadata: (paymentInfoFromState.metadata as Record<string, unknown>) || {},
+            methods: selectedMethod === "applepay" ? ["applepay"] : ["creditcard"],
+            supportedNetworks:
+              selectedMethod === "mada" ? ["mada"] : ["visa", "mastercard", "mada"],
           };
           moyasarInitedRef.current = false;
           setShowMoyasarForm(true);
@@ -438,10 +484,19 @@ const PaymentPage: React.FC = () => {
                 publishableKey,
                 callbackUrl: buildMoyasarCallbackUrl(orderId),
                 metadata: (paymentInfo?.metadata as Record<string, unknown>) || {},
+                methods: selectedMethod === "applepay" ? ["applepay"] : ["creditcard"],
+                supportedNetworks:
+                  selectedMethod === "mada" ? ["mada"] : ["visa", "mastercard", "mada"],
               };
               moyasarInitedRef.current = false;
               setShowMoyasarForm(true);
             };
+
+            // تمارا: اختيار صريح من المستخدم — يسبق البوابة الافتراضية
+            if (selectedMethod === "tamara") {
+              void startTamaraForOrder(orderId);
+              return;
+            }
 
             if (gatewayFromOrder === "arb") {
               startArbPayment({

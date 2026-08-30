@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, Navigate } from "@/lib/router-compat";
 import { Helmet } from "@/lib/helmet-compat";
 import { useTranslation } from "react-i18next";
-import { useIsRTL } from "@hooks";
+import { useIsRTL, useTamara } from "@hooks";
 import {
   useGeoCountries,
   useRegions,
@@ -30,6 +30,7 @@ import PaymentMethodSelector, {
   type PaymentMethodType,
 } from "@components/payment/PaymentMethodSelector";
 import { startArbPayment } from "@utils/arbPayment";
+import { startTamaraPayment } from "@utils/tamaraPayment";
 import { gatewayFromPaymentInfo } from "@utils/paymentGateway";
 import { Button, FOCUS } from "@ui";
 import {
@@ -157,6 +158,10 @@ const SubscribeForOtherPage: React.FC = () => {
     [selectedPlan],
   );
 
+  // تمارا: خيار إضافي يظهر عند تفعيله من اللوحة وكون المبلغ داخل حدود الحساب
+  const { available: tamaraAvailable, instalments: tamaraInstalments } =
+    useTamara(selectedPricing.final);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg(null);
@@ -230,8 +235,35 @@ const SubscribeForOtherPage: React.FC = () => {
             (inner?.subscription_id as string | number | undefined) ??
             (data.subscription_id as string | number | undefined);
 
-          // بوابة الراجحي: تحويل لصفحة البنك بدل نموذج البطاقة
+          // بوابات إعادة التوجيه (تمارا / الراجحي): تحويل لصفحتها بدل نموذج البطاقة
           if (requiresPayment) {
+            const startRedirectGateway = (gateway: "arb" | "tamara") => {
+              if (subscriptionId == null) {
+                setErrorMsg(t("subscribeForOther.payment_incomplete"));
+                return;
+              }
+              const returnUrl = `${window.location.origin}/orders/callback?${new URLSearchParams(
+                {
+                  gateway,
+                  type: "subscription",
+                  plan_id: String(planId),
+                  subscription_id: String(subscriptionId),
+                  from: "subscribe_for_other",
+                },
+              ).toString()}`;
+              const start =
+                gateway === "tamara" ? startTamaraPayment : startArbPayment;
+              start({ subscriptionId, returnUrl }).then((r) => {
+                if (!r.ok) setErrorMsg(r.error || t("subscribeForOther.failed"));
+              });
+            };
+
+            // تمارا: اختيار صريح من المستخدم — يسبق البوابة الافتراضية
+            if (payMethod === "tamara") {
+              startRedirectGateway("tamara");
+              return;
+            }
+
             const startArb = () => {
               if (subscriptionId == null) {
                 setErrorMsg(t("subscribeForOther.payment_incomplete"));
@@ -702,7 +734,12 @@ const SubscribeForOtherPage: React.FC = () => {
                   icon={<IoCardOutline />}
                   tint="teal"
                 >
-                  <PaymentMethodSelector value={payMethod} onChange={setPayMethod} />
+                  <PaymentMethodSelector
+                    value={payMethod}
+                    onChange={setPayMethod}
+                    tamaraAllowed={tamaraAvailable}
+                    tamaraInstalments={tamaraInstalments}
+                  />
                   {payMethod === "applePay" && !isApplePayAvailable() && (
                     <p className="m-0 mt-2 rounded-mk-sm border border-[#FBE3C4] bg-[#FEF3E2] px-3 py-2 text-[12px] font-semibold text-mk-amber">
                       {t("payment.applePayUnavailable")}

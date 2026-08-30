@@ -1761,7 +1761,24 @@
     "toast_image_too_large": "छवि 5 MB से छोटी होनी चाहिए",
     "toast_avatar_ok": "प्रोफ़ाइल फ़ोटो अपडेट हो गई",
     "toast_avatar_failed": "फ़ोटो अपडेट नहीं हो सकी",
-    "toast_avatar_error": "फ़ोटो अपडेट करते समय त्रुटि"
+    "toast_avatar_error": "फ़ोटो अपडेट करते समय त्रुटि",
+    "phone_change_button": "बदलें",
+    "phone_change_title": "फ़ोन नंबर बदलें",
+    "phone_change_sub": "अपना नया नंबर दर्ज करें, हम सत्यापन कोड भेजेंगे।",
+    "phone_change_current": "वर्तमान:",
+    "phone_change_new_number": "नया नंबर",
+    "phone_change_send_via": "कोड भेजें",
+    "phone_change_send_code": "सत्यापन कोड भेजें",
+    "phone_change_verify_title": "नए नंबर की पुष्टि करें",
+    "phone_change_verify_sub": "भेजा गया कोड दर्ज करें",
+    "phone_change_code": "सत्यापन कोड",
+    "phone_change_confirm": "पुष्टि करें और बदलें",
+    "phone_change_resend": "कोड फिर भेजें",
+    "phone_change_resend_in": "पुनः भेजें",
+    "phone_change_edit_number": "नंबर संपादित करें",
+    "phone_change_err_code": "कृपया सत्यापन कोड दर्ज करें",
+    "otp_whatsapp": "व्हाट्सएप",
+    "otp_sms": "एसएमएस"
   },
   "profileDashboard": {
     "title": "मेरा खाता",
@@ -2137,7 +2154,8 @@
       "mada": "mada",
       "applePay": "Apple Pay",
       "card": "क्रेडिट कार्ड / mada",
-      "wallet": "वॉलेट से भुगतान"
+      "wallet": "वॉलेट से भुगतान",
+      "tamara": "tamara — किश्तों में बाँटें"
     },
     "walletBalanceNote": "आपका बैलेंस: {{points}} अंक",
     "couponLabel": "कूपन",
@@ -2160,7 +2178,9 @@
     "promoPlaceholder": "Enter code",
     "promoApply": "Apply",
     "promoRemove": "Remove code",
-    "promoInvalid": "Invalid or expired code"
+    "promoInvalid": "Invalid or expired code",
+    "tamaraNote": "{{count}} ब्याज-मुक्त किश्तों में बाँटें",
+    "tamaraError": "तमारा भुगतान शुरू नहीं हो सका"
   },
   "invoice": {
     "title": "चालान",

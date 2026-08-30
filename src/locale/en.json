@@ -1769,7 +1769,24 @@
     "toast_image_too_large": "Image must be smaller than 5 MB",
     "toast_avatar_ok": "Profile photo updated",
     "toast_avatar_failed": "Could not update photo",
-    "toast_avatar_error": "Something went wrong while updating your photo"
+    "toast_avatar_error": "Something went wrong while updating your photo",
+    "phone_change_button": "Change",
+    "phone_change_title": "Change phone number",
+    "phone_change_sub": "Enter your new number and we'll send a verification code to confirm you own it.",
+    "phone_change_current": "Current:",
+    "phone_change_new_number": "New number",
+    "phone_change_send_via": "Send code via",
+    "phone_change_send_code": "Send verification code",
+    "phone_change_verify_title": "Confirm new number",
+    "phone_change_verify_sub": "Enter the code sent to",
+    "phone_change_code": "Verification code",
+    "phone_change_confirm": "Confirm and change",
+    "phone_change_resend": "Resend code",
+    "phone_change_resend_in": "Resend in",
+    "phone_change_edit_number": "Edit number",
+    "phone_change_err_code": "Please enter the verification code",
+    "otp_whatsapp": "WhatsApp",
+    "otp_sms": "SMS"
   },
   "profileDashboard": {
     "title": "My account",
@@ -2336,7 +2353,8 @@
       "mada": "mada",
       "applePay": "Apple Pay",
       "card": "Credit card / mada",
-      "wallet": "Pay from wallet"
+      "wallet": "Pay from wallet",
+      "tamara": "tamara — Split in instalments"
     },
     "walletBalanceNote": "Your balance: {{points}} points",
     "couponLabel": "Coupon",
@@ -2359,7 +2377,9 @@
     "promoPlaceholder": "Enter code",
     "promoApply": "Apply",
     "promoRemove": "Remove code",
-    "promoInvalid": "Invalid or expired code"
+    "promoInvalid": "Invalid or expired code",
+    "tamaraNote": "Split into {{count}} interest-free payments",
+    "tamaraError": "Failed to start Tamara payment"
   },
   "invoice": {
     "title": "Invoice",

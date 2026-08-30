@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useNavigate } from "@/lib/router-compat";
 import { Helmet } from "@/lib/helmet-compat";
 import { useTranslation } from "react-i18next";
-import { useIsRTL } from "@hooks";
+import { useIsRTL, useTamara } from "@hooks";
 import { FiArrowLeft } from "react-icons/fi";
 import { IoPeopleOutline } from "react-icons/io5";
 import { AxiosError } from "axios";
@@ -29,6 +29,7 @@ import {
 } from "@utils/subscriptionPricing";
 import { initMoyasarPayment, isApplePayAvailable } from "@utils/moyasar";
 import { startArbPayment } from "@utils/arbPayment";
+import { startTamaraPayment } from "@utils/tamaraPayment";
 import { getPaymentGateway, gatewayFromPaymentInfo } from "@utils/paymentGateway";
 import { Button, FOCUS } from "@ui";
 
@@ -109,6 +110,10 @@ const SubscriptionPaymentPage: React.FC = () => {
   const afterCoupon = Math.max(Math.round((baseAmount - couponAmount) * 100) / 100, 0);
   const codeAmount = Math.min(num(discount?.discount_amount), afterCoupon);
   const total = Math.max(Math.round((afterCoupon - codeAmount) * 100) / 100, 0);
+
+  // تمارا: خيار إضافي يظهر عند تفعيله من اللوحة وكون المبلغ داخل حدود الحساب
+  const { available: tamaraAvailable, instalments: tamaraInstalments } =
+    useTamara(total);
 
   // كود الخصم يُحتسب على المبلغ بعد الكوبون — نُلغيه عند تغيّر الكوبون
   const onCouponChange = useCallback((c: CouponValidateResult | null) => {
@@ -234,6 +239,20 @@ const SubscriptionPaymentPage: React.FC = () => {
             });
           };
 
+          // تمارا: تحويل لصفحة تمارا ثم العودة (الباك-إند يفعّل الاشتراك)
+          const startTamara = () => {
+            if (subscriptionId == null) {
+              setErrorMsg(t("payment.gatewayInitFailed"));
+              return;
+            }
+            const returnUrl = `${window.location.origin}/orders/callback?${new URLSearchParams(
+              { gateway: "tamara", ...successParams },
+            ).toString()}`;
+            startTamaraPayment({ subscriptionId, returnUrl }).then((r) => {
+              if (!r.ok) setErrorMsg(r.error || t("payment.tamaraError"));
+            });
+          };
+
           // ميسر: نموذج الدفع داخل الصفحة
           const startMoyasar = () => {
             const amountHalalaRaw =
@@ -275,6 +294,12 @@ const SubscriptionPaymentPage: React.FC = () => {
             setMoyasarMountKey((k) => k + 1);
             setStep("card");
           };
+
+          // تمارا: اختيار صريح من المستخدم — له الأولوية على البوابة الافتراضية
+          if (method === "tamara") {
+            startTamara();
+            return;
+          }
 
           const gatewayFromServer = gatewayFromPaymentInfo(paymentInfo);
           if (gatewayFromServer === "arb") {
@@ -454,6 +479,8 @@ const SubscriptionPaymentPage: React.FC = () => {
                   onChange={setMethod}
                   walletBalance={walletBalance}
                   walletDisabled={walletBalance <= 0}
+                  tamaraAllowed={tamaraAvailable}
+                  tamaraInstalments={tamaraInstalments}
                 />
                 {method === "applePay" && !applePaySupported && (
                   <p className="rounded-mk-sm bg-amber-50 px-3 py-2 text-xs text-amber-800">
