@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import BusinessRegistrationStepper from "./components/Stepper";

@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "@/lib/router-compat";
-import { LuLayoutGrid } from "react-icons/lu";
+import { LuLayoutGrid, LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { FOCUS } from "./tokens";
 
 export interface PinnedChip {
@@ -37,6 +37,84 @@ const CHIP =
  * ظهوره فلا يحدث قفز عند لحظة التثبيت.
  */
 const PinnedChipsBar: React.FC<Props> = ({ pinned, items, title, className = "" }) => {
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const [edges, setEdges] = useState({ start: false, end: false });
+
+  /**
+   * إشارة محور التمرير: ‎-1‎ في RTL و‎+1‎ في LTR.
+   *
+   * لا يصحّ استنتاجها من إشارة scrollLeft لأنها صفر عند الطرف الأول
+   * في الاتجاهين، فكان الاستنتاج يخطئ ويُمرَّر في الجهة المعاكسة
+   * فيصطدم بالحدّ ولا يتحرّك شيء.
+   */
+  const axisSign = (el: HTMLElement) =>
+    getComputedStyle(el).direction === "rtl" ? -1 : 1;
+
+  /**
+   * حساب وجود مسافة متبقّية على الطرفين.
+   * في RTL يكون scrollLeft سالباً في المتصفّحات الحديثة، لذا نقيس بالقيمة
+   * المطلقة ونسمّي الطرفين «بداية/نهاية» لا «يمين/يسار».
+   */
+  const syncEdges = useCallback(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
+    const pos = Math.abs(el.scrollLeft);
+    setEdges({ start: pos > 1, end: max - pos > 1 });
+  }, []);
+
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    syncEdges();
+    el.addEventListener("scroll", syncEdges, { passive: true });
+    const ro = new ResizeObserver(syncEdges);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener("scroll", syncEdges);
+      ro.disconnect();
+    };
+  }, [syncEdges, items.length]);
+
+  /**
+   * عجلة الماوس العمودية تُحوَّل إلى تمرير أفقي.
+   * بلا هذا لا يملك مستخدم الماوس أي وسيلة لتصفّح بقية التصنيفات، إذ
+   * شريط التمرير مخفيّ ولا تتوفّر إيماءة أفقية إلا على لوحات اللمس.
+   *
+   * مستمع أصلي بـ passive:false — لأن onWheel في React سلبيّ افتراضياً
+   * فيتجاهل المتصفّح فيه preventDefault ويبقى التمرير عمودياً كما هو.
+   */
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return; // إيماءة أفقية أصلاً
+      const max = el.scrollWidth - el.clientWidth;
+      if (max <= 0) return;
+
+      const pos = Math.abs(el.scrollLeft);
+      const forward = e.deltaY > 0;
+      // عند الطرف نترك الحدث للصفحة حتى تُكمل تمريرها العمودي
+      if ((forward && pos >= max - 1) || (!forward && pos <= 1)) return;
+
+      e.preventDefault();
+      el.scrollLeft += axisSign(el) * e.deltaY;
+    };
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [items.length]);
+
+  const scrollByStep = (dir: 1 | -1) => {
+    const el = trackRef.current;
+    if (!el) return;
+    el.scrollBy({
+      left: axisSign(el) * dir * Math.round(el.clientWidth * 0.75),
+      behavior: "smooth",
+    });
+  };
+
   if (!items.length) return null;
 
   const renderChip = (chip: PinnedChip) => {
@@ -107,7 +185,40 @@ const PinnedChipsBar: React.FC<Props> = ({ pinned, items, title, className = "" 
             {title}
           </span>
         )}
-        <div className="mk-scroll-x min-w-0 flex-1 gap-2 py-2.5">{items.map(renderChip)}</div>
+        <div className="relative min-w-0 flex-1">
+          {edges.start && (
+            <button
+              type="button"
+              aria-label="السابق"
+              tabIndex={pinned ? 0 : -1}
+              onClick={() => scrollByStep(-1)}
+              className={`absolute start-0 top-1/2 z-10 hidden -translate-y-1/2 items-center justify-center rounded-full border border-[#ECE9F5] bg-white p-1.5 text-mk-primary shadow-md transition hover:bg-mk-tint2 lg:flex ${FOCUS}`}
+            >
+              <LuChevronRight size={16} className="rtl:hidden" aria-hidden />
+              <LuChevronLeft size={16} className="hidden rtl:block" aria-hidden />
+            </button>
+          )}
+
+          <div
+            ref={trackRef}
+            className="mk-scroll-x gap-2 py-2.5"
+          >
+            {items.map(renderChip)}
+          </div>
+
+          {edges.end && (
+            <button
+              type="button"
+              aria-label="التالي"
+              tabIndex={pinned ? 0 : -1}
+              onClick={() => scrollByStep(1)}
+              className={`absolute end-0 top-1/2 z-10 hidden -translate-y-1/2 items-center justify-center rounded-full border border-[#ECE9F5] bg-white p-1.5 text-mk-primary shadow-md transition hover:bg-mk-tint2 lg:flex ${FOCUS}`}
+            >
+              <LuChevronLeft size={16} className="rtl:hidden" aria-hidden />
+              <LuChevronRight size={16} className="hidden rtl:block" aria-hidden />
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
