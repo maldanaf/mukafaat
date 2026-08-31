@@ -26,6 +26,10 @@ interface Props {
   className?: string;
 }
 
+/** زر التمرير — بلون الهوية ليتمايز عن الشرائح البيضاء */
+const ARROW =
+  "hidden h-9 w-9 shrink-0 items-center justify-center rounded-full bg-grad-brand text-white shadow-mk-glow transition-all duration-200 hover:-translate-y-0.5 disabled:pointer-events-none disabled:opacity-0 lg:flex";
+
 const CHIP =
   "group flex h-10 shrink-0 items-center gap-2 rounded-full border bg-white ps-1.5 pe-3.5 text-[13px] font-extrabold transition-all duration-200 hover:-translate-y-0.5 hover:border-[#C9BCEC] hover:text-mk-primary";
 
@@ -185,39 +189,38 @@ const PinnedChipsBar: React.FC<Props> = ({ pinned, items, title, className = "" 
             {title}
           </span>
         )}
-        <div className="relative min-w-0 flex-1">
-          {edges.start && (
-            <button
-              type="button"
-              aria-label="السابق"
-              tabIndex={pinned ? 0 : -1}
-              onClick={() => scrollByStep(-1)}
-              className={`absolute start-0 top-1/2 z-10 hidden -translate-y-1/2 items-center justify-center rounded-full border border-[#ECE9F5] bg-white p-1.5 text-mk-primary shadow-md transition hover:bg-mk-tint2 lg:flex ${FOCUS}`}
-            >
-              <LuChevronRight size={16} className="rtl:hidden" aria-hidden />
-              <LuChevronLeft size={16} className="hidden rtl:block" aria-hidden />
-            </button>
-          )}
-
-          <div
-            ref={trackRef}
-            className="mk-scroll-x gap-2 py-2.5"
+        {/*
+          الأزرار خارج مسار التمرير لا فوقه: كانت absolute تغطّي شريحة
+          كاملة عند الطرف، فيتعذّر الضغط على التصنيف الذي تحتها.
+        */}
+        <div className="flex min-w-0 flex-1 items-center gap-1.5">
+          <button
+            type="button"
+            aria-label="السابق"
+            tabIndex={pinned && edges.start ? 0 : -1}
+            disabled={!edges.start}
+            onClick={() => scrollByStep(-1)}
+            className={ARROW}
           >
+            <LuChevronRight size={17} className="rtl:hidden" aria-hidden />
+            <LuChevronLeft size={17} className="hidden rtl:block" aria-hidden />
+          </button>
+
+          <div ref={trackRef} className="mk-scroll-x min-w-0 flex-1 gap-2 py-2.5">
             {items.map(renderChip)}
           </div>
 
-          {edges.end && (
-            <button
-              type="button"
-              aria-label="التالي"
-              tabIndex={pinned ? 0 : -1}
-              onClick={() => scrollByStep(1)}
-              className={`absolute end-0 top-1/2 z-10 hidden -translate-y-1/2 items-center justify-center rounded-full border border-[#ECE9F5] bg-white p-1.5 text-mk-primary shadow-md transition hover:bg-mk-tint2 lg:flex ${FOCUS}`}
-            >
-              <LuChevronLeft size={16} className="rtl:hidden" aria-hidden />
-              <LuChevronRight size={16} className="hidden rtl:block" aria-hidden />
-            </button>
-          )}
+          <button
+            type="button"
+            aria-label="التالي"
+            tabIndex={pinned && edges.end ? 0 : -1}
+            disabled={!edges.end}
+            onClick={() => scrollByStep(1)}
+            className={ARROW}
+          >
+            <LuChevronLeft size={17} className="rtl:hidden" aria-hidden />
+            <LuChevronRight size={17} className="hidden rtl:block" aria-hidden />
+          </button>
         </div>
       </div>
     </div>

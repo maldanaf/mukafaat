@@ -24,9 +24,11 @@ interface Props {
 }
 
 const SIZES = {
-  sm: { now: "text-[17px]", old: "text-[12px]", icon: 14 },
-  md: { now: "text-[21px]", old: "text-[13px]", icon: 17 },
-  lg: { now: "text-[29px]", old: "text-[15px]", icon: 24 },
+  // `free` أصغر من `now`: مقاس السعر مضبوط على رقم قصير، بينما نص
+  // «بدون رسوم» ثلاث كلمات فيطغى على الكرت لو أخذ المقاس نفسه.
+  sm: { now: "text-[17px]", free: "text-[14px]", old: "text-[12px]", icon: 14 },
+  md: { now: "text-[21px]", free: "text-[16px]", old: "text-[13px]", icon: 17 },
+  lg: { now: "text-[29px]", free: "text-[19px]", old: "text-[15px]", icon: 24 },
 } as const;
 
 const num = (value: unknown): number | null => {
@@ -74,7 +76,11 @@ const PriceTag: React.FC<Props> = ({
       className={`flex ${stacked ? "flex-col items-start gap-0.5" : "flex-wrap items-center gap-2"} ${className}`}
     >
       {isFree ? (
-        <span className={`font-bold ${s.now} ${dark ? "text-white" : "text-mk-green"}`}>
+        <span
+          className={`whitespace-nowrap font-bold ${s.free} ${
+            dark ? "text-white" : "text-mk-green"
+          }`}
+        >
           {freeLabel}
         </span>
       ) : (

@@ -14,8 +14,14 @@ import {
   FaWhatsapp,
 } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
-import { useAppConfig } from "@hooks/api/useMokafaatQueries";
+import { useAppConfig, usePages } from "@hooks/api/useMokafaatQueries";
 import { LogoLight } from "@assets";
+
+type CmsPage = {
+  slug: string;
+  title: string;
+  footer_column?: string | null;
+};
 
 const SOCIAL_ICONS: Record<
   string,
@@ -56,6 +62,28 @@ const Footer: React.FC = () => {
     ([key, url]) => url && typeof url === "string" && SOCIAL_ICONS[key],
   );
 
+  /**
+   * صفحات لوحة التحكم تُضاف إلى أعمدة الفوتر تلقائياً.
+   *
+   * كانت روابط الفوتر كلها مكتوبة هنا، فأي صفحة تُنشأ من اللوحة تبقى
+   * بلا رابط يصل إليها رغم أن مسارها /pages/{slug} يعمل. الآن تحدَّد
+   * الوجهة من حقل «عمود الفوتر» في شاشة الصفحة.
+   */
+  const { data: pagesData } = usePages("web") as {
+    data?: { data?: { pages?: CmsPage[] } };
+  };
+
+  const cmsByColumn = (pagesData?.data?.pages ?? []).reduce<
+    Record<string, { to: string; label: string }[]>
+  >((acc, page) => {
+    if (!page.footer_column) return acc;
+    (acc[page.footer_column] ??= []).push({
+      to: `/pages/${page.slug}`,
+      label: page.title,
+    });
+    return acc;
+  }, {});
+
   const columns = [
     {
       title: t("home.navbar.brand", "مكافآت"),
@@ -64,6 +92,7 @@ const Footer: React.FC = () => {
         { to: "/blogs", label: t("home.footer_new.blog", "المدونة") },
         { to: "/contact", label: t("home.navbar.contact", "تواصل معنا") },
         { to: "/faq", label: t("home.footer_new.faq", "الأسئلة الشائعة") },
+        ...(cmsByColumn.brand ?? []),
       ],
     },
     {
@@ -72,15 +101,16 @@ const Footer: React.FC = () => {
         { to: "/offers", label: t("home.navbar.offers", "العروض") },
         { to: "/coupons", label: t("home.navbar.coupons", "كوبونز") },
         { to: "/cards", label: t("home.navbar.cards", "البطاقات") },
+        ...(cmsByColumn.services ?? []),
       ],
     },
     {
       title: t("home.footer_new.business", "الشركات والجهات"),
       links: [
-        { to: "/business-registration", label: t("home.footer_new.join", "انضم كشريك") },
         { to: "/store-request", label: t("storeRequest.tab_join") },
         { to: "/store-request?tab=suggest", label: t("storeRequest.tab_suggest") },
         { to: "/contact", label: t("home.corporate_new.cta", "اطلب عرض سعر") },
+        ...(cmsByColumn.business ?? []),
       ],
     },
     {
@@ -89,6 +119,7 @@ const Footer: React.FC = () => {
         { to: "/privacy-policy", label: t("home.footer.privacy", "سياسة الخصوصية") },
         { to: "/terms-and-conditions", label: t("home.footer.terms", "الشروط والأحكام") },
         { to: "/download-app", label: t("home.hero_new.app", "حمّل التطبيق") },
+        ...(cmsByColumn.help ?? []),
       ],
     },
   ];
