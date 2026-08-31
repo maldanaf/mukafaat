@@ -222,6 +222,15 @@ const PaymentPage = () => {
     });
   }, [showMoyasarForm, isRTL]);
 
+  // تمارا تدفع المبلغ كاملاً — لا تُدمج مع رصيد المحفظة.
+  //
+  // يجب أن يبقى فوق الـ return المبكر: كان تحته فلا يُستدعى أثناء التحميل
+  // ويُستدعى بعده، فيختلف عدد الخطافات بين تصييرين ويسقط المكوّن بـ
+  // «Rendered more hooks than during the previous render». لذلك كانت
+  // الصفحة تفشل عند الوصول إليها وتنجح بعد التحديث (البيانات مخزّنة).
+  const { available: tamaraAvailable, instalments: tamaraInstalments } =
+    useTamara(effectivePrice);
+
   if (isCardDetailLoading && !companyAndOffer) {
     return (
       <div className="min-h-screen bg-mk-tint3 flex items-center justify-center">
@@ -252,10 +261,6 @@ const PaymentPage = () => {
   const walletPartial = walletBalance > 0 && walletBalance < effectivePrice;
   const walletEmpty = walletBalance <= 0;
   const remainingAfterWallet = Math.max(0, effectivePrice - walletBalance);
-
-  // تمارا تدفع المبلغ كاملاً — لا تُدمج مع رصيد المحفظة
-  const { available: tamaraAvailable, instalments: tamaraInstalments } =
-    useTamara(effectivePrice);
 
   const paymentMethods = [
     { id: "card", name: { ar: "بطاقة ائتمانية", en: "Credit Card" }, icons: [Visa, Master], disabled: false },

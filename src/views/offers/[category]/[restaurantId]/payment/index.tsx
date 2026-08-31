@@ -193,6 +193,14 @@ const PaymentPage: React.FC = () => {
     });
   }, [showMoyasarForm, isRTL]);
 
+  // تمارا تدفع المبلغ كاملاً — لا تُدمج مع رصيد المحفظة.
+  //
+  // يجب أن يبقى فوق الـ return المبكر وإلا اختلف عدد الخطافات بين
+  // تصييرين فيسقط المكوّن بـ «Rendered more hooks than during the
+  // previous render» — نفس ما كان يحدث في صفحة دفع البطاقات.
+  const { available: tamaraAvailable, instalments: tamaraInstalments } =
+    useTamara(effectivePrice);
+
   if (!company || !offer) {
     return (
       <div className="min-h-screen bg-mk-tint3 flex items-center justify-center">
@@ -219,9 +227,6 @@ const PaymentPage: React.FC = () => {
   const walletPartial = walletBalance > 0 && walletBalance < effectivePrice;
   const walletEmpty = walletBalance <= 0;
 
-  // تمارا تدفع المبلغ كاملاً — لا تُدمج مع رصيد المحفظة
-  const { available: tamaraAvailable, instalments: tamaraInstalments } =
-    useTamara(effectivePrice);
   const remainingAfterWallet = Math.max(0, effectivePrice - walletBalance);
 
   const paymentMethods = [
