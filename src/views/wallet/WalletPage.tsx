@@ -19,6 +19,7 @@ import {
 } from "@hooks/api/useMokafaatQueries";
 import { toast } from "react-toastify";
 
+import { formatShortDate } from "@utils/localeFormat";
 // Normalize API response shapes
 function getPointsBalance(data: unknown): { points: number; value?: number } {
   const d = (data as Record<string, unknown>)?.data ?? data;
@@ -457,7 +458,7 @@ function WalletTransactionRow({
   const dateStr = item.created_at ?? item.date;
   const date = dateStr
     ? typeof dateStr === "string" && /^\d{4}-\d{2}-\d{2}/.test(dateStr)
-      ? new Date(dateStr).toLocaleDateString("ar-SA")
+      ? formatShortDate(dateStr)
       : String(dateStr)
     : "—";
 

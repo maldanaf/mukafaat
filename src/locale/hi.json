@@ -44,10 +44,10 @@
       "orders": "मेरे आदेश",
       "wallet": "मेरा बटुआ",
       "logout": "लॉग आउट",
-      "brand": "Mukafaat",
-      "choose_city": "Choose your city",
-      "points_balance": "Your points",
-      "saved": "Saved",
+      "brand": "मुकाफत",
+      "choose_city": "अपना शहर चुनें",
+      "points_balance": "आपके पॉइंट्स",
+      "saved": "पसंदीदा",
       "membership_tier": "सदस्यता स्तर",
       "tier_renewal_discount": "सब्सक्रिप्शन नवीनीकरण छूट",
       "tier_progress": "{{tier}} तक पहुँचने के लिए {{count}} और ऑर्डर"
@@ -120,7 +120,14 @@
       "noPlansAvailable": "फिलहाल कोई सदस्यता योजना उपलब्ध नहीं है.",
       "alreadyHaveActiveSubscription": "आपके पास पहले से ही एक सक्रिय सदस्यता है.",
       "alreadySubscribedDesc": "सक्रिय सदस्यता होने पर आप दोबारा सदस्यता नहीं ले सकते।",
-      "subscriptionRequired": "सदस्यता आवश्यक है"
+      "subscriptionRequired": "सदस्यता आवश्यक है",
+      "originalPrice": "मूल कीमत",
+      "tierDiscount": "सदस्यता स्तर छूट",
+      "tierDiscountRenewal": "नवीनीकरण छूट",
+      "tierDiscountNew": "नई सदस्यता पर छूट",
+      "tierBadge": "{{tier}} · {{percent}}% छूट",
+      "youSave": "आप {{amount}} बचाते हैं",
+      "yourTier": "आपका सदस्यता स्तर"
     },
     "hero": {
       "slides": {
@@ -167,7 +174,8 @@
       "more": "अधिक",
       "category": "वर्ग",
       "company": "कंपनी",
-      "demo_views": "1.2K"
+      "demo_views": "1.2 हज़ार",
+      "viewNow": "अभी देखें"
     },
     "categories": {
       "restaurants": "रेस्टोरेंट",
@@ -383,82 +391,82 @@
       "searchButton": "खोज"
     },
     "hero_new": {
-      "title": "All your rewards in one place",
-      "body": "Exclusive offers, coupons and discount codes, digital cards and services that save you more every day.",
-      "tag": "Featured offers",
-      "cta": "Explore offers",
-      "app": "Get the app",
+      "title": "आपके सभी इनाम एक ही जगह",
+      "body": "खास ऑफ़र, कूपन और छूट कोड, डिजिटल कार्ड और ऐसी सेवाएँ जो हर दिन आपकी ज़्यादा बचत कराती हैं।",
+      "tag": "चुनिंदा ऑफ़र",
+      "cta": "ऑफ़र देखें",
+      "app": "ऐप डाउनलोड करें",
       "prev": "पिछली स्लाइड",
       "next": "अगली स्लाइड",
       "slide": "स्लाइड"
     },
     "search_new": {
-      "all_cities": "All cities",
-      "placeholder": "Search for a store, restaurant, offer, coupon or card...",
-      "empty": "No results match your search.",
+      "all_cities": "सभी शहर",
+      "placeholder": "स्टोर, रेस्तराँ, ऑफ़र, कूपन या कार्ड खोजें...",
+      "empty": "आपकी खोज से मेल खाता कोई परिणाम नहीं।",
       "submit": "खोजें",
       "city_label": "शहर चुनें"
     },
     "services_new": {
       "offers": {
-        "title": "Offers & discounts",
-        "body": "Continuous discounts at hundreds of brands.",
-        "cta": "Browse offers"
+        "title": "ऑफ़र और छूट",
+        "body": "सैकड़ों ब्रांड पर लगातार छूट।",
+        "cta": "ऑफ़र देखें"
       },
       "coupons": {
-        "title": "Coupons & promo codes",
-        "body": "Updated codes that work on online stores.",
-        "cta": "Browse coupons"
+        "title": "कूपन और प्रोमो कोड",
+        "body": "अद्यतन कोड जो ऑनलाइन स्टोर पर काम करते हैं।",
+        "cta": "कूपन देखें"
       },
       "cards": {
-        "title": "Digital cards",
-        "body": "Gaming, entertainment and shopping cards delivered instantly.",
-        "cta": "Shop cards"
+        "title": "डिजिटल कार्ड",
+        "body": "गेमिंग, मनोरंजन और शॉपिंग कार्ड जो तुरंत आप तक पहुँचते हैं।",
+        "cta": "कार्ड खरीदें"
       },
       "nearby": {
-        "title": "Near you",
-        "body": "Discover the discounts available around you now.",
-        "cta": "Explore now"
+        "title": "आपके सबसे पास",
+        "body": "अभी अपने आसपास उपलब्ध छूट खोजें।",
+        "cta": "अभी खोजें"
       }
     },
     "categories_new": {
-      "all": "All",
-      "eyebrow": "Quick browse",
-      "title": "Categories",
-      "all_link": "View all categories",
+      "all": "सभी",
+      "eyebrow": "तेज़ ब्राउज़िंग",
+      "title": "श्रेणियाँ",
+      "all_link": "सभी श्रेणियाँ देखें",
       "subtitle": "अपनी पसंद की श्रेणी चुनें और उसके ऑफ़र तुरंत देखें।"
     },
     "offers_new": {
-      "eyebrow": "Picked for you",
-      "title": "Latest & best offers",
-      "all_link": "View all offers",
-      "empty": "No offers in this category right now.",
-      "ended": "Ended",
-      "today": "Ends today",
-      "ends_in": "Ends in",
-      "days": "days",
+      "eyebrow": "आपके लिए चुने गए",
+      "title": "नवीनतम और बेहतरीन ऑफ़र",
+      "all_link": "सभी ऑफ़र देखें",
+      "empty": "इस श्रेणी में फ़िलहाल कोई ऑफ़र नहीं।",
+      "ended": "समाप्त",
+      "today": "आज समाप्त हो रहा है",
+      "ends_in": "समाप्त होने में",
+      "days": "दिन",
       "subtitle": "अभी उपलब्ध सबसे बड़ी छूट — हर दिन अपडेट होती हैं।"
     },
     "coupons_new": {
-      "title": "Featured coupons & promo codes",
-      "all_link": "View all coupons",
-      "copy": "Copy code",
-      "copied": "Copied",
-      "discount": "Save",
-      "with_code": "with code",
-      "use_code": "Use the code at checkout to get the discount",
+      "title": "चुनिंदा कूपन और प्रोमो कोड",
+      "all_link": "सभी कूपन देखें",
+      "copy": "कोड कॉपी करें",
+      "copied": "कॉपी हो गया",
+      "discount": "छूट",
+      "with_code": "कोड के साथ",
+      "use_code": "छूट पाने के लिए भुगतान के समय यह कोड इस्तेमाल करें",
       "eyebrow": "और बचत करें",
       "subtitle": "कोड कॉपी करें और भुगतान के समय इस्तेमाल कर तुरंत छूट पाएँ।"
     },
     "nearby_new": {
-      "eyebrow": "Around you",
-      "title": "Near you",
-      "map_link": "View on map",
-      "radius": "Places near you",
-      "use_location": "Use my location",
-      "locating": "Locating...",
-      "km": "km",
-      "up_to": "Up to",
+      "eyebrow": "आपके आसपास",
+      "title": "आपके सबसे पास",
+      "map_link": "मानचित्र पर देखें",
+      "radius": "आपके पास की जगहें",
+      "use_location": "मेरा स्थान इस्तेमाल करें",
+      "locating": "आपका स्थान पता किया जा रहा है...",
+      "km": "किमी",
+      "up_to": "छूट तक",
       "subtitle": "अपने आसपास छूट देने वाले सबसे नज़दीकी स्टोर और रेस्तराँ देखें।",
       "enable_title": "सबसे नज़दीकी जगहें देखने के लिए अपनी लोकेशन चालू करें",
       "enable_body": "हम आपकी लोकेशन सिर्फ़ एक बार दूरी के अनुसार क्रम लगाने के लिए इस्तेमाल करते हैं — न सहेजी जाती है, न साझा।",
@@ -467,54 +475,54 @@
       "sort_hint": "स्टोर को नज़दीकी के अनुसार क्रम में लगाने के लिए अपनी लोकेशन चालू करें।"
     },
     "stores_new": {
-      "eyebrow": "Most popular",
-      "title": "Most used",
-      "all_link": "View all stores"
+      "eyebrow": "सबसे लोकप्रिय",
+      "title": "सबसे ज़्यादा इस्तेमाल किए गए",
+      "all_link": "सभी स्टोर देखें"
     },
     "corporate_new": {
-      "title": "For companies & government",
-      "body": "A tailored benefits program for your employees: exclusive offers, digital cards and monthly usage reports on one platform.",
-      "cta": "Request a quote"
+      "title": "कंपनियों और सरकारी संस्थाओं के लिए",
+      "body": "आपके कर्मचारियों के लिए विशेष लाभ कार्यक्रम: खास ऑफ़र, डिजिटल कार्ड और मासिक उपयोग रिपोर्ट, सब एक ही प्लेटफ़ॉर्म पर।",
+      "cta": "कोटेशन का अनुरोध करें"
     },
     "app_new": {
-      "title": "Download the Mukafaat app",
-      "body": "All your offers, coupons and cards in your pocket, with alerts when a new discount lands near you."
+      "title": "मुकाफत ऐप डाउनलोड करें",
+      "body": "आपके सभी ऑफ़र, कूपन और कार्ड आपकी जेब में, और जब भी आपके पास नई छूट आए तो सूचना भी।"
     },
     "restaurants_new": {
-      "eyebrow": "Featured restaurants",
-      "title": "Best restaurants",
-      "all_link": "View all restaurants",
-      "discount": "Save",
-      "cuisine": "Restaurants & cafés",
-      "new": "New",
-      "branches": "branches"
+      "eyebrow": "चुनिंदा रेस्तराँ",
+      "title": "बेहतरीन रेस्तराँ",
+      "all_link": "सभी रेस्तराँ देखें",
+      "discount": "छूट",
+      "cuisine": "रेस्तराँ और कैफ़े",
+      "new": "नया",
+      "branches": "शाखा"
     },
     "blog_new": {
-      "eyebrow": "Latest updates",
-      "title": "News & blog",
-      "all_link": "View all posts",
-      "tag": "Blog"
+      "eyebrow": "नवीनतम अपडेट",
+      "title": "समाचार और ब्लॉग",
+      "all_link": "सभी पोस्ट देखें",
+      "tag": "ब्लॉग"
     },
     "newsletter_new": {
-      "eyebrow": "Newsletter",
-      "title": "Stay tuned for the best offers",
-      "body": "Subscribe for one weekly email with the best coupons and discounts in your city — no spam.",
-      "label": "Your email",
-      "cta": "Subscribe",
-      "done": "Subscribed",
-      "privacy": "By subscribing you agree to the privacy policy. You can unsubscribe anytime.",
-      "error": "Could not complete the subscription, please try again"
+      "eyebrow": "न्यूज़लेटर",
+      "title": "बेहतरीन ऑफ़र से जुड़े रहें",
+      "body": "सब्सक्राइब करें और हफ़्ते में एक ईमेल पाएँ जिसमें आपके शहर के सबसे अच्छे कूपन और छूट हों — कोई स्पैम नहीं।",
+      "label": "आपका ईमेल",
+      "cta": "सब्सक्राइब करें",
+      "done": "सब्सक्रिप्शन हो गया",
+      "privacy": "सब्सक्राइब करके आप गोपनीयता नीति से सहमत होते हैं। आप कभी भी सब्सक्रिप्शन रद्द कर सकते हैं।",
+      "error": "सब्सक्रिप्शन पूरा नहीं हो सका, दोबारा कोशिश करें"
     },
     "footer_new": {
-      "blog": "Blog",
-      "faq": "FAQ",
-      "services": "Services",
-      "business": "Business & government",
-      "join": "Become a partner",
-      "help": "Help",
-      "about": "The offers, discounts and coupons platform in Saudi Arabia.",
-      "rights": "All rights reserved © Mukafaat",
-      "country": "Saudi Arabia"
+      "blog": "ब्लॉग",
+      "faq": "अक्सर पूछे जाने वाले सवाल",
+      "services": "सेवाएँ",
+      "business": "कंपनियाँ और संस्थाएँ",
+      "join": "साझेदार बनें",
+      "help": "सहायता",
+      "about": "सऊदी अरब में ऑफ़र, छूट और कूपन का प्लेटफ़ॉर्म।",
+      "rights": "सर्वाधिकार सुरक्षित © मुकाफत",
+      "country": "सऊदी अरब"
     },
     "cards_new": {
       "subtitle": "गेमिंग, मनोरंजन और शॉपिंग कार्ड — कोड आपको तुरंत मिल जाता है।"
@@ -747,7 +755,7 @@
     "upcoming_projects": "आगामी परियोजनाएँ",
     "upcoming_projects_description": "अविस्मरणीय कार्यक्रम बनाने के लिए हमसे जुड़ें! हम प्रभावशाली, प्रतिभाशाली व्यक्तियों की तलाश कर रहे हैं जो प्रभाव डालने के लिए तैयार हों। आइये मिलकर अपने दृष्टिकोण को जीवन में उतारें!",
     "empty": "अभी कोई आगामी प्रोजेक्ट नहीं है.",
-    "noProjectsFound": "\"{{खोज}}\" के लिए कोई आगामी प्रोजेक्ट नहीं मिला"
+    "noProjectsFound": "\"{{search}}\" के लिए कोई आगामी प्रोजेक्ट नहीं मिला"
   },
   "upload_intro_video": {
     "title": "परिचय वीडियो अपलोड करें",
@@ -1147,7 +1155,7 @@
       "threeTwo": "3 बिस्तर, 2 स्नानघर",
       "fourPlus": "4+ बिस्तर, 3+ स्नानघर",
       "fivePlus": "5+ बिस्तर, 4+ स्नानघर",
-      "studio": "STUDIO",
+      "studio": "स्टूडियो",
       "searchButton": "खोजें"
     },
     "searchButton": "खोज"
@@ -1157,7 +1165,7 @@
     "title": "सर्वोत्तम रेस्तरां",
     "subtitle": "सर्वोत्तम रेस्तरां के सबसे स्वादिष्ट व्यंजनों का आनंद लें",
     "viewDetails": "विवरण देखें",
-    "propertiesCount": "{{गिनती}} गुण",
+    "propertiesCount": "{{count}} प्रॉपर्टी",
     "types": {
       "apartments": "अपार्टमेंट",
       "villas": "विला",
@@ -1381,7 +1389,7 @@
     "bahrain": "बहरीन",
     "jeddah": "जेद्दा",
     "riyadh": "रियाद",
-    "dammam": "DAMMAM",
+    "dammam": "दम्माम",
     "whoWeAreLink": "हमारे बारे में",
     "companyDescriptionFallback": "लोरेम इप्सम एक डमी टेक्स्ट है जिसका उपयोग प्रिंटिंग और टाइपसेटिंग में किया जाता है। इसका उद्देश्य पेज लेआउट डिज़ाइन को बाद में भरी जाने वाली सामग्री से स्वतंत्र रूप से अनुमति देना है।"
   },
@@ -1488,11 +1496,13 @@
     },
     "cards_suffix": "कार्ड",
     "heroEyebrow": "एक बार खरीदें, साल भर बचाएं",
-    "heroSubtitle": "बेहतरीन दुकानों के डिस्काउंट कार्ड — एक ही कीमत में बार-बार बचत।"
+    "heroSubtitle": "बेहतरीन दुकानों के डिस्काउंट कार्ड — एक ही कीमत में बार-बार बचत।",
+    "resultsCount_one": "{{count}} कार्ड",
+    "resultsCount_other": "{{count}} कार्ड"
   },
   "saved": {
     "title": "सहेजे गए आइटम",
-    "subtitle": "सहेजा गया आइटम {{गिनती}}",
+    "subtitle": "{{count}} सहेजे गए आइटम",
     "filters": {
       "all": "सभी",
       "offers": "ऑफर",
@@ -1512,18 +1522,20 @@
     "saved_since": "तब से सहेजा गया",
     "empty": {
       "title": "कोई सहेजा गया आइटम नहीं",
-      "title_filtered": "कोई सहेजा नहीं गया {{प्रकार}}",
+      "title_filtered": "कोई सहेजा गया {{type}} नहीं",
       "description": "अपने पसंदीदा ऑफ़र और कार्ड सहेजना प्रारंभ करें",
       "browse_offers": "ऑफ़र ब्राउज़ करें"
     },
     "eyebrow": "आपकी लाइब्रेरी",
     "results_suffix": "सहेजे गए आइटम",
     "remove": "पसंदीदा से हटाएं",
-    "view_details": "विवरण देखें"
+    "view_details": "विवरण देखें",
+    "subtitle_one": "{{count}} सहेजा गया आइटम",
+    "subtitle_other": "{{count}} सहेजे गए आइटम"
   },
   "orders": {
     "title": "मेरे आदेश",
-    "subtitle": "कुल ऑर्डर {{गिनती}}",
+    "subtitle": "कुल {{count}} ऑर्डर",
     "filters": {
       "all": "सभी",
       "pending": "लंबित",
@@ -1567,12 +1579,14 @@
     "more_offers": "+{{count}} और ऑफ़र",
     "empty": {
       "title": "कोई आदेश नहीं",
-      "title_filtered": "कोई {{स्थिति}} आदेश नहीं",
+      "title_filtered": "कोई {{status}} ऑर्डर नहीं",
       "description": "अपने कार्ट में ऑफ़र और कार्ड जोड़ना प्रारंभ करें",
       "browse_offers": "ऑफ़र ब्राउज़ करें"
     },
     "eyebrow": "आपकी खरीदारी",
-    "results_suffix": "ऑर्डर"
+    "results_suffix": "ऑर्डर",
+    "subtitle_one": "कुल {{count}} ऑर्डर",
+    "subtitle_other": "कुल {{count}} ऑर्डर"
   },
   "sideMenu": {
     "logoAlt": "मुकाफ़ात लोगो",
@@ -1796,7 +1810,11 @@
     "group_help": "सहायता",
     "menu_card": "मेरा कार्ड और स्तर",
     "menu_notifications": "सूचनाएं",
-    "menu_store_request": "स्टोर के रूप में जुड़ें"
+    "menu_store_request": "स्टोर के रूप में जुड़ें",
+    "menu_subscription": "मेरी सदस्यता",
+    "menu_referrals": "शेयर करें और कमाएँ",
+    "menu_family": "परिवार के सदस्य",
+    "menu_gifts": "उपहार में दी गई सदस्यताएँ"
   },
   "subscribeForOther": {
     "meta_title": "किसी और के लिए सदस्यता",
@@ -1829,7 +1847,14 @@
     "payment_unexpected": "भुगतान शुरू नहीं हो सका। पुनः प्रयास करें या सहायता लें।",
     "complete_payment": "कार्ड से भुगतान पूरा करें",
     "back_to_form": "फ़ॉर्म पर वापस जाएँ",
-    "moyasar_load_failed": "भुगतान फ़ॉर्म लोड नहीं हो सका।"
+    "moyasar_load_failed": "भुगतान फ़ॉर्म लोड नहीं हो सका।",
+    "label_coupon": "छूट कूपन (वैकल्पिक)",
+    "placeholder_coupon": "कूपन कोड दर्ज करें",
+    "apply_coupon": "लागू करें",
+    "clear_coupon": "हटाएँ",
+    "price_breakdown": "कीमत का विवरण",
+    "invoice_cta": "चालान देखें",
+    "gift_success_invoice": "सदस्यता पूरी हुई — आप चालान देख सकते हैं।"
   },
   "coupons": {
     "title": "कूपनज़",
@@ -1877,9 +1902,9 @@
   },
   "propertyCard": {
     "from": "से",
-    "bedroom_one": "{{गिनती}} शयनकक्ष",
-    "bedroom_other": "{{गिनती}} शयनकक्ष",
-    "area_up_to": "{{क्षेत्र}} तक"
+    "bedroom_one": "{{count}} बेडरूम",
+    "bedroom_other": "{{count}} बेडरूम",
+    "area_up_to": "{{area}} तक"
   },
   "offerDetail": {
     "offers_brand": "ऑफ़र",
@@ -1920,13 +1945,16 @@
     "offer_validity": "ऑफ़र वैधता",
     "discount": "छूट",
     "privacy_fallback": "हम आपके डेटा का उपयोग कैसे करते हैं, इसके बारे में अधिक जानने के लिए हमारी गोपनीयता नीति देखें।",
-    "privacy_link": "गोपनीयता नीति"
+    "privacy_link": "गोपनीयता नीति",
+    "order_created_success": "आपका ऑर्डर सफलतापूर्वक बन गया",
+    "sold_count_one": "{{count}} बिका",
+    "sold_count_other": "{{count}} बिके"
   },
   "offerCard": {
     "cardDetails": "कार्ड विवरण",
-    "purchases_one": "{{गिनती}} खरीदारी",
-    "purchases_other": "{{गिनती}} खरीदारी",
-    "moreFeatures": "+{{गिनती}} अधिक सुविधाएँ",
+    "purchases_one": "{{count}} खरीदारी",
+    "purchases_other": "{{count}} खरीदारी",
+    "moreFeatures": "+{{count}} अधिक सुविधाएँ",
     "popular": "लोकप्रिय",
     "new": "नया",
     "card": "कार्ड",
@@ -1942,7 +1970,10 @@
     "subscribersOnly": "केवल सब्सक्राइबर्स के लिए",
     "save": "बचत",
     "endsToday": "आज समाप्त",
-    "endsInDays": "{{days}} दिन में समाप्त"
+    "endsInDays": "{{days}} दिन में समाप्त",
+    "favorites": "पसंदीदा",
+    "shares": "शेयर",
+    "viewsLabel": "व्यू"
   },
   "couponModal": {
     "removedFromFavorites": "पसंदीदा से हटाया गया",
@@ -1960,7 +1991,7 @@
     "share": "शेयर करना",
     "shopOnSite": "साइट पर खरीदारी करें",
     "copied": "नकल की गई!",
-    "expiresOn": "{{तारीख}} समाप्त हो रही है",
+    "expiresOn": "{{date}} समाप्त हो रही है",
     "validityUnknown": "वैधता निर्दिष्ट नहीं है",
     "noExpiryDate": "कोई समाप्ति तिथि नहीं",
     "goToStore": "दुकान पर जाओ",
@@ -2016,7 +2047,9 @@
       "new": "नया",
       "ending": "जल्द समाप्त"
     },
-    "results_count": "{{count}} परिणाम"
+    "results_count": "{{count}} परिणाम",
+    "results_count_one": "{{count}} परिणाम",
+    "results_count_other": "{{count}} परिणाम"
   },
   "couponCard": {
     "copies": "कॉपी"
@@ -2129,7 +2162,7 @@
     "features": "विशेषताएँ",
     "discountBadge": "{{percent}}% छूट",
     "familyMembersUpTo": "परिवार के {{count}} सदस्यों तक शामिल",
-    "currentPlanBadge": "आपका वर्तमान पैकेज",
+    "currentPlanBadge": "वर्तमान प्लान",
     "previousPlanBadge": "आपका पिछला पैकेज",
     "renewSubscription": "सदस्यता नवीनीकृत करें",
     "activeUntil": "आपकी सदस्यता {{date}} तक सक्रिय है",
@@ -2144,14 +2177,42 @@
       "6_months": "हर 6 महीने",
       "yearly": "वार्षिक",
       "2_years": "2 वर्ष"
-    }
+    },
+    "planUpgradeTitle": "प्लान अपग्रेड करें",
+    "planUpgradeSub": "केवल अंतर का भुगतान करें",
+    "planDowngradeTitle": "छोटे प्लान पर जाएँ",
+    "planDowngradeSub": "अंतर तुरंत आपके वॉलेट में जमा होगा",
+    "planChangeFrom": "से",
+    "planChangeTo": "तक",
+    "planChangeRemaining": "आपके प्लान का शेष ({{days}} दिन)",
+    "planChangeNewPrice": "नए प्लान की कीमत",
+    "planChangeYouPay": "देय राशि",
+    "planChangeToWallet": "वॉलेट में जमा",
+    "planChangeConfirmUpgrade": "भुगतान जारी रखें",
+    "planChangeConfirmDowngrade": "बदलाव की पुष्टि करें",
+    "planChangeFamilyWarningTitle": "{{count}} परिवार सदस्य अपनी सदस्यता खो देंगे",
+    "planChangeFamilyWarningBody": "वे बिना सदस्यता वाले सामान्य उपयोगकर्ता बन जाएँगे और प्रत्येक को स्वयं सदस्यता लेनी होगी।",
+    "mySubscription": "मेरी सदस्यता",
+    "statusActive": "सक्रिय",
+    "availablePlans": "उपलब्ध प्लान",
+    "availablePlansChange": "प्लान बदलें",
+    "availablePlansChangeHint": "अपग्रेड या डाउनग्रेड करें — अंतर आपके वॉलेट में जमा होगा",
+    "daysLeft": "{{days}} दिन शेष",
+    "endsOn": "{{date}} को समाप्त",
+    "noActiveSubscription": "कोई सक्रिय सदस्यता नहीं",
+    "noSubscriptionHint": "सभी ऑफ़र के लिए सदस्यता लें",
+    "planActionUpgrade": "इस प्लान पर अपग्रेड करें",
+    "planActionDowngrade": "इस प्लान पर जाएँ",
+    "subscribeNow": "अभी सदस्यता लें",
+    "daysRemaining_one": "{{count}} दिन शेष",
+    "daysRemaining_other": "{{count}} दिन शेष"
   },
   "payment": {
     "title": "भुगतान का तरीका",
     "electronicPayment": "इलेक्ट्रॉनिक भुगतान",
     "payThrough": "इसके माध्यम से भुगतान",
     "method": {
-      "mada": "mada",
+      "mada": "मदा",
       "applePay": "Apple Pay",
       "card": "क्रेडिट कार्ड / mada",
       "wallet": "वॉलेट से भुगतान",
@@ -2174,11 +2235,11 @@
     "gatewayInitFailed": "भुगतान गेटवे प्रारंभ नहीं हो सका। सहायता से संपर्क करें।",
     "paymentDataIncomplete": "भुगतान जानकारी अधूरी है। सहायता से संपर्क करें।",
     "applePayUnavailable": "Apple Pay केवल Apple डिवाइस पर Safari में उपलब्ध है।",
-    "promoLabel": "Discount or coupon code",
-    "promoPlaceholder": "Enter code",
-    "promoApply": "Apply",
-    "promoRemove": "Remove code",
-    "promoInvalid": "Invalid or expired code",
+    "promoLabel": "छूट या कूपन कोड",
+    "promoPlaceholder": "कोड दर्ज करें",
+    "promoApply": "लागू करें",
+    "promoRemove": "कोड हटाएँ",
+    "promoInvalid": "कोड अमान्य है या उसकी अवधि समाप्त हो चुकी है",
     "tamaraNote": "{{count}} ब्याज-मुक्त किश्तों में बाँटें",
     "tamaraError": "तमारा भुगतान शुरू नहीं हो सका"
   },
@@ -2245,5 +2306,190 @@
     "card_upsell_desc": "अपने निजी नंबर और व्यापारियों द्वारा स्कैन किए जा सकने वाले QR कोड के साथ डिजिटल सदस्यता कार्ड पाने के लिए सब्सक्राइब करें।",
     "card_actions": "कार्ड साझा करें",
     "gifts_subtitle": "आपके द्वारा उपहार में दी गई सदस्यताएँ और उनके चालान"
+  },
+  "membershipTier": {
+    "title": "आपका सदस्यता स्तर",
+    "level": "स्तर",
+    "benefits": "आपके स्तर के लाभ",
+    "renewal_discount": "सदस्यता नवीनीकरण पर छूट",
+    "new_subscription_discount": "नई सदस्यता पर छूट",
+    "gift_discount": "सदस्यता उपहार देने पर छूट",
+    "percent_off": "{{percent}}% छूट",
+    "no_discount": "फ़िलहाल कोई छूट नहीं",
+    "next_tier": "अगला स्तर: {{tier}}",
+    "highest_tier": "आप सर्वोच्च सदस्यता स्तर पर हैं",
+    "remaining_orders": "{{count}} भुगतान किए ऑर्डर बाकी हैं",
+    "remaining_spend": "{{amount}} की और खरीदारी बाकी है",
+    "current_orders": "आपके भुगतान किए ऑर्डर",
+    "current_spend": "आपका कुल खर्च",
+    "evaluation_period": "पिछले {{months}} महीनों में",
+    "none": "अभी कोई सदस्यता स्तर तय नहीं",
+    "remaining_orders_one": "{{count}} भुगतान किया ऑर्डर बाकी",
+    "remaining_orders_other": "{{count}} भुगतान किए ऑर्डर बाकी हैं"
+  },
+  "referrals": {
+    "meta_title": "शेयर करें और कमाएँ",
+    "title": "शेयर करें और कमाएँ",
+    "subtitle": "अपने कोड या लिंक से दोस्तों को आमंत्रित करें — लक्ष्य पूरा करें और अपना इनाम पाएँ।",
+    "menu": "शेयर करें और कमाएँ",
+    "your_code": "आमंत्रण कोड",
+    "your_link": "आमंत्रण लिंक",
+    "copy": "कॉपी करें",
+    "copied": "कॉपी हो गया",
+    "share": "शेयर करें",
+    "progress_title": "इनाम की ओर आपकी प्रगति",
+    "progress_value": "{{required}} में से {{progress}}",
+    "remaining": "इनाम पाने के लिए {{count}} और आमंत्रण बाकी",
+    "goal_reached": "लक्ष्य पूरा — आपका इनाम रास्ते में है",
+    "signups": "आपके लिंक से पंजीकरण",
+    "qualified": "पूर्ण आमंत्रण",
+    "pending": "लंबित",
+    "rewards_title": "प्राप्त इनाम",
+    "rewards_count": "इनामों की संख्या",
+    "no_rewards": "अभी कोई इनाम नहीं",
+    "reward_status_pending": "प्रक्रिया में",
+    "reward_status_granted": "प्रदान किया गया",
+    "reward_status_applied": "उपयोग किया गया",
+    "reward_coupon_code": "कूपन कोड",
+    "reward_valid_until": "{{date}} तक मान्य",
+    "reward_used": "उपयोग किया गया",
+    "reward_expired": "समाप्त",
+    "invites_title": "जिन्हें आपने आमंत्रित किया",
+    "no_invites": "आपने अभी तक किसी को आमंत्रित नहीं किया",
+    "invite_status_pending": "अभी पूरा नहीं",
+    "invite_status_qualified": "पूर्ण",
+    "my_reward": "मेरा इनाम",
+    "friend_reward": "आपके दोस्त का इनाम",
+    "reward_months": "{{count}} महीने की मुफ़्त सदस्यता",
+    "reward_cashback": "{{amount}} कैशबैक",
+    "reward_coupon": "{{percent}}% छूट कूपन",
+    "disabled": "«शेयर करें और कमाएँ» कार्यक्रम फ़िलहाल बंद है।",
+    "login_required": "अपना आमंत्रण कोड देखने के लिए साइन इन करें।",
+    "load_error": "«शेयर करें और कमाएँ» का डेटा लोड नहीं हो सका।",
+    "remaining_one": "इनाम पाने के लिए {{count}} और आमंत्रण बाकी",
+    "remaining_other": "इनाम पाने के लिए {{count}} और आमंत्रण बाकी"
+  },
+  "family": {
+    "meta_title": "परिवार के सदस्य",
+    "title": "परिवार के सदस्य",
+    "menu": "परिवार के सदस्य",
+    "subtitle": "अपने परिवार के सदस्य जोड़ें ताकि वे प्लान की सीमा के भीतर आपकी सदस्यता का लाभ उठा सकें।",
+    "no_plan_title": "फ़ैमिली प्लान ज़रूरी है",
+    "no_plan_desc": "परिवार के सदस्य जोड़ने के लिए फ़ैमिली प्लान लें।",
+    "upgrade_cta": "प्लान देखें",
+    "member_of_title": "आप {{owner}} के परिवार में शामिल हैं",
+    "member_of_desc": "आपकी सदस्यता प्लान मालिक की सदस्यता से जुड़ी है।",
+    "plan_title": "फ़ैमिली प्लान",
+    "plan_ends": "{{date}} को समाप्त",
+    "plan_active": "सक्रिय",
+    "plan_inactive": "निष्क्रिय",
+    "seats": "सीटें",
+    "used_seats": "उपयोग में",
+    "remaining_seats": "शेष",
+    "max_members": "अधिकतम",
+    "seats_full": "प्लान की सभी सीटें भर चुकी हैं",
+    "members_title": "सदस्य",
+    "no_members": "अभी कोई सदस्य नहीं",
+    "add_member": "सदस्य जोड़ें",
+    "label_name": "नाम",
+    "placeholder_name": "सदस्य का नाम (वैकल्पिक)",
+    "label_phone": "मोबाइल नंबर",
+    "label_relation": "रिश्ता",
+    "placeholder_relation": "उदा. बेटा, पत्नी (वैकल्पिक)",
+    "submit": "जोड़ें",
+    "submitting": "जोड़ा जा रहा है…",
+    "invite_success": "सदस्य जुड़ गया",
+    "invite_failed": "सदस्य नहीं जोड़ा जा सका",
+    "err_phone": "मान्य मोबाइल नंबर दर्ज करें",
+    "remove": "हटाएँ",
+    "remove_confirm": "क्या इस सदस्य को हटाना है?",
+    "remove_success": "सदस्य हटा दिया गया",
+    "remove_failed": "सदस्य हटाया नहीं जा सका",
+    "cannot_remove": "इस सदस्य को नहीं हटाया जा सकता",
+    "view_only": "केवल देखने के लिए",
+    "owner": "प्लान मालिक",
+    "status_active": "सक्रिय",
+    "status_pending": "स्वीकृति की प्रतीक्षा",
+    "status_inactive": "निष्क्रिय",
+    "invitations_title": "आपके लिए आमंत्रण",
+    "accept": "आमंत्रण स्वीकारें",
+    "accepting": "स्वीकार किया जा रहा है…",
+    "accept_success": "आमंत्रण स्वीकार हो गया",
+    "accept_failed": "आमंत्रण स्वीकार नहीं हो सका",
+    "load_error": "परिवार का डेटा लोड नहीं हो सका।"
+  },
+  "storeRequest": {
+    "meta_title": "स्टोर के रूप में जुड़ें या स्टोर सुझाएँ",
+    "title": "मुकाफत स्टोर",
+    "subtitle": "स्टोर के मालिक हैं? हमसे जुड़ें। ग्राहक हैं? ऐसा स्टोर सुझाएँ जिसे आप मुकाफत पर देखना चाहें।",
+    "tab_join": "स्टोर जुड़ने का अनुरोध",
+    "tab_suggest": "स्टोर सुझाएँ",
+    "join_desc": "विवरण भरें, हमारी टीम जुड़ाव पूरा करने के लिए आपसे संपर्क करेगी।",
+    "suggest_desc": "हमें बताएँ कि आप कौन सा स्टोर मुकाफत पर देखना चाहते हैं, हम उसे जोड़ने पर विचार करेंगे।",
+    "label_store_name": "स्टोर का नाम",
+    "placeholder_store_name": "स्टोर का नाम लिखें",
+    "label_contact_name": "संपर्क व्यक्ति का नाम",
+    "placeholder_contact_name": "संपर्क व्यक्ति का नाम लिखें",
+    "label_contact_phone": "संपर्क नंबर",
+    "placeholder_contact_phone": "05xxxxxxxx",
+    "label_email": "ईमेल",
+    "placeholder_email": "name@example.com",
+    "label_country": "देश",
+    "label_city": "शहर",
+    "select_country": "देश चुनें",
+    "select_city": "शहर चुनें",
+    "city_not_listed": "मेरा शहर सूची में नहीं है",
+    "label_city_name": "शहर का नाम लिखें",
+    "label_notes": "टिप्पणियाँ",
+    "placeholder_notes": "कोई अतिरिक्त विवरण (वैकल्पिक)",
+    "optional": "वैकल्पिक",
+    "submit": "अनुरोध भेजें",
+    "submitting": "भेजा जा रहा है…",
+    "thanks_title": "धन्यवाद",
+    "thanks_join": "हमें आपका अनुरोध मिल गया, हम जल्द ही आपसे संपर्क करेंगे।",
+    "thanks_suggest": "हमें आपका सुझाव मिल गया, धन्यवाद।",
+    "new_request": "एक और अनुरोध भेजें",
+    "err_store_name": "स्टोर का नाम आवश्यक है",
+    "err_contact_name": "संपर्क व्यक्ति का नाम आवश्यक है",
+    "err_contact_phone": "संपर्क नंबर आवश्यक है",
+    "err_country": "देश चुनना आवश्यक है",
+    "err_city": "शहर चुनना आवश्यक है",
+    "failed": "अनुरोध नहीं भेजा जा सका, कृपया दोबारा कोशिश करें।"
+  },
+  "giftSubscription": {
+    "coupon_label": "छूट कूपन",
+    "coupon_placeholder": "कूपन कोड दर्ज करें",
+    "coupon_apply": "लागू करें",
+    "coupon_remove": "हटाएँ",
+    "coupon_applied": "कूपन लागू हो गया",
+    "coupon_invalid": "कूपन अमान्य है",
+    "price_original": "मूल कीमत",
+    "tier_discount": "{{tier}} स्तर की छूट",
+    "tier_discount_generic": "सदस्यता स्तर छूट",
+    "coupon_discount": "कूपन छूट",
+    "code_discount": "छूट कोड",
+    "total_discount": "कुल छूट",
+    "final_price": "देय राशि",
+    "invoice_title": "उपहार में दी गई सदस्यता का चालान",
+    "invoice_number": "चालान संख्या",
+    "invoice_date": "जारी करने की तिथि",
+    "invoice_amount": "राशि",
+    "invoice_tax": "कर",
+    "invoice_total": "कुल",
+    "invoice_status": "स्थिति",
+    "invoice_recipient": "प्राप्तकर्ता",
+    "invoice_plan": "प्लान",
+    "invoice_period": "अवधि",
+    "invoice_download": "चालान PDF डाउनलोड करें",
+    "invoice_not_ready": "चालान अभी जारी नहीं हुआ, भुगतान पूरा होने पर दिखाई देगा।",
+    "invoice_error": "चालान लोड नहीं हो सका।",
+    "back_to_gifts": "मैंने जो सदस्यताएँ उपहार दीं",
+    "gifts_title": "उपहार में दी गई सदस्यताएँ",
+    "gifts_empty": "आपने अभी तक कोई सदस्यता उपहार नहीं दी",
+    "view_invoice": "चालान देखें"
+  },
+  "popupAds": {
+    "cta": "विवरण देखने के लिए क्लिक करें",
+    "close": "बंद करें"
   }
 }

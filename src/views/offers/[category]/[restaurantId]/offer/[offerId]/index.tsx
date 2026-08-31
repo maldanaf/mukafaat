@@ -584,7 +584,7 @@ const OfferDetailPage = () => {
         </title>
         <link
           rel="canonical"
-          href={`https://mukafaat.com/offers/${category}/${merchantSlug}/${offerSlug}`}
+          href={`https://mukafaat.com.sa/offers/${category}/${merchantSlug}/${offerSlug}`}
         />
       </Helmet>
 

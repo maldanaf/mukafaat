@@ -40,20 +40,20 @@ export const steps = (
 ];
 
 export const businessRegistrationNavItems = (t: TFunction) => [
-  { label: t("home.navbar.home"), href: "https://www.mukafaat.com" },
+  { label: t("home.navbar.home"), href: "https://mukafaat.com.sa" },
   {
     label: t("home.navbar.about"),
-    href: "https://www.mukafaat.com/about",
+    href: "https://mukafaat.com.sa/about",
   },
-  { label: t("home.navbar.services"), href: "https://www.mukafaat.com" },
-  { label: t("home.navbar.portfolio"), href: "https://www.mukafaat.com" },
+  { label: t("home.navbar.services"), href: "https://mukafaat.com.sa" },
+  { label: t("home.navbar.portfolio"), href: "https://mukafaat.com.sa" },
   {
     label: t("home.navbar.upcoming_projects"),
-    href: "https://www.mukafaat.com/projects",
+    href: "https://mukafaat.com.sa/projects",
   },
 ];
 
-export const languages = ["en", "ar", "fr", "ur", "hi"];
+export const languages = ["en", "ar", "ur", "hi"];
 
 // Initial form data with TypeScript type
 export const initialFormData: BusinessRegistrationForm = {

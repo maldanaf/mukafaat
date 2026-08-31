@@ -3,7 +3,7 @@ import { API_BASE_URL } from "@config/api";
 import i18n from "../i18n";
 
 /** لغة الطلب لرأس Accept-Language (وفق لغة الواجهة في i18n) */
-const ACCEPT_LANGUAGE_CODES = ["ar", "en", "fr", "ur", "hi"] as const;
+const ACCEPT_LANGUAGE_CODES = ["ar", "en", "ur", "hi"] as const;
 
 /** قيمة رأس Accept-Language لكل طلبات الـ API (تتبع لغة الواجهة) */
 export function getAcceptLanguage(): string {

@@ -39,6 +39,7 @@ import DeleteAccountSection from "@components/account/DeleteAccountSection";
 import { Badge, Button, EmptyState, FOCUS } from "@ui";
 import { parseMembershipTier } from "@utils/subscriptionPricing";
 import { parseGeoCountries } from "@utils/geo";
+import { localeTag } from "@utils/localeFormat";
 import {
   AccountPageHead,
   AccountPanel,
@@ -73,13 +74,8 @@ const INPUT_CLASS =
 const ProfilePage: React.FC = () => {
   const { t, i18n } = useTranslation();
   const isRTL = useIsRTL();
-  const dateLocale = useMemo(() => {
-    const b = i18n.language?.split("-")[0] || "en";
-    if (b === "ar") return "ar-SA";
-    if (b === "ur") return "ur-PK";
-    if (b === "hi") return "hi-IN";
-    return "en-US";
-  }, [i18n.language]);
+  // تقويم ميلادي وأرقام لاتينية في كل اللغات — عبر الأداة المركزية
+  const dateLocale = useMemo(() => localeTag(), [i18n.language]);
   const { user } = useUserStore();
   const { data: profileData, refetch: refetchProfile } = useProfile();
   const { data: subscriptionData } = useSubscriptionStatus(!!user);
@@ -763,6 +759,39 @@ const ProfilePage: React.FC = () => {
           )}
 
           <MembershipTierCard tier={membershipTier} />
+
+          {/* ملخّص الاشتراك — يفتح صفحة «اشتراكي» للترقية أو التقليل */}
+          <div className="rounded-mk-xl border border-mk-border bg-white p-5 shadow-mk-card">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="m-0 text-[13px] font-bold text-mk-text-strong">
+                  {t("subscription.mySubscription", "اشتراكي")}
+                </p>
+                <p className="m-0 mt-1.5 text-[12.5px] text-mk-muted">
+                  {isSubscribed
+                    ? String((subObj?.plan_name as string) ?? "") ||
+                      t("subscription.statusActive", "فعّال")
+                    : t(
+                        "subscription.noActiveSubscription",
+                        "لا يوجد اشتراك فعّال",
+                      )}
+                </p>
+                {isSubscribed && subObj?.days_remaining != null && (
+                    <p className="m-0 mt-1 text-[11.5px] text-mk-muted">
+                      {t("subscription.daysLeft", "باقٍ {{days}} يوم").replace(
+                        "{{days}}",
+                        String(subObj.days_remaining),
+                      )}
+                    </p>
+                  )}
+              </div>
+              <Button to="/profile/subscription" variant="outline" size="sm">
+                {isSubscribed
+                  ? t("subscription.availablePlansChange", "تغيير الباقة")
+                  : t("subscription.subscribeNow", "اشترك الآن")}
+              </Button>
+            </div>
+          </div>
 
           {showMembershipCard && membershipNumber && (
             <MembershipCard

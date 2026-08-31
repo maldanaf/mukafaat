@@ -490,7 +490,7 @@ const CouponsPage = () => {
     <>
       <Helmet>
         <title>{t("coupons.title")}</title>
-        <link rel="canonical" href="https://mukafaat.com/coupons" />
+        <link rel="canonical" href="https://mukafaat.com.sa/coupons" />
       </Helmet>
 
       {/* نسخة الموبايل */}

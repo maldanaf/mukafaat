@@ -21,7 +21,7 @@ function NotFoundPage() {
     <>
       <Helmet>
         <title>{t("404.title")}</title>
-        <link rel="canonical" href="https://mukafaat.com/404" />
+        <link rel="canonical" href="https://mukafaat.com.sa/404" />
         <meta name="description" content={t("404.description")} />
         <meta property="og:title" content={t("404.title")} />
         <meta property="og:description" content={t("404.description")} />

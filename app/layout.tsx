@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import Providers from "./Providers";
 import RouteLoadingIndicator from "@components/RouteLoadingIndicator";
 import "../src/index.css";
+import { SITE_URL, absoluteUrl, alternateLanguages, SITE_NAME_EN } from "@config/site";
+import { getSiteSettings, buildSiteSchema } from "@config/siteSettings";
 
 export const metadata: Metadata = {
+  // يجعل Next يحوّل كل رابط نسبي في الوسوم إلى مطلق على النطاق الصحيح
+  metadataBase: new URL(SITE_URL),
   title:
     "Mukafaat - Offers, Discounts & Savings Platform - منصة العروض والخصومات والتوفير",
   description:
@@ -19,51 +22,51 @@ export const metadata: Metadata = {
     title: "Mukafaat - Offers, Discounts & Savings Platform",
     description:
       "Mukafaat - Your ultimate destination for exclusive offers, discounts, credit cards, coupons, and bookings in Saudi Arabia.",
-    url: "https://mukafaat.com",
-    images: ["https://mukafaat.com/assets/logo-BcBtrMQ_.svg"],
+    url: SITE_URL,
+    siteName: SITE_NAME_EN,
+    type: "website",
+    locale: "ar_SA",
+    images: [absoluteUrl("/assets/logo-BcBtrMQ_.svg")],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Mukafaat - Offers, Discounts & Savings Platform",
+    description:
+      "Mukafaat - Your ultimate destination for exclusive offers, discounts, credit cards, coupons, and bookings in Saudi Arabia.",
+    images: [absoluteUrl("/assets/logo-BcBtrMQ_.svg")],
   },
   alternates: {
-    canonical: "https://mukafaat.com",
+    canonical: SITE_URL,
   },
   icons: {
     icon: "/favicon.png",
   },
 };
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "Mukafaat",
-  description:
-    "Mukafaat - Your ultimate destination for exclusive offers, discounts, credit cards, coupons, and bookings in Saudi Arabia.",
-  url: "https://mukafaat.com",
-  logo: "https://mukafaat.com/assets/logo-BcBtrMQ_.svg",
-  contactPoint: {
-    "@type": "ContactPoint",
-    contactType: "customer service",
-    telephone: "+966501234567",
-    email: "support@mukafaat.com",
-  },
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Riyadh",
-    addressRegion: "Riyadh",
-    addressCountry: "Saudi Arabia",
-  },
-  sameAs: [
-    "https://wa.me/+966501234567",
-    "https://www.linkedin.com/company/mukafaat",
-  ],
-};
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // بيانات السكيما من لوحة التحكم — الهاتف والبريد والعنوان والحسابات
+  const settings = await getSiteSettings();
+  const jsonLd = buildSiteSchema(settings);
+
   return (
     <html suppressHydrationWarning>
       <head>
+        {/*
+          روابط اللغات البديلة.
+          نكتبها يدوياً لأن `alternates.languages` في Next يُسقط معامل
+          الاستعلام `?lang=` عند تطبيع الروابط، فتخرج الخمس متطابقة.
+        */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        {Object.entries(alternateLanguages("/")).map(([locale, href]) => (
+          <link key={locale} rel="alternate" hrefLang={locale} href={href} />
+        ))}
         <script dangerouslySetInnerHTML={{ __html: `
           (function(){
             try {
@@ -97,12 +100,6 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         <RouteLoadingIndicator />
         <Providers>{children}</Providers>
-        <Script
-          id="json-ld"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-          strategy="afterInteractive"
-        />
       </body>
     </html>
   );

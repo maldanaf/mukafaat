@@ -17,7 +17,7 @@ const ServiceDetailsPage = () => {
     <>
       <Helmet>
         <title>{t("home.navbar.services")}</title>
-        <link rel="canonical" href="https://mukafaat.com/services" />
+        <link rel="canonical" href="https://mukafaat.com.sa/services" />
         <meta
           name="description"
           content="Discover our comprehensive event management services including hosting, security, photography, and more."

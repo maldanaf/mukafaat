@@ -4,7 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "@/lib/router-compat";
 import { LuLayoutGrid, LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { t } from "i18next";
-import { CONTAINER, pick } from "./tokens";
+import { CONTAINER } from "./tokens";
+import { paletteFor } from "@ui";
 import { FOCUS, PinnedChipsBar } from "@ui";
 import usePinnedUnderHeader from "@hooks/usePinnedUnderHeader";
 import SectionHead from "./SectionHead";
@@ -15,6 +16,8 @@ export interface CategoryItem {
   name: string;
   slug?: string;
   image?: string | null;
+  /** لون التصنيف من لوحة التحكم (#RRGGBB) — فارغ يعني لوناً تلقائياً ثابتاً */
+  color?: string | null;
 }
 
 interface Props {
@@ -120,7 +123,10 @@ const CategoriesBand: React.FC<Props> = ({ categories, title, showViewAll = true
             className="mk-scroll-x -mx-1 gap-3 px-1 py-3"
           >
             {all.map((category, i) => {
-              const color = pick(i);
+              const color = paletteFor(
+                (category as CategoryItem).color,
+                category.id,
+              );
               return (
                 <button
                   key={String(category.id)}
@@ -163,7 +169,7 @@ const CategoriesBand: React.FC<Props> = ({ categories, title, showViewAll = true
         id: category.id,
         name: category.name,
         image: category.image,
-        color: pick(i).c,
+        color: paletteFor((category as CategoryItem).color, category.id).c,
         onClick: () => openCategory(category as CategoryItem),
       }))}
     />

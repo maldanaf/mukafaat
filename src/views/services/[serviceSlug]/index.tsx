@@ -57,7 +57,7 @@ const ServiceDetailsPage = () => {
         <title>{serviceName}</title>
         <link
           rel="canonical"
-          href={`https://mukafaat.com/services/${serviceSlug}`}
+          href={`https://mukafaat.com.sa/services/${serviceSlug}`}
         />
         <meta
           name="description"

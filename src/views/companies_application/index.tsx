@@ -177,7 +177,7 @@ const CompaniesApplicationPage = () => {
         <title>{t("company-application.title")}</title>
         <link
           rel="canonical"
-          href="https://mukafaat.com/companies-application"
+          href="https://mukafaat.com.sa/companies-application"
         />
         <meta
           name="description"

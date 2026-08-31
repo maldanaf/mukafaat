@@ -1,33 +1,32 @@
 "use client";
 
-import // AboutVideo,
-// CoreValues,
-// Features,
-// OurStaff,
-// VissionMission,
-"./components/index";
-import { useIsRTL } from "@hooks";
-import {
-  FAQSection,
-  GetStartedSection,
-  // GetStarted,
-} from "@views/home/components";
-import { t } from "i18next";
+import React from "react";
+import { useTranslation } from "react-i18next";
 import { Helmet } from "@/lib/helmet-compat";
-import { usePageDetail } from "@hooks/api/useMokafaatQueries";
 import { useNavigate } from "@/lib/router-compat";
 import { HiOutlineHome } from "react-icons/hi";
 import { BsChevronDown } from "react-icons/bs";
-import AboutComponent from "@views/home/components/AboutComponent";
+import { useIsRTL } from "@hooks";
+import { GetStartedSection } from "@views/home/components";
+import { usePageDetail } from "@hooks/api/useMokafaatQueries";
+import { EmptyState } from "@ui";
+import { BreadcrumbSchema } from "@components/seo";
 
-const AboutPage = () => {
+/**
+ * صفحة «من نحن».
+ *
+ * كل محتواها يأتي من لوحة التحكم (الصفحات ← من نحن) عبر
+ * `GET /api/pages/about-us` — العنوان والنص معاً بلغة المستخدم.
+ * لا نص ثابت في الكود ولا في ملفات الترجمة، عدا فتات المسار
+ * وقسم تحميل التطبيق المشترك مع بقية الموقع.
+ */
+const AboutPage: React.FC = () => {
+  const { t } = useTranslation();
   const isRTL = useIsRTL();
   const navigate = useNavigate();
 
-  // Fetch about page content from API
   const { data: pageResponse, isLoading } = usePageDetail("about-us");
 
-  // Extract page content from API response
   const pageData = (pageResponse as Record<string, unknown>)?.data as
     | Record<string, unknown>
     | undefined;
@@ -35,105 +34,84 @@ const AboutPage = () => {
     | { title?: string; content?: string }
     | undefined;
 
+  const title = page?.title ?? "";
+  const content = page?.content ?? "";
+
   return (
     <>
       <Helmet>
-        <title>{t("home.navbar.about")}</title>
-        <link rel="canonical" href="https://mukafaat.com/about" />
+        <title>{title || t("home.navbar.about")}</title>
+        <link rel="canonical" href="https://mukafaat.com.sa/about" />
+        {/* الوصف من محتوى الصفحة نفسه بعد تجريده من الوسوم */}
         <meta
           name="description"
-          content="Learn more about our mission, values, and the team behind Mukafaat."
+          content={content.replace(/<[^>]*>/g, " ").slice(0, 160).trim()}
         />
-        <meta property="og:title" content={t("home.navbar.about")} />
-        <meta
-          property="og:description"
-          content="Learn more about our mission, values, and the team behind Mukafaat."
-        />
+        <meta property="og:title" content={title || t("home.navbar.about")} />
       </Helmet>
 
-      <div className="min-h-screen bg-gray-50" style={{ paddingTop: "72px" }}>
-        {/* Listing Header */}
-        <div className="bg-white pb-6">
-          <div className="container mx-auto px-4 lg:px-0 py-0">
-            {/* Breadcrumb */}
-            <div className="flex items-center text-sm text-[#141414] font-medium mb-4 pt-4">
-              <HiOutlineHome className="me-2 text-lg" />
-              <span
-                className="cursor-pointer hover:text-[#fd671a] transition-colors"
-                onClick={() => navigate("/")}
-              >
-                {isRTL ? "الرئيسية" : "Home"}
-              </span>
-              <BsChevronDown
-                className={`mx-2 transform ${
-                  isRTL ? "rotate-90" : "rotate-[270deg]"
-                }`}
-              />
-              <span
-                className="cursor-pointer hover:text-[#fd671a] transition-colors"
-                onClick={() => navigate("/about")}
-              >
-                {isRTL ? "من نحن" : t("about.hero.title")}
-              </span>
-            </div>
+      <BreadcrumbSchema
+        items={[
+          { name: t("home.navbar.home", "الرئيسية"), path: "/" },
+          { name: title || t("home.navbar.about") },
+        ]}
+      />
 
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-              <div className="space-y-2">
-                <h1
-                  className="text-[#400198] text-3xl font-bold"
-                  style={{
-                    fontFamily: isRTL
-                      ? "Readex Pro, sans-serif"
-                      : "Jost, sans-serif",
-                  }}
-                >
-                  {page?.title || (isRTL ? "من نحن - مكافئات" : "About Mukafaat")}
-                </h1>
-                <p className="text-gray-600 text-sm">
-                  {isRTL
-                    ? "اكتشف منصة مكافئات الرائدة في المملكة العربية السعودية لتوفير المال والاستفادة من أفضل العروض والخصومات على البطاقات الائتمانية والكوبونز والحجوزات."
-                    : "Discover Mukafaat, the leading platform in Saudi Arabia for saving money and benefiting from the best offers and discounts on credit cards, coupons, and bookings."}
-                </p>
-              </div>
-            </div>
+      <div className="min-h-screen bg-gray-50" style={{ paddingTop: "72px" }}>
+        <div className="bg-white pb-6">
+          <div className="container mx-auto px-4 py-0 lg:px-0">
+            {/* فتات المسار */}
+            <nav className="mb-4 flex items-center pt-4 text-sm font-medium text-[#141414]">
+              <HiOutlineHome className="me-2 text-lg" />
+              <button
+                type="button"
+                onClick={() => navigate("/")}
+                className="hover:text-mk-primary"
+              >
+                {t("home.navbar.home", isRTL ? "الرئيسية" : "Home")}
+              </button>
+              <BsChevronDown
+                className={`mx-2 text-xs ${isRTL ? "rotate-90" : "rotate-[270deg]"}`}
+              />
+              <span className="text-mk-primary">
+                {title || t("home.navbar.about")}
+              </span>
+            </nav>
+
+            {/* عنوان الصفحة من اللوحة */}
+            {!isLoading && title && (
+              <h1 className="m-0 text-[26px] font-extrabold text-mk-text-strong">
+                {title}
+              </h1>
+            )}
           </div>
         </div>
 
-        {/* API content section - shown if API returns content */}
-        {isLoading ? (
-          <div className="bg-white py-8">
-            <div className="container mx-auto px-4 lg:px-0">
-              <div className="space-y-4 animate-pulse">
-                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                <div className="h-4 bg-gray-200 rounded w-full"></div>
-                <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-                <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+        {/* محتوى الصفحة من اللوحة */}
+        <div className="bg-white py-8">
+          <div className="container mx-auto px-4 lg:px-0">
+            {isLoading ? (
+              <div className="animate-pulse space-y-4">
+                <div className="h-4 w-3/4 rounded bg-gray-200" />
+                <div className="h-4 w-full rounded bg-gray-200" />
+                <div className="h-4 w-5/6 rounded bg-gray-200" />
+                <div className="h-4 w-2/3 rounded bg-gray-200" />
               </div>
-            </div>
-          </div>
-        ) : page?.content ? (
-          <div className="bg-white py-8">
-            <div className="container mx-auto px-4 lg:px-0">
+            ) : content ? (
               <div
-                className="prose max-w-none text-sm text-gray-700 leading-relaxed [&_h2]:text-[#400198] [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-[#400198] [&_h3]:text-md [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-3 [&_ul]:list-disc [&_ul]:list-inside [&_ul]:space-y-2 [&_ul]:ml-4 [&_p]:mb-3 [&_img]:rounded-xl [&_img]:my-4"
-                dangerouslySetInnerHTML={{ __html: page.content }}
+                className="prose max-w-none text-sm leading-relaxed text-gray-700 [&_h2]:mb-3 [&_h2]:mt-6 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-[#400198] [&_h3]:mb-3 [&_h3]:mt-6 [&_h3]:text-md [&_h3]:font-semibold [&_h3]:text-[#400198] [&_img]:my-4 [&_img]:rounded-xl [&_p]:mb-3 [&_ul]:ml-4 [&_ul]:list-inside [&_ul]:list-disc [&_ul]:space-y-2"
+                dangerouslySetInnerHTML={{ __html: content }}
               />
-            </div>
+            ) : (
+              // لا محتوى في اللوحة بعد — لا نعرض صفحة فارغة بلا تفسير
+              <EmptyState
+                title={t("common.noContent", isRTL ? "لا يوجد محتوى" : "No content")}
+              />
+            )}
           </div>
-        ) : null}
+        </div>
 
-        <AboutComponent />
-        <GetStartedSection className="mt-0 mb-0" /> <FAQSection />
-        {/* <AboutVideo
-          arDescription={aboutUs?.arDescription}
-          enDescription={aboutUs?.enDescription}
-        />
-        <CoreValues />
-        <VissionMission
-          vissionDescription={ourVission}
-          missionDescription={ourMission}
-        />
-        <GetStarted /> */}
+        <GetStartedSection className="mb-0 mt-0" />
       </div>
     </>
   );

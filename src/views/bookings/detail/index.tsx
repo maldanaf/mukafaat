@@ -130,7 +130,7 @@ export default function BookingDetailPage() {
   // SEO
   const pageTitle = `${title} | ${isRTL ? "مكافآت" : "Mukafaat"}`;
   const pageDescription = description || title;
-  const canonicalUrl = `https://mukafaat.com/bookings/${type}/${slug}`;
+  const canonicalUrl = `https://mukafaat.com.sa/bookings/${type}/${slug}`;
 
   // Type-specific info
   const originCity = String(listing.origin_city ?? "");

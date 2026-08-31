@@ -143,7 +143,7 @@ const CategoryCardsPage = () => {
         </title>
         <link
           rel="canonical"
-          href={`https://mukafaat.com/cards/${merchantSlug}`}
+          href={`https://mukafaat.com.sa/cards/${merchantSlug}`}
         />
       </Helmet>
 

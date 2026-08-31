@@ -38,7 +38,7 @@ function ContactPage() {
     <>
       <Helmet>
         <title>{t("home.navbar.contact")}</title>
-        <link rel="canonical" href="https://mukafaat.com/contact" />
+        <link rel="canonical" href="https://mukafaat.com.sa/contact" />
         <meta
           name="description"
           content={

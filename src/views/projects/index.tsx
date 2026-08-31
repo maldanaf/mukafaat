@@ -74,7 +74,7 @@ const ProjectsPage = () => {
     <>
       <Helmet>
         <title>{t("projects.upcoming_projects")}</title>
-        <link rel="canonical" href="https://mukafaat.com/projects" />
+        <link rel="canonical" href="https://mukafaat.com.sa/projects" />
         <meta
           name="description"
           content="Explore exciting opportunities at Mukafaat."

@@ -150,7 +150,7 @@ const GalleryPage = () => {
     <>
       <Helmet>
         <title>{t("gallery.title") || "Gallery"}</title>
-        <link rel="canonical" href="https://mukafaat.com/gallery" />
+        <link rel="canonical" href="https://mukafaat.com.sa/gallery" />
         <meta
           name="description"
           content="Explore our event gallery showcasing amazing events and celebrations."

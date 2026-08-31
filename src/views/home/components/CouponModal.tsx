@@ -28,6 +28,7 @@ import ShareModal from "@components/ShareModal";
 import { Badge, StatChips } from "@ui";
 import { usedCountText } from "@utils/usedCount";
 
+import { localeTag } from "@utils/localeFormat";
 export type CouponWithIcon = CouponModel & { icon: React.ReactNode };
 
 interface CouponModalProps {
@@ -44,16 +45,9 @@ const CouponModal: React.FC<CouponModalProps> = ({
   getLogoUrl,
 }) => {
   const isRTL = useIsRTL();
-  const { t, i18n } = useTranslation();
-  const langBase = i18n.language?.split("-")[0] || "en";
-  const dateLocale =
-    langBase === "ar"
-      ? "ar-SA"
-      : langBase === "ur"
-        ? "ur-PK"
-        : langBase === "hi"
-          ? "hi-IN"
-          : "en-US";
+  const { t } = useTranslation();
+  // تقويم ميلادي وأرقام لاتينية في كل اللغات — عبر الأداة المركزية
+  const dateLocale = localeTag();
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);

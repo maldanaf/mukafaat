@@ -15,7 +15,7 @@ const ChangePageTitle = (props: {
   return (
     <Helmet>
       <title>{props.pageTitle}</title>
-      <link rel="canonical" href={`https://mukafaat.com${props.path || "/"}`} />
+      <link rel="canonical" href={`https://mukafaat.com.sa${props.path || "/"}`} />
       <meta name="description" content={props.description || ""} />
       <meta property="og:title" content={props.pageTitle} />
       <meta property="og:description" content={props.description || ""} />

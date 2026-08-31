@@ -8,6 +8,7 @@ import SubscribeForOtherPage from "./SubscribeForOtherPage";
 import ReferralsPage from "./ReferralsPage";
 import FamilyPage from "./FamilyPage";
 import MyGiftsPage from "./MyGiftsPage";
+import MySubscriptionPage from "@views/subscription/MySubscriptionPage";
 import GiftInvoicePage from "./GiftInvoicePage";
 import MembershipCardPage from "./MembershipCardPage";
 import NotificationsPage from "./NotificationsPage";
@@ -20,7 +21,9 @@ const ProfileSection: React.FC = () => {
   const giftInvoiceMatch = /^\/profile\/gifts\/([^/]+)\/?$/.exec(pathname ?? "");
 
   let content: React.ReactNode;
-  if (pathname === "/profile/subscribe-for-other") {
+  if (pathname === "/profile/subscription") {
+    content = <MySubscriptionPage />;
+  } else if (pathname === "/profile/subscribe-for-other") {
     content = <SubscribeForOtherPage />;
   } else if (pathname === "/profile/referrals") {
     content = <ReferralsPage />;

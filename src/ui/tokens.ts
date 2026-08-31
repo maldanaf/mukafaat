@@ -221,6 +221,28 @@ export const PALETTE = [
 
 export const pick = (i: number) => PALETTE[Math.abs(i) % PALETTE.length];
 
+/**
+ * لون عنصر من اللوحة إن ضُبط، وإلا لون ثابت مشتقّ من معرّفه.
+ *
+ * مهم: لا نشتقّ من **ترتيب** العنصر في القائمة، لأن إضافة تصنيف في المنتصف
+ * أو تغيير الترتيب كان يُبدّل ألوان كل ما بعده. الاشتقاق من المعرّف يُبقي
+ * لون التصنيف ثابتاً مدى الحياة.
+ */
+export function paletteFor(
+  serverColor: unknown,
+  id: string | number | null | undefined,
+): { c: string; bg: string } {
+  const custom = normalizeHex(serverColor);
+  if (custom) return { c: custom, bg: `${custom}1A` }; // 1A ≈ 10% شفافية
+
+  const key = String(id ?? "");
+  let hash = 0;
+  for (let i = 0; i < key.length; i++) {
+    hash = (hash * 31 + key.charCodeAt(i)) | 0;
+  }
+  return PALETTE[Math.abs(hash) % PALETTE.length];
+}
+
 /** يحوّل `#RRGGBB` (أو `#AARRGGBB` القادم من الباك-إند) إلى `#RRGGBB` صالح للويب */
 export function normalizeHex(value: unknown): string | null {
   const raw = typeof value === "string" ? value.trim() : "";

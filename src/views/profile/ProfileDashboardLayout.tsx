@@ -44,6 +44,11 @@ const ProfileDashboardLayout: React.FC<{ children: React.ReactNode }> = ({
       icon: IoPersonOutline,
     },
     {
+      to: "/profile/subscription",
+      labelKey: "profileDashboard.menu_subscription",
+      icon: IoSparklesOutline,
+    },
+    {
       to: "/saved",
       labelKey: "profileDashboard.menu_interests",
       icon: IoHeartOutline,
@@ -67,11 +72,6 @@ const ProfileDashboardLayout: React.FC<{ children: React.ReactNode }> = ({
       to: "/profile/subscribe-for-other",
       labelKey: "profileDashboard.menu_subscribe_other",
       icon: IoPeopleOutline,
-    },
-    {
-      to: "/subscription/plans",
-      labelKey: "profileDashboard.menu_upgrade",
-      icon: IoSparklesOutline,
     },
     {
       to: APP_ROUTES.contact,

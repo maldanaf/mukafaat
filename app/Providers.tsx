@@ -19,6 +19,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         defaultOptions: {
           queries: {
             refetchOnWindowFocus: false,
+            // بدون staleTime كل إعادة تركيب تُعيد الجلب، فتُضخَّم عدّادات
+            // المشاهدات وتُهدَر طلبات لا لزوم لها. خمس دقائق كافية.
+            staleTime: 5 * 60 * 1000,
           },
         },
       })

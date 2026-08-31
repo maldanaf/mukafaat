@@ -595,7 +595,7 @@ const PaymentPage = () => {
         <title>
           {isRTL ? "إتمام الدفع" : "Complete Payment"} - {company.name[isRTL ? "ar" : "en"]}
         </title>
-        <link rel="canonical" href={`https://mukafaat.com/cards/${companyId}/payment`} />
+        <link rel="canonical" href={`https://mukafaat.com.sa/cards/${companyId}/payment`} />
       </Helmet>
 
       <div className="min-h-screen bg-mk-tint3">

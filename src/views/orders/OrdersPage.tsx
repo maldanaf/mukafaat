@@ -30,6 +30,7 @@ import { downloadVoucher } from "@utils/voucherDownload";
 import { toast } from "react-toastify";
 import { pickLocalized } from "@utils/pickLocalized";
 
+import { localeTag } from "@utils/localeFormat";
 const OrdersPage: React.FC = () => {
   const { t, i18n } = useTranslation();
   const langBase = i18n.language?.split("-")[0] || "en";
@@ -64,14 +65,8 @@ const OrdersPage: React.FC = () => {
     setCurrentPage(1);
   }, [filter]);
 
-  const dateLocale =
-    langBase === "ar"
-      ? "ar-SA"
-      : langBase === "ur"
-        ? "ur-PK"
-        : langBase === "hi"
-          ? "hi-IN"
-          : "en-US";
+  // تقويم ميلادي وأرقام لاتينية في كل اللغات — عبر الأداة المركزية
+  const dateLocale = localeTag();
 
   const getStatusLabel = (status: string) => {
     switch (status) {

@@ -16,13 +16,6 @@ import {
   LuSearch,
   LuMenu,
   LuX,
-  LuShoppingBag,
-  LuHeartPulse,
-  LuFerrisWheel,
-  LuCar,
-  LuGraduationCap,
-  LuDumbbell,
-  LuUtensils,
   LuWallet,
   LuPackage,
   LuUsers,
@@ -45,18 +38,7 @@ import {
 import { normalizeFavoritesList } from "@utils/favorites";
 import { pick } from "@/views/home/components/newhome/tokens";
 
-/** أيقونات بطاقات القائمة الكبرى حسب ترتيب التصنيفات */
-const MEGA_ICONS = [
-  LuShoppingBag,
-  LuHeartPulse,
-  LuFerrisWheel,
-  LuCar,
-  LuGraduationCap,
-  LuDumbbell,
-  LuUtensils,
-];
-
-type Dropdown = "offers" | "city" | "user" | null;
+type Dropdown = "city" | "user" | null;
 
 /**
  * الهيدر المشترك لكل صفحات الموقع — تصميم design_handoff_mukafaat_homepage.
@@ -84,7 +66,6 @@ const Navbar: React.FC = () => {
   const favoritesCount = normalizeFavoritesList(favoritesData ?? null).length;
 
   const home = (homeData as Record<string, any>)?.data ?? {};
-  const categories: Record<string, any>[] = home.categories ?? [];
   const cities: Record<string, any>[] = home.cities ?? [];
   const citiesOffersTotal: number | null = home.cities_offers_total ?? null;
 
@@ -165,23 +146,16 @@ const Navbar: React.FC = () => {
 
           {/* التنقّل — يظهر على الشاشات الكبيرة */}
           <nav className="hidden min-w-0 flex-1 items-center justify-center gap-1 lg:flex">
-            <div data-dd="offers" className="relative">
-              <button
-                onClick={() => toggle("offers")}
-                className={`flex items-center gap-1.5 whitespace-nowrap rounded-full py-1 pe-3 ps-1 text-[13.5px] font-extrabold text-[#400198] transition-all duration-200 ease-out ${
-                  open === "offers" ? "bg-[#F1EBFB] shadow-[inset_0_0_0_1px_#DED7F2]" : "hover:bg-[#F2EFFA]"
-                }`}
-              >
-                <span className="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-grad-accent text-white shadow-[0_6px_14px_-6px_rgba(226,86,13,0.9)]">
-                  <LuPercent size={16} />
-                </span>
-                <span>{t("home.navbar.offers", "العروض")}</span>
-                <LuChevronDown
-                  size={15}
-                  className={`transition-transform ${open === "offers" ? "rotate-180" : ""}`}
-                />
-              </button>
-            </div>
+            {/* العروض: رابط مباشر لصفحة العروض العامة — بلا قائمة منسدلة */}
+            <Link
+              to="/offers"
+              className="flex items-center gap-1.5 whitespace-nowrap rounded-full py-1 pe-3 ps-1 text-[13.5px] font-extrabold text-[#400198] transition-all duration-200 ease-out hover:bg-[#F2EFFA]"
+            >
+              <span className="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-grad-accent text-white shadow-[0_6px_14px_-6px_rgba(226,86,13,0.9)]">
+                <LuPercent size={16} />
+              </span>
+              <span>{t("home.navbar.offers", "العروض")}</span>
+            </Link>
 
             {navItems.map((item, i) => {
               const color = pick(i + 4);
@@ -441,62 +415,6 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* القائمة الكبرى للتصنيفات */}
-        {open === "offers" && categories.length > 0 && (
-          <div
-            data-dd="offers"
-            className="absolute inset-x-0 top-full border-y border-[#EFEDF7] bg-white shadow-[0_26px_60px_rgba(46,16,101,0.14)]"
-          >
-            <div className="mx-auto w-full max-w-site px-4 pb-8 pt-7 sm:px-6">
-              <div className="mb-[18px] flex flex-col items-start gap-1">
-                <span className="text-[19px] font-extrabold tracking-[-0.01em] text-[#400198]">
-                  {t("home.categories_new.title", "التصنيفات")}
-                </span>
-                <span className="h-[4px] w-[54px] rounded-full bg-grad-accent" />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
-                {categories.slice(0, 7).map((category, i) => {
-                  const color = pick(i);
-                  const Icon = MEGA_ICONS[i % MEGA_ICONS.length];
-                  return (
-                    <button
-                      key={category.id}
-                      onClick={() => {
-                        setOpen(null);
-                        navigate(
-                          category.slug
-                            ? `/offers/${category.slug}`
-                            : `/offers?category=${category.id}`,
-                        );
-                      }}
-                      className="mk-lift group flex flex-col items-center justify-center gap-3 rounded-mk-xl border px-2.5 py-[22px]"
-                      style={{ background: color.bg, borderColor: color.bg }}
-                    >
-                      <span
-                        className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full text-white shadow-[0_8px_18px_-8px_rgba(46,16,101,0.8)] transition-transform duration-200 group-hover:scale-110"
-                        style={{ backgroundImage: `linear-gradient(135deg, ${color.c}, ${color.c}CC)` }}
-                      >
-                        {category.image ? (
-                          <img
-                            src={category.image}
-                            alt=""
-                            className="h-6 w-6 object-contain brightness-0 invert"
-                          />
-                        ) : (
-                          <Icon size={22} />
-                        )}
-                      </span>
-                      <span className="text-center text-[13px] font-extrabold leading-[1.5] text-[#2B1B5E]">
-                        {category.name}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* قائمة الموبايل المنسدلة */}
         {mobileOpen && (
           <div className="border-t border-[#EFEDF7] bg-white px-4 py-3 lg:hidden">

@@ -5,6 +5,7 @@ import { useNavigate } from "@/lib/router-compat";
 import { Helmet } from "@/lib/helmet-compat";
 import { useTranslation } from "react-i18next";
 import { useIsRTL, useTamara } from "@hooks";
+import PlanChangeModal, { type PlanChangePreview } from "@components/PlanChangeModal";
 import { FiArrowLeft } from "react-icons/fi";
 import { IoPeopleOutline } from "react-icons/io5";
 import { AxiosError } from "axios";
@@ -115,6 +116,10 @@ const SubscriptionPaymentPage: React.FC = () => {
   const { available: tamaraAvailable, instalments: tamaraInstalments } =
     useTamara(total);
 
+  // تغيير الباقة (ترقية/تقليل): نعرض المعاينة ولا ننفّذ إلا بموافقة صريحة
+  const [changePreview, setChangePreview] = useState<PlanChangePreview | null>(null);
+  const [changeBusy, setChangeBusy] = useState(false);
+
   // كود الخصم يُحتسب على المبلغ بعد الكوبون — نُلغيه عند تغيّر الكوبون
   const onCouponChange = useCallback((c: CouponValidateResult | null) => {
     setCoupon(c);
@@ -149,7 +154,7 @@ const SubscriptionPaymentPage: React.FC = () => {
     setMoyasarMountKey((k) => k + 1);
   }, []);
 
-  const handleConfirmPayment = () => {
+  const handleConfirmPayment = (confirmChange = false) => {
     if (!plan?.id) return;
     setErrorMsg(null);
 
@@ -165,6 +170,7 @@ const SubscriptionPaymentPage: React.FC = () => {
         useWallet: method === "wallet" || undefined,
         couponCode: coupon?.coupon_code,
         discountCode: discount?.code,
+        confirmChange,
       },
       {
         onSuccess: (res: unknown) => {
@@ -177,8 +183,14 @@ const SubscriptionPaymentPage: React.FC = () => {
           if (data.status === false) {
             const msg = (data.msg as string) || t("home.subscription.paymentFailed");
             const errNum = data.errNum as string | undefined;
+            // الخادم يطلب تأكيد تغيير الباقة ويرسل المعاينة معه
+            if (errNum === "E007" && data.change_preview) {
+              setChangePreview(data.change_preview as PlanChangePreview);
+              setChangeBusy(false);
+              return;
+            }
             if (errNum === "E006" || String(msg).includes("اشتراك فعال")) {
-              setErrorMsg(t("home.subscription.alreadyHaveActiveSubscription"));
+              setErrorMsg(msg);
               return;
             }
             setErrorMsg(msg);
@@ -495,7 +507,7 @@ const SubscriptionPaymentPage: React.FC = () => {
                 block
                 className="rounded-full"
                 disabled={subscribeMutation.isPending}
-                onClick={handleConfirmPayment}
+                onClick={() => handleConfirmPayment()}
               >
                 {subscribeMutation.isPending
                   ? t("home.subscription.loading")
@@ -514,6 +526,19 @@ const SubscriptionPaymentPage: React.FC = () => {
           )}
         </div>
       </section>
+
+      {changePreview && (
+        <PlanChangeModal
+          preview={changePreview}
+          busy={changeBusy}
+          onClose={() => setChangePreview(null)}
+          onConfirm={() => {
+            setChangeBusy(true);
+            setChangePreview(null);
+            handleConfirmPayment(true);
+          }}
+        />
+      )}
     </>
   );
 };

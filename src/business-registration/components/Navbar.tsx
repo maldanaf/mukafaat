@@ -20,7 +20,7 @@ const BusinessRegistrationNavbar = () => {
   return (
     <header className="w-full">
       <nav className="flex items-center justify-between bg-transparent">
-        <a href="https://www.mukafaat.com" aria-label="Mukafaat Home">
+        <a href="https://mukafaat.com.sa" aria-label="Mukafaat Home">
           <img
             src={BusinessRegistrationLogo}
             alt="Mukafaat Logo"

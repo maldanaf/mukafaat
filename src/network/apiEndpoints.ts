@@ -98,6 +98,7 @@ export const API_ENDPOINTS = {
     status: `${API}/subscription/status`,
     history: `${API}/subscription/history`,
     checkPayment: `${API}/subscription/check-payment`,
+    changePreview: `${API}/subscription/change-preview`,
     /** باقات الإهداء بأسعارها بعد خصم المستوى والكوبون */
     giftPlans: `${API}/subscription/gift/plans`,
     /** الاشتراكات التي أهديتها لآخرين */

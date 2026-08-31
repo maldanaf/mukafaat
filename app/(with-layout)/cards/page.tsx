@@ -1,4 +1,14 @@
-"use client";
-import { Suspense } from "react";
-import CardsPage from "@views/cards";
-export default function Page() { return <Suspense><CardsPage /></Suspense>; }
+import type { Metadata } from "next";
+import { pageMetadata } from "@config/pageMetadata";
+import PageClient from "./PageClient";
+
+export const metadata: Metadata = pageMetadata({
+  title: "البطاقات الرقمية | مكافآت",
+  description:
+    "بطاقات هدايا واشتراكات رقمية بأسعار مخفّضة — نتفلكس، ستاربكس، بلايستيشن وغيرها.",
+  path: "/cards",
+});
+
+export default function Page() {
+  return <PageClient />;
+}

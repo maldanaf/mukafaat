@@ -531,6 +531,9 @@
     },
     "stats_new": {
       "trust": "منصّة سعودية موثوقة — عروض محدّثة يومياً ودعم على مدار الأسبوع"
+    },
+    "search": {
+      "searchButton": "بحث"
     }
   },
   "about": {
@@ -874,7 +877,8 @@
     "contactNameRequired": "يرجى كتابة إسم جهة الإتصال",
     "countryRequired": "يرجى إختيار الدولة",
     "standbyHourRequired": "يرجى إختيار وقت بدء العمل",
-    "closingHourRequired": "يرجى إختيار وقت إنتهاء العمل"
+    "closingHourRequired": "يرجى إختيار وقت إنتهاء العمل",
+    "eventNameRequired": "اسم الفعالية مطلوب"
   },
   "messages": {
     "jobSeekerSuccess": "تم إرسال طلبك بنجاح ، سوف يتم التواصل معك في أقرب وقت ممكن .",
@@ -1492,7 +1496,13 @@
     },
     "cards_suffix": "بطاقة",
     "heroEyebrow": "اشترِ مرة، وفّر طوال العام",
-    "heroSubtitle": "بطاقات خصم من أفضل المتاجر — خصومات متجدّدة بسعر واحد."
+    "heroSubtitle": "بطاقات خصم من أفضل المتاجر — خصومات متجدّدة بسعر واحد.",
+    "resultsCount_zero": "لا بطاقات",
+    "resultsCount_one": "بطاقة واحدة",
+    "resultsCount_two": "بطاقتان",
+    "resultsCount_few": "{{count}} بطاقات",
+    "resultsCount_many": "{{count}} بطاقة",
+    "resultsCount_other": "{{count}} بطاقة"
   },
   "saved": {
     "title": "العناصر المفضلة",
@@ -1523,7 +1533,13 @@
     "eyebrow": "مكتبتك",
     "results_suffix": "عنصر محفوظ",
     "remove": "إزالة من المفضلة",
-    "view_details": "عرض التفاصيل"
+    "view_details": "عرض التفاصيل",
+    "subtitle_zero": "لا عناصر محفوظة",
+    "subtitle_one": "عنصر واحد محفوظ",
+    "subtitle_two": "عنصران محفوظان",
+    "subtitle_few": "{{count}} عناصر محفوظة",
+    "subtitle_many": "{{count}} عنصراً محفوظاً",
+    "subtitle_other": "{{count}} عنصر محفوظ"
   },
   "orders": {
     "title": "طلباتي",
@@ -1576,7 +1592,13 @@
       "browse_offers": "تصفح العروض"
     },
     "eyebrow": "مشترياتك",
-    "results_suffix": "طلب"
+    "results_suffix": "طلب",
+    "subtitle_zero": "لا طلبات",
+    "subtitle_one": "طلب واحد إجمالاً",
+    "subtitle_two": "طلبان إجمالاً",
+    "subtitle_few": "{{count}} طلبات إجمالاً",
+    "subtitle_many": "{{count}} طلباً إجمالاً",
+    "subtitle_other": "{{count}} طلب إجمالاً"
   },
   "sideMenu": {
     "logoAlt": "شعار مكافآت",
@@ -1803,7 +1825,8 @@
     "group_help": "المساعدة",
     "menu_card": "بطاقتي والمستويات",
     "menu_notifications": "الإشعارات",
-    "menu_store_request": "انضم كمتجر"
+    "menu_store_request": "انضم كمتجر",
+    "menu_subscription": "اشتراكي"
   },
   "subscribeForOther": {
     "meta_title": "الاشتراك لشخص آخر",
@@ -1935,7 +1958,13 @@
     "offer_validity": "صلاحية العرض",
     "discount": "الخصم",
     "privacy_fallback": "لمزيد من المعلومات حول كيفية جمع واستخدام بياناتك، راجع سياسة الخصوصية.",
-    "privacy_link": "سياسة الخصوصية"
+    "privacy_link": "سياسة الخصوصية",
+    "sold_count_zero": "لم تُبَع أي قسيمة",
+    "sold_count_one": "قسيمة واحدة مباعة",
+    "sold_count_two": "قسيمتان مباعتان",
+    "sold_count_few": "{{count}} قسائم مباعة",
+    "sold_count_many": "{{count}} قسيمة مباعة",
+    "sold_count_other": "{{count}} قسيمة مباعة"
   },
   "offerCard": {
     "cardDetails": "تفاصيل البطاقة",
@@ -2004,7 +2033,13 @@
     "current_orders": "طلباتك المدفوعة",
     "current_spend": "إجمالي إنفاقك",
     "evaluation_period": "خلال آخر {{months}} شهر",
-    "none": "لم يُحدَّد مستوى عضوية بعد"
+    "none": "لم يُحدَّد مستوى عضوية بعد",
+    "remaining_orders_zero": "اكتملت طلباتك المطلوبة",
+    "remaining_orders_one": "تبقّى طلب مدفوع واحد",
+    "remaining_orders_two": "تبقّى طلبان مدفوعان",
+    "remaining_orders_few": "تبقّى {{count}} طلبات مدفوعة",
+    "remaining_orders_many": "تبقّى {{count}} طلباً مدفوعاً",
+    "remaining_orders_other": "تبقّى {{count}} طلب مدفوع"
   },
   "referrals": {
     "meta_title": "شارك واربح",
@@ -2044,7 +2079,13 @@
     "reward_coupon": "كوبون خصم {{percent}}%",
     "disabled": "برنامج «شارك واربح» غير مفعّل حالياً.",
     "login_required": "سجّل الدخول لعرض كود الدعوة الخاص بك.",
-    "load_error": "تعذّر تحميل بيانات شارك واربح."
+    "load_error": "تعذّر تحميل بيانات شارك واربح.",
+    "remaining_zero": "اكتمل الهدف",
+    "remaining_one": "تبقّت دعوة واحدة للحصول على المكافأة",
+    "remaining_two": "تبقّت دعوتان للحصول على المكافأة",
+    "remaining_few": "تبقّت {{count}} دعوات للحصول على المكافأة",
+    "remaining_many": "تبقّت {{count}} دعوة للحصول على المكافأة",
+    "remaining_other": "تبقّى {{count}} دعوة للحصول على المكافأة"
   },
   "family": {
     "meta_title": "أفراد العائلة",
@@ -2230,7 +2271,13 @@
       "new": "جديد",
       "ending": "ينتهي قريباً"
     },
-    "results_count": "{{count}} نتيجة"
+    "results_count": "{{count}} نتيجة",
+    "results_count_zero": "لا نتائج",
+    "results_count_one": "نتيجة واحدة",
+    "results_count_two": "نتيجتان",
+    "results_count_few": "{{count}} نتائج",
+    "results_count_many": "{{count}} نتيجة",
+    "results_count_other": "{{count}} نتيجة"
   },
   "couponCard": {
     "copies": "مرات النسخ"
@@ -2339,7 +2386,39 @@
       "6_months": "كل 6 أشهر",
       "yearly": "سنوي",
       "2_years": "سنتان"
-    }
+    },
+    "planUpgradeTitle": "ترقية الباقة",
+    "planUpgradeSub": "ستدفع الفرق فقط بعد خصم ما تبقّى من باقتك",
+    "planDowngradeTitle": "تغيير إلى باقة أقل",
+    "planDowngradeSub": "الفرق سيُودَع في محفظتك فوراً",
+    "planChangeFrom": "من",
+    "planChangeTo": "إلى",
+    "planChangeRemaining": "المتبقي من باقتك ({{days}} يوم)",
+    "planChangeNewPrice": "سعر الباقة الجديدة",
+    "planChangeYouPay": "المطلوب دفعه",
+    "planChangeToWallet": "يُودَع في محفظتك",
+    "planChangeConfirmUpgrade": "متابعة الدفع",
+    "planChangeConfirmDowngrade": "تأكيد التغيير",
+    "planChangeFamilyWarningTitle": "سيفقد {{count}} من أفراد عائلتك اشتراكهم",
+    "planChangeFamilyWarningBody": "سيتحوّلون إلى مستخدمين عاديين بلا اشتراك، وعلى كلٍّ منهم الاشتراك بنفسه بعد ذلك.",
+    "mySubscription": "اشتراكي",
+    "statusActive": "فعّال",
+    "availablePlans": "الباقات المتاحة",
+    "availablePlansChange": "تغيير الباقة",
+    "availablePlansChangeHint": "يمكنك الترقية أو التقليل، وفرق التقليل يُودَع في محفظتك",
+    "daysLeft": "باقٍ {{days}} يوم",
+    "endsOn": "ينتهي في {{date}}",
+    "noActiveSubscription": "لا يوجد اشتراك فعّال",
+    "noSubscriptionHint": "اشترك للاستفادة من كل العروض والخصومات",
+    "planActionUpgrade": "ترقية لهذه الباقة",
+    "planActionDowngrade": "التغيير لهذه الباقة",
+    "subscribeNow": "اشترك الآن",
+    "daysRemaining_zero": "ينتهي اليوم",
+    "daysRemaining_one": "يتبقّى يوم واحد",
+    "daysRemaining_two": "يتبقّى يومان",
+    "daysRemaining_few": "يتبقّى {{count}} أيام",
+    "daysRemaining_many": "يتبقّى {{count}} يوماً",
+    "daysRemaining_other": "يتبقّى {{count}} يوم"
   },
   "payment": {
     "title": "طريقة الدفع",
@@ -2440,5 +2519,9 @@
     "card_upsell_desc": "اشترك لتحصل على بطاقة عضوية رقمية برقم خاص وكود QR يُقرأ لدى التجّار.",
     "card_actions": "مشاركة البطاقة",
     "gifts_subtitle": "الاشتراكات التي أهديتها وفواتيرها"
+  },
+  "popupAds": {
+    "cta": "اضغط لعرض التفاصيل",
+    "close": "إغلاق"
   }
 }

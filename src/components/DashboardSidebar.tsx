@@ -98,8 +98,8 @@ const GROUPS: { titleKey: string; items: MenuItem[] }[] = [
     titleKey: "profileDashboard.group_membership",
     items: [
       {
-        to: "/subscription/plans",
-        labelKey: "profileDashboard.menu_upgrade",
+        to: "/profile/subscription",
+        labelKey: "profileDashboard.menu_subscription",
         icon: IoSparklesOutline,
         tint: "#B45309",
         bg: "#FDF1DF",

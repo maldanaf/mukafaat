@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { useIsRTL } from "@hooks";
 import { useWebPopupAds } from "@hooks/api/useMokafaatQueries";
+import { useTranslation } from "react-i18next";
 
 type PopupAd = {
   id: number;
@@ -87,6 +88,7 @@ function shouldShowAd(ad: PopupAd, screen: string): boolean {
 
 export default function PopupAdsModal({ screen }: { screen: string }) {
   const isRTL = useIsRTL();
+  const { t } = useTranslation();
   const { data } = useWebPopupAds(screen);
   const [open, setOpen] = useState(false);
   const [activeAd, setActiveAd] = useState<PopupAd | null>(null);
@@ -175,7 +177,7 @@ export default function PopupAdsModal({ screen }: { screen: string }) {
           ref={closeRef}
           onClick={close}
           className="absolute top-3 end-3 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#1A1A2E] shadow-[0_8px_24px_-6px_rgba(15,6,44,0.5)] transition-all duration-200 hover:scale-105 hover:bg-[#F2EFFA] hover:text-[#400198] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#400198] focus-visible:ring-offset-2"
-          aria-label={isRTL ? "إغلاق" : "Close"}
+          aria-label={t("popupAds.close", "إغلاق")}
         >
           <IoMdClose className="text-2xl" />
         </button>
@@ -199,7 +201,7 @@ export default function PopupAdsModal({ screen }: { screen: string }) {
             </h3>
             <div className="mt-4 flex items-center justify-between gap-3">
               <span className="inline-flex items-center gap-2 rounded-full bg-[#400198]/10 text-[#400198] px-4 py-2 text-sm font-semibold group-hover:bg-[#400198]/15 transition-colors">
-                {isRTL ? "اضغط لعرض التفاصيل" : "Click to view details"}
+                {t("popupAds.cta", "اضغط لعرض التفاصيل")}
               </span>
               <span className="text-[#fd671a] text-sm font-bold group-hover:translate-x-0.5 transition-transform">
                 {isRTL ? "←" : "→"}

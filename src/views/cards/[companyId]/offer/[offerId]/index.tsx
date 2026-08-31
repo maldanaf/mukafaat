@@ -225,7 +225,7 @@ const CardOfferDetailPage = () => {
         </title>
         <link
           rel="canonical"
-          href={`https://mukafaat.com/cards/${companyId}/${offerId}`}
+          href={`https://mukafaat.com.sa/cards/${companyId}/${offerId}`}
         />
       </Helmet>
 

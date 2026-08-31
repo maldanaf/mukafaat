@@ -11,25 +11,25 @@
       "clients": "کلائنٹس",
       "portfolio": "پورٹ فولیو",
       "careers": "کیریئرز",
-      "apply-for-job": "ملازمت کے لیے درخواست دیں۔",
-      "request-our-services": "ہماری خدمات کی درخواست کریں۔",
+      "apply-for-job": "ملازمت کے لیے درخواست دیں",
+      "request-our-services": "ہماری خدمات کی درخواست کریں",
       "upcoming_projects": "آنے والے پروجیکٹس",
       "language": "عربی",
-      "contact": "ہم سے رابطہ کریں۔",
-      "request-service": "سروس کی درخواست کریں۔",
+      "contact": "ہم سے رابطہ کریں",
+      "request-service": "سروس کی درخواست کریں",
       "cards": "کارڈز",
       "coupons": "کوپنز",
       "bookings": "بکنگ",
-      "offers": "پیشکش کرتا ہے۔",
+      "offers": "آفرز",
       "blogs": "بلاگز",
       "side-menu": {
         "company-name": "مکافات",
         "tagline": "پروفیشنل ایونٹ کے حل",
-        "need-help": "مدد کی ضرورت ہے؟ ہم سے رابطہ کریں۔",
+        "need-help": "مدد کی ضرورت ہے؟ ہم سے رابطہ کریں",
         "phone": "+966 50 123 4567",
         "working-hours": "کام کے اوقات",
         "contact-info": "رابطہ کی معلومات",
-        "follow-us": "ہمیں فالو کریں۔",
+        "follow-us": "ہمیں فالو کریں",
         "hours": "گھنٹے",
         "days": "دن",
         "hours-value": "صبح 09:00 تا شام 05:00 بجے",
@@ -44,10 +44,10 @@
       "orders": "میرے احکامات",
       "wallet": "میرا پرس",
       "logout": "لاگ آؤٹ",
-      "brand": "Mukafaat",
-      "choose_city": "Choose your city",
-      "points_balance": "Your points",
-      "saved": "Saved",
+      "brand": "مکافات",
+      "choose_city": "اپنا شہر منتخب کریں",
+      "points_balance": "آپ کے پوائنٹس",
+      "saved": "پسندیدہ",
       "membership_tier": "ممبرشپ لیول",
       "tier_renewal_discount": "سبسکرپشن تجدید پر رعایت",
       "tier_progress": "{{tier}} تک پہنچنے کے لیے مزید {{count}} آرڈرز"
@@ -60,22 +60,22 @@
       "login_desc": "لاگ ان کرنے کے لیے اپنا موبائل نمبر درج کریں۔",
       "register_desc": "نیا اکاؤنٹ بنانے کے لیے اپنا موبائل نمبر درج کریں۔",
       "mobile_label": "موبائل نمبر",
-      "mobile_placeholder": "موبائل نمبر درج کریں۔",
-      "mobile_error_placeholder": "موبائل نمبر درکار ہے۔",
+      "mobile_placeholder": "موبائل نمبر درج کریں",
+      "mobile_error_placeholder": "موبائل نمبر درکار ہے",
       "login_button": "لاگ ان",
       "register_button": "اکاؤنٹ بنائیں",
       "sending": "بھیج رہا ہے...",
       "verify_desc": "اپنے موبائل پر بھیجا گیا تصدیقی کوڈ درج کریں۔",
       "verify_not_received": "کوڈ موصول نہیں ہوا؟",
-      "verify_resend": "دوبارہ بھیجیں۔",
-      "register_resend": "دوبارہ بھیجیں۔",
+      "verify_resend": "دوبارہ بھیجیں",
+      "register_resend": "دوبارہ بھیجیں",
       "verifying": "تصدیق ہو رہی ہے...",
-      "verify_button": "کوڈ کی تصدیق کریں۔",
+      "verify_button": "کوڈ کی تصدیق کریں",
       "have_account": "پہلے سے ہی اکاؤنٹ ہے؟",
       "no_account": "اکاؤنٹ نہیں ہے؟",
-      "sign_in_now": "ابھی سائن ان کریں۔",
+      "sign_in_now": "ابھی سائن ان کریں",
       "register_now": "ابھی اکاؤنٹ بنائیں",
-      "error_sending_otp": "توثیقی کوڈ بھیجنے میں خرابی۔",
+      "error_sending_otp": "توثیقی کوڈ بھیجنے میں خرابی",
       "invalid_otp": "غلط توثیقی کوڈ"
     },
     "common": {
@@ -87,40 +87,47 @@
     "subscription": {
       "offerForSubscribersOnly": "پیشکش صرف سبسکرائبرز کے لیے",
       "offerForSubscribersOnlyDesc": "یہ پیشکش صرف ایپ سبسکرائبرز کے لیے دستیاب ہے۔ ہمیں بہت ساری پیشکشوں اور رعایتوں سے فائدہ اٹھانے کے لیے آپ میں شامل ہونے پر خوشی ہے۔",
-      "subscribe": "سبسکرائب کریں۔",
+      "subscribe": "سبسکرائب کریں",
       "backToOffer": "پیشکش پر واپس",
-      "choosePlan": "اپنے لیے صحیح سبسکرپشن کا انتخاب کریں۔",
+      "choosePlan": "اپنے لیے صحیح سبسکرپشن کا انتخاب کریں",
       "choosePlanDesc": "سبسکرپشنز کے مختصر جائزہ کے لیے نمونہ متن۔ یہاں تعارفی جائزہ متن لکھیں۔",
       "subscriptionDuration": "رکنیت کا دورانیہ",
       "months": "مہینے",
       "year": "سال",
-      "buy": "خریدیں۔",
+      "buy": "خریدیں",
       "thankYouForSubscribing": "سبسکرائب کرنے کے لیے آپ کا شکریہ",
       "thankYouDesc": "آپ کی سبسکرپشن کامیابی سے چالو ہو گئی ہے۔ اب آپ سبسکرائبرز کے لیے پیشکشوں اور خصوصی چیزوں سے فائدہ اٹھا سکتے ہیں۔",
       "ok": "ٹھیک ہے",
       "paymentTitle": "رکنیت کی مکمل ادائیگی",
       "paymentDesc": "اپنی ادائیگی کا طریقہ منتخب کریں پھر ادائیگی کی تصدیق کریں۔",
-      "choosePaymentMethod": "ادائیگی کا طریقہ منتخب کریں۔",
+      "choosePaymentMethod": "ادائیگی کا طریقہ منتخب کریں",
       "paymentOnline": "آن لائن ادائیگی (کارڈ)",
       "paymentCash": "کیش",
       "paymentBank": "بینک ٹرانسفر",
-      "paymentWallet": "بٹوے سے ادائیگی کریں۔",
-      "confirmPayment": "ادائیگی کی تصدیق کریں۔",
-      "paymentFailed": "ادائیگی ناکام ہو گئی۔",
+      "paymentWallet": "بٹوے سے ادائیگی کریں",
+      "confirmPayment": "ادائیگی کی تصدیق کریں",
+      "paymentFailed": "ادائیگی ناکام ہو گئی",
       "paymentFailedDesc": "ہم ادائیگی مکمل نہیں کر سکے۔ براہ کرم دوبارہ کوشش کریں یا ادائیگی کا دوسرا طریقہ منتخب کریں۔",
-      "tryAgain": "دوبارہ کوشش کریں۔",
-      "backToPlans": "منصوبوں پر واپس جائیں۔",
+      "tryAgain": "دوبارہ کوشش کریں",
+      "backToPlans": "منصوبوں پر واپس جائیں",
       "backToHome": "گھر واپس",
       "planFeatures": "منصوبہ بندی کی خصوصیات",
       "featurePlaceholder": "پلان کی خصوصیات پلیس ہولڈر ٹیکسٹ",
       "loading": "لوڈ ہو رہا ہے...",
       "errorLoadingPlans": "پلانز لوڈ کرنے میں خرابی۔ براہ کرم بعد میں دوبارہ کوشش کریں۔",
       "loginRequiredToViewPlans": "براہ کرم سبسکرپشن پلان دیکھنے کے لیے لاگ ان کریں۔",
-      "goToLogin": "لاگ ان کریں۔",
+      "goToLogin": "لاگ ان کریں",
       "noPlansAvailable": "اس وقت کوئی سبسکرپشن پلان دستیاب نہیں ہے۔",
       "alreadyHaveActiveSubscription": "آپ کے پاس پہلے سے ہی ایک فعال رکنیت ہے۔",
       "alreadySubscribedDesc": "آپ دوبارہ سبسکرائب نہیں کر سکتے جب تک آپ کے پاس ایک فعال سبسکرپشن ہو۔",
-      "subscriptionRequired": "سبسکرپشن درکار ہے۔"
+      "subscriptionRequired": "سبسکرپشن درکار ہے",
+      "originalPrice": "اصل قیمت",
+      "tierDiscount": "ممبرشپ لیول ڈسکاؤنٹ",
+      "tierDiscountRenewal": "تجدید پر ڈسکاؤنٹ",
+      "tierDiscountNew": "نئی سبسکرپشن پر ڈسکاؤنٹ",
+      "tierBadge": "{{tier}} · {{percent}}% ڈسکاؤنٹ",
+      "youSave": "آپ {{amount}} بچاتے ہیں",
+      "yourTier": "آپ کا ممبرشپ لیول"
     },
     "hero": {
       "slides": {
@@ -129,7 +136,7 @@
           "description": "مصنوعات کی وسیع رینج پر غیر معمولی پیشکشوں اور حیرت انگیز قیمتوں سے لطف اندوز ہوں – محدود وقت کی پیشکش، اس سے محروم نہ ہوں!"
         },
         "slide2": {
-          "title": "بڑی فروخت کا سیزن اب شروع ہو رہا ہے۔",
+          "title": "بڑی فروخت کا سیزن اب شروع ہو رہا ہے",
           "description": "زیادہ خریداری کریں اور اپنی پسند کی مختلف مصنوعات پر 70% تک حیرت انگیز رعایت کے ساتھ کم ادائیگی کریں۔"
         },
         "slide3": {
@@ -154,8 +161,8 @@
       "viewMore": "مزید پیشکشیں دیکھیں"
     },
     "product": {
-      "buyNow": "ابھی خریدیں۔",
-      "addToCart": "ٹوکری میں شامل کریں۔",
+      "buyNow": "ابھی خریدیں",
+      "addToCart": "ٹوکری میں شامل کریں",
       "discount": "رعایت",
       "from": "سے",
       "reviews": "جائزے",
@@ -167,7 +174,8 @@
       "more": "مزید",
       "category": "زمرہ",
       "company": "کمپنی",
-      "demo_views": "1.2K"
+      "demo_views": "1.2 ہزار",
+      "viewNow": "ابھی دیکھیں"
     },
     "categories": {
       "restaurants": "ریستوراں",
@@ -219,7 +227,7 @@
         "description": "بہترین ہوٹلوں، ریستوراں اور تفریحی خدمات پر آسانی سے بکنگ کریں۔"
       },
       "discounts": {
-        "title": "پیشکش کرتا ہے۔",
+        "title": "پیشکش کرتا ہے",
         "description": "مصنوعات کی وسیع رینج پر %70 تک کی حیرت انگیز پیشکشوں سے لطف اندوز ہوں۔"
       }
     },
@@ -256,7 +264,7 @@
       "who": "ڈبلیو ایچ او",
       "are-we": "کیا ہم",
       "subtitle": "آپ کا بہترین انتخاب",
-      "main-title": "آپ کو مکافات میں کیوں شامل ہونا چاہئے۔",
+      "main-title": "آپ کو مکافات میں کیوں شامل ہونا چاہئے",
       "description": "سعودی عرب میں آپ کی ایونٹ مینجمنٹ کی تمام ضروریات کے لیے مکافات آپ کا پریمیئر پارٹنر ہے۔ ایونٹ کے جامع حل فراہم کرنے پر پوری توجہ کے ساتھ، ہم آپ کے وژن کو بغیر کسی رکاوٹ کے حقیقت میں بدلنے کے لیے پرعزم ہیں۔ چاہے آپ کسی کارپوریٹ اجتماع، شادی، یا کسی اجتماعی تقریب کی منصوبہ بندی کر رہے ہوں، ہر قدم پر بہترین کارکردگی پیش کرنے کے لیے Mukafaat پر بھروسہ کریں۔",
       "more-details": "مزید تفصیلات",
       "video": {
@@ -278,7 +286,7 @@
       "description": "سعودی عرب میں آپ کی ایونٹ مینجمنٹ کی تمام ضروریات کے لیے مکافات آپ کا پریمیئر پارٹنر ہے۔"
     },
     "testimonials": {
-      "subtitle": "لوگ کیا کہتے ہیں۔",
+      "subtitle": "لوگ کیا کہتے ہیں",
       "title": "تعریفیں",
       "description": "مکافات کے بارے میں لوگ کیا کہتے ہیں؟",
       "items": {
@@ -309,13 +317,13 @@
       }
     },
     "partners": {
-      "subtitle": "ان کے ساتھ کام کرنے پر فخر ہے۔",
+      "subtitle": "ان کے ساتھ کام کرنے پر فخر ہے",
       "title": "ہمارے شراکت دار",
       "description": "سعودی عرب میں آپ کی ایونٹ مینجمنٹ کی تمام ضروریات کے لیے مکافات آپ کا پریمیئر پارٹنر ہے۔"
     },
     "getStarted": {
-      "title": "مکافات ایپ ابھی ڈاؤن لوڈ کریں۔",
-      "button": "ایپ ڈاؤن لوڈ کریں۔",
+      "title": "مکافات ایپ ابھی ڈاؤن لوڈ کریں",
+      "button": "ایپ ڈاؤن لوڈ کریں",
       "description": "Mukafaat ایپ کے ساتھ ہزاروں خصوصی پیشکشیں اور چھوٹ حاصل کریں۔ ڈسکاؤنٹ کوپنز، ریچارج کارڈز، اور حیرت انگیز قیمتوں پر بکنگ۔",
       "subtitle": "مکافات ایپ",
       "mainTitle": "تمام پیشکشیں ایک ایپ میں",
@@ -327,9 +335,9 @@
         "title": "مکافات ایپ",
         "description": "مکافات کی شاندار دنیا کو دریافت کریں اور بہترین خصوصی پیشکشوں اور چھوٹ سے لطف اندوز ہوں۔"
       },
-      "downloadOn": "پر ڈاؤن لوڈ کریں۔",
+      "downloadOn": "پر ڈاؤن لوڈ کریں",
       "appStore": "ایپ اسٹور",
-      "getItOn": "اسے حاصل کریں۔",
+      "getItOn": "اسے حاصل کریں",
       "googlePlay": "گوگل پلے",
       "manImageAlt": "مکافات ایپ",
       "logoAlt": "مکافات",
@@ -354,7 +362,7 @@
     },
     "started": {
       "title": "شروع کرو",
-      "subtitle": "آپ کے لیے خدمات کی مکمل رینج فراہم کریں۔",
+      "subtitle": "آپ کے لیے خدمات کی مکمل رینج فراہم کریں",
       "description": "ہم غیر معمولی وجود میں یقین رکھتے ہیں اور آپ کے سامعین پر مثبت اثر چھوڑتے ہیں؛ تازہ ترین اور جدید تکنیکوں کے ساتھ منعقد ہونے والی تقریبات اور نمائشوں سے لطف اندوز ہونے کا موقع فراہم کرکے، جو آپ کے اہداف کو پورا کرتے ہیں اور آپ کے پیغام کی ترسیل کو انتہائی تخلیقی انداز میں یقینی بناتے ہیں۔"
     },
     "clients": {
@@ -373,92 +381,92 @@
     "footer": {
       "about": "سعودی عرب میں آپ کی ایونٹ مینجمنٹ کی تمام ضروریات کے لیے مکافات آپ کا پریمیئر پارٹنر ہے۔",
       "support": "حمایت",
-      "jobs": "نوکری تلاش کریں۔",
-      "talentApplication": "فری لانسر کے طور پر درخواست دیں۔",
+      "jobs": "نوکری تلاش کریں",
+      "talentApplication": "فری لانسر کے طور پر درخواست دیں",
       "privacy": "رازداری کی پالیسی",
       "terms": "شرائط و ضوابط",
-      "copyrights": "جملہ حقوق محفوظ ہیں۔"
+      "copyrights": "جملہ حقوق محفوظ ہیں"
     },
     "search": {
-      "searchButton": "تلاش کریں۔"
+      "searchButton": "تلاش کریں"
     },
     "hero_new": {
-      "title": "All your rewards in one place",
-      "body": "Exclusive offers, coupons and discount codes, digital cards and services that save you more every day.",
-      "tag": "Featured offers",
-      "cta": "Explore offers",
-      "app": "Get the app",
+      "title": "آپ کے تمام انعامات ایک ہی جگہ",
+      "body": "خصوصی آفرز، کوپن اور ڈسکاؤنٹ کوڈز، ڈیجیٹل کارڈز اور ایسی خدمات جو ہر روز آپ کی زیادہ بچت کراتی ہیں۔",
+      "tag": "منتخب آفرز",
+      "cta": "آفرز دیکھیں",
+      "app": "ایپ ڈاؤن لوڈ کریں",
       "prev": "پچھلی سلائیڈ",
       "next": "اگلی سلائیڈ",
       "slide": "سلائیڈ"
     },
     "search_new": {
-      "all_cities": "All cities",
-      "placeholder": "Search for a store, restaurant, offer, coupon or card...",
-      "empty": "No results match your search.",
+      "all_cities": "تمام شہر",
+      "placeholder": "اسٹور، ریستوران، آفر، کوپن یا کارڈ تلاش کریں...",
+      "empty": "آپ کی تلاش سے کوئی نتیجہ مماثل نہیں۔",
       "submit": "تلاش کریں",
       "city_label": "شہر منتخب کریں"
     },
     "services_new": {
       "offers": {
-        "title": "Offers & discounts",
-        "body": "Continuous discounts at hundreds of brands.",
-        "cta": "Browse offers"
+        "title": "آفرز اور رعایتیں",
+        "body": "سینکڑوں برانڈز پر مسلسل رعایتیں۔",
+        "cta": "آفرز دیکھیں"
       },
       "coupons": {
-        "title": "Coupons & promo codes",
-        "body": "Updated codes that work on online stores.",
-        "cta": "Browse coupons"
+        "title": "کوپن اور ڈسکاؤنٹ کوڈز",
+        "body": "تازہ ترین کوڈز جو آن لائن اسٹورز پر کام کرتے ہیں۔",
+        "cta": "کوپن دیکھیں"
       },
       "cards": {
-        "title": "Digital cards",
-        "body": "Gaming, entertainment and shopping cards delivered instantly.",
-        "cta": "Shop cards"
+        "title": "ڈیجیٹل کارڈز",
+        "body": "گیمنگ، تفریح اور شاپنگ کارڈز جو فوراً آپ تک پہنچتے ہیں۔",
+        "cta": "کارڈز خریدیں"
       },
       "nearby": {
-        "title": "Near you",
-        "body": "Discover the discounts available around you now.",
-        "cta": "Explore now"
+        "title": "آپ کے سب سے قریب",
+        "body": "ابھی اپنے اردگرد دستیاب رعایتیں دریافت کریں۔",
+        "cta": "ابھی دریافت کریں"
       }
     },
     "categories_new": {
-      "all": "All",
-      "eyebrow": "Quick browse",
-      "title": "Categories",
-      "all_link": "View all categories",
+      "all": "سب",
+      "eyebrow": "تیز براؤزنگ",
+      "title": "زمرے",
+      "all_link": "تمام زمرے دیکھیں",
       "subtitle": "اپنی پسند کا زمرہ منتخب کریں اور اس کی آفرز فوراً دیکھیں۔"
     },
     "offers_new": {
-      "eyebrow": "Picked for you",
-      "title": "Latest & best offers",
-      "all_link": "View all offers",
-      "empty": "No offers in this category right now.",
-      "ended": "Ended",
-      "today": "Ends today",
-      "ends_in": "Ends in",
-      "days": "days",
+      "eyebrow": "آپ کے لیے منتخب",
+      "title": "تازہ ترین اور بہترین آفرز",
+      "all_link": "تمام آفرز دیکھیں",
+      "empty": "اس زمرے میں فی الحال کوئی آفر نہیں۔",
+      "ended": "ختم ہو گئی",
+      "today": "آج ختم ہو رہی ہے",
+      "ends_in": "ختم ہونے میں",
+      "days": "دن",
       "subtitle": "ابھی دستیاب سب سے بڑی رعایتیں — روزانہ اپ ڈیٹ ہوتی ہیں۔"
     },
     "coupons_new": {
-      "title": "Featured coupons & promo codes",
-      "all_link": "View all coupons",
-      "copy": "Copy code",
-      "copied": "Copied",
-      "discount": "Save",
-      "with_code": "with code",
-      "use_code": "Use the code at checkout to get the discount",
+      "title": "نمایاں کوپن اور ڈسکاؤنٹ کوڈز",
+      "all_link": "تمام کوپن دیکھیں",
+      "copy": "کوڈ کاپی کریں",
+      "copied": "کاپی ہو گیا",
+      "discount": "رعایت",
+      "with_code": "کوڈ کے ساتھ",
+      "use_code": "رعایت حاصل کرنے کے لیے ادائیگی کے وقت یہ کوڈ استعمال کریں",
       "eyebrow": "مزید بچت کریں",
       "subtitle": "کوڈ کاپی کریں اور ادائیگی کے وقت استعمال کر کے فوراً رعایت حاصل کریں۔"
     },
     "nearby_new": {
-      "eyebrow": "Around you",
-      "title": "Near you",
-      "map_link": "View on map",
-      "radius": "Places near you",
-      "use_location": "Use my location",
-      "locating": "Locating...",
-      "km": "km",
-      "up_to": "Up to",
+      "eyebrow": "آپ کے اردگرد",
+      "title": "آپ کے سب سے قریب",
+      "map_link": "نقشے پر دیکھیں",
+      "radius": "آپ کے قریب مقامات",
+      "use_location": "میرا مقام استعمال کریں",
+      "locating": "آپ کا مقام معلوم کیا جا رہا ہے...",
+      "km": "کلومیٹر",
+      "up_to": "رعایت تک",
       "subtitle": "اپنے اردگرد رعایت دینے والے قریب ترین اسٹورز اور ریستوران دیکھیں۔",
       "enable_title": "قریب ترین مقامات دیکھنے کے لیے اپنی لوکیشن آن کریں",
       "enable_body": "ہم آپ کی لوکیشن صرف ایک بار فاصلے کے مطابق ترتیب کے لیے استعمال کرتے ہیں — نہ محفوظ، نہ شیئر۔",
@@ -467,54 +475,54 @@
       "sort_hint": "اسٹورز کو قربت کے مطابق ترتیب دینے کے لیے اپنی لوکیشن آن کریں۔"
     },
     "stores_new": {
-      "eyebrow": "Most popular",
-      "title": "Most used",
-      "all_link": "View all stores"
+      "eyebrow": "سب سے مقبول",
+      "title": "سب سے زیادہ استعمال ہونے والے",
+      "all_link": "تمام اسٹورز دیکھیں"
     },
     "corporate_new": {
-      "title": "For companies & government",
-      "body": "A tailored benefits program for your employees: exclusive offers, digital cards and monthly usage reports on one platform.",
-      "cta": "Request a quote"
+      "title": "کمپنیوں اور سرکاری اداروں کے لیے",
+      "body": "آپ کے ملازمین کے لیے خصوصی مراعات کا پروگرام: خصوصی آفرز، ڈیجیٹل کارڈز اور ماہانہ استعمال کی رپورٹس، سب ایک ہی پلیٹ فارم پر۔",
+      "cta": "قیمت کا تخمینہ طلب کریں"
     },
     "app_new": {
-      "title": "Download the Mukafaat app",
-      "body": "All your offers, coupons and cards in your pocket, with alerts when a new discount lands near you."
+      "title": "مکافات ایپ ڈاؤن لوڈ کریں",
+      "body": "آپ کی تمام آفرز، کوپن اور کارڈز آپ کی جیب میں، اور جب بھی آپ کے قریب نئی رعایت آئے، اطلاع بھی۔"
     },
     "restaurants_new": {
-      "eyebrow": "Featured restaurants",
-      "title": "Best restaurants",
-      "all_link": "View all restaurants",
-      "discount": "Save",
-      "cuisine": "Restaurants & cafés",
-      "new": "New",
-      "branches": "branches"
+      "eyebrow": "نمایاں ریستوران",
+      "title": "بہترین ریستوران",
+      "all_link": "تمام ریستوران دیکھیں",
+      "discount": "رعایت",
+      "cuisine": "ریستوران اور کیفے",
+      "new": "نیا",
+      "branches": "برانچ"
     },
     "blog_new": {
-      "eyebrow": "Latest updates",
-      "title": "News & blog",
-      "all_link": "View all posts",
-      "tag": "Blog"
+      "eyebrow": "تازہ ترین اپ ڈیٹس",
+      "title": "خبریں اور بلاگ",
+      "all_link": "تمام تحریریں دیکھیں",
+      "tag": "بلاگ"
     },
     "newsletter_new": {
-      "eyebrow": "Newsletter",
-      "title": "Stay tuned for the best offers",
-      "body": "Subscribe for one weekly email with the best coupons and discounts in your city — no spam.",
-      "label": "Your email",
-      "cta": "Subscribe",
-      "done": "Subscribed",
-      "privacy": "By subscribing you agree to the privacy policy. You can unsubscribe anytime.",
-      "error": "Could not complete the subscription, please try again"
+      "eyebrow": "نیوز لیٹر",
+      "title": "بہترین آفرز سے جڑے رہیں",
+      "body": "سبسکرائب کریں اور ہفتے میں ایک ای میل پائیں جس میں آپ کے شہر کے بہترین کوپن اور رعایتیں ہوں گی — کوئی غیر ضروری پیغام نہیں۔",
+      "label": "آپ کا ای میل",
+      "cta": "سبسکرائب کریں",
+      "done": "سبسکرپشن مکمل",
+      "privacy": "سبسکرائب کر کے آپ پرائیویسی پالیسی سے اتفاق کرتے ہیں۔ آپ کسی بھی وقت سبسکرپشن ختم کر سکتے ہیں۔",
+      "error": "سبسکرپشن مکمل نہیں ہو سکی، دوبارہ کوشش کریں"
     },
     "footer_new": {
-      "blog": "Blog",
-      "faq": "FAQ",
-      "services": "Services",
-      "business": "Business & government",
-      "join": "Become a partner",
-      "help": "Help",
-      "about": "The offers, discounts and coupons platform in Saudi Arabia.",
-      "rights": "All rights reserved © Mukafaat",
-      "country": "Saudi Arabia"
+      "blog": "بلاگ",
+      "faq": "عام سوالات",
+      "services": "خدمات",
+      "business": "کمپنیاں اور ادارے",
+      "join": "شراکت دار بنیں",
+      "help": "مدد",
+      "about": "سعودی عرب میں آفرز، رعایتوں اور کوپن کا پلیٹ فارم۔",
+      "rights": "جملہ حقوق محفوظ ہیں © مکافات",
+      "country": "سعودی عرب"
     },
     "cards_new": {
       "subtitle": "گیمنگ، تفریح اور شاپنگ کارڈز — کوڈ آپ کو فوراً مل جاتا ہے۔"
@@ -565,42 +573,42 @@
         "description": "ہم ان کی تربیت، حمایت اور ان کی ترقی میں مدد کرتے ہیں۔"
       },
       "item3": {
-        "title": "اسمارٹ اختراع کریں۔",
+        "title": "اسمارٹ اختراع کریں",
         "description": "ہم ایونٹس کو بہتر اور آسان بنانے کے لیے ٹیکنالوجی کا استعمال کرتے ہیں۔"
       },
       "item4": {
-        "title": "ایکسیلنس فراہم کریں۔",
-        "description": "ہم ہر تفصیل کا خیال رکھتے ہیں۔"
+        "title": "ایکسیلنس فراہم کریں",
+        "description": "ہم ہر تفصیل کا خیال رکھتے ہیں"
       },
       "item5": {
         "title": "ایک ساتھ مضبوط",
-        "description": "ہم ایک عالمی، معاون کمیونٹی بناتے ہیں۔"
+        "description": "ہم ایک عالمی، معاون کمیونٹی بناتے ہیں"
       },
       "item6": {
-        "title": "دیانتداری کے ساتھ کام کریں۔",
-        "description": "ہم ایماندار، جوابدہ اور شفاف رہتے ہیں۔"
+        "title": "دیانتداری کے ساتھ کام کریں",
+        "description": "ہم ایماندار، جوابدہ اور شفاف رہتے ہیں"
       },
       "item7": {
-        "title": "تنوع کا جشن منائیں۔",
+        "title": "تنوع کا جشن منائیں",
         "description": "ہم تمام آوازوں اور صلاحیتوں کو خوش آمدید کہتے ہیں۔"
       }
     }
   },
   "careers": {
     "header-description": "ہماری ٹیم میں شامل ہوں اور جدت، تعاون اور ترقی کے سفر کا آغاز کریں۔ ہم جو کچھ کرتے ہیں اس کے بارے میں ہم پرجوش ہیں اور ہمیشہ ایسے باصلاحیت افراد کی تلاش میں رہتے ہیں جو ہمارے وژن اور اقدار کا اشتراک کرتے ہیں۔",
-    "search": "تلاش کریں۔",
+    "search": "تلاش کریں",
     "city": "شہر",
     "department": "محکمہ",
     "workType": "کام کی قسم",
     "ad": {
       "title": "نوکری کی تلاش ہے؟",
       "description": "درخواست کو اپنے ذاتی ڈیٹا اور اپنے CV سے پُر کریں، اور ہم آپ کی درخواست کا جائزہ لیں گے اور جلد از جلد آپ سے رابطہ کریں گے۔",
-      "apply": "ابھی اپلائی کریں۔"
+      "apply": "ابھی اپلائی کریں"
     },
     "no-jobs": "کوئی نوکری نہیں ملی"
   },
   "contact": {
-    "title": "ہم سے رابطہ کریں۔",
+    "title": "ہم سے رابطہ کریں",
     "description": "اپنے مواقع میں پرتعیش ٹچ شامل کرنے کے لیے ہم سے رابطہ کریں۔ آئیے آپ کے لیے ہر چیز کا خیال رکھیں۔",
     "fName": "پورا نام",
     "mNumber": "موبائل نمبر",
@@ -617,7 +625,7 @@
       "email": "ای میل"
     },
     "form": {
-      "subtitle": "ہم سے رابطہ کریں۔",
+      "subtitle": "ہم سے رابطہ کریں",
       "title": "رابطہ فارم",
       "description": "ہم یہاں آپ کی مدد کے لیے موجود ہیں۔ براہ کرم فارم پُر کریں اور ہماری ٹیم جلد ہی آپ سے رابطہ کرے گی۔"
     }
@@ -633,7 +641,7 @@
     "gender": "جنس",
     "city": "شہر",
     "edu": "تعلیم",
-    "cv": "cv",
+    "cv": "سی وی",
     "cover-letter": "کور لیٹر",
     "experience": "تجربہ",
     "job-position": "ملازمت کی پوزیشن",
@@ -641,11 +649,11 @@
     "location": "مقام",
     "sDate": "شروع کی تاریخ",
     "eDate": "اختتامی تاریخ",
-    "add": "شامل کریں۔",
+    "add": "شامل کریں",
     "submit": "درخواست جمع کروائیں"
   },
   "job-seeker": {
-    "title": "فری لانس کے طور پر رجسٹر ہوں۔",
+    "title": "فری لانس کے طور پر رجسٹر ہوں",
     "department": "محکمہ",
     "work-type": "کام کی قسم",
     "bio": "بایو",
@@ -667,8 +675,8 @@
     "aboutMukafaat": "مکافات کے بارے میں:",
     "description": "ملازمت کی تفصیل:",
     "requirements": "ملازمت کے تقاضے:",
-    "apply": "اس نوکری کے لیے درخواست دیں۔",
-    "open": "کھولیں۔",
+    "apply": "اس نوکری کے لیے درخواست دیں",
+    "open": "کھولیں",
     "close": "بند"
   },
   "company-application": {
@@ -680,12 +688,12 @@
     "cr-no": "سی آر نمبر",
     "vat-no": "VAT رجسٹریشن نمبر",
     "contact-name": "رابطہ کا نام",
-    "contact-email": "ای میل سے رابطہ کریں۔",
+    "contact-email": "ای میل سے رابطہ کریں",
     "contact-mobile": "رابطہ موبائل نمبر",
     "country": "ملک",
     "city": "شہر",
-    "search-city": "شہر کے نام سے تلاش کریں۔",
-    "search-country": "ملک کے نام سے تلاش کریں۔",
+    "search-city": "شہر کے نام سے تلاش کریں",
+    "search-country": "ملک کے نام سے تلاش کریں",
     "event-name": "ایونٹ کا نام",
     "event-date": "واقعہ کی تاریخ",
     "from": "سے",
@@ -696,7 +704,7 @@
     "image": "تصویر (اختیاری)",
     "gates-number": "دروازوں کی تعداد اور تفصیلات",
     "venue-map": "مقام کا نقشہ (اختیاری)",
-    "send-application": "درخواست بھیجیں۔",
+    "send-application": "درخواست بھیجیں",
     "gate": "گیٹ",
     "gate-name": "گیٹ کا نام",
     "supervisor": "سپروائزر",
@@ -718,20 +726,20 @@
   },
   "contract": {
     "title": "معاہدہ",
-    "sign-contact": "معاہدے پر دستخط کریں۔",
+    "sign-contact": "معاہدے پر دستخط کریں",
     "sign": "دستخط",
     "open-in-web": "اگر آپ چاہیں تو، آپ اپنے ویب براؤزر میں معاہدے کو کھول سکتے ہیں اور اپنی سہولت کے لیے اس پر دستخط کر سکتے ہیں۔",
     "notFound": {
       "title": "معاہدہ نہیں ملا",
       "description": "آپ جس معاہدے کی تلاش کر رہے ہیں وہ موجود نہیں ہے یا اسے ہٹا دیا گیا ہے۔ براہ کرم URL چیک کریں یا سپورٹ سے رابطہ کریں اگر آپ کو لگتا ہے کہ یہ ایک غلطی ہے۔",
-      "goHome": "ہوم پیج پر جائیں۔",
-      "contactSupport": "سپورٹ سے رابطہ کریں۔",
+      "goHome": "ہوم پیج پر جائیں",
+      "contactSupport": "سپورٹ سے رابطہ کریں",
       "helpText": "مدد کی ضرورت ہے؟ ہماری سپورٹ ٹیم 24/7 دستیاب ہے۔"
     }
   },
   "rating": {
     "title": "درجہ بندی",
-    "submit": "درجہ بندی جمع کروائیں۔",
+    "submit": "درجہ بندی جمع کروائیں",
     "note": "نوٹ (اختیاری)",
     "validation": "درجہ بندی غائب ہے۔",
     "thanks": "آپ کی درجہ بندی کے لیے آپ کا شکریہ، ہم اس کی تعریف کرتے ہیں۔",
@@ -739,8 +747,8 @@
     "mobileNumber": "موبائل نمبر"
   },
   "download_app": {
-    "title": "ایپ ڈاؤن لوڈ کریں۔",
-    "header": "Mukafaats ایپ ڈاؤن لوڈ کریں۔",
+    "title": "ایپ ڈاؤن لوڈ کریں",
+    "header": "Mukafaats ایپ ڈاؤن لوڈ کریں",
     "description": "فری لانسرز کو ایونٹ کے پروجیکٹس کے ساتھ جوڑنے کے لیے ڈیزائن کردہ پلیٹ فارم میں شامل ہوں۔ نئے مواقع تلاش کریں۔"
   },
   "projects": {
@@ -750,18 +758,18 @@
     "noProjectsFound": "\"{{search}}\" کے لیے کوئی آنے والا پروجیکٹ نہیں ملا"
   },
   "upload_intro_video": {
-    "title": "انٹرو ویڈیو اپ لوڈ کریں۔",
-    "enter_email_to_proceed": "آگے بڑھنے کے لیے اپنا ای میل درج کریں۔",
+    "title": "انٹرو ویڈیو اپ لوڈ کریں",
+    "enter_email_to_proceed": "آگے بڑھنے کے لیے اپنا ای میل درج کریں",
     "continue": "جاری رکھیں",
     "email_validation": "ویڈیو اپ لوڈ کرنے کے لیے اپنا ای میل درج کریں۔",
     "email_invalid": "غلط ای میل فارمیٹ",
-    "enter_otp": "OTP درج کریں۔",
-    "verify": "تصدیق کریں۔",
-    "otp": "OTP",
+    "enter_otp": "OTP درج کریں",
+    "verify": "تصدیق کریں",
+    "otp": "کوڈ",
     "otp_error": "غلط OTP",
-    "upload": "اپ لوڈ کریں۔",
+    "upload": "اپ لوڈ کریں",
     "file_error": "براہ کرم اپ لوڈ کرنے کے لیے ایک فائل منتخب کریں۔",
-    "success": "ویڈیو کامیابی سے اپ لوڈ ہو گئی۔"
+    "success": "ویڈیو کامیابی سے اپ لوڈ ہو گئی"
   },
   "businessRegistration": {
     "title": "بزنس رجسٹریشن",
@@ -771,14 +779,14 @@
     "subheadline": "اپنے کاروبار کو رجسٹر کریں اور اپنے آپریشنز کو ہموار کریں—چاہے وہ ایونٹس ہوں، لاجسٹکس ہوں یا پروموشنل کام۔",
     "step1": "آپ کے بارے میں",
     "step2": "کمپنی کی تفصیلات",
-    "step3": "خدمات جو ہم فراہم کرتے ہیں۔",
+    "step3": "خدمات جو ہم فراہم کرتے ہیں",
     "step4": "آپریشنل ریجنز",
-    "step5": "جائزہ لیں اور جمع کرائیں۔",
+    "step5": "جائزہ لیں اور جمع کرائیں",
     "currentStep": "موجودہ مرحلہ",
     "selectedServices": "منتخب خدمات",
     "selectedCountries": "منتخب ممالک",
-    "noServicesSelected": "کوئی خدمات منتخب نہیں کی گئیں۔",
-    "noCountriesSelected": "کوئی ملک منتخب نہیں کیا گیا۔",
+    "noServicesSelected": "کوئی خدمات منتخب نہیں کی گئیں",
+    "noCountriesSelected": "کوئی ملک منتخب نہیں کیا گیا",
     "validationError": "براہ کرم آگے بڑھنے سے پہلے تمام مطلوبہ فیلڈز کو مکمل کریں۔",
     "successMessage": "آپ کی کاروباری رجسٹریشن کامیابی کے ساتھ جمع کر دی گئی ہے۔ ہم آپ کی درخواست کا جائزہ لیں گے اور جلد ہی آپ سے رابطہ کریں گے۔",
     "aboutYou": {
@@ -814,63 +822,63 @@
     "actions": {
       "next": "اگلا",
       "previous": "پچھلا",
-      "submit": "رجسٹریشن جمع کروائیں۔"
+      "submit": "رجسٹریشن جمع کروائیں"
     },
     "validation": {
-      "firstNameRequired": "پہلا نام درکار ہے۔",
-      "lastNameRequired": "آخری نام درکار ہے۔",
-      "emailRequired": "ای میل درکار ہے۔",
+      "firstNameRequired": "پہلا نام درکار ہے",
+      "lastNameRequired": "آخری نام درکار ہے",
+      "emailRequired": "ای میل درکار ہے",
       "emailInvalid": "براہ کرم ایک درست ای میل ایڈریس درج کریں۔",
       "professionalEmailOnly": "براہ کرم اپنی کمپنی کے ڈومین کے ساتھ پیشہ ورانہ ای میل استعمال کریں۔",
-      "mobileRequired": "موبائل نمبر درکار ہے۔",
+      "mobileRequired": "موبائل نمبر درکار ہے",
       "mobileFormat": "موبائل نمبر میں ملک کا کوڈ شامل ہونا چاہیے (جیسے، +966 1234 567 8901)",
-      "companyNameRequired": "کمپنی کا نام درکار ہے۔",
-      "crNumberRequired": "CR نمبر درکار ہے۔",
-      "vatRegistrationNumberRequired": "VAT رجسٹریشن نمبر درکار ہے۔",
-      "websiteInvalid": "براہ کرم ایک درست ویب سائٹ URL درج کریں۔",
-      "servicesRequired": "براہ کرم کم از کم ایک سروس منتخب کریں۔",
+      "companyNameRequired": "کمپنی کا نام درکار ہے",
+      "crNumberRequired": "CR نمبر درکار ہے",
+      "vatRegistrationNumberRequired": "VAT رجسٹریشن نمبر درکار ہے",
+      "websiteInvalid": "براہ کرم ایک درست ویب سائٹ URL درج کریں",
+      "servicesRequired": "براہ کرم کم از کم ایک سروس منتخب کریں",
       "countriesRequired": "براہ کرم کم از کم ایک آپریشنل علاقہ منتخب کریں۔",
       "error": "آپ کی رجسٹریشن جمع کرواتے وقت ایک خرابی پیش آگئی۔ براہ کرم بعد میں دوبارہ کوشش کریں۔"
     }
   },
   "labels": {
     "allowed_file_formats": "اجازت شدہ فائل فارمیٹس: mp4، avi، mov، mkv، flv",
-    "file_uploaded": "فائل اپ لوڈ ہو گئی۔"
+    "file_uploaded": "فائل اپ لوڈ ہو گئی"
   },
   "validations": {
-    "fullNameRequired": "پورا نام درکار ہے۔",
+    "fullNameRequired": "پورا نام درکار ہے",
     "invalidEmail": "غلط ای میل فارمیٹ",
-    "emailRequired": "ای میل درکار ہے۔",
-    "mobileNumberRequired": "موبائل نمبر درکار ہے۔",
-    "nationalityRequired": "قومیت درکار ہے۔",
-    "genderRequired": "جنس درکار ہے۔",
-    "birthDateRequired": "تاریخ پیدائش درکار ہے۔",
-    "educationRequired": "تعلیم کی ضرورت ہے۔",
-    "bioRequired": "بائیو درکار ہے۔",
-    "idNumberRequired": "آئی ڈی نمبر درکار ہے۔",
-    "jobPositionRequired": "ملازمت کا عہدہ درکار ہے۔",
-    "eventRequired": "واقعہ درکار ہے۔",
-    "locationRequired": "مقام درکار ہے۔",
-    "startDateRequired": "آغاز کی تاریخ درکار ہے۔",
-    "endDateRequired": "اختتامی تاریخ درکار ہے۔",
-    "photoRequired": "ذاتی تصویر درکار ہے۔",
-    "workTypeRequired": "کام کی قسم درکار ہے۔",
-    "departmentRequired": "محکمہ کی ضرورت ہے۔",
-    "cityRequired": "شہر کی ضرورت ہے۔",
-    "cvRequired": "CV درکار ہے۔",
-    "idTypeRequired": "ID کی قسم درکار ہے۔",
-    "idPictureRequired": "شناختی تصویر درکار ہے۔",
-    "idExpirationDateRequired": "ID کی میعاد ختم ہونے کی تاریخ درکار ہے۔",
-    "messageRequired": "پیغام درکار ہے۔",
-    "coverLetterRequired": "کور لیٹر درکار ہے۔",
-    "companyNameRequired": "کمپنی کا نام درکار ہے۔",
-    "crNumberRequired": "CR نمبر درکار ہے۔",
-    "vatNumberRequired": "VAT رجسٹریشن نمبر درکار ہے۔",
-    "contactNameRequired": "رابطہ کا نام درکار ہے۔",
-    "eventNameRequired": "ایونٹ کا نام درکار ہے۔",
-    "countryRequired": "ملک کی ضرورت ہے۔",
-    "standbyHourRequired": "اسٹینڈ بائی آور کی ضرورت ہے۔",
-    "closingHourRequired": "بند ہونے کا وقت درکار ہے۔"
+    "emailRequired": "ای میل درکار ہے",
+    "mobileNumberRequired": "موبائل نمبر درکار ہے",
+    "nationalityRequired": "قومیت درکار ہے",
+    "genderRequired": "جنس درکار ہے",
+    "birthDateRequired": "تاریخ پیدائش درکار ہے",
+    "educationRequired": "تعلیم کی ضرورت ہے",
+    "bioRequired": "بائیو درکار ہے",
+    "idNumberRequired": "آئی ڈی نمبر درکار ہے",
+    "jobPositionRequired": "ملازمت کا عہدہ درکار ہے",
+    "eventRequired": "واقعہ درکار ہے",
+    "locationRequired": "مقام درکار ہے",
+    "startDateRequired": "آغاز کی تاریخ درکار ہے",
+    "endDateRequired": "اختتامی تاریخ درکار ہے",
+    "photoRequired": "ذاتی تصویر درکار ہے",
+    "workTypeRequired": "کام کی قسم درکار ہے",
+    "departmentRequired": "محکمہ کی ضرورت ہے",
+    "cityRequired": "شہر کی ضرورت ہے",
+    "cvRequired": "CV درکار ہے",
+    "idTypeRequired": "ID کی قسم درکار ہے",
+    "idPictureRequired": "شناختی تصویر درکار ہے",
+    "idExpirationDateRequired": "ID کی میعاد ختم ہونے کی تاریخ درکار ہے",
+    "messageRequired": "پیغام درکار ہے",
+    "coverLetterRequired": "کور لیٹر درکار ہے",
+    "companyNameRequired": "کمپنی کا نام درکار ہے",
+    "crNumberRequired": "CR نمبر درکار ہے",
+    "vatNumberRequired": "VAT رجسٹریشن نمبر درکار ہے",
+    "contactNameRequired": "رابطہ کا نام درکار ہے",
+    "eventNameRequired": "ایونٹ کا نام درکار ہے",
+    "countryRequired": "ملک کی ضرورت ہے",
+    "standbyHourRequired": "اسٹینڈ بائی آور کی ضرورت ہے",
+    "closingHourRequired": "بند ہونے کا وقت درکار ہے"
   },
   "messages": {
     "jobSeekerSuccess": "آپ کی درخواست کامیابی کے ساتھ بھیج دی گئی ہے۔ ہم جلد از جلد آپ سے رابطہ کریں گے۔",
@@ -893,12 +901,12 @@
     "searchPlaceholder": "نام سے تلاش کریں...",
     "details": {
       "notFound": "نہیں ملا",
-      "everythingSpecial": "سب کچھ خاص ہے۔",
-      "whatWeDid": "جو ہم نے کیا۔",
+      "everythingSpecial": "سب کچھ خاص ہے",
+      "whatWeDid": "جو ہم نے کیا",
       "freelancer": "فری لانسر",
       "eventManagement": "ایونٹ مینجمنٹ",
       "eventSystemSolutions": "ایونٹ سسٹم سلوشنز",
-      "shareProject": "پروجیکٹ شیئر کریں۔",
+      "shareProject": "پروجیکٹ شیئر کریں",
       "tags": "ٹیگز",
       "titleOfNextProject": "اگلے پروجیکٹ کا عنوان",
       "titleOfProject": "پروجیکٹ کا عنوان",
@@ -927,13 +935,13 @@
     "feature1": "خصوصیات میں سے ایک",
     "feature2": "درخواست کے لیے نئی خصوصیت",
     "slide1": {
-      "title": "اپنی پروموشن کی درخواست حاصل کریں۔",
+      "title": "اپنی پروموشن کی درخواست حاصل کریں",
       "description": "سعودی عرب میں آپ کی ایونٹ مینجمنٹ کی تمام ضروریات کے لیے مکافات آپ کا پریمیئر پارٹنر ہے۔",
       "feature1": "انٹرفیس استعمال کرنے میں آسان",
       "feature2": "ریئل ٹائم اپڈیٹس"
     },
     "slide2": {
-      "title": "ہماری ایونٹ ایپ ڈاؤن لوڈ کریں۔",
+      "title": "ہماری ایونٹ ایپ ڈاؤن لوڈ کریں",
       "description": "پیشہ ور افراد کے لیے ڈیزائن کردہ ہماری جامع موبائل ایپلیکیشن کے ذریعے اپنے ایونٹس کا نظم کریں۔",
       "feature1": "ایونٹ کا شیڈولنگ",
       "feature2": "کلائنٹ مینجمنٹ"
@@ -947,7 +955,7 @@
   },
   "why-choose-us": {
     "subtitle": "آپ کا وژن، ہماری مہارت",
-    "title": "امریکہ کیوں منتخب کریں۔",
+    "title": "امریکہ کیوں منتخب کریں",
     "description": "سعودی عرب میں آپ کی ایونٹ مینجمنٹ کی تمام ضروریات کے لیے مکافات آپ کا پریمیئر پارٹنر ہے۔",
     "cta": "سروس کی درخواست کریں",
     "feature1": {
@@ -1011,7 +1019,7 @@
     },
     "image7": {
       "title": "پروڈکٹ کا آغاز",
-      "description": "متحرک پروڈکٹ لانچ ایونٹس اور نمائشیں۔"
+      "description": "متحرک پروڈکٹ لانچ ایونٹس اور نمائشیں"
     },
     "image8": {
       "title": "نمائش کے واقعات",
@@ -1055,13 +1063,13 @@
     "quantityAria": "مقدار"
   },
   "request-service": {
-    "title": "ہماری خدمت کی درخواست کریں۔",
+    "title": "ہماری خدمت کی درخواست کریں",
     "steps": {
       "personal": "ذاتی معلومات",
       "company": "کمپنی کی تفصیلات",
       "services": "خدمات",
       "regions": "آپریشنل ریجنز",
-      "review": "جائزہ لیں اور جمع کرائیں۔"
+      "review": "جائزہ لیں اور جمع کرائیں"
     },
     "required-note": "اس کا مطلب ہے کہ کھیتوں کی ضرورت ہے۔",
     "firstName": "پہلا نام",
@@ -1069,7 +1077,7 @@
     "email": "ای میل",
     "mobile": "موبائل نمبر",
     "step1": {
-      "title": "اپنی ذاتی معلومات کو مکمل کریں۔"
+      "title": "اپنی ذاتی معلومات کو مکمل کریں"
     },
     "companyName": "کمپنی کا نام",
     "crNumber": "سی آر نمبر",
@@ -1129,7 +1137,7 @@
     },
     "propertyType": {
       "label": "پراپرٹی کی قسم",
-      "placeholder": "اپنی پراپرٹی کی قسم منتخب کریں۔"
+      "placeholder": "اپنی پراپرٹی کی قسم منتخب کریں"
     },
     "propertyTypes": {
       "apartment": "اپارٹمنٹ",
@@ -1141,7 +1149,7 @@
     },
     "bedsBaths": {
       "label": "بستر اور حمام",
-      "placeholder": "اپنے بستر اور حمام کا انتخاب کریں۔",
+      "placeholder": "اپنے بستر اور حمام کا انتخاب کریں",
       "oneOne": "1 بستر، 1 غسل",
       "twoTwo": "2 بستر، 2 حمام",
       "threeTwo": "3 بستر، 2 حمام",
@@ -1150,7 +1158,7 @@
       "studio": "اسٹوڈیو",
       "searchButton": "تلاش کریں"
     },
-    "searchButton": "تلاش کریں۔"
+    "searchButton": "تلاش کریں"
   },
   "propertySlider": {
     "newlyListed": "نئی فہرست میں شامل",
@@ -1185,7 +1193,7 @@
     "subtitle": "دنیا بھر میں پراپرٹیز",
     "mainTitle": "تمام سہولیات کے ساتھ ہماری پرتعیش پراپرٹیز میں خوش آمدید۔",
     "description": "Arcu ac tortor dignissim convallis aenean et tortor at. Ac turpis egestas sed tempus urna et. Quisque eu pellentesque erat, eget bibendum ipsum. Cras euismod",
-    "selectManyLocation": "بہت سے مقام منتخب کریں۔",
+    "selectManyLocation": "بہت سے مقام منتخب کریں",
     "locationDescription": "Lorem ipsum ایک ڈمی یا پلیس ہولڈر ہے جو عام طور پر گرافک ڈیزائن میں استعمال ہوتا ہے،",
     "viewAboutUs": "ہمارے بارے میں دیکھیں",
     "modernBuilding": "جدید عمارت",
@@ -1195,9 +1203,9 @@
   },
   "dreamProperties": {
     "subtitle": "نئی پراپرٹیز",
-    "mainTitle": "اپنی خوابوں کی پراپرٹی تلاش کریں۔",
+    "mainTitle": "اپنی خوابوں کی پراپرٹی تلاش کریں",
     "viewMore": "مزید دیکھیں",
-    "showLess": "کم دکھائیں۔",
+    "showLess": "کم دکھائیں",
     "all": "تمام",
     "tabs": {
       "freehold": "فری ہولڈ",
@@ -1215,9 +1223,9 @@
       "offices": "دفاتر"
     },
     "actions": {
-      "visitNow": "ابھی ملاحظہ کریں۔",
+      "visitNow": "ابھی ملاحظہ کریں",
       "favorite": "پسندیدہ",
-      "share": "شیئر کریں۔"
+      "share": "شیئر کریں"
     },
     "specifications": {
       "bedroom": "بیڈ روم",
@@ -1238,13 +1246,13 @@
     "mainTitle": "رئیل اسٹیٹ کے ذریعے دولت بنائیں",
     "description": "ضمانت شدہ واپسیوں اور لچکدار ادائیگی کے منصوبوں کے ساتھ اہم مقامات پر سرمایہ کاری کے خصوصی مواقع دریافت کریں۔",
     "viewInvestmentPlans": "سرمایہ کاری کے منصوبے دیکھیں",
-    "visitNow": "ابھی ملاحظہ کریں۔",
+    "visitNow": "ابھی ملاحظہ کریں",
     "modernBuilding": "جدید عمارت",
     "underlineDecoration": "انڈر لائن سجاوٹ"
   },
   "getStarted": {
     "subtitle": "مفت مشاورت",
-    "mainTitle": "مفت رئیل اسٹیٹ حاصل کریں۔",
+    "mainTitle": "مفت رئیل اسٹیٹ حاصل کریں",
     "consultation": "مشاورت",
     "firstParagraph": "کیا آپ Imtilak Real Estate کے رئیل اسٹیٹ ماہرین کے ساتھ مفت رئیل اسٹیٹ مشاورت چاہتے ہیں؟",
     "secondParagraph": "Lorem ipsum ایک ڈمی یا پلیس ہولڈر ٹیکسٹ ہے جو عام طور پر گرافک ڈیزائن، اشاعت اور ویب ڈویلپمنٹ میں استعمال ہوتا ہے۔ اس کا مقصد صفحہ کی ترتیب کو ڈیزائن کرنے کی اجازت دینا ہے۔",
@@ -1264,13 +1272,13 @@
     "views": "226",
     "title": "سرمایہ کاری اور رئیل اسٹیٹ کی ملکیت",
     "description": "ٹیکنالوجی اور مالیات کی تیزی سے ترقی پذیر دنیا میں، ڈیجیٹل کرنسیوں نے جدید مالیاتی لین دین کی تشکیل میں مرکزی کردار کا دعویٰ کیا ہے۔",
-    "visitNow": "ابھی ملاحظہ کریں۔"
+    "visitNow": "ابھی ملاحظہ کریں"
   },
   "propertyDetail": {
     "notFound": {
       "title": "پراپرٹی نہیں ملی",
       "description": "آپ جس پراپرٹی کی تلاش کر رہے ہیں وہ نہیں مل سکی۔",
-      "backToProperties": "پراپرٹیز پر واپس جائیں۔"
+      "backToProperties": "پراپرٹیز پر واپس جائیں"
     },
     "breadcrumb": {
       "home": "گھر",
@@ -1283,7 +1291,7 @@
       "rooms": "کمرے اور رہنے کے کمرے کی تعداد",
       "area": "علاقہ",
       "bathrooms": "غسل خانوں کی تعداد",
-      "price": "قیمتیں شروع ہوتی ہیں۔",
+      "price": "قیمتیں شروع ہوتی ہیں",
       "lastUpdate": "تازہ ترین قیمت اپ ڈیٹ"
     },
     "payment": {
@@ -1306,22 +1314,22 @@
     },
     "video": {
       "title": "ویڈیو / 360 دیکھیں",
-      "play": "ویڈیو چلائیں۔"
+      "play": "ویڈیو چلائیں"
     },
     "startFrom": {
-      "title": "سے شروع کریں۔",
+      "title": "سے شروع کریں",
       "description": "جائیداد خریدنے، بیچنے اور کرایہ پر لینے کے لیے فوری اور قابل اعتماد خدمات پیش کرنے والی رئیل اسٹیٹ ایجنسی۔",
-      "getInTouch": "رابطہ کریں۔"
+      "getInTouch": "رابطہ کریں"
     },
     "owner": {
       "title": "مالک کی تفصیلات",
       "propertiesCount": "25 پراپرٹیز"
     },
     "contact": {
-      "title": "ہمارے لیے مناسب دن کا انتخاب کریں۔",
-      "contactYou": "آپ سے رابطہ کریں۔",
+      "title": "ہمارے لیے مناسب دن کا انتخاب کریں",
+      "contactYou": "آپ سے رابطہ کریں",
       "name": "نام",
-      "namePlaceholder": "نام درج کریں۔",
+      "namePlaceholder": "نام درج کریں",
       "phone": "فون نمبر",
       "phonePlaceholder": "فون نمبر",
       "callMe": "مجھے بلاؤ"
@@ -1337,16 +1345,16 @@
     "stayInLoop": {
       "title": "لوپ میں رہو",
       "description": "ہمارے تازہ ترین پروجیکٹس اور پیشکشوں کے ساتھ ہماری میلنگ لسٹ میں شامل ہوں۔",
-      "emailPlaceholder": "اپنا ای میل درج کریں۔",
-      "subscribeButton": "سبسکرائب کریں۔"
+      "emailPlaceholder": "اپنا ای میل درج کریں",
+      "subscribeButton": "سبسکرائب کریں"
     },
     "companyDescription": "Lorem ipsum ایک ڈمی یا پلیس ہولڈر ٹیکسٹ ہے جو عام طور پر گرافک ڈیزائن، اشاعت اور ویب ڈویلپمنٹ میں استعمال ہوتا ہے۔ اس کا مقصد ایک صفحہ کی اجازت دینا ہے۔",
     "quickLinks": "فوری لنکس",
     "properties": "پراپرٹیز",
-    "contact": "رابطہ کریں۔",
+    "contact": "رابطہ کریں",
     "aboutUs": "ہمارے بارے میں",
-    "blogNews": "بلاگ اور خبریں۔",
-    "contactUs": "ہم سے رابطہ کریں۔",
+    "blogNews": "بلاگ اور خبریں",
+    "contactUs": "ہم سے رابطہ کریں",
     "investments": "سرمایہ کاری",
     "apartments": "اپارٹمنٹس",
     "villas": "ولاز",
@@ -1365,7 +1373,7 @@
     "ourLocations": "ہمارے مقامات",
     "learnMore": "مزید جانیں",
     "about": "کے بارے میں",
-    "joinOurSite": "ہماری سائٹ میں شامل ہوں۔",
+    "joinOurSite": "ہماری سائٹ میں شامل ہوں",
     "userPrivacyTerms": "صارف کی رازداری کی شرائط",
     "generalPrivacyPolicy": "عمومی رازداری کی پالیسی",
     "rewardsPrinciple": "انعامات کا اصول",
@@ -1391,7 +1399,7 @@
   },
   "offersPage": {
     "restaurantDiscount": "آف",
-    "restaurantOpen": "کھولیں۔",
+    "restaurantOpen": "کھولیں",
     "pageTitle": "پیشکشیں",
     "patternAlt": "پیشکشیں",
     "latestOffers": {
@@ -1488,14 +1496,16 @@
     },
     "cards_suffix": "کارڈز",
     "heroEyebrow": "ایک بار خریدیں، سال بھر بچائیں",
-    "heroSubtitle": "بہترین اسٹورز کے ڈسکاؤنٹ کارڈز — ایک قیمت میں بار بار بچت۔"
+    "heroSubtitle": "بہترین اسٹورز کے ڈسکاؤنٹ کارڈز — ایک قیمت میں بار بار بچت۔",
+    "resultsCount_one": "{{count}} کارڈ",
+    "resultsCount_other": "{{count}} کارڈز"
   },
   "saved": {
     "title": "محفوظ کردہ اشیاء",
     "subtitle": "{{count}} محفوظ کردہ آئٹم",
     "filters": {
       "all": "تمام",
-      "offers": "پیشکش کرتا ہے۔",
+      "offers": "پیشکش کرتا ہے",
       "cards": "کارڈز",
       "bookings": "بکنگ",
       "coupons": "کوپنز",
@@ -1509,17 +1519,19 @@
       "item": "آئٹم",
       "merchant": "اسٹور"
     },
-    "saved_since": "کے بعد سے محفوظ کیا گیا ہے۔",
+    "saved_since": "کے بعد سے محفوظ کیا گیا ہے",
     "empty": {
-      "title": "کوئی محفوظ کردہ آئٹمز نہیں۔",
+      "title": "کوئی محفوظ کردہ آئٹمز نہیں",
       "title_filtered": "کوئی محفوظ نہیں کیا گیا {{type}}",
       "description": "اپنی پسند کی پیشکشوں اور کارڈز کو محفوظ کرنا شروع کریں۔",
-      "browse_offers": "آفرز کو براؤز کریں۔"
+      "browse_offers": "آفرز کو براؤز کریں"
     },
     "eyebrow": "آپ کی لائبریری",
     "results_suffix": "محفوظ آئٹمز",
     "remove": "پسندیدہ سے ہٹائیں",
-    "view_details": "تفصیلات دیکھیں"
+    "view_details": "تفصیلات دیکھیں",
+    "subtitle_one": "{{count}} محفوظ آئٹم",
+    "subtitle_other": "{{count}} محفوظ آئٹمز"
   },
   "orders": {
     "title": "میرے احکامات",
@@ -1566,13 +1578,15 @@
     "cancel_action": "منسوخ",
     "more_offers": "+{{count}} مزید آفرز",
     "empty": {
-      "title": "کوئی حکم نہیں۔",
-      "title_filtered": "کوئی {{status}} آرڈر نہیں ہیں۔",
+      "title": "کوئی حکم نہیں",
+      "title_filtered": "کوئی {{status}} آرڈر نہیں ہیں",
       "description": "اپنی کارٹ میں پیشکشیں اور کارڈز شامل کرنا شروع کریں۔",
-      "browse_offers": "آفرز کو براؤز کریں۔"
+      "browse_offers": "آفرز کو براؤز کریں"
     },
     "eyebrow": "آپ کی خریداری",
-    "results_suffix": "آرڈرز"
+    "results_suffix": "آرڈرز",
+    "subtitle_one": "کل {{count}} آرڈر",
+    "subtitle_other": "کل {{count}} آرڈرز"
   },
   "sideMenu": {
     "logoAlt": "مکافات لوگو",
@@ -1587,7 +1601,7 @@
     "priceRange": "قیمت کی حد",
     "reset": "ری سیٹ",
     "apply": "لاگو",
-    "price_sar": "{{value}} SAR"
+    "price_sar": "{{value}} ر.س"
   },
   "cardOfferDetail": {
     "cards_brand": "کارڈز",
@@ -1690,12 +1704,12 @@
     "financial_transactions": "مالیاتی لین دین",
     "transaction_log": "ٹرانزیکشن لاگ",
     "points": "پوائنٹس",
-    "redeem": "والیٹ میں بھنائیں۔",
+    "redeem": "والیٹ میں بھنائیں",
     "redeem_to_wallet": "پوائنٹس کو بھنائیں → والیٹ",
-    "redeem_success": "پوائنٹس کو کامیابی کے ساتھ بھنایا گیا۔",
+    "redeem_success": "پوائنٹس کو کامیابی کے ساتھ بھنایا گیا",
     "redeem_error": "پوائنٹس کو بھنانے میں ناکام",
     "loading": "لوڈ ہو رہا ہے...",
-    "no_transactions": "کوئی لین دین نہیں۔",
+    "no_transactions": "کوئی لین دین نہیں",
     "topupTitle": "پوائنٹس ری چارج کریں",
     "topupSubtitle": "اپنے والٹ میں پوائنٹس شامل کریں",
     "pointsRateTitle": "1 پوائنٹ = 1 سعودی ریال",
@@ -1719,10 +1733,10 @@
   },
   "profile": {
     "subscription_active": "فعال رکنیت",
-    "subscription_inactive": "سبسکرائب نہیں کیا گیا۔",
+    "subscription_inactive": "سبسکرائب نہیں کیا گیا",
     "subscription_plan": "سبسکرپشن پلان",
-    "subscription_expires": "میعاد ختم ہو رہی ہے۔",
-    "subscribe_now": "ابھی سبسکرائب کریں۔",
+    "subscription_expires": "میعاد ختم ہو رہی ہے",
+    "subscribe_now": "ابھی سبسکرائب کریں",
     "profile_info": "پروفائل کی معلومات",
     "preferences": "ترجیحات",
     "quick_stats": "فوری اعدادوشمار",
@@ -1740,7 +1754,7 @@
     "stat_favorites": "محفوظ",
     "stat_orders": "آرڈر",
     "stat_wallet": "بٹوہ",
-    "wallet_currency_suffix": " SAR",
+    "wallet_currency_suffix": " ریال",
     "edit_profile": "پروفائل میں ترمیم",
     "cancel_editing": "ترمیم منسوخ",
     "view_mode_hint": "آپ کے اکاؤنٹ کی تفصیلات",
@@ -1796,7 +1810,11 @@
     "group_help": "مدد",
     "menu_card": "میرا کارڈ اور درجات",
     "menu_notifications": "اطلاعات",
-    "menu_store_request": "بطور اسٹور شامل ہوں"
+    "menu_store_request": "بطور اسٹور شامل ہوں",
+    "menu_subscription": "میری رکنیت",
+    "menu_referrals": "شیئر کریں اور کمائیں",
+    "menu_family": "خاندان کے افراد",
+    "menu_gifts": "تحفے میں دی گئی سبسکرپشنز"
   },
   "subscribeForOther": {
     "meta_title": "کسی اور کی سبسکرپشن",
@@ -1811,7 +1829,7 @@
     "placeholder_city": "شہر منتخب کریں",
     "label_plan": "سبسکرپشن پلان",
     "placeholder_plan": "پلان منتخب کریں",
-    "currency_suffix": "SAR",
+    "currency_suffix": "ریال",
     "label_gender": "جنس",
     "gender_male": "مرد",
     "gender_female": "عورت",
@@ -1829,26 +1847,33 @@
     "payment_unexpected": "ادائیگی شروع نہیں ہو سکی۔ دوبارہ کوشش کریں یا سپورٹ لیں۔",
     "complete_payment": "کارڈ سے ادائیگی مکمل کریں",
     "back_to_form": "فارم پر واپس",
-    "moyasar_load_failed": "ادائیگی فارم لوڈ نہیں ہو سکا۔"
+    "moyasar_load_failed": "ادائیگی فارم لوڈ نہیں ہو سکا۔",
+    "label_coupon": "ڈسکاؤنٹ کوپن (اختیاری)",
+    "placeholder_coupon": "کوپن کوڈ درج کریں",
+    "apply_coupon": "لاگو کریں",
+    "clear_coupon": "ہٹائیں",
+    "price_breakdown": "قیمت کی تفصیل",
+    "invoice_cta": "انوائس دیکھیں",
+    "gift_success_invoice": "سبسکرپشن مکمل ہو گئی — آپ انوائس دیکھ سکتے ہیں۔"
   },
   "coupons": {
     "title": "کوپنز",
     "hero": {
       "title": "بہترین کوپنز اور آفرز",
-      "subtitle": "ہزاروں خصوصی کوپنز کے ساتھ پیسے بچائیں۔"
+      "subtitle": "ہزاروں خصوصی کوپنز کے ساتھ پیسے بچائیں"
     },
     "filters": {
       "nearby": "آپ کے قریب",
-      "most_visited": "سب سے زیادہ ملاحظہ کیا گیا۔",
+      "most_visited": "سب سے زیادہ ملاحظہ کیا گیا",
       "highest_rated": "سب سے زیادہ شرح شدہ"
     },
     "search_placeholder": "کوپنز تلاش کریں...",
-    "show_coupon": "کوپن دکھائیں۔",
+    "show_coupon": "کوپن دکھائیں",
     "usage": "استعمال",
-    "uses_for_code": "کوڈ کے لیے استعمال کرتا ہے۔",
+    "uses_for_code": "کوڈ کے لیے استعمال کرتا ہے",
     "expires": "میعاد ختم",
     "no_results": "\"{{search}}\" کے لیے کوئی کوپنز نہیں ملا",
-    "no_coupons": "کوئی کوپنز دستیاب نہیں ہے۔",
+    "no_coupons": "کوئی کوپنز دستیاب نہیں ہے",
     "filter_sidebar_title": "کوپنز فلٹر",
     "sort_by": "ترتیب",
     "sort_newest": "تازہ ترین",
@@ -1873,13 +1898,13 @@
   "languageToggle": {
     "languagesTab": "زبانیں",
     "countryTab": "ملک",
-    "noCountries": "کوئی ملک دستیاب نہیں ہے۔"
+    "noCountries": "کوئی ملک دستیاب نہیں ہے"
   },
   "propertyCard": {
     "from": "سے",
     "bedroom_one": "{{count}} بیڈروم",
     "bedroom_other": "{{count}} بیڈروم",
-    "area_up_to": "{{علاقہ}} تک"
+    "area_up_to": "{{area}} تک"
   },
   "offerDetail": {
     "offers_brand": "آفرز",
@@ -1920,7 +1945,10 @@
     "offer_validity": "آفر کی میعاد",
     "discount": "رعایت",
     "privacy_fallback": "ہمارے ڈیٹا کے استعمال کے بارے میں مزید جاننے کے لیے رازداری کی پالیسی دیکھیں۔",
-    "privacy_link": "رازداری کی پالیسی"
+    "privacy_link": "رازداری کی پالیسی",
+    "order_created_success": "آپ کا آرڈر کامیابی سے بن گیا",
+    "sold_count_one": "{{count}} فروخت",
+    "sold_count_other": "{{count}} فروخت"
   },
   "offerCard": {
     "cardDetails": "کارڈ کی تفصیلات",
@@ -1942,28 +1970,31 @@
     "subscribersOnly": "صرف سبسکرائبرز کے لیے",
     "save": "بچت",
     "endsToday": "آج ختم",
-    "endsInDays": "{{days}} دن میں ختم"
+    "endsInDays": "{{days}} دن میں ختم",
+    "favorites": "پسندیدہ",
+    "shares": "شیئرز",
+    "viewsLabel": "مشاہدات"
   },
   "couponModal": {
-    "removedFromFavorites": "پسندیدہ سے ہٹا دیا گیا۔",
-    "addedToFavorites": "پسندیدہ میں شامل کیا گیا۔",
-    "errorGeneric": "کچھ غلط ہو گیا۔",
+    "removedFromFavorites": "پسندیدہ سے ہٹا دیا گیا",
+    "addedToFavorites": "پسندیدہ میں شامل کیا گیا",
+    "errorGeneric": "کچھ غلط ہو گیا",
     "shareCodeLabel": "کوڈ",
     "shareLinkLabel": "لنک",
-    "shareCopied": "شیئر ٹیکسٹ کاپی ہو گیا۔",
+    "shareCopied": "شیئر ٹیکسٹ کاپی ہو گیا",
     "shareFailed": "اشتراک کرنے سے قاصر",
     "closeAria": "بند",
     "working": "کام کرنا",
-    "notWorking": "کام نہیں کر رہا۔",
-    "removeFavorite": "پسندیدہ سے ہٹا دیں۔",
-    "addFavorite": "پسندیدہ میں شامل کریں۔",
-    "share": "شیئر کریں۔",
-    "shopOnSite": "سائٹ پر خریداری کریں۔",
+    "notWorking": "کام نہیں کر رہا",
+    "removeFavorite": "پسندیدہ سے ہٹا دیں",
+    "addFavorite": "پسندیدہ میں شامل کریں",
+    "share": "شیئر کریں",
+    "shopOnSite": "سائٹ پر خریداری کریں",
     "copied": "نقل کیا گیا!",
     "expiresOn": "میعاد {{date}} کو ختم ہو رہی ہے",
-    "validityUnknown": "درستگی کی وضاحت نہیں کی گئی ہے۔",
-    "noExpiryDate": "کوئی میعاد ختم ہونے کی تاریخ نہیں۔",
-    "goToStore": "اسٹور پر جائیں۔",
+    "validityUnknown": "درستگی کی وضاحت نہیں کی گئی ہے",
+    "noExpiryDate": "کوئی میعاد ختم ہونے کی تاریخ نہیں",
+    "goToStore": "اسٹور پر جائیں",
     "usedCount": "استعمال ({{count}})",
     "usedCountOne": "استعمال (ایک بار)",
     "usedCountTwo": "استعمال ({{count}} بار)",
@@ -2016,7 +2047,9 @@
       "new": "نیا",
       "ending": "جلد ختم"
     },
-    "results_count": "{{count}} نتائج"
+    "results_count": "{{count}} نتائج",
+    "results_count_one": "{{count}} نتیجہ",
+    "results_count_other": "{{count}} نتائج"
   },
   "couponCard": {
     "copies": "کاپیاں"
@@ -2129,7 +2162,7 @@
     "features": "خصوصیات",
     "discountBadge": "{{percent}}% رعایت",
     "familyMembersUpTo": "خاندان کے {{count}} افراد تک شامل",
-    "currentPlanBadge": "آپ کا موجودہ پیکیج",
+    "currentPlanBadge": "موجودہ پلان",
     "previousPlanBadge": "آپ کا سابقہ پیکیج",
     "renewSubscription": "سبسکرپشن تجدید کریں",
     "activeUntil": "آپ کی سبسکرپشن {{date}} تک فعال ہے",
@@ -2144,14 +2177,42 @@
       "6_months": "ہر 6 ماہ",
       "yearly": "سالانہ",
       "2_years": "2 سال"
-    }
+    },
+    "planUpgradeTitle": "پلان اپ گریڈ کریں",
+    "planUpgradeSub": "صرف فرق ادا کریں",
+    "planDowngradeTitle": "چھوٹے پلان پر جائیں",
+    "planDowngradeSub": "فرق فوراً آپ کے والٹ میں جمع ہوگا",
+    "planChangeFrom": "سے",
+    "planChangeTo": "تک",
+    "planChangeRemaining": "آپ کے پلان کا باقی ({{days}} دن)",
+    "planChangeNewPrice": "نئے پلان کی قیمت",
+    "planChangeYouPay": "قابل ادائیگی",
+    "planChangeToWallet": "والٹ میں جمع",
+    "planChangeConfirmUpgrade": "ادائیگی جاری رکھیں",
+    "planChangeConfirmDowngrade": "تبدیلی کی تصدیق",
+    "planChangeFamilyWarningTitle": "{{count}} خاندانی افراد اپنی رکنیت کھو دیں گے",
+    "planChangeFamilyWarningBody": "وہ بغیر رکنیت کے عام صارف بن جائیں گے اور ہر ایک کو خود رکنیت لینی ہوگی۔",
+    "mySubscription": "میری رکنیت",
+    "statusActive": "فعال",
+    "availablePlans": "دستیاب پلانز",
+    "availablePlansChange": "پلان تبدیل کریں",
+    "availablePlansChangeHint": "اپ گریڈ یا ڈاؤن گریڈ کریں — فرق آپ کے والٹ میں جمع ہوگا",
+    "daysLeft": "{{days}} دن باقی",
+    "endsOn": "{{date}} کو ختم",
+    "noActiveSubscription": "کوئی فعال رکنیت نہیں",
+    "noSubscriptionHint": "تمام آفرز کے لیے رکنیت لیں",
+    "planActionUpgrade": "اس پلان پر اپ گریڈ کریں",
+    "planActionDowngrade": "اس پلان پر جائیں",
+    "subscribeNow": "ابھی رکنیت لیں",
+    "daysRemaining_one": "{{count}} دن باقی ہے",
+    "daysRemaining_other": "{{count}} دن باقی ہیں"
   },
   "payment": {
     "title": "ادائیگی کا طریقہ",
     "electronicPayment": "الیکٹرانک ادائیگی",
     "payThrough": "اس کے ذریعے ادائیگی",
     "method": {
-      "mada": "mada",
+      "mada": "مدى",
       "applePay": "Apple Pay",
       "card": "کریڈٹ کارڈ / mada",
       "wallet": "والٹ سے ادائیگی",
@@ -2167,18 +2228,18 @@
     "apply": "لاگو کریں",
     "applying": "جاری ہے...",
     "total": "کل",
-    "currency": "SAR",
+    "currency": "ر.س",
     "completePayment": "ادائیگی مکمل کریں",
     "completePaymentDesc": "محفوظ ادائیگی کے لیے کارڈ کی تفصیلات درج کریں۔",
     "gatewayLoadFailed": "ادائیگی گیٹ وے لوڈ نہیں ہو سکا، دوبارہ کوشش کریں۔",
     "gatewayInitFailed": "ادائیگی گیٹ وے تیار نہیں ہو سکا۔ سپورٹ سے رابطہ کریں۔",
     "paymentDataIncomplete": "ادائیگی کی معلومات نامکمل ہیں۔ سپورٹ سے رابطہ کریں۔",
     "applePayUnavailable": "Apple Pay صرف Apple ڈیوائسز پر Safari میں دستیاب ہے۔",
-    "promoLabel": "Discount or coupon code",
-    "promoPlaceholder": "Enter code",
-    "promoApply": "Apply",
-    "promoRemove": "Remove code",
-    "promoInvalid": "Invalid or expired code",
+    "promoLabel": "ڈسکاؤنٹ یا کوپن کوڈ",
+    "promoPlaceholder": "کوڈ درج کریں",
+    "promoApply": "لاگو کریں",
+    "promoRemove": "کوڈ ہٹائیں",
+    "promoInvalid": "کوڈ درست نہیں یا اس کی میعاد ختم ہو چکی ہے",
     "tamaraNote": "{{count}} بلا سود اقساط میں تقسیم کریں",
     "tamaraError": "تمارا سے ادائیگی شروع نہیں ہو سکی"
   },
@@ -2245,5 +2306,190 @@
     "card_upsell_desc": "اپنے مخصوص نمبر اور تاجروں کے ہاں اسکین ہونے والے QR کوڈ کے ساتھ ڈیجیٹل ممبرشپ کارڈ حاصل کرنے کے لیے سبسکرائب کریں۔",
     "card_actions": "کارڈ شیئر کریں",
     "gifts_subtitle": "وہ سبسکرپشنز جو آپ نے تحفے میں دیں اور ان کے انوائسز"
+  },
+  "membershipTier": {
+    "title": "آپ کا ممبرشپ لیول",
+    "level": "لیول",
+    "benefits": "آپ کے لیول کی مراعات",
+    "renewal_discount": "سبسکرپشن تجدید پر ڈسکاؤنٹ",
+    "new_subscription_discount": "نئی سبسکرپشن پر ڈسکاؤنٹ",
+    "gift_discount": "سبسکرپشن تحفہ دینے پر ڈسکاؤنٹ",
+    "percent_off": "{{percent}}% ڈسکاؤنٹ",
+    "no_discount": "فی الحال کوئی ڈسکاؤنٹ نہیں",
+    "next_tier": "اگلا لیول: {{tier}}",
+    "highest_tier": "آپ سب سے اعلیٰ ممبرشپ لیول پر ہیں",
+    "remaining_orders": "{{count}} ادا شدہ آرڈرز باقی ہیں",
+    "remaining_spend": "{{amount}} کے مزید اخراجات باقی ہیں",
+    "current_orders": "آپ کے ادا شدہ آرڈرز",
+    "current_spend": "آپ کے کل اخراجات",
+    "evaluation_period": "پچھلے {{months}} مہینوں میں",
+    "none": "ابھی کوئی ممبرشپ لیول مقرر نہیں",
+    "remaining_orders_one": "{{count}} ادا شدہ آرڈر باقی ہے",
+    "remaining_orders_other": "{{count}} ادا شدہ آرڈرز باقی ہیں"
+  },
+  "referrals": {
+    "meta_title": "شیئر کریں اور کمائیں",
+    "title": "شیئر کریں اور کمائیں",
+    "subtitle": "اپنے کوڈ یا لنک سے دوستوں کو مدعو کریں — ہدف مکمل کریں اور اپنا انعام حاصل کریں۔",
+    "menu": "شیئر کریں اور کمائیں",
+    "your_code": "دعوتی کوڈ",
+    "your_link": "دعوتی لنک",
+    "copy": "کاپی کریں",
+    "copied": "کاپی ہو گیا",
+    "share": "شیئر کریں",
+    "progress_title": "انعام کی طرف آپ کی پیش رفت",
+    "progress_value": "{{required}} میں سے {{progress}}",
+    "remaining": "انعام حاصل کرنے کے لیے {{count}} مزید دعوتیں باقی",
+    "goal_reached": "ہدف مکمل — آپ کا انعام راستے میں ہے",
+    "signups": "آپ کے لنک سے رجسٹریشنز",
+    "qualified": "مکمل شدہ دعوتیں",
+    "pending": "زیرِ التوا",
+    "rewards_title": "موصول شدہ انعامات",
+    "rewards_count": "انعامات کی تعداد",
+    "no_rewards": "ابھی کوئی انعام نہیں",
+    "reward_status_pending": "زیرِ عمل",
+    "reward_status_granted": "دیا گیا",
+    "reward_status_applied": "استعمال شدہ",
+    "reward_coupon_code": "کوپن کوڈ",
+    "reward_valid_until": "{{date}} تک کارآمد",
+    "reward_used": "استعمال شدہ",
+    "reward_expired": "میعاد ختم",
+    "invites_title": "جنہیں آپ نے مدعو کیا",
+    "no_invites": "آپ نے ابھی کسی کو مدعو نہیں کیا",
+    "invite_status_pending": "ابھی مکمل نہیں",
+    "invite_status_qualified": "مکمل",
+    "my_reward": "میرا انعام",
+    "friend_reward": "آپ کے دوست کا انعام",
+    "reward_months": "{{count}} ماہ کی مفت سبسکرپشن",
+    "reward_cashback": "{{amount}} کیش بیک",
+    "reward_coupon": "{{percent}}% ڈسکاؤنٹ کوپن",
+    "disabled": "«شیئر کریں اور کمائیں» پروگرام فی الحال بند ہے۔",
+    "login_required": "اپنا دعوتی کوڈ دیکھنے کے لیے لاگ ان کریں۔",
+    "load_error": "«شیئر کریں اور کمائیں» کا ڈیٹا لوڈ نہیں ہو سکا۔",
+    "remaining_one": "انعام حاصل کرنے کے لیے {{count}} مزید دعوت باقی",
+    "remaining_other": "انعام حاصل کرنے کے لیے {{count}} مزید دعوتیں باقی"
+  },
+  "family": {
+    "meta_title": "خاندان کے افراد",
+    "title": "خاندان کے افراد",
+    "menu": "خاندان کے افراد",
+    "subtitle": "اپنے خاندان کے افراد شامل کریں تاکہ وہ پیکج کی حد کے اندر آپ کی سبسکرپشن سے فائدہ اٹھا سکیں۔",
+    "no_plan_title": "فیملی پیکج درکار ہے",
+    "no_plan_desc": "خاندان کے افراد شامل کرنے کے لیے فیملی پیکج لیں۔",
+    "upgrade_cta": "پیکجز دیکھیں",
+    "member_of_title": "آپ {{owner}} کے خاندان میں شامل ہیں",
+    "member_of_desc": "آپ کی سبسکرپشن پیکج کے مالک کی سبسکرپشن سے منسلک ہے۔",
+    "plan_title": "فیملی پیکج",
+    "plan_ends": "{{date}} کو ختم ہوگا",
+    "plan_active": "فعال",
+    "plan_inactive": "غیر فعال",
+    "seats": "نشستیں",
+    "used_seats": "استعمال شدہ",
+    "remaining_seats": "باقی",
+    "max_members": "زیادہ سے زیادہ",
+    "seats_full": "پیکج کی تمام نشستیں بھر چکی ہیں",
+    "members_title": "افراد",
+    "no_members": "ابھی کوئی فرد نہیں",
+    "add_member": "فرد شامل کریں",
+    "label_name": "نام",
+    "placeholder_name": "فرد کا نام (اختیاری)",
+    "label_phone": "موبائل نمبر",
+    "label_relation": "رشتہ",
+    "placeholder_relation": "مثال: بیٹا، بیوی (اختیاری)",
+    "submit": "شامل کریں",
+    "submitting": "شامل کیا جا رہا ہے…",
+    "invite_success": "فرد شامل ہو گیا",
+    "invite_failed": "فرد شامل نہیں ہو سکا",
+    "err_phone": "درست موبائل نمبر درج کریں",
+    "remove": "ہٹائیں",
+    "remove_confirm": "کیا اس فرد کو ہٹا دیں؟",
+    "remove_success": "فرد ہٹا دیا گیا",
+    "remove_failed": "فرد ہٹایا نہیں جا سکا",
+    "cannot_remove": "اس فرد کو نہیں ہٹایا جا سکتا",
+    "view_only": "صرف دیکھنے کے لیے",
+    "owner": "پیکج کا مالک",
+    "status_active": "فعال",
+    "status_pending": "منظوری کا منتظر",
+    "status_inactive": "غیر فعال",
+    "invitations_title": "آپ کے لیے دعوتیں",
+    "accept": "دعوت قبول کریں",
+    "accepting": "قبول کیا جا رہا ہے…",
+    "accept_success": "دعوت قبول ہو گئی",
+    "accept_failed": "دعوت قبول نہیں ہو سکی",
+    "load_error": "خاندان کا ڈیٹا لوڈ نہیں ہو سکا۔"
+  },
+  "storeRequest": {
+    "meta_title": "بطور اسٹور شامل ہوں یا کوئی اسٹور تجویز کریں",
+    "title": "مکافات اسٹورز",
+    "subtitle": "اسٹور کے مالک ہیں؟ ہمارے ساتھ شامل ہوں۔ گاہک ہیں؟ کوئی ایسا اسٹور تجویز کریں جسے آپ مکافات پر دیکھنا چاہیں۔",
+    "tab_join": "اسٹور شمولیت کی درخواست",
+    "tab_suggest": "اسٹور تجویز کریں",
+    "join_desc": "تفصیلات بھریں، ہماری ٹیم شمولیت مکمل کرنے کے لیے آپ سے رابطہ کرے گی۔",
+    "suggest_desc": "ہمیں بتائیں کہ آپ کون سا اسٹور مکافات پر دیکھنا چاہتے ہیں، ہم اسے شامل کرنے پر غور کریں گے۔",
+    "label_store_name": "اسٹور کا نام",
+    "placeholder_store_name": "اسٹور کا نام لکھیں",
+    "label_contact_name": "ذمہ دار کا نام",
+    "placeholder_contact_name": "ذمہ دار کا نام لکھیں",
+    "label_contact_phone": "رابطہ نمبر",
+    "placeholder_contact_phone": "05xxxxxxxx",
+    "label_email": "ای میل",
+    "placeholder_email": "name@example.com",
+    "label_country": "ملک",
+    "label_city": "شہر",
+    "select_country": "ملک منتخب کریں",
+    "select_city": "شہر منتخب کریں",
+    "city_not_listed": "میرا شہر فہرست میں نہیں ہے",
+    "label_city_name": "شہر کا نام لکھیں",
+    "label_notes": "نوٹس",
+    "placeholder_notes": "کوئی اضافی تفصیل (اختیاری)",
+    "optional": "اختیاری",
+    "submit": "درخواست بھیجیں",
+    "submitting": "بھیجا جا رہا ہے…",
+    "thanks_title": "شکریہ",
+    "thanks_join": "ہمیں آپ کی درخواست موصول ہو گئی، ہم جلد آپ سے رابطہ کریں گے۔",
+    "thanks_suggest": "ہمیں آپ کی تجویز موصول ہو گئی، شکریہ۔",
+    "new_request": "ایک اور درخواست بھیجیں",
+    "err_store_name": "اسٹور کا نام درکار ہے",
+    "err_contact_name": "ذمہ دار کا نام درکار ہے",
+    "err_contact_phone": "رابطہ نمبر درکار ہے",
+    "err_country": "ملک منتخب کرنا ضروری ہے",
+    "err_city": "شہر منتخب کرنا ضروری ہے",
+    "failed": "درخواست بھیجی نہیں جا سکی، دوبارہ کوشش کریں۔"
+  },
+  "giftSubscription": {
+    "coupon_label": "ڈسکاؤنٹ کوپن",
+    "coupon_placeholder": "کوپن کوڈ درج کریں",
+    "coupon_apply": "لاگو کریں",
+    "coupon_remove": "ہٹائیں",
+    "coupon_applied": "کوپن لاگو ہو گیا",
+    "coupon_invalid": "کوپن درست نہیں",
+    "price_original": "اصل قیمت",
+    "tier_discount": "{{tier}} لیول کا ڈسکاؤنٹ",
+    "tier_discount_generic": "ممبرشپ لیول ڈسکاؤنٹ",
+    "coupon_discount": "کوپن ڈسکاؤنٹ",
+    "code_discount": "ڈسکاؤنٹ کوڈ",
+    "total_discount": "کل ڈسکاؤنٹ",
+    "final_price": "قابلِ ادائیگی رقم",
+    "invoice_title": "تحفے میں دی گئی سبسکرپشن کی انوائس",
+    "invoice_number": "انوائس نمبر",
+    "invoice_date": "اجرا کی تاریخ",
+    "invoice_amount": "رقم",
+    "invoice_tax": "ٹیکس",
+    "invoice_total": "کل میزان",
+    "invoice_status": "حالت",
+    "invoice_recipient": "مستفید",
+    "invoice_plan": "پیکج",
+    "invoice_period": "مدت",
+    "invoice_download": "انوائس PDF ڈاؤن لوڈ کریں",
+    "invoice_not_ready": "انوائس ابھی جاری نہیں ہوئی، ادائیگی مکمل ہونے پر ظاہر ہو جائے گی۔",
+    "invoice_error": "انوائس لوڈ نہیں ہو سکی۔",
+    "back_to_gifts": "وہ سبسکرپشنز جو میں نے تحفے میں دیں",
+    "gifts_title": "تحفے میں دی گئی سبسکرپشنز",
+    "gifts_empty": "آپ نے ابھی کوئی سبسکرپشن تحفے میں نہیں دی",
+    "view_invoice": "انوائس دیکھیں"
+  },
+  "popupAds": {
+    "cta": "تفصیلات دیکھنے کے لیے کلک کریں",
+    "close": "بند کریں"
   }
 }

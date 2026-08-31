@@ -42,7 +42,7 @@ const PortfolioPage = () => {
         <title>
           {isRTL ? t("home.navbar.portfolio") : t("home.navbar.portfolio")}
         </title>
-        <link rel="canonical" href="https://mukafaat.com/portfolio" />
+        <link rel="canonical" href="https://mukafaat.com.sa/portfolio" />
       </Helmet>
       <PortfolioHero />
 

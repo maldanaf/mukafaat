@@ -206,7 +206,9 @@ export const subscriptionApi = {
     useWallet?: boolean,
     discountCode?: string,
     /** كوبون خصم (يُطبَّق قبل كود الخصم على الخادم) */
-    couponCode?: string
+    couponCode?: string,
+    /** تأكيد تغيير الباقة (ترقية/تقليل) بعد عرض المعاينة للعميل */
+    confirmChange?: boolean
   ) =>
     api.post(API_ENDPOINTS.subscription.subscribe, null, {
       params: {
@@ -216,7 +218,17 @@ export const subscriptionApi = {
         ...(useWallet && { use_wallet: true }),
         ...(couponCode && { coupon_code: couponCode }),
         ...(discountCode && { discount_code: discountCode }),
+        ...(confirmChange && { confirm_change: true }),
       },
+    }),
+
+  /**
+   * معاينة تغيير الباقة قبل تنفيذه: ترقية أم تقليل، كم يدفع أو كم يُودَع
+   * في محفظته، وكم فرداً من عائلته سيفقد اشتراكه.
+   */
+  changePreview: (planId: string | number) =>
+    api.get(API_ENDPOINTS.subscription.changePreview, {
+      params: { plan_id: planId },
     }),
   status: () => api.get(API_ENDPOINTS.subscription.status),
   history: () => api.get(API_ENDPOINTS.subscription.history),

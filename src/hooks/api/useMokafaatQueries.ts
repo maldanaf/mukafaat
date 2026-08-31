@@ -702,12 +702,14 @@ export function useSubscribe() {
       useWallet,
       discountCode,
       couponCode,
+      confirmChange,
     }: {
       planId: string | number;
       paymentMethod?: "online" | "cash" | "bank" | "card";
       useWallet?: boolean;
       discountCode?: string;
       couponCode?: string;
+      confirmChange?: boolean;
     }) =>
       subscriptionApi.subscribe(
         planId,
@@ -715,6 +717,7 @@ export function useSubscribe() {
         useWallet,
         discountCode,
         couponCode,
+        confirmChange,
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: mokafaatKeys.subscriptionStatus });

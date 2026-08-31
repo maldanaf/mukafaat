@@ -22,7 +22,7 @@ const OffersPage = () => {
     <>
       <Helmet>
         <title>{t("offersPage.pageTitle")}</title>
-        <link rel="canonical" href="https://mukafaat.com/offers" />
+        <link rel="canonical" href="https://mukafaat.com.sa/offers" />
       </Helmet>
 
       {/* نسخة الموبايل */}

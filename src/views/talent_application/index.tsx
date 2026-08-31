@@ -190,7 +190,7 @@ function TalentApplicationPage() {
         <title>{t("job-seeker.title")}</title>
         <link
           rel="canonical"
-          href="https://mukafaat.com/freelancer-application"
+          href="https://mukafaat.com.sa/freelancer-application"
         />
         <meta
           name="description"

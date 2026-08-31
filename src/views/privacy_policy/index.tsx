@@ -77,7 +77,7 @@ function PrivacyPolicyPage() {
     <>
       <Helmet>
         <title>{t("home.footer.privacy")}</title>
-        <link rel="canonical" href="https://mukafaat.com/privacy-policy" />
+        <link rel="canonical" href="https://mukafaat.com.sa/privacy-policy" />
         <meta name="description" content="Mukafaat Privacy Policy" />
         <meta property="og:title" content={t("home.footer.privacy")} />
         <meta property="og:description" content="Mukafaat Privacy Policy" />

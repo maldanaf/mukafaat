@@ -53,7 +53,7 @@ function CareersPage() {
     <>
       <Helmet>
         <title>{t("home.navbar.apply-for-job")}</title>
-        <link rel="canonical" href="https://mukafaat.com/careers" />
+        <link rel="canonical" href="https://mukafaat.com.sa/careers" />
         <meta
           name="description"
           content="Explore exciting career opportunities at Mukafaat."

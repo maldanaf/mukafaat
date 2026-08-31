@@ -17,6 +17,7 @@ export {
   PALETTE,
   pick,
   normalizeHex,
+  paletteFor,
   isTransparentHex,
 } from "./tokens";
 

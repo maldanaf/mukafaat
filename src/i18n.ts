@@ -3,7 +3,6 @@ import { initReactI18next } from "react-i18next";
 import Backend from "i18next-http-backend";
 import global_en from "@locale/en.json";
 import global_ar from "@locale/ar.json";
-import global_fr from "@locale/fr.json";
 import global_ur from "@locale/ur.json";
 import global_hi from "@locale/hi.json";
 
@@ -13,9 +12,6 @@ const resources = {
   },
   ar: {
     translation: global_ar,
-  },
-  fr: {
-    translation: global_fr,
   },
   ur: {
     translation: global_ur,

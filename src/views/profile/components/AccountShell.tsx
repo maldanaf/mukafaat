@@ -42,6 +42,7 @@ import {
 } from "react-icons/io5";
 import { AccountHero, ServiceGrid, type ServiceItem } from "./AccountKit";
 
+import { localeTag } from "@utils/localeFormat";
 /* ===================== خدمات الحساب (نفس ترتيب التطبيق) ===================== */
 
 const SERVICES: ServiceItem[] = [
@@ -98,13 +99,8 @@ const AccountShell: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   const { data: subscriptionData } = useSubscriptionStatus(!!user);
   const { data: unreadData } = useNotificationsUnreadCount(!!token);
 
-  const dateLocale = useMemo(() => {
-    const base = i18n.language?.split("-")[0] || "en";
-    if (base === "ar") return "ar-SA";
-    if (base === "ur") return "ur-PK";
-    if (base === "hi") return "hi-IN";
-    return "en-US";
-  }, [i18n.language]);
+  // تقويم ميلادي وأرقام لاتينية في كل اللغات — عبر الأداة المركزية
+  const dateLocale = useMemo(() => localeTag(), [i18n.language]);
 
   const tier = useMemo(() => parseMembershipTier(profileData), [profileData]);
 

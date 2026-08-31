@@ -257,7 +257,7 @@ const HomePage = () => {
     <>
       <Helmet>
         <title>{`Mukafaat - ${t("home.navbar.home")}`}</title>
-        <link rel="canonical" href="https://mukafaat.com" />
+        <link rel="canonical" href="https://mukafaat.com.sa" />
         <meta
           name="description"
           content="مكافآت — منصة العروض والخصومات والكوبونات والبطاقات الرقمية في المملكة العربية السعودية."

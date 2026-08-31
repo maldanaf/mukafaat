@@ -1496,7 +1496,9 @@
     },
     "cards_suffix": "cards",
     "heroEyebrow": "Buy once, save all year",
-    "heroSubtitle": "Discount cards from the best stores — recurring savings for one price."
+    "heroSubtitle": "Discount cards from the best stores — recurring savings for one price.",
+    "resultsCount_one": "{{count}} card",
+    "resultsCount_other": "{{count}} cards"
   },
   "saved": {
     "title": "Saved Items",
@@ -1527,7 +1529,9 @@
     "eyebrow": "Your library",
     "results_suffix": "saved items",
     "remove": "Remove from favorites",
-    "view_details": "View details"
+    "view_details": "View details",
+    "subtitle_one": "{{count}} saved item",
+    "subtitle_other": "{{count}} saved items"
   },
   "orders": {
     "title": "My Orders",
@@ -1580,7 +1584,9 @@
       "browse_offers": "Browse Offers"
     },
     "eyebrow": "Your purchases",
-    "results_suffix": "orders"
+    "results_suffix": "orders",
+    "subtitle_one": "{{count}} order in total",
+    "subtitle_other": "{{count}} orders in total"
   },
   "sideMenu": {
     "logoAlt": "Mukafaat logo",
@@ -1807,7 +1813,8 @@
     "group_help": "Help",
     "menu_card": "My card & tiers",
     "menu_notifications": "Notifications",
-    "menu_store_request": "Join as a store"
+    "menu_store_request": "Join as a store",
+    "menu_subscription": "My subscription"
   },
   "subscribeForOther": {
     "meta_title": "Subscribe for someone else",
@@ -1939,7 +1946,9 @@
     "offer_validity": "Offer validity",
     "discount": "Discount",
     "privacy_fallback": "For more on how we collect and use your data, please see our privacy policy.",
-    "privacy_link": "Privacy Policy"
+    "privacy_link": "Privacy Policy",
+    "sold_count_one": "{{count}} sold",
+    "sold_count_other": "{{count}} sold"
   },
   "offerCard": {
     "cardDetails": "Card Details",
@@ -2008,7 +2017,9 @@
     "current_orders": "Your paid orders",
     "current_spend": "Your total spend",
     "evaluation_period": "In the last {{months}} months",
-    "none": "No membership tier yet"
+    "none": "No membership tier yet",
+    "remaining_orders_one": "{{count}} paid order to go",
+    "remaining_orders_other": "{{count}} paid orders to go"
   },
   "referrals": {
     "meta_title": "Share & Earn",
@@ -2048,7 +2059,9 @@
     "reward_coupon": "{{percent}}% discount coupon",
     "disabled": "The Share & Earn program is currently disabled.",
     "login_required": "Sign in to see your invite code.",
-    "load_error": "Could not load Share & Earn data."
+    "load_error": "Could not load Share & Earn data.",
+    "remaining_one": "{{count}} more invite to earn your reward",
+    "remaining_other": "{{count}} more invites to earn your reward"
   },
   "family": {
     "meta_title": "Family members",
@@ -2234,7 +2247,9 @@
       "new": "New",
       "ending": "Ending soon"
     },
-    "results_count": "{{count}} results"
+    "results_count": "{{count}} results",
+    "results_count_one": "{{count}} result",
+    "results_count_other": "{{count}} results"
   },
   "couponCard": {
     "copies": "Copies"
@@ -2328,7 +2343,7 @@
     "features": "Features",
     "discountBadge": "{{percent}}% off",
     "familyMembersUpTo": "Includes up to {{count}} family members",
-    "currentPlanBadge": "Your current plan",
+    "currentPlanBadge": "Current plan",
     "previousPlanBadge": "Your previous plan",
     "renewSubscription": "Renew subscription",
     "activeUntil": "Your subscription is active until {{date}}",
@@ -2343,7 +2358,35 @@
       "6_months": "Every 6 months",
       "yearly": "Yearly",
       "2_years": "2 years"
-    }
+    },
+    "planUpgradeTitle": "Upgrade plan",
+    "planUpgradeSub": "You pay only the difference after crediting your remaining days",
+    "planDowngradeTitle": "Switch to a smaller plan",
+    "planDowngradeSub": "The difference goes to your wallet immediately",
+    "planChangeFrom": "From",
+    "planChangeTo": "To",
+    "planChangeRemaining": "Remaining on your plan ({{days}} days)",
+    "planChangeNewPrice": "New plan price",
+    "planChangeYouPay": "You pay",
+    "planChangeToWallet": "Credited to your wallet",
+    "planChangeConfirmUpgrade": "Continue to payment",
+    "planChangeConfirmDowngrade": "Confirm change",
+    "planChangeFamilyWarningTitle": "{{count}} family member(s) will lose their subscription",
+    "planChangeFamilyWarningBody": "They become regular users with no subscription, and each will need to subscribe on their own.",
+    "mySubscription": "My subscription",
+    "statusActive": "Active",
+    "availablePlans": "Available plans",
+    "availablePlansChange": "Change plan",
+    "availablePlansChangeHint": "Upgrade or downgrade — the difference is credited to your wallet",
+    "daysLeft": "{{days}} days left",
+    "endsOn": "Ends on {{date}}",
+    "noActiveSubscription": "No active subscription",
+    "noSubscriptionHint": "Subscribe to unlock all offers and discounts",
+    "planActionUpgrade": "Upgrade to this plan",
+    "planActionDowngrade": "Switch to this plan",
+    "subscribeNow": "Subscribe now",
+    "daysRemaining_one": "{{count}} day remaining",
+    "daysRemaining_other": "{{count}} days remaining"
   },
   "payment": {
     "title": "Payment method",
@@ -2444,5 +2487,9 @@
     "card_upsell_desc": "Subscribe to get a digital membership card with your own number and a QR code merchants can scan.",
     "card_actions": "Share your card",
     "gifts_subtitle": "Subscriptions you gifted and their invoices"
+  },
+  "popupAds": {
+    "cta": "Click to view details",
+    "close": "Close"
   }
 }

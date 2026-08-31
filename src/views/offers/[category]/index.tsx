@@ -416,7 +416,7 @@ const CategoryOffersPage = () => {
         </title>
         <link
           rel="canonical"
-          href={`https://mukafaat.com/offers/${category}`}
+          href={`https://mukafaat.com.sa/offers/${category}`}
         />
       </Helmet>
 

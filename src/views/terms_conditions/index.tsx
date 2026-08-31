@@ -79,7 +79,7 @@ function TermsConditionsPage() {
         <title>{t("home.footer.terms")}</title>
         <link
           rel="canonical"
-          href="https://mukafaat.com/terms-and-conditions"
+          href="https://mukafaat.com.sa/terms-and-conditions"
         />
         <meta name="description" content="Mukafaat Terms and Conditions" />
         <meta property="og:title" content={t("home.footer.terms")} />
