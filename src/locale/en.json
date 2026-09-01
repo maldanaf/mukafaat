@@ -2508,6 +2508,9 @@
     "subscribers_only": "Subscribers only",
     "subscribe_hint": "Subscribe to enjoy these discounts on your visit.",
     "subscribe_cta": "Subscribe now",
-    "how_to_use": "Show your membership card at checkout to get the discount."
+    "how_to_use": "Show your membership card at checkout to get the discount.",
+    "subtitle": "Always-on discounts agreed with the store — no expiry date.",
+    "max_cap": "Up to",
+    "badge": "Permanent"
   }
 }

@@ -53,7 +53,7 @@ const MerchantCard: React.FC<{ merchant: MerchantSummary }> = ({ merchant }) => 
   return (
     <Link to={href} className={`${VIVID_CARD} ${FOCUS}`}>
       <div className={VIVID_MEDIA}>
-        <Ratio ratio={16 / 10}>
+        <Ratio ratio="aspect-[16/10]">
           {cover ? (
             <SmartImage src={cover} alt={merchant.name} className="h-full w-full object-cover" />
           ) : (

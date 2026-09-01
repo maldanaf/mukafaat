@@ -527,12 +527,16 @@ const RestaurantDetailsPage = () => {
           </div>
         )}
 
+        {/*
+          الخصومات الدائمة بعرض الصفحة كاملاً، فوق الشبكة ذات العمودين.
+          كانت محشورة في العمود الضيّق بينما يأخذ التوصيل وساعات العمل
+          عموداً كاملاً — والعكس هو الصحيح: الخصم جوهر الاتفاقية.
+        */}
+        <PermanentDiscounts discounts={restaurant.discounts ?? []} />
+
         <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
           {/* العمود الرئيسي */}
           <div className="min-w-0">
-            {/* الخصومات الدائمة قبل العروض — جوهر الاتفاقية مع المتجر */}
-            <PermanentDiscounts discounts={restaurant.discounts ?? []} />
-
             {/* التبويبات — شرائح بنفسجية واضحة */}
             <div
               role="tablist"
