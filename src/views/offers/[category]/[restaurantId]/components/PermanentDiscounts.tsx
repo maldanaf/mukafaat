@@ -4,7 +4,7 @@ import React from "react";
 import { Link } from "@/lib/router-compat";
 import { FiLock, FiPercent, FiTag } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
-import { SmartImage, Ratio, FOCUS } from "@ui";
+import { SmartImage, FOCUS } from "@ui";
 import CurrencyIcon from "@components/CurrencyIcon";
 
 export interface PermanentDiscount {
@@ -44,9 +44,10 @@ function valueOf(d: PermanentDiscount): { amount: number; isFixed: boolean } {
 /**
  * الخصومات الدائمة للمتجر — تتصدّر صفحته قبل العروض.
  *
- * كل خصم كرت كامل: صورة واسم ووصف وقيمة، لأنه محتوى قائم بذاته
- * (اتفاقية مع المتجر) لا سطر في قائمة. القيمة قد تكون نسبة مئوية
- * أو مبلغاً ثابتاً حسب الاتفاقية.
+ * صفٌّ مضغوط لا كرت بصورة كبيرة: الخصم معلومة قصيرة (بند + نسبة)،
+ * وصورة بارتفاع ٢٥٠ بكسل لكل بند كانت تمدّ القسم إلى شاشتين لثلاثة
+ * خصومات، فتزيح العروض والمنيو خارج الشاشة الأولى بلا فائدة.
+ * الصورة بقيت مصغّرة لأنها تعطي البند سياقاً بصرياً سريعاً.
  */
 const PermanentDiscounts: React.FC<{ discounts: PermanentDiscount[] }> = ({
   discounts,
@@ -58,106 +59,87 @@ const PermanentDiscounts: React.FC<{ discounts: PermanentDiscount[] }> = ({
   const anyLocked = discounts.some((d) => d.is_locked);
 
   return (
-    <section className="mb-7">
-      <header className="mb-4 flex items-center gap-2.5">
-        <span className="flex h-9 w-9 items-center justify-center rounded-mk-md bg-[linear-gradient(135deg,#400198_0%,#6703EB_100%)] text-white shadow-[0_8px_18px_-8px_rgba(64,1,152,0.85)]">
-          <FiPercent size={17} aria-hidden />
+    <section className="mb-6 overflow-hidden rounded-mk-lg border border-mk-border bg-white shadow-mk-card">
+      <header className="flex items-center gap-2.5 border-b border-mk-border px-4 py-3">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-mk-sm bg-[linear-gradient(135deg,#400198_0%,#6703EB_100%)] text-white">
+          <FiPercent size={15} aria-hidden />
         </span>
-        <div className="min-w-0">
-          <h2 className="m-0 text-[17px] font-extrabold text-mk-text-strong">
-            {t("permanentDiscounts.title", "الخصومات الدائمة")}
-          </h2>
-          <p className="m-0 text-[12.5px] text-mk-muted">
-            {t(
-              "permanentDiscounts.subtitle",
-              "خصومات سارية دائماً باتفاقية مع المتجر — بلا تاريخ انتهاء.",
-            )}
-          </p>
-        </div>
-        <span className="ms-auto shrink-0 rounded-full bg-mk-tint2 px-3 py-1 text-[12px] font-extrabold text-mk-primary">
+        <h2 className="m-0 text-[14.5px] font-extrabold text-mk-text-strong">
+          {t("permanentDiscounts.title", "الخصومات الدائمة")}
+        </h2>
+        <span className="rounded-full bg-mk-tint2 px-2 py-0.5 text-[11.5px] font-extrabold text-mk-primary">
           {discounts.length}
+        </span>
+        <span className="ms-auto hidden text-[11.5px] text-mk-muted sm:inline">
+          {t("permanentDiscounts.no_expiry", "سارية دائماً — بلا تاريخ انتهاء")}
         </span>
       </header>
 
-      <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="divide-y divide-mk-border">
         {discounts.map((d) => {
           const { amount, isFixed } = valueOf(d);
 
           return (
             <li
               key={d.id}
-              className="group flex flex-col overflow-hidden rounded-mk-lg border border-mk-border bg-white shadow-mk-card transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:border-mk-border-strong hover:shadow-[0_18px_38px_-14px_rgba(64,1,152,0.38)]"
+              className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-mk-tint3"
             >
-              <div className="relative overflow-hidden border-b border-mk-border bg-mk-tint2">
-                <Ratio ratio="aspect-[16/10]">
-                  {d.image ? (
-                    <SmartImage
-                      src={d.image}
-                      alt={d.title}
-                      className="h-full w-full object-cover transition-transform duration-[600ms] group-hover:scale-[1.07]"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center">
-                      <FiTag className="text-mk-faint" size={26} aria-hidden />
-                    </div>
-                  )}
-                </Ratio>
-
-                {/* قيمة الخصم — أبرز عنصر على الكرت */}
-                <span className="absolute end-3 top-3 z-[2] inline-flex items-center gap-1 rounded-full bg-[linear-gradient(135deg,#400198_0%,#6703EB_100%)] px-3 py-1.5 font-extrabold leading-none text-white shadow-[0_10px_24px_-8px_rgba(64,1,152,0.95)] ring-1 ring-white/25">
-                  <span className="text-[17px]" dir="ltr">
-                    {fmt(amount)}
-                  </span>
-                  {isFixed ? (
-                    <CurrencyIcon className="text-white" size={13} />
-                  ) : (
-                    <span className="text-[15px]">%</span>
-                  )}
-                </span>
-
-                {d.is_locked && (
-                  <span className="absolute bottom-3 start-3 z-[2] inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-[10.5px] font-bold text-mk-muted shadow-sm backdrop-blur-sm">
-                    <FiLock size={10} aria-hidden />
-                    {t("permanentDiscounts.subscribers_only", "للمشتركين فقط")}
+              {/* مصغّرة تعطي البند سياقاً بصرياً بلا أن تبتلع الصفحة */}
+              <span className="h-11 w-11 shrink-0 overflow-hidden rounded-mk-sm bg-mk-tint2">
+                {d.image ? (
+                  <SmartImage src={d.image} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  <span className="flex h-full w-full items-center justify-center">
+                    <FiTag className="text-mk-faint" size={16} aria-hidden />
                   </span>
                 )}
-              </div>
+              </span>
 
-              <div className="flex flex-1 flex-col gap-1.5 p-4">
-                <h3 className="line-clamp-1 text-[15px] font-extrabold text-mk-text-strong">
+              <div className="min-w-0 flex-1">
+                <p className="m-0 line-clamp-1 text-[13.5px] font-extrabold text-mk-text-strong">
                   {d.title}
-                </h3>
-
-                {d.description && (
-                  <p className="line-clamp-2 text-[12.5px] leading-relaxed text-mk-muted">
-                    {d.description}
+                </p>
+                {(d.description || d.terms) && (
+                  <p className="m-0 line-clamp-1 text-[11.5px] text-mk-muted">
+                    {d.terms || d.description}
                   </p>
                 )}
-
-                {(d.terms || d.max_discount_amount) && (
-                  <div className="mt-auto flex flex-col gap-1 border-t border-mk-border pt-2.5">
-                    {d.max_discount_amount ? (
-                      <p className="m-0 inline-flex items-center gap-1 text-[11.5px] font-bold text-mk-primary">
-                        {t("permanentDiscounts.max_cap", "بحد أقصى")}{" "}
-                        <span dir="ltr">{fmt(Number(d.max_discount_amount))}</span>
-                        <CurrencyIcon className="text-mk-primary" size={11} />
-                      </p>
-                    ) : null}
-                    {d.terms && (
-                      <p className="m-0 line-clamp-2 text-[11.5px] leading-relaxed text-mk-faint">
-                        {d.terms}
-                      </p>
-                    )}
-                  </div>
-                )}
               </div>
+
+              {d.max_discount_amount ? (
+                <span className="hidden shrink-0 items-center gap-0.5 text-[11px] font-bold text-mk-muted sm:inline-flex">
+                  {t("permanentDiscounts.max_cap", "بحد أقصى")}{" "}
+                  <span dir="ltr">{fmt(Number(d.max_discount_amount))}</span>
+                  <CurrencyIcon className="text-mk-muted" size={10} />
+                </span>
+              ) : null}
+
+              {d.is_locked && (
+                <FiLock
+                  className="hidden shrink-0 text-mk-faint sm:block"
+                  size={13}
+                  aria-label={t("permanentDiscounts.subscribers_only", "للمشتركين فقط")}
+                />
+              )}
+
+              {/* القيمة — أبرز ما في الصف */}
+              <span className="inline-flex shrink-0 items-center gap-0.5 rounded-mk-sm bg-[linear-gradient(135deg,#400198_0%,#6703EB_100%)] px-2.5 py-1.5 font-extrabold leading-none text-white">
+                <span className="text-[15px]" dir="ltr">
+                  {fmt(amount)}
+                </span>
+                {isFixed ? (
+                  <CurrencyIcon className="text-white" size={12} />
+                ) : (
+                  <span className="text-[13px]">%</span>
+                )}
+              </span>
             </li>
           );
         })}
       </ul>
 
-      <footer className="mt-4 flex flex-wrap items-center gap-3 rounded-mk-md border border-mk-border bg-mk-tint3 px-4 py-3">
-        <p className="m-0 text-[12.5px] text-mk-muted">
+      <footer className="flex flex-wrap items-center gap-2 border-t border-mk-border bg-mk-tint3 px-4 py-2.5">
+        <p className="m-0 text-[12px] text-mk-muted">
           {anyLocked
             ? t(
                 "permanentDiscounts.subscribe_hint",
@@ -171,7 +153,7 @@ const PermanentDiscounts: React.FC<{ discounts: PermanentDiscount[] }> = ({
         {anyLocked && (
           <Link
             to="/subscription/plans"
-            className={`ms-auto rounded-full bg-[linear-gradient(135deg,#400198_0%,#6703EB_100%)] px-4 py-2 text-[12.5px] font-extrabold text-white transition-transform hover:-translate-y-0.5 ${FOCUS}`}
+            className={`ms-auto rounded-full bg-[linear-gradient(135deg,#400198_0%,#6703EB_100%)] px-3.5 py-1.5 text-[12px] font-extrabold text-white transition-transform hover:-translate-y-0.5 ${FOCUS}`}
           >
             {t("permanentDiscounts.subscribe_cta", "اشترك الآن")}
           </Link>

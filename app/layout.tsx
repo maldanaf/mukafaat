@@ -96,10 +96,32 @@ export default async function RootLayout({
             };
           })();
         `}} />
+
+        {/* ختم التحقّق — المركز السعودي للأعمال */}
+        <div
+          className="sbc-verify-seal"
+          data-token="RDdhYk03RERjVmUzSVFiTTg2TnNPUT09"
+          data-position="bottom-left"
+        />
+        <script
+          src="https://eauthenticate.saudibusiness.gov.sa/EAuthSealApi/seal.js"
+          async
+        />
       </head>
       <body suppressHydrationWarning>
         <RouteLoadingIndicator />
         <Providers>{children}</Providers>
+
+        {/* ختم التحقّق — المركز السعودي للأعمال */}
+        <div
+          className="sbc-verify-seal"
+          data-token="RDdhYk03RERjVmUzSVFiTTg2TnNPUT09"
+          data-position="bottom-left"
+        />
+        <script
+          src="https://eauthenticate.saudibusiness.gov.sa/EAuthSealApi/seal.js"
+          async
+        />
       </body>
     </html>
   );
