@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Link } from "@/lib/router-compat";
-import { FiLock, FiPercent, FiTag } from "react-icons/fi";
+import { FiAward, FiPercent, FiTag } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
 import { SmartImage, FOCUS } from "@ui";
 import CurrencyIcon from "@components/CurrencyIcon";
@@ -21,7 +21,10 @@ export interface PermanentDiscount {
   max_discount_amount?: number | null;
   terms?: string | null;
   requires_subscription: boolean;
-  /** مقفل ⇒ الزائر غير مشترك: القيمة تظهر وطريقة الاستفادة لا */
+  /**
+   * الخصم معروض للجميع دائماً؛ هذا يعني أن تفعيله داخل المتجر
+   * يحتاج اشتراكاً سارياً لا أكثر.
+   */
   is_locked: boolean;
 }
 
@@ -44,10 +47,13 @@ function valueOf(d: PermanentDiscount): { amount: number; isFixed: boolean } {
 /**
  * الخصومات الدائمة للمتجر — تتصدّر صفحته قبل العروض.
  *
+ * كل الخصومات معروضة للجميع بقيمتها ووصفها، والاشتراك شرط للاستفادة
+ * داخل المتجر لا لرؤيتها؛ لذلك لا نُخفي شيئاً ولا نستخدم قفلاً يوحي
+ * بمحتوى محجوب، بل نوضّح أن التفعيل يتطلّب اشتراكاً.
+ *
  * صفٌّ مضغوط لا كرت بصورة كبيرة: الخصم معلومة قصيرة (بند + نسبة)،
  * وصورة بارتفاع ٢٥٠ بكسل لكل بند كانت تمدّ القسم إلى شاشتين لثلاثة
  * خصومات، فتزيح العروض والمنيو خارج الشاشة الأولى بلا فائدة.
- * الصورة بقيت مصغّرة لأنها تعطي البند سياقاً بصرياً سريعاً.
  */
 const PermanentDiscounts: React.FC<{ discounts: PermanentDiscount[] }> = ({
   discounts,
@@ -114,12 +120,11 @@ const PermanentDiscounts: React.FC<{ discounts: PermanentDiscount[] }> = ({
                 </span>
               ) : null}
 
-              {d.is_locked && (
-                <FiLock
-                  className="hidden shrink-0 text-mk-faint sm:block"
-                  size={13}
-                  aria-label={t("permanentDiscounts.subscribers_only", "للمشتركين فقط")}
-                />
+              {d.requires_subscription && (
+                <span className="hidden shrink-0 items-center gap-1 rounded-full bg-mk-tint2 px-2 py-0.5 text-[10.5px] font-bold text-mk-primary sm:inline-flex">
+                  <FiAward size={11} aria-hidden />
+                  {t("permanentDiscounts.needs_subscription", "يتطلّب اشتراكاً")}
+                </span>
               )}
 
               {/* القيمة — أبرز ما في الصف */}
@@ -143,11 +148,11 @@ const PermanentDiscounts: React.FC<{ discounts: PermanentDiscount[] }> = ({
           {anyLocked
             ? t(
                 "permanentDiscounts.subscribe_hint",
-                "اشترك للاستفادة من هذه الخصومات عند الزيارة.",
+                "الخصومات معروضة للجميع — ولتفعيلها داخل المتجر تحتاج اشتراكاً سارياً.",
               )
             : t(
-                "permanentDiscounts.how_to_use",
-                "أبرز بطاقة العضوية عند الدفع للاستفادة من الخصم.",
+                "permanentDiscounts.active_hint",
+                "اشتراكك فعّال — أبرز بطاقة العضوية عند الدفع للاستفادة.",
               )}
         </p>
         {anyLocked && (

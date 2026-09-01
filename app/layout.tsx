@@ -97,12 +97,12 @@ export default async function RootLayout({
           })();
         `}} />
 
-        {/* ختم التحقّق — المركز السعودي للأعمال */}
-        <div
-          className="sbc-verify-seal"
-          data-token="RDdhYk03RERjVmUzSVFiTTg2TnNPUT09"
-          data-position="bottom-left"
-        />
+        {/*
+          ختم التحقّق — المركز السعودي للأعمال.
+          السكربت هنا، وحاوية الختم في <body>: المتصفّح لا يقبل <div>
+          داخل <head> فينقله خارجه، فيختلف ما صيّره السيرفر عمّا يبنيه
+          العميل وتنهار الترطيب (hydration) في كل صفحات الموقع.
+        */}
         <script
           src="https://eauthenticate.saudibusiness.gov.sa/EAuthSealApi/seal.js"
           async

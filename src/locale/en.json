@@ -2506,12 +2506,21 @@
   "permanentDiscounts": {
     "title": "Permanent discounts",
     "subscribers_only": "Subscribers only",
-    "subscribe_hint": "Subscribe to enjoy these discounts on your visit.",
+    "subscribe_hint": "Discounts are visible to everyone — an active subscription is needed to use them in store.",
     "subscribe_cta": "Subscribe now",
     "how_to_use": "Show your membership card at checkout to get the discount.",
     "subtitle": "Always-on discounts agreed with the store — no expiry date.",
     "max_cap": "Up to",
     "badge": "Permanent",
-    "no_expiry": "Always on — no expiry"
+    "no_expiry": "Always on — no expiry",
+    "needs_subscription": "Subscription required",
+    "active_hint": "Your subscription is active — show your membership card at checkout."
+  },
+  "stores": {
+    "title": "Stores",
+    "subtitle": "Browse partner stores and their year-round permanent discounts.",
+    "search_placeholder": "Search for a store…",
+    "count_one": "1 store",
+    "count_other": "{{count}} stores"
   }
 }

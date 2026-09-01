@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { ShareIcon, HeartIcon } from "@ui";
 import {
   LuPercent,
+  LuStore,
   LuCreditCard,
   LuTicket,
   LuChevronDown,
@@ -146,6 +147,18 @@ const Navbar: React.FC = () => {
 
           {/* التنقّل — يظهر على الشاشات الكبيرة */}
           <nav className="hidden min-w-0 flex-1 items-center justify-center gap-1 lg:flex">
+            {/* المتاجر أولاً: المتجر وحدة التصفّح الأولى وخصوماته الدائمة
+                هي اعتماد المنصة، والعروض تليها */}
+            <Link
+              to="/stores"
+              className="flex items-center gap-1.5 whitespace-nowrap rounded-full py-1 pe-3 ps-1 text-[13.5px] font-extrabold text-[#400198] transition-all duration-200 ease-out hover:bg-[#F2EFFA]"
+            >
+              <span className="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-grad-brand text-white shadow-[0_6px_14px_-6px_rgba(64,1,152,0.9)]">
+                <LuStore size={16} />
+              </span>
+              <span>{t("stores.title", "المتاجر")}</span>
+            </Link>
+
             {/* العروض: رابط مباشر لصفحة العروض العامة — بلا قائمة منسدلة */}
             <Link
               to="/offers"
@@ -419,7 +432,11 @@ const Navbar: React.FC = () => {
         {mobileOpen && (
           <div className="border-t border-[#EFEDF7] bg-white px-4 py-3 lg:hidden">
             <div className="flex flex-col gap-1">
-              {[{ to: "/offers", label: t("home.navbar.offers", "العروض"), icon: LuPercent }, ...navItems].map(
+              {[
+                { to: "/stores", label: t("stores.title", "المتاجر"), icon: LuStore },
+                { to: "/offers", label: t("home.navbar.offers", "العروض"), icon: LuPercent },
+                ...navItems,
+              ].map(
                 (item) => {
                   const Icon = item.icon;
                   return (

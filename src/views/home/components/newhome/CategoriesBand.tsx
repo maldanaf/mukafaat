@@ -39,8 +39,10 @@ const CategoriesBand: React.FC<Props> = ({ categories, title, showViewAll = true
 
   /** صفحة القسم تعتمد الـ slug: /offers/{slug} — وإلا نمرّر المعرّف كباراميتر */
   const openCategory = (category: CategoryItem | { id: "all" }) => {
+    // «الكل» تقود إلى صفحة المتاجر لا العروض: الشريط شريط تصنيفات
+    // متاجر، وإرسال المستخدم للعروض كان يُخرجه من مسار المتاجر
     if (category.id === "all") {
-      navigate("/offers");
+      navigate("/stores");
       return;
     }
     const item = category as CategoryItem;
