@@ -87,7 +87,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [offers, cards, merchants, categories, articles] = await Promise.all([
     fetchList("/api/web/offers?per_page=200"),
     fetchList("/api/web/cards?per_page=200"),
-    fetchList("/api/web/merchants?per_page=200"),
+    fetchList("/api/merchants?per_page=200"),
     fetchList("/api/categories?type=offers"),
     fetchList("/api/web/news"),
   ]);
@@ -116,8 +116,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
+  // صفحة المتجر — أولوية عالية: المتجر وحدة التصفّح الأولى وخصوماته
+  // الدائمة هي المحتوى الذي تبحث عنه المحرّكات
   for (const m of merchants) {
-    if (m.id) dynamic.push(entry(`/cards/${m.id}`, "weekly", 0.6));
+    const key = m.slug ?? m.id;
+    if (key) dynamic.push(entry(`/store/${key}`, "weekly", 0.75));
   }
 
   for (const a of articles) {

@@ -704,7 +704,7 @@ const CategoryOffersPage = () => {
         ) : merchants.length > 0 ? (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 grid-view">
             {merchants.map((m) => (
-              <MerchantCard key={m.id} merchant={m} categorySlug={category ?? ""} />
+              <MerchantCard key={m.id} merchant={m} />
             ))}
           </div>
         ) : (

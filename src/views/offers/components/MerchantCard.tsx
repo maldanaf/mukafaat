@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { SmartImage, Ratio, FOCUS } from "@ui";
 import { API_BASE_URL } from "@config/api";
 import { VIVID_CARD, VIVID_MEDIA, VIVID_SCRIM } from "./CatalogKit";
+import { merchantUrl } from "@utils/merchantUrl";
 
 export interface MerchantSummary {
   id: number | string;
@@ -38,13 +39,10 @@ const absolute = (path?: string | null): string | undefined => {
  * الخصم الدائم هو أبرز ما فيه: اعتماد المنصة على الاتفاقيات مع المتاجر
  * لا على العروض المؤقّتة، فالنسبة تتصدّر الكرت لا السعر.
  */
-const MerchantCard: React.FC<{ merchant: MerchantSummary; categorySlug: string }> = ({
-  merchant,
-  categorySlug,
-}) => {
+const MerchantCard: React.FC<{ merchant: MerchantSummary }> = ({ merchant }) => {
   const { t } = useTranslation();
 
-  const href = `/offers/${categorySlug}/${merchant.slug ?? merchant.id}`;
+  const href = merchantUrl(merchant);
   const cover = absolute(merchant.cover_image) ?? absolute(merchant.logo);
   const logo = absolute(merchant.logo);
 

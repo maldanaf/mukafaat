@@ -71,8 +71,12 @@ function formatMoneyValue(raw: unknown): string {
 }
 
 const RestaurantDetailsPage = () => {
-  const { category, merchantSlug } = useParams<{
-    category: string;
+  /**
+   * المسار الجديد `/store/{slug}` لا يحمل مقطع التصنيف، والقديم يحمله.
+   * نقرأ ما توفّره الرابط، ثم نُكمل من بيانات المتجر نفسها أدناه.
+   */
+  const { category: categoryParam, merchantSlug } = useParams<{
+    category?: string;
     merchantSlug: string;
   }>();
   const navigate = useNavigate();
@@ -80,6 +84,17 @@ const RestaurantDetailsPage = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<"offers" | "menu">("offers");
   const { data: merchantDetailData, isLoading: merchantLoading } = useMerchantDetail(merchantSlug);
+
+  /** slug تصنيف المتجر: من الرابط إن وُجد، وإلا من بيانات الـ API */
+  const category: string = useMemo(() => {
+    if (categoryParam) return categoryParam;
+    const root = (merchantDetailData as Record<string, unknown>)?.data as
+      | Record<string, unknown>
+      | undefined;
+    const m = root?.merchant as Record<string, unknown> | undefined;
+    const cat = m?.category as { slug?: string } | undefined;
+    return cat?.slug ?? "";
+  }, [categoryParam, merchantDetailData]);
 
   const restaurant = useMemo<Restaurant | null>(() => {
     if (!merchantDetailData) return null;
@@ -339,7 +354,7 @@ const RestaurantDetailsPage = () => {
         </title>
         <link
           rel="canonical"
-          href={`https://mukafaat.com.sa/offers/${category}/${merchantSlug}`}
+          href={`https://mukafaat.com.sa/store/${merchantSlug}`}
         />
       </Helmet>
 
