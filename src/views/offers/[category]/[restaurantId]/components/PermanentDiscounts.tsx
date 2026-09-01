@@ -48,32 +48,48 @@ const PermanentDiscounts: React.FC<{ discounts: PermanentDiscount[] }> = ({
         </span>
       </header>
 
-      <ul className="divide-y divide-mk-border">
+      {/*
+        شبكة لا قائمة: المتجر قد يحمل ثلاثة بنود أو أكثر (أشعة/تحاليل/أسنان).
+        عدد الأعمدة يتبع عدد البنود حتى لا يتيتّم بندٌ واحد في شبكة ثلاثية.
+      */}
+      <ul
+        className={`grid grid-cols-1 gap-3 p-4 ${
+          discounts.length === 1
+            ? ""
+            : discounts.length === 2
+              ? "sm:grid-cols-2"
+              : "sm:grid-cols-2 lg:grid-cols-3"
+        }`}
+      >
         {discounts.map((d) => (
-          <li key={d.id} className="flex items-center gap-3 px-4 py-3">
-            <span className="flex h-12 w-14 shrink-0 flex-col items-center justify-center rounded-mk-md bg-mk-tint2 leading-none text-mk-primary">
-              <span className="text-[17px] font-extrabold" dir="ltr">
-                {fmt(Number(d.discount_percentage))}%
+          <li
+            key={d.id}
+            className="group relative flex flex-col gap-2 overflow-hidden rounded-mk-md border border-mk-border bg-mk-tint3 p-3.5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#C9BCEC] hover:shadow-[0_12px_26px_-14px_rgba(64,1,152,0.5)]"
+          >
+            <div className="flex items-start gap-3">
+              <span className="flex h-14 w-16 shrink-0 flex-col items-center justify-center rounded-mk-md bg-[linear-gradient(135deg,#400198_0%,#6703EB_100%)] leading-none text-white shadow-[0_8px_18px_-8px_rgba(64,1,152,0.85)]">
+                <span className="text-[20px] font-extrabold" dir="ltr">
+                  {fmt(Number(d.discount_percentage))}%
+                </span>
               </span>
-            </span>
 
-            <div className="min-w-0 flex-1">
-              <p className="line-clamp-1 text-[14px] font-extrabold text-mk-text-strong">
-                {d.title}
-              </p>
-              {d.terms && (
-                <p className="line-clamp-2 text-[12px] text-mk-muted">{d.terms}</p>
-              )}
+              <div className="min-w-0 flex-1">
+                <p className="line-clamp-2 text-[14px] font-extrabold leading-snug text-mk-text-strong">
+                  {d.title}
+                </p>
+                {d.is_locked && (
+                  <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-white px-2 py-0.5 text-[10.5px] font-bold text-mk-muted ring-1 ring-mk-border">
+                    <FiLock size={10} aria-hidden />
+                    {t("permanentDiscounts.subscribers_only", "للمشتركين فقط")}
+                  </span>
+                )}
+              </div>
             </div>
 
-            {d.is_locked && (
-              <span
-                className="flex shrink-0 items-center gap-1 rounded-full bg-mk-tint3 px-2.5 py-1 text-[11px] font-bold text-mk-muted"
-                title={t("permanentDiscounts.subscribers_only", "للمشتركين فقط")}
-              >
-                <FiLock size={12} aria-hidden />
-                {t("permanentDiscounts.subscribers_only", "للمشتركين فقط")}
-              </span>
+            {d.terms && (
+              <p className="line-clamp-2 border-t border-mk-border pt-2 text-[11.5px] leading-relaxed text-mk-muted">
+                {d.terms}
+              </p>
             )}
           </li>
         ))}

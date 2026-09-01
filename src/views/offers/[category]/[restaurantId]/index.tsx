@@ -119,6 +119,8 @@ const RestaurantDetailsPage = () => {
       slug: String(m.slug ?? merchantSlug),
       name: { ar: merchantName, en: merchantName },
       logo: merchantLogo,
+      // غلاف المتجر — كان الهيرو يستخدم الشعار خلفيةً فيخرج مسطّحاً
+      cover: m.cover_image ? String(m.cover_image) : null,
       category: { key: categoryKey, ar: categoryName, en: categoryName },
       description: { ar: String(m.description ?? ""), en: String(m.description ?? "") },
       location: { ar: "-", en: "-" },
@@ -249,6 +251,17 @@ const RestaurantDetailsPage = () => {
 
   const categoryInfo = offerCategories.find((cat) => cat.key === category);
 
+  /**
+   * أعلى خصم دائم — يتصدّر الهيرو لأنه أهمّ ما يبحث عنه الزائر.
+   *
+   * فوق الـ return المبكر: تحته يُستدعى في تصيير دون آخر فيختلف عدد
+   * الخطافات ويسقط المكوّن.
+   */
+  const topDiscount = useMemo(() => {
+    const list = (restaurant?.discounts ?? []) as PermanentDiscount[];
+    return list.reduce((max, d) => Math.max(max, Number(d.discount_percentage) || 0), 0);
+  }, [restaurant]);
+
   if (merchantLoading) {
     return (
       <div className="bg-mk-bg">
@@ -333,14 +346,18 @@ const RestaurantDetailsPage = () => {
       {/* ===== غلاف المتجر — صورة بتدرّج فوقها + شعار بارز + شارات ===== */}
       <section className="relative overflow-hidden bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)]">
         {/* الصورة كخلفية ناعمة تحت التدرّج */}
+        {/* الغلاف الحقيقي — يعطي الصفحة هويّة المتجر بدل لون مسطّح */}
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-25 blur-[3px]"
-          style={{ backgroundImage: `url(${getRestaurantImage(restaurant.logo)})` }}
+          className="pointer-events-none absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${restaurant.cover ?? getRestaurantImage(restaurant.logo)})`,
+          }}
         />
+        {/* تعتيم متدرّج: داكن أسفل ليقرأ النص، وشفّاف أعلى لتظهر الصورة */}
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(150deg,rgba(27,17,80,0.92),rgba(64,1,152,0.86)_55%,rgba(103,3,235,0.78))]"
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(20,10,54,0.94)_0%,rgba(27,17,80,0.72)_45%,rgba(64,1,152,0.38)_100%)]"
         />
         <span
           aria-hidden
@@ -410,8 +427,22 @@ const RestaurantDetailsPage = () => {
                   {restaurant?.category?.ar ||
                     (categoryInfo ? (isRTL ? categoryInfo.ar : categoryInfo.en) : "")}
                 </p>
-                <h1 className="m-0 text-[26px] font-extrabold leading-tight text-white sm:text-[34px]">
+                <h1 className="m-0 flex flex-wrap items-center gap-3 text-[26px] font-extrabold leading-tight text-white sm:text-[34px]">
                   {isRTL ? restaurant.name.ar : restaurant.name.en}
+                  {/* أعلى خصم دائم — أهمّ رقم في الصفحة فيظهر بجوار الاسم */}
+                  {topDiscount > 0 && (
+                    <span className="inline-flex items-baseline gap-1 rounded-full bg-[linear-gradient(135deg,#FFA23A_0%,#FD671A_55%,#E01F3D_100%)] px-3.5 py-1 text-[15px] font-extrabold text-white shadow-[0_10px_24px_-8px_rgba(226,86,13,0.95)] ring-1 ring-white/25">
+                      <span dir="ltr">
+                        {Number.isInteger(topDiscount)
+                          ? topDiscount
+                          : String(topDiscount).replace(/\.?0+$/, "")}
+                        %
+                      </span>
+                      <span className="text-[11px] font-bold opacity-95">
+                        {t("permanentDiscounts.badge", "خصم دائم")}
+                      </span>
+                    </span>
+                  )}
                 </h1>
                 <p className="m-0 mt-1.5 max-w-2xl text-[13.5px] leading-relaxed text-white/75">
                   {stripHtml(restaurant.description[isRTL ? "ar" : "en"])}

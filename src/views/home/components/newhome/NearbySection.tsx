@@ -9,6 +9,7 @@ import { FOCUS } from "@ui";
 import SectionHead from "./SectionHead";
 import BrandImage from "./BrandImage";
 import Reveal from "./Reveal";
+import { merchantUrl } from "@utils/merchantUrl";
 
 interface Place {
   id: number | string;
@@ -244,7 +245,7 @@ const NearbySection: React.FC<Props> = ({ places, onUseMyLocation, title, showVi
                   key={place.id}
                   onClick={() => {
                     setSelected(i);
-                    navigate(`/offers?merchant=${place.id}`);
+                    navigate(merchantUrl(place));
                   }}
                   onMouseEnter={() => setSelected(i)}
                   className={`group flex items-center gap-3 rounded-mk-lg border p-3.5 text-start transition-all duration-300 ${FOCUS} ${

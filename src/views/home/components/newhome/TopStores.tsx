@@ -7,12 +7,14 @@ import { FOCUS } from "@ui";
 import SectionHead from "./SectionHead";
 import BrandImage from "./BrandImage";
 import Reveal from "./Reveal";
+import { merchantUrl } from "@utils/merchantUrl";
 
 interface Store {
   id: number | string;
   slug?: string | null;
   name: string;
   logo?: string | null;
+  category?: { slug?: string | null } | string | null;
 }
 
 const TopStores: React.FC<{ stores: Store[]; title?: string; showViewAll?: boolean }> = ({
@@ -35,7 +37,7 @@ const TopStores: React.FC<{ stores: Store[]; title?: string; showViewAll?: boole
         {stores.slice(0, 8).map((store, i) => (
           <Reveal key={store.id} delay={(i % 8) * 45} className="h-full">
             <Link
-              to={`/offers?merchant=${store.id}`}
+              to={merchantUrl(store)}
               className={`group mk-lift relative flex h-full min-h-[118px] flex-col items-center justify-center gap-2.5 overflow-hidden rounded-mk-xl border border-[#EFEDF7] bg-white p-3 text-center shadow-mk-card hover:border-[#C9BCEC] ${FOCUS}`}
             >
               <span

@@ -39,6 +39,7 @@ import {
 } from "@hooks/api/useMokafaatQueries";
 import { buildOfferUrl } from "@utils/offerUrl";
 import { toast } from "react-toastify";
+import { merchantUrl } from "@utils/merchantUrl";
 
 type Dict = Record<string, any>;
 
@@ -441,7 +442,7 @@ const MobileHome: React.FC<Props> = ({ home, isLoading = false }) => {
             {nearby.slice(0, 3).map((place) => (
               <Link
                 key={place.id}
-                to={`/offers?merchant=${place.id}`}
+                to={merchantUrl(place)}
                 className={`mk-lift flex min-h-[74px] items-center gap-3 rounded-mk-lg border border-mk-border bg-white p-3 shadow-mk-card active:scale-[0.99] ${FOCUS}`}
               >
                 <span className="h-12 w-12 shrink-0 overflow-hidden rounded-mk-md bg-mk-tint2">
@@ -476,7 +477,7 @@ const MobileHome: React.FC<Props> = ({ home, isLoading = false }) => {
             {restaurants.slice(0, 8).map((restaurant) => (
               <Link
                 key={restaurant.id}
-                to={`/offers?merchant=${restaurant.id}`}
+                to={merchantUrl(restaurant)}
                 className={`mk-lift mk-zoom w-[42vw] max-w-[190px] shrink-0 overflow-hidden rounded-mk-lg border border-mk-border bg-white shadow-mk-card ${FOCUS}`}
               >
                 <div className="border-b border-mk-border bg-mk-tint2">
@@ -511,7 +512,7 @@ const MobileHome: React.FC<Props> = ({ home, isLoading = false }) => {
             {merchants.slice(0, 10).map((merchant) => (
               <Link
                 key={merchant.id}
-                to={`/offers?merchant=${merchant.id}`}
+                to={merchantUrl(merchant)}
                 className={`flex w-[74px] shrink-0 flex-col items-center gap-1.5 rounded-mk-md transition-transform active:scale-[0.95] ${FOCUS}`}
               >
                 <span className="flex h-[64px] w-[64px] items-center justify-center overflow-hidden rounded-mk-md border border-mk-border bg-white shadow-mk-card">

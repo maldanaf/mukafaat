@@ -34,6 +34,7 @@ import {
 } from "@components/home_builder";
 import { CONTAINER, ErrorState, type PromoConfig } from "@ui";
 import MobileHome from "./mobile/MobileHome";
+import { merchantUrl } from "@utils/merchantUrl";
 
 type Dict = Record<string, any>;
 
@@ -118,7 +119,7 @@ const HomePage = () => {
       ...merchants.map((merchant) => ({
         title: String(merchant.name ?? ""),
         meta: String(merchant.category ?? t("home.stores_new.title", "الأكثر استخداماً")),
-        href: `/offers?merchant=${merchant.id}`,
+        href: merchantUrl(merchant),
       })),
     ],
     [offers, coupons, merchants],

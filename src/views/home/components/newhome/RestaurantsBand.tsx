@@ -7,10 +7,12 @@ import { FOCUS } from "@ui";
 import SectionHead from "./SectionHead";
 import BrandImage from "./BrandImage";
 import Reveal from "./Reveal";
+import { merchantUrl } from "@utils/merchantUrl";
 
 interface Restaurant {
   id: number | string;
   slug?: string | null;
+  category?: { slug?: string | null } | string | null;
   name: string;
   description?: string | null;
   logo?: string | null;
@@ -43,7 +45,7 @@ const RestaurantsBand: React.FC<{
           {restaurants.slice(0, 6).map((restaurant, i) => (
             <Reveal key={restaurant.id} delay={(i % 6) * 50} className="h-full">
             <Link
-              to={`/offers?merchant=${restaurant.id}`}
+              to={merchantUrl(restaurant)}
               className={`group mk-lift flex h-full flex-col overflow-hidden rounded-mk-2xl border border-[#F6E5D8] bg-white shadow-mk-card hover:border-[#F3CBB0] hover:!shadow-[0_22px_48px_-18px_rgba(217,80,11,0.45)] ${FOCUS}`}
             >
               <div className="mk-zoom relative aspect-[4/3] w-full overflow-hidden bg-[#F2EFFA]">
