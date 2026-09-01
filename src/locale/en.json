@@ -2491,5 +2491,23 @@
   "popupAds": {
     "cta": "Click to view details",
     "close": "Close"
+  },
+  "merchantCard": {
+    "permanent": "Permanent",
+    "view_discounts": "View discounts",
+    "no_discounts": "Browse store",
+    "more_discounts_one": "+1 more discount",
+    "more_discounts_other": "+{{count}} more discounts",
+    "title": "Stores",
+    "count_one": "1 store",
+    "count_other": "{{count}} stores",
+    "empty": "No stores in this category yet"
+  },
+  "permanentDiscounts": {
+    "title": "Permanent discounts",
+    "subscribers_only": "Subscribers only",
+    "subscribe_hint": "Subscribe to enjoy these discounts on your visit.",
+    "subscribe_cta": "Subscribe now",
+    "how_to_use": "Show your membership card at checkout to get the discount."
   }
 }

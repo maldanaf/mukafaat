@@ -20,6 +20,9 @@ import {
   type Restaurant,
 } from "@data/offers";
 import OfferCard from "./components/OfferCard";
+import PermanentDiscounts, {
+  type PermanentDiscount,
+} from "./components/PermanentDiscounts";
 import { Pro1, Pro2, Pro3, Pro4, Pro5, Pro6, Pro7, Pro8 } from "@assets";
 import {
   CONTAINER,
@@ -127,6 +130,8 @@ const RestaurantDetailsPage = () => {
       color: "#400198",
       topColor: "bg-[#400198]",
       offers,
+      // الخصومات الدائمة — تتصدّر الصفحة قبل العروض
+      discounts: ((m.discounts ?? []) as PermanentDiscount[]),
       menu,
       isOpen: Boolean(m.is_open),
       deliveryTime: String(m.delivery_time ?? "-"),
@@ -479,6 +484,9 @@ const RestaurantDetailsPage = () => {
         <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
           {/* العمود الرئيسي */}
           <div className="min-w-0">
+            {/* الخصومات الدائمة قبل العروض — جوهر الاتفاقية مع المتجر */}
+            <PermanentDiscounts discounts={restaurant.discounts ?? []} />
+
             {/* التبويبات — شرائح بنفسجية واضحة */}
             <div
               role="tablist"

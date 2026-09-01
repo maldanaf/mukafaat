@@ -2523,5 +2523,23 @@
   "popupAds": {
     "cta": "اضغط لعرض التفاصيل",
     "close": "إغلاق"
+  },
+  "merchantCard": {
+    "permanent": "خصم دائم",
+    "view_discounts": "اعرض الخصومات",
+    "no_discounts": "تصفّح المتجر",
+    "more_discounts_one": "وخصم آخر",
+    "more_discounts_other": "و{{count}} خصومات أخرى",
+    "title": "المتاجر",
+    "count_one": "متجر واحد",
+    "count_other": "{{count}} متجر",
+    "empty": "لا توجد متاجر في هذا التصنيف بعد"
+  },
+  "permanentDiscounts": {
+    "title": "الخصومات الدائمة",
+    "subscribers_only": "للمشتركين فقط",
+    "subscribe_hint": "اشترك للاستفادة من هذه الخصومات عند الزيارة.",
+    "subscribe_cta": "اشترك الآن",
+    "how_to_use": "أبرز بطاقة العضوية عند الدفع للاستفادة من الخصم."
   }
 }

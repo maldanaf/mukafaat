@@ -21,6 +21,7 @@ import {
 import GetStartedSection from "@views/home/components/GetStartedSection";
 import FilterSidebar, { type FilterState } from "../components/FilterSidebar";
 import OfferCard from "../components/OfferCard";
+import MerchantCard, { type MerchantSummary } from "../components/MerchantCard";
 import OfferCardHorizontal from "../components/OfferCardHorizontal";
 import CategoryCard from "@components/CategoryCard";
 import { PinnedChipsBar, pick } from "@ui";
@@ -29,6 +30,7 @@ import {
   useWebHome,
   useFilters,
   useWebOffers,
+  useMerchants,
 } from "@hooks/api/useMokafaatQueries";
 import { mapApiOffersToModels } from "@network/mappers/offersMapper";
 import { API_BASE_URL } from "@config/api";
@@ -278,6 +280,30 @@ const CategoryOffersPage = () => {
     isError: isOffersError,
     refetch: refetchOffers,
   } = useWebOffers(webOffersParams, { enabled: categoryId != null });
+
+  /**
+   * متاجر التصنيف — هي ما تعرضه الصفحة الآن بدل العروض.
+   *
+   * اعتماد المنصة على الخصومات الدائمة المتّفق عليها مع المتاجر، فصار
+   * المتجر هو وحدة التصفّح: التصنيف يعرض متاجره، والمتجر يعرض خصوماته
+   * ثم عروضه.
+   */
+  const {
+    data: merchantsRes,
+    isLoading: isMerchantsLoading,
+    isError: isMerchantsError,
+    refetch: refetchMerchants,
+  } = useMerchants(
+    { category_id: categoryId, per_page: 50, search: search || undefined },
+    { enabled: categoryId != null },
+  );
+
+  const merchants: MerchantSummary[] = useMemo(() => {
+    const root = (merchantsRes as Record<string, unknown>) ?? {};
+    const data = (root.data as Record<string, unknown>) ?? root;
+    const list = (data.merchants ?? data.data ?? data) as unknown;
+    return Array.isArray(list) ? (list as MerchantSummary[]) : [];
+  }, [merchantsRes]);
 
   function extractOffersArray(res: unknown): Array<Record<string, unknown>> {
     const root = (res as Record<string, unknown>) ?? {};
@@ -668,43 +694,25 @@ const CategoryOffersPage = () => {
 
         {/* النتائج: تحميل ← خطأ ← فراغ ← شبكة/قائمة.
             الهيكل للتحميل الأول فقط حتى لا تختفي النتائج عند «عرض المزيد» */}
-        {isOffersLoading && paginatedOffers.length === 0 ? (
+        {isMerchantsLoading && merchants.length === 0 ? (
           <SkeletonGrid
             count={8}
-            className={
-              viewMode === "grid"
-                ? "grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
-                : "flex flex-col gap-4"
-            }
+            className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
           />
-        ) : isOffersError ? (
-          <ErrorState onRetry={() => refetchOffers()} />
-        ) : paginatedOffers.length > 0 ? (
-          <div
-            className={
-              viewMode === "grid"
-                ? "grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 grid-view"
-                : "flex flex-col gap-4 list-view"
-            }
-          >
-            {paginatedOffers.map((offer) =>
-              viewMode === "grid" ? (
-                <OfferCard key={offer.id} offer={offer} onOfferClick={handleOfferClick} />
-              ) : (
-                <OfferCardHorizontal
-                  key={offer.id}
-                  offer={offer}
-                  onOfferClick={handleOfferClick}
-                />
-              ),
-            )}
+        ) : isMerchantsError ? (
+          <ErrorState onRetry={() => refetchMerchants()} />
+        ) : merchants.length > 0 ? (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 grid-view">
+            {merchants.map((m) => (
+              <MerchantCard key={m.id} merchant={m} categorySlug={category ?? ""} />
+            ))}
           </div>
         ) : (
           <EmptyState
             title={
               search
                 ? t("categoryOffers.no_results", { search })
-                : t("categoryOffers.no_offers")
+                : t("merchantCard.empty", "لا توجد متاجر في هذا التصنيف بعد")
             }
             description=""
             actionLabel={hasActiveFilters ? t("cardsPage.clearAll") : undefined}

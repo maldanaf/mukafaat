@@ -835,6 +835,24 @@ export function useMyTransactions(params?: Record<string, unknown>) {
 }
 
 // ========== Merchants ==========
+/**
+ * قائمة المتاجر — تدعم الفلترة بالتصنيف.
+ *
+ * صفحة التصنيف صارت تعرض المتاجر لا العروض، لأن اعتماد المنصة على
+ * الخصومات الدائمة المتّفق عليها مع المتاجر.
+ */
+export function useMerchants(
+  params?: Record<string, unknown>,
+  options?: { enabled?: boolean },
+) {
+  const lang = useQueryLang();
+  return useQuery({
+    queryKey: ["mokafaat", "merchants", params, lang],
+    queryFn: () => merchantsApi.list(params).then((r) => r.data),
+    enabled: options?.enabled ?? true,
+  });
+}
+
 export function useMerchantDetail(idOrSlug: string | number | undefined) {
   const lang = useQueryLang();
   return useQuery({

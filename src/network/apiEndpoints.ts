@@ -63,6 +63,7 @@ export const API_ENDPOINTS = {
   offerDetail: (id: string | number) => `${API}/offers/${id}`,
 
   // ========== Merchants ==========
+  merchants: `${API}/merchants`,
   merchantDetail: (id: string | number) => `${API}/merchants/${id}`,
   merchantFollow: (id: string | number) => `${API}/merchants/${id}/follow`,
   merchantReview: `${API}/merchants/review`,

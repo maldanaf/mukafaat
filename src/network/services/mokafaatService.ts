@@ -105,6 +105,8 @@ export const pagesApi = {
 
 // ========== Merchants ==========
 export const merchantsApi = {
+  list: (params?: Record<string, unknown>) =>
+    api.get(API_ENDPOINTS.merchants, { params }),
   detail: (id: string | number) => api.get(API_ENDPOINTS.merchantDetail(id)),
   follow: (id: string | number) => api.post(API_ENDPOINTS.merchantFollow(id)),
   review: (merchantId: string | number) =>

@@ -2491,5 +2491,23 @@
   "popupAds": {
     "cta": "विवरण देखने के लिए क्लिक करें",
     "close": "बंद करें"
+  },
+  "merchantCard": {
+    "permanent": "स्थायी छूट",
+    "view_discounts": "छूट देखें",
+    "no_discounts": "स्टोर देखें",
+    "more_discounts_one": "1 और छूट",
+    "more_discounts_other": "{{count}} और छूट",
+    "title": "स्टोर",
+    "count_one": "1 स्टोर",
+    "count_other": "{{count}} स्टोर",
+    "empty": "इस श्रेणी में अभी कोई स्टोर नहीं"
+  },
+  "permanentDiscounts": {
+    "title": "स्थायी छूट",
+    "subscribers_only": "केवल सब्सक्राइबर",
+    "subscribe_hint": "इन छूटों का लाभ उठाने के लिए सब्सक्राइब करें।",
+    "subscribe_cta": "अभी सब्सक्राइब करें",
+    "how_to_use": "छूट पाने के लिए भुगतान के समय अपना सदस्यता कार्ड दिखाएं।"
   }
 }

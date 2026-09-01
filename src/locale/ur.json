@@ -2491,5 +2491,23 @@
   "popupAds": {
     "cta": "تفصیلات دیکھنے کے لیے کلک کریں",
     "close": "بند کریں"
+  },
+  "merchantCard": {
+    "permanent": "مستقل رعایت",
+    "view_discounts": "رعایتیں دیکھیں",
+    "no_discounts": "اسٹور دیکھیں",
+    "more_discounts_one": "مزید ایک رعایت",
+    "more_discounts_other": "مزید {{count}} رعایتیں",
+    "title": "اسٹورز",
+    "count_one": "ایک اسٹور",
+    "count_other": "{{count}} اسٹورز",
+    "empty": "اس زمرے میں ابھی کوئی اسٹور نہیں"
+  },
+  "permanentDiscounts": {
+    "title": "مستقل رعایتیں",
+    "subscribers_only": "صرف سبسکرائبرز",
+    "subscribe_hint": "ان رعایتوں سے فائدہ اٹھانے کے لیے سبسکرائب کریں۔",
+    "subscribe_cta": "ابھی سبسکرائب کریں",
+    "how_to_use": "رعایت کے لیے ادائیگی کے وقت اپنا ممبرشپ کارڈ دکھائیں۔"
   }
 }
