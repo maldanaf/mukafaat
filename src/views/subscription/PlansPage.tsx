@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { useNavigate, useLocation } from "@/lib/router-compat";
+import { useNavigate, useLocation, Link } from "@/lib/router-compat";
 import { Helmet } from "@/lib/helmet-compat";
 import { useTranslation } from "react-i18next";
+import { LogoLight } from "@assets";
 import { useIsRTL } from "@hooks";
 import {
   useSubscriptionPlans,
@@ -19,7 +20,6 @@ import {
   IoAlertCircleOutline,
   IoLogInOutline,
 } from "react-icons/io5";
-import { TbPackage } from "react-icons/tb";
 import { AxiosError } from "axios";
 import { Button, Skeleton, EmptyState, ErrorState, FOCUS } from "@ui";
 import CurrencyIcon from "@components/CurrencyIcon";
@@ -89,10 +89,23 @@ const SubscriptionPlansPage: React.FC = () => {
 
   const handleBuy = (plan: PlanItem) => {
     setSubscribeErrorMsg(null);
+
     if (typeof window !== "undefined") {
       // Next.js لا يدعم navigation state — نمرّر الباقة عبر sessionStorage
       sessionStorage.setItem("subscription_plan", JSON.stringify(plan));
     }
+
+    // الاشتراك يلزمه حساب: كان الزائر يصل لشاشة الدفع ثم يُصدّ هناك.
+    // نعيده بعد الدخول إلى الباقة نفسها لا إلى قائمة الباقات.
+    if (!token) {
+      navigate(
+        `/login?returnUrl=${encodeURIComponent(
+          `/subscription/payment?plan_id=${plan.id}`,
+        )}`,
+      );
+      return;
+    }
+
     navigate(`/subscription/payment?plan_id=${plan.id}`);
   };
 
@@ -114,12 +127,18 @@ const SubscriptionPlansPage: React.FC = () => {
           </button>
 
           <div className="mb-8 text-center">
-            <div
-              className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-mk-md border border-white/10 bg-white/10 shadow-inner"
-              aria-hidden
-            >
-              <TbPackage className="h-9 w-9 text-mk-accent" strokeWidth={1.75} />
-            </div>
+            {/*
+              شعار مكافآت بدل أيقونة عامة: الصفحة بلا تخطيط الموقع
+              (no-layout) فلا هيدر فيها ولا شعار، والمستخدم قد يصلها
+              من رابط مباشر بلا سياق يعرّفه بالمنصّة.
+            */}
+            <Link to="/" className="mx-auto mb-5 inline-block">
+              <img
+                src={LogoLight}
+                alt="مكافآت"
+                className="mx-auto h-11 w-auto object-contain"
+              />
+            </Link>
             <h1 className="mb-2 text-2xl font-bold text-white md:text-3xl">
               {t("home.subscription.choosePlan")}
             </h1>
