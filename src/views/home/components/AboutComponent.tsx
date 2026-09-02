@@ -61,7 +61,7 @@ const AboutComponent: React.FC = () => {
                       : "Jost, sans-serif",
                   }}
                 >
-                  {isRTL ? "منصة مكافئات" : "Mukafaat Platform"}
+                  {isRTL ? "منصة مكافآت" : "Mukafaat Platform"}
                 </h2>
               </div>
 
@@ -75,7 +75,7 @@ const AboutComponent: React.FC = () => {
                 }}
               >
                 {isRTL
-                  ? "منصة مكافئات هي المنصة الرائدة في المملكة العربية السعودية لتوفير المال والاستفادة من أفضل العروض والخصومات. نحن نقدم مجموعة شاملة من الخدمات المالية والسياحية، بما في ذلك بطاقات الائتمان من أفضل البنوك، كوبونز خصم حصرية، وحجوزات فندقية وطيران بأسعار مميزة. نعمل مع أفضل الشركاء في السوق السعودي لتقديم عروض حصرية ومميزة، ونساعد عملائنا على توفير المال في كل عملية شراء أو حجز."
+                  ? "منصة مكافآت هي المنصة الرائدة في المملكة العربية السعودية لتوفير المال والاستفادة من أفضل العروض والخصومات. نحن نقدم مجموعة شاملة من الخدمات المالية والسياحية، بما في ذلك بطاقات الائتمان من أفضل البنوك، كوبونز خصم حصرية، وحجوزات فندقية وطيران بأسعار مميزة. نعمل مع أفضل الشركاء في السوق السعودي لتقديم عروض حصرية ومميزة، ونساعد عملائنا على توفير المال في كل عملية شراء أو حجز."
                   : "Mukafaat is the leading platform in Saudi Arabia for saving money and benefiting from the best offers and discounts. We provide a comprehensive range of financial and tourism services, including credit cards from top banks, exclusive discount couponz, and hotel and flight bookings at competitive prices. We work with the best partners in the Saudi market to provide exclusive and special offers, helping our clients save money on every purchase or booking."}
               </p>
 
@@ -153,7 +153,7 @@ const AboutComponent: React.FC = () => {
                     : "Jost, sans-serif",
                 }}
               >
-                {isRTL ? "شركاؤنا في مكافئات:" : "Our Partners at Mukafaat:"}
+                {isRTL ? "شركاؤنا في مكافآت:" : "Our Partners at Mukafaat:"}
               </h2>
             </div>
 
@@ -207,7 +207,7 @@ const AboutComponent: React.FC = () => {
                     : "Jost, sans-serif",
                 }}
               >
-                {isRTL ? "عن مكافئات" : "About Mukafaat"}
+                {isRTL ? "عن مكافآت" : "About Mukafaat"}
               </span>
               <img
                 src={UnderTitle}
@@ -226,7 +226,7 @@ const AboutComponent: React.FC = () => {
                 }}
               >
                 {isRTL
-                  ? "منصة مكافئات توفر لك أفضل العروض والخصومات على البطاقات الائتمانية والكوبونز والحجوزات في المملكة العربية السعودية. اكتشف آلاف الفرص لتوفير المال والاستمتاع بأفضل الخدمات المالية والسياحية المتاحة."
+                  ? "منصة مكافآت توفر لك أفضل العروض والخصومات على البطاقات الائتمانية والكوبونز والحجوزات في المملكة العربية السعودية. اكتشف آلاف الفرص لتوفير المال والاستمتاع بأفضل الخدمات المالية والسياحية المتاحة."
                   : "Mukafaat platform provides you with the best offers and discounts on credit cards, coupons, and bookings in Saudi Arabia. Discover thousands of opportunities to save money and enjoy the best financial and tourism services available."}
               </p>
 
@@ -250,7 +250,7 @@ const AboutComponent: React.FC = () => {
                 }}
               >
                 {isRTL
-                  ? "تقدم منصة مكافئات مجموعة شاملة من الخدمات المالية والسياحية، من بطاقات الائتمان من أفضل البنوك إلى كوبونز الخصم الحصرية وحجوزات السفر. نحن نعمل مع أفضل الشركاء في السوق السعودي ونقدم استشارات متخصصة لتوفير المال."
+                  ? "تقدم منصة مكافآت مجموعة شاملة من الخدمات المالية والسياحية، من بطاقات الائتمان من أفضل البنوك إلى كوبونز الخصم الحصرية وحجوزات السفر. نحن نعمل مع أفضل الشركاء في السوق السعودي ونقدم استشارات متخصصة لتوفير المال."
                   : "Mukafaat platform offers a comprehensive range of financial and tourism services, from credit cards from top banks to exclusive discount coupons and travel bookings. We work with the best partners in the Saudi market and provide specialized consulting for saving money."}
               </p>
 
@@ -282,7 +282,7 @@ const AboutComponent: React.FC = () => {
                     : "Jost, sans-serif",
                 }}
               >
-                {isRTL ? "لماذا تختار مكافئات؟" : "Why Choose Mukafaat?"}
+                {isRTL ? "لماذا تختار مكافآت؟" : "Why Choose Mukafaat?"}
               </span>
               <img
                 src={UnderTitle}
@@ -301,7 +301,7 @@ const AboutComponent: React.FC = () => {
                 }}
               >
                 {isRTL
-                  ? "نقدم في هذه المقالة نظرة شاملة على منصة مكافئات وخدماتها، مع التركيز على الفرص المتاحة لتوفير المال في المملكة العربية السعودية. نهدف إلى تزويد القراء بالمعلومات اللازمة لاتخاذ قرارات ذكية لتوفير المال."
+                  ? "نقدم في هذه المقالة نظرة شاملة على منصة مكافآت وخدماتها، مع التركيز على الفرص المتاحة لتوفير المال في المملكة العربية السعودية. نهدف إلى تزويد القراء بالمعلومات اللازمة لاتخاذ قرارات ذكية لتوفير المال."
                   : "In this article, we provide a comprehensive overview of Mukafaat platform and its services, focusing on the opportunities available for saving money in Saudi Arabia. We aim to provide readers with the necessary information to make smart money-saving decisions."}
               </p>
 
@@ -313,7 +313,7 @@ const AboutComponent: React.FC = () => {
                     : "Jost, sans-serif",
                 }}
               >
-                {isRTL ? "مميزات مكافئات:" : "Mukafaat Features:"}
+                {isRTL ? "مميزات مكافآت:" : "Mukafaat Features:"}
               </p>
 
               <p

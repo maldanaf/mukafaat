@@ -4,7 +4,7 @@ import { pageMetadata } from "@config/pageMetadata";
 import StoresPage from "@views/stores";
 
 export const metadata: Metadata = pageMetadata({
-  title: "المتاجر | مكافآت",
+  title: "المتاجر",
   description:
     "تصفّح المتاجر الشريكة في مكافآت وخصوماتها الدائمة على مدار العام.",
   path: "/stores",

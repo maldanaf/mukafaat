@@ -126,7 +126,7 @@ const SearchPage: React.FC = () => {
       <Helmet>
         <title>
           {isRTL
-            ? "العقارات للإيجار في إسطنبول - مكافئات"
+            ? "العقارات للإيجار في إسطنبول - مكافآت"
             : "Properties for Rent in Istanbul - Mukafaat"}
         </title>
         <meta

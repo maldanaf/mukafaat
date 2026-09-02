@@ -18,42 +18,42 @@ const FAQSection: React.FC = () => {
   const faqData: FAQItem[] = [
     {
       id: 1,
-      question: isRTL ? "ما هي منصة مكافئات؟" : "What is Mukafaat platform?",
+      question: isRTL ? "ما هي منصة مكافآت؟" : "What is Mukafaat platform?",
       answer: isRTL
-        ? "مكافئات هي المنصة الرائدة في المملكة العربية السعودية لتوفير المال والاستفادة من أفضل العروض والخصومات على البطاقات الائتمانية والكوبونز والحجوزات السياحية."
+        ? "مكافآت هي المنصة الرائدة في المملكة العربية السعودية لتوفير المال والاستفادة من أفضل العروض والخصومات على البطاقات الائتمانية والكوبونز والحجوزات السياحية."
         : "Mukafaat is the leading platform in Saudi Arabia for saving money and benefiting from the best offers and discounts on credit cards, couponz, and travel bookings.",
     },
     {
       id: 2,
       question: isRTL
-        ? "كيف يمكنني الاستفادة من عروض مكافئات؟"
+        ? "كيف يمكنني الاستفادة من عروض مكافآت؟"
         : "How can I benefit from Mukafaat offers?",
       answer: isRTL
-        ? "يمكنك الاستفادة من عروض مكافئات من خلال تصفح العروض المتاحة، اختيار البطاقة الائتمانية المناسبة، استخدام الكوبونز المتاحة، أو حجز رحلاتك بأسعار مميزة."
+        ? "يمكنك الاستفادة من عروض مكافآت من خلال تصفح العروض المتاحة، اختيار البطاقة الائتمانية المناسبة، استخدام الكوبونز المتاحة، أو حجز رحلاتك بأسعار مميزة."
         : "You can benefit from Mukafaat offers by browsing available offers, choosing the right credit card, using available couponz, or booking your trips at competitive prices.",
     },
     {
       id: 3,
       question: isRTL
-        ? "هل خدمات مكافئات مجانية؟"
+        ? "هل خدمات مكافآت مجانية؟"
         : "Are Mukafaat services free?",
       answer: isRTL
-        ? "نعم، جميع خدمات مكافئات مجانية تماماً. نحن نربطك بأفضل العروض والخصومات المتاحة دون أي رسوم إضافية أو تكاليف خفية."
+        ? "نعم، جميع خدمات مكافآت مجانية تماماً. نحن نربطك بأفضل العروض والخصومات المتاحة دون أي رسوم إضافية أو تكاليف خفية."
         : "Yes, all Mukafaat services are completely free. We connect you to the best available offers and discounts without any additional fees or hidden costs.",
     },
     {
       id: 4,
       question: isRTL
-        ? "هل يمكنني استخدام مكافئات في جميع أنحاء المملكة؟"
+        ? "هل يمكنني استخدام مكافآت في جميع أنحاء المملكة؟"
         : "Can I use Mukafaat throughout the Kingdom?",
       answer: isRTL
-        ? "نعم، خدمات مكافئات متاحة في جميع أنحاء المملكة العربية السعودية. نعمل مع شركاء محليين في جميع المدن الرئيسية لضمان أفضل الخدمات."
+        ? "نعم، خدمات مكافآت متاحة في جميع أنحاء المملكة العربية السعودية. نعمل مع شركاء محليين في جميع المدن الرئيسية لضمان أفضل الخدمات."
         : "Yes, Mukafaat services are available throughout Saudi Arabia. We work with local partners in all major cities to ensure the best services.",
     },
     {
       id: 5,
       question: isRTL
-        ? "كيف يمكنني التواصل مع فريق مكافئات؟"
+        ? "كيف يمكنني التواصل مع فريق مكافآت؟"
         : "How can I contact Mukafaat team?",
       answer: isRTL
         ? "يمكنك التواصل معنا عبر الموقع الإلكتروني، تطبيق الهاتف المحمول، أو من خلال خدمة العملاء المتاحة على مدار الساعة. نحن هنا لمساعدتك في أي وقت."
@@ -138,7 +138,7 @@ const FAQSection: React.FC = () => {
               </h3>
               <p className="text-gray-600 text-lg leading-relaxed max-w-md mx-auto">
                 {isRTL
-                  ? "لديك أسئلة حول خدمات مكافئات؟ نحن هنا للإجابة عليها"
+                  ? "لديك أسئلة حول خدمات مكافآت؟ نحن هنا للإجابة عليها"
                   : "Have questions about Mukafaat services? We're here to answer them"}
               </p>
             </div>

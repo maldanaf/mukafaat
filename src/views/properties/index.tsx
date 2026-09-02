@@ -124,7 +124,7 @@ const PropertiesPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{isRTL ? "العقارات - مكافئات" : "Properties - Mukafaat"}</title>
+        <title>{isRTL ? "العقارات - مكافآت" : "Properties - Mukafaat"}</title>
         <meta
           name="description"
           content={

@@ -4,7 +4,7 @@ import { pageMetadata } from "@config/pageMetadata";
 import BusinessRegistrationPage from "@business-registration/index";
 
 export const metadata: Metadata = pageMetadata({
-  title: "انضم كشريك | مكافآت",
+  title: "انضم كشريك",
   description:
     "سجّل نشاطك التجاري في منصة مكافآت وقدّم عروضك وخصوماتك لآلاف العملاء في السعودية.",
   path: "/business-registration",

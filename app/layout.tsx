@@ -5,43 +5,66 @@ import "../src/index.css";
 import { SITE_URL, absoluteUrl, alternateLanguages, SITE_NAME_EN } from "@config/site";
 import { getSiteSettings, buildSiteSchema } from "@config/siteSettings";
 
-export const metadata: Metadata = {
-  // يجعل Next يحوّل كل رابط نسبي في الوسوم إلى مطلق على النطاق الصحيح
-  metadataBase: new URL(SITE_URL),
-  title:
-    "Mukafaat - Offers, Discounts & Savings Platform - منصة العروض والخصومات والتوفير",
-  description:
-    "Mukafaat - Your ultimate destination for exclusive offers, discounts, credit cards, coupons, and bookings in Saudi Arabia. Save money with the best deals on financial services, travel, and more. | مكافئات - وجهتك المثلى للعروض الحصرية والخصومات والبطاقات الائتمانية والكوبونات والحجوزات في المملكة العربية السعودية.",
-  keywords:
-    "Mukafaat, Offers, Discounts, Credit Cards, Coupons, Bookings, Saudi Arabia, مكافئات، عروض، خصومات، بطاقات ائتمانية، كوبونات، حجوزات",
-  robots: "index, follow",
-  verification: {
-    google: "Wl-zASC8dqrPG3PoyQZfKIkWIYX8fLislM_EXt6TC74",
-  },
-  openGraph: {
-    title: "Mukafaat - Offers, Discounts & Savings Platform",
-    description:
-      "Mukafaat - Your ultimate destination for exclusive offers, discounts, credit cards, coupons, and bookings in Saudi Arabia.",
-    url: SITE_URL,
-    siteName: SITE_NAME_EN,
-    type: "website",
-    locale: "ar_SA",
-    images: [absoluteUrl("/assets/logo-BcBtrMQ_.svg")],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Mukafaat - Offers, Discounts & Savings Platform",
-    description:
-      "Mukafaat - Your ultimate destination for exclusive offers, discounts, credit cards, coupons, and bookings in Saudi Arabia.",
-    images: [absoluteUrl("/assets/logo-BcBtrMQ_.svg")],
-  },
-  alternates: {
-    canonical: SITE_URL,
-  },
-  icons: {
-    icon: "/favicon.png",
-  },
-};
+/** العنوان والوصف الافتراضيان — يُستبدلان بما في لوحة التحكم إن وُجد */
+const DEFAULT_TITLE =
+  "مكافآت | عروض وخصومات وكوبونات وبطاقات رقمية في السعودية";
+const DEFAULT_DESCRIPTION =
+  "مكافآت — منصة العروض والخصومات في السعودية: خصومات دائمة لدى المتاجر الشريكة، وكوبونات وأكواد خصم، وبطاقات رقمية تصلك فوراً.";
+
+/**
+ * بيانات الصفحة الافتراضية.
+ *
+ * `generateMetadata` لا `metadata` ثابتة، لأن الوصف يأتي من إعدادات
+ * لوحة التحكم؛ وبلا ذلك يبقى الوصف مكتوباً في الكود فلا يملك صاحب
+ * الموقع تغييره.
+ *
+ * ملاحظة: لا `alternates.canonical` هنا. كانت مضبوطة على الرئيسية
+ * فورثتها كل صفحة بلا بيانات خاصة (/blogs و/faq)، فأشارت روابطها
+ * الأساسية إلى الرئيسية وأخبرت المحرّكات أنها نسخ مكرّرة منها.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  const general = (settings?.general ?? {}) as Record<string, unknown>;
+
+  const siteName = String(general.site_name || "").trim() || "مكافآت";
+  const description =
+    String(general.site_description || "").trim() || DEFAULT_DESCRIPTION;
+
+  return {
+    // يجعل Next يحوّل كل رابط نسبي في الوسوم إلى مطلق على النطاق الصحيح
+    metadataBase: new URL(SITE_URL),
+    title: {
+      default: DEFAULT_TITLE,
+      // الصفحات الداخلية تُلحق اسمها باسم المنصّة
+      template: `%s | ${siteName}`,
+    },
+    description,
+    keywords:
+      "مكافآت, عروض, خصومات, كوبونات, أكواد خصم, بطاقات رقمية, السعودية, Mukafaat, offers, discounts, coupons",
+    robots: "index, follow",
+    verification: {
+      google: "Wl-zASC8dqrPG3PoyQZfKIkWIYX8fLislM_EXt6TC74",
+    },
+    openGraph: {
+      title: DEFAULT_TITLE,
+      description,
+      url: SITE_URL,
+      siteName: SITE_NAME_EN,
+      type: "website",
+      locale: "ar_SA",
+      images: [absoluteUrl("/assets/logo-BcBtrMQ_.svg")],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: DEFAULT_TITLE,
+      description,
+      images: [absoluteUrl("/assets/logo-BcBtrMQ_.svg")],
+    },
+    icons: {
+      icon: "/favicon.png",
+    },
+  };
+}
 
 export default async function RootLayout({
   children,

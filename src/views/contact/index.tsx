@@ -43,7 +43,7 @@ function ContactPage() {
           name="description"
           content={
             isRTL
-              ? "تواصل مع مكافئات. نحن هنا لمساعدتك في أي استفسارات أو ملاحظات أو دعم تحتاجه. اتصل بنا اليوم!"
+              ? "تواصل مع مكافآت. نحن هنا لمساعدتك في أي استفسارات أو ملاحظات أو دعم تحتاجه. اتصل بنا اليوم!"
               : "Get in touch with Mukafaat. We're here to assist you with any inquiries, feedback, or support you need. Contact us today!"
           }
         />
@@ -52,7 +52,7 @@ function ContactPage() {
           property="og:description"
           content={
             isRTL
-              ? "تواصل مع مكافئات. نحن هنا لمساعدتك في أي استفسارات أو ملاحظات أو دعم تحتاجه. اتصل بنا اليوم!"
+              ? "تواصل مع مكافآت. نحن هنا لمساعدتك في أي استفسارات أو ملاحظات أو دعم تحتاجه. اتصل بنا اليوم!"
               : "Get in touch with Mukafaat. We're here to assist you with any inquiries, feedback, or support you need. Contact us today!"
           }
         />
@@ -62,7 +62,7 @@ function ContactPage() {
           title="contact.title"
           description={
             isRTL
-              ? "تواصل مع مكافئات. نحن هنا لمساعدتك في أي استفسارات أو ملاحظات أو دعم تحتاجه. اتصل بنا اليوم!"
+              ? "تواصل مع مكافآت. نحن هنا لمساعدتك في أي استفسارات أو ملاحظات أو دعم تحتاجه. اتصل بنا اليوم!"
               : "Get in touch with Mukafaat. We're here to assist you with any inquiries, feedback, or support you need. Contact us today!"
           }
         />

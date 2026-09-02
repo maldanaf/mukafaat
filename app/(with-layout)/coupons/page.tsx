@@ -3,7 +3,7 @@ import { pageMetadata } from "@config/pageMetadata";
 import PageClient from "./PageClient";
 
 export const metadata: Metadata = pageMetadata({
-  title: "أكواد الخصم والكوبونات | مكافآت",
+  title: "أكواد الخصم والكوبونات",
   description:
     "أكواد خصم حصرية وكوبونات فعّالة لأشهر المتاجر والمطاعم في السعودية.",
   path: "/coupons",

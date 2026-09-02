@@ -149,7 +149,7 @@ const BlogArticlePage: React.FC = () => {
       <Helmet>
         <title>
           {articleTitle || (isRTL ? currentArticle?.title : currentArticle?.titleEn)} -{" "}
-          {isRTL ? "مكافئات" : "Mukafaat"}
+          {isRTL ? "مكافآت" : "Mukafaat"}
         </title>
         <meta
           name="description"

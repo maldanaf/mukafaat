@@ -4,7 +4,7 @@ import { pageMetadata } from "@config/pageMetadata";
 import DownloadAppPage from "@views/download_app";
 
 export const metadata: Metadata = pageMetadata({
-  title: "حمّل التطبيق | مكافآت",
+  title: "حمّل التطبيق",
   description:
     "حمّل تطبيق مكافآت على iOS وأندرويد واحصل على العروض والخصومات والبطاقات الرقمية أينما كنت.",
   path: "/download-app",

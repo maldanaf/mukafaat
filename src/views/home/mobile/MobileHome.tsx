@@ -183,9 +183,14 @@ const MobileHome: React.FC<Props> = ({ home, isLoading = false }) => {
             <LuFlame size={13} className="text-mk-accent-light" aria-hidden />
             {t("home.hero_new.tag", "عروض مختارة")}
           </span>
-          <h1 className="mb-4 mt-2.5 text-[24px] font-bold leading-snug">
+          {/*
+            h2 لا h1: النسخة الجوّالة تُصيَّر مع نسخة سطح المكتب وتُخفى
+            بـ CSS لا تُحذف، فوجود h1 في كليهما يعطي الصفحة عنوانين
+            رئيسيين. العنوان الرئيسي في HeroSlider لسطح المكتب.
+          */}
+          <h2 className="mb-4 mt-2.5 text-[24px] font-bold leading-snug">
             {t("home.hero_new.title", "كل مزاياك في مكان واحد")}
-          </h1>
+          </h2>
 
           <button
             type="button"

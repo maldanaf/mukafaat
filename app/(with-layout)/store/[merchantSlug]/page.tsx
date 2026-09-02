@@ -16,7 +16,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { merchantSlug } = await params;
   return pageMetadata({
-    title: "المتجر | مكافآت",
+    title: "المتجر",
     description: "تعرّف على خصومات المتجر الدائمة وعروضه في منصة مكافآت.",
     path: `/store/${merchantSlug}`,
   });

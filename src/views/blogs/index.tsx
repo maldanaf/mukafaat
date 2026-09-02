@@ -103,7 +103,7 @@ const BlogsPage: React.FC = () => {
     <>
       <Helmet>
         <title>
-          {isRTL ? "المدونة والأخبار - مكافئات" : "Blogs & News - Mukafaat"}
+          {isRTL ? "المدونة والأخبار - مكافآت" : "Blogs & News - Mukafaat"}
         </title>
         <meta
           name="description"
@@ -151,7 +151,7 @@ const BlogsPage: React.FC = () => {
                       : "Jost, sans-serif",
                   }}
                 >
-                  {isRTL ? "مدونة مكافئات" : "Mukafaat Blog"}
+                  {isRTL ? "مدونة مكافآت" : "Mukafaat Blog"}
                 </h1>
                 <p className="text-gray-600 text-sm">
                   {isRTL
