@@ -2501,7 +2501,10 @@
     "title": "Stores",
     "count_one": "1 store",
     "count_other": "{{count}} stores",
-    "empty": "No stores in this category yet"
+    "empty": "No stores in this category yet",
+    "verified": "Verified store",
+    "coming_soon": "Coming soon",
+    "open": "Visit"
   },
   "permanentDiscounts": {
     "title": "Permanent discounts",
@@ -2521,6 +2524,8 @@
     "subtitle": "Browse partner stores and their year-round permanent discounts.",
     "search_placeholder": "Search for a store…",
     "count_one": "1 store",
-    "count_other": "{{count}} stores"
+    "count_other": "{{count}} stores",
+    "showing": "{{shown}} of {{total}} stores",
+    "end": "That's all the stores"
   }
 }

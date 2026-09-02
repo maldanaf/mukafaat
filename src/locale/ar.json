@@ -2533,7 +2533,10 @@
     "title": "المتاجر",
     "count_one": "متجر واحد",
     "count_other": "{{count}} متجر",
-    "empty": "لا توجد متاجر في هذا التصنيف بعد"
+    "empty": "لا توجد متاجر في هذا التصنيف بعد",
+    "verified": "متجر موثّق",
+    "coming_soon": "قريباً",
+    "open": "زيارة"
   },
   "permanentDiscounts": {
     "title": "الخصومات الدائمة",
@@ -2553,6 +2556,8 @@
     "subtitle": "تصفّح المتاجر الشريكة وخصوماتها الدائمة على مدار العام.",
     "search_placeholder": "ابحث عن متجر…",
     "count_one": "متجر واحد",
-    "count_other": "{{count}} متجر"
+    "count_other": "{{count}} متجر",
+    "showing": "{{shown}} من {{total}} متجر",
+    "end": "عرضنا كل المتاجر المتاحة"
   }
 }

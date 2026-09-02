@@ -3,6 +3,7 @@
 import React from "react";
 import { Link } from "@/lib/router-compat";
 import { FiMapPin, FiTag } from "react-icons/fi";
+import { MdVerified } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { SmartImage, Ratio, FOCUS } from "@ui";
 import { API_BASE_URL } from "@config/api";
@@ -17,7 +18,7 @@ export interface MerchantSummary {
   logo?: string | null;
   cover_image?: string | null;
   city?: string | null;
-  category?: string | null;
+  category?: string | { name?: string; slug?: string | null } | null;
   rating?: number;
   /** أعلى خصم دائم لدى المتجر — بطل الكرت */
   max_discount?: number | null;
@@ -25,6 +26,8 @@ export interface MerchantSummary {
   is_open_now?: boolean;
   is_temporarily_closed?: boolean;
   is_coming_soon?: boolean;
+  /** موثّق ⇒ علامة زرقاء بجوار الاسم */
+  is_verified?: boolean;
 }
 
 const absolute = (path?: string | null): string | undefined => {
@@ -76,6 +79,13 @@ const MerchantCard: React.FC<{ merchant: MerchantSummary }> = ({ merchant }) => 
           </span>
         )}
 
+        {/* قريباً — يسبق كل شيء لأنه يغيّر توقّع المستخدم من الكرت */}
+        {merchant.is_coming_soon && (
+          <span className="absolute start-3 top-3 z-[2] rounded-full bg-[linear-gradient(135deg,#FFA23A_0%,#FD671A_100%)] px-3 py-1 text-[11px] font-extrabold text-white shadow-[0_8px_20px_-8px_rgba(253,103,26,0.95)] ring-1 ring-white/25">
+            {t("merchantCard.coming_soon", "قريباً")}
+          </span>
+        )}
+
         {/* الشعار فوق الغلاف */}
         {logo && (
           <span className="absolute bottom-3 start-3 z-[2] flex h-12 w-12 items-center justify-center overflow-hidden rounded-mk-md border-2 border-white bg-white shadow-md">
@@ -85,8 +95,16 @@ const MerchantCard: React.FC<{ merchant: MerchantSummary }> = ({ merchant }) => 
       </div>
 
       <div className="flex flex-1 flex-col gap-1.5 p-4">
-        <h3 className="line-clamp-1 text-[15px] font-extrabold text-mk-text-strong">
-          {merchant.name}
+        <h3 className="flex items-center gap-1 text-[15px] font-extrabold text-mk-text-strong">
+          <span className="line-clamp-1">{merchant.name}</span>
+          {merchant.is_verified && (
+            <MdVerified
+              className="shrink-0 text-[#1D9BF0]"
+              size={16}
+              aria-label={t("merchantCard.verified", "متجر موثّق")}
+              title={t("merchantCard.verified", "متجر موثّق")}
+            />
+          )}
         </h3>
 
         {merchant.city && (
@@ -96,10 +114,11 @@ const MerchantCard: React.FC<{ merchant: MerchantSummary }> = ({ merchant }) => 
           </span>
         )}
 
-        <div className="mt-auto pt-2">
+        {/* الأسفل: عدد الخصومات أو التصنيف — حتى لا يبدو الكرت ناقصاً */}
+        <div className="mt-auto flex items-center gap-2 border-t border-mk-border pt-2.5">
           {hasDiscount ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-mk-tint2 px-3 py-1.5 text-[12px] font-extrabold text-mk-primary">
-              <FiTag size={13} aria-hidden />
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-mk-tint2 px-2.5 py-1 text-[11.5px] font-extrabold text-mk-primary">
+              <FiTag size={12} aria-hidden />
               {extraCount > 0
                 ? t("merchantCard.more_discounts", {
                     count: extraCount,
@@ -107,11 +126,17 @@ const MerchantCard: React.FC<{ merchant: MerchantSummary }> = ({ merchant }) => 
                   })
                 : t("merchantCard.view_discounts", "اعرض الخصومات")}
             </span>
-          ) : (
-            <span className="text-[12px] font-semibold text-mk-faint">
-              {t("merchantCard.no_discounts", "تصفّح المتجر")}
+          ) : merchant.category ? (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-mk-tint3 px-2.5 py-1 text-[11.5px] font-bold text-mk-muted">
+              {typeof merchant.category === "string"
+                ? merchant.category
+                : merchant.category?.name}
             </span>
-          )}
+          ) : null}
+
+          <span className="ms-auto text-[11.5px] font-extrabold text-mk-primary opacity-0 transition-opacity duration-200 group-hover/vivid:opacity-100">
+            {t("merchantCard.open", "زيارة")} ←
+          </span>
         </div>
       </div>
     </Link>
