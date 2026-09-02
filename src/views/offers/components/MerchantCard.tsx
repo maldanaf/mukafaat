@@ -56,7 +56,7 @@ const MerchantCard: React.FC<{ merchant: MerchantSummary }> = ({ merchant }) => 
   return (
     <Link to={href} className={`${VIVID_CARD} ${FOCUS}`}>
       <div className={VIVID_MEDIA}>
-        <Ratio ratio="aspect-[16/10]">
+        <Ratio ratio="aspect-[2/1]">
           {cover ? (
             <SmartImage src={cover} alt={merchant.name} className="h-full w-full object-cover" />
           ) : (
@@ -86,36 +86,54 @@ const MerchantCard: React.FC<{ merchant: MerchantSummary }> = ({ merchant }) => 
           </span>
         )}
 
-        {/* الشعار فوق الغلاف */}
-        {logo && (
-          <span className="absolute bottom-3 start-3 z-[2] flex h-12 w-12 items-center justify-center overflow-hidden rounded-mk-md border-2 border-white bg-white shadow-md">
-            <SmartImage src={logo} alt="" className="h-full w-full object-contain" />
-          </span>
-        )}
       </div>
 
-      <div className="flex flex-1 flex-col gap-1.5 p-4">
-        <h3 className="flex items-center gap-1 text-[15px] font-extrabold text-mk-text-strong">
-          <span className="line-clamp-1">{merchant.name}</span>
-          {merchant.is_verified && (
-            <MdVerified
-              className="shrink-0 text-[#1D9BF0]"
-              size={16}
-              aria-label={t("merchantCard.verified", "متجر موثّق")}
-              title={t("merchantCard.verified", "متجر موثّق")}
-            />
-          )}
-        </h3>
-
-        {merchant.city && (
-          <span className="inline-flex items-center gap-1 text-[12.5px] text-mk-muted">
-            <FiMapPin size={13} aria-hidden />
-            {merchant.city}
+      {/*
+        الشعار في صفّ الاسم لا عائماً على الغلاف: كان يجلس أسفل اليسار
+        بينما الاسم يمين، فيبدو الكرت مائلاً بلا محور بصري.
+      */}
+      <div className="flex flex-1 flex-col p-3.5">
+        <div className="flex items-start gap-2.5">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-mk-sm border border-mk-border bg-white">
+            {logo ? (
+              <SmartImage src={logo} alt="" className="h-full w-full object-contain" />
+            ) : (
+              <FiTag className="text-mk-faint" size={16} aria-hidden />
+            )}
           </span>
-        )}
 
-        {/* الأسفل: عدد الخصومات أو التصنيف — حتى لا يبدو الكرت ناقصاً */}
-        <div className="mt-auto flex items-center gap-2 border-t border-mk-border pt-2.5">
+          <div className="min-w-0 flex-1">
+            <h3 className="m-0 flex items-center gap-1 text-[14.5px] font-extrabold leading-snug text-mk-text-strong">
+              <span className="line-clamp-1">{merchant.name}</span>
+              {merchant.is_verified && (
+                <MdVerified
+                  className="shrink-0 text-[#1D9BF0]"
+                  size={15}
+                  aria-label={t("merchantCard.verified", "متجر موثّق")}
+                  title={t("merchantCard.verified", "متجر موثّق")}
+                />
+              )}
+            </h3>
+
+            <span className="mt-0.5 inline-flex items-center gap-1 text-[12px] text-mk-muted">
+              {merchant.city ? (
+                <>
+                  <FiMapPin size={12} aria-hidden />
+                  {merchant.city}
+                </>
+              ) : (
+                <>
+                  {typeof merchant.category === "string"
+                    ? merchant.category
+                    : merchant.category?.name}
+                </>
+              )}
+            </span>
+          </div>
+        </div>
+
+        {/* التذييل ثابت الارتفاع فتستوي الكروت في الصف */}
+        <div className="mt-3 flex items-center gap-2 border-t border-mk-border pt-2.5">
           {hasDiscount ? (
             <span className="inline-flex items-center gap-1.5 rounded-full bg-mk-tint2 px-2.5 py-1 text-[11.5px] font-extrabold text-mk-primary">
               <FiTag size={12} aria-hidden />
@@ -126,16 +144,14 @@ const MerchantCard: React.FC<{ merchant: MerchantSummary }> = ({ merchant }) => 
                   })
                 : t("merchantCard.view_discounts", "اعرض الخصومات")}
             </span>
-          ) : merchant.category ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-mk-tint3 px-2.5 py-1 text-[11.5px] font-bold text-mk-muted">
-              {typeof merchant.category === "string"
-                ? merchant.category
-                : merchant.category?.name}
+          ) : (
+            <span className="text-[11.5px] font-bold text-mk-faint">
+              {t("merchantCard.no_discounts", "تصفّح المتجر")}
             </span>
-          ) : null}
+          )}
 
-          <span className="ms-auto text-[11.5px] font-extrabold text-mk-primary opacity-0 transition-opacity duration-200 group-hover/vivid:opacity-100">
-            {t("merchantCard.open", "زيارة")} ←
+          <span className="ms-auto text-[11.5px] font-extrabold text-mk-primary transition-transform duration-200 group-hover/vivid:-translate-x-0.5">
+            ←
           </span>
         </div>
       </div>

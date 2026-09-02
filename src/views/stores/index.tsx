@@ -9,6 +9,7 @@ import MerchantCard, {
   type MerchantSummary,
 } from "@views/offers/components/MerchantCard";
 import {
+  CONTAINER,
   EmptyState,
   ErrorState,
   SkeletonGrid,
@@ -184,11 +185,15 @@ const StoresPage: React.FC = () => {
         ]}
       />
 
-      {/* شريط التصنيفات — كروت مربّعة تطفو على الترويسة كصفحة العروض */}
-      <section ref={categoriesRef} className="relative z-10 mx-auto w-full max-w-site px-4 sm:px-6">
-        <div className="-mt-10">
-          <div className="mk-scroll-x gap-3 pb-2">
-            <div className="w-[120px] shrink-0 lg:w-[150px]">
+      {/*
+        شريط التصنيفات — يطفو على الترويسة كصفحة العروض.
+        الحشو الداخلي على المسار المتمرّر لا على الحاوية، وإلا قُصّت
+        الكروت عند الحافتين وبدت مقطوعة.
+      */}
+      <section ref={categoriesRef} className="relative z-10">
+        <div className={`${CONTAINER} -mt-8`}>
+          <div className="mk-scroll-x gap-3 pb-3 pt-1">
+            <div className="w-[124px] shrink-0 lg:w-[148px]">
               <CategoryCard
                 icon=""
                 title={t("home.categories_new.all", "الكل")}
@@ -198,7 +203,7 @@ const StoresPage: React.FC = () => {
               />
             </div>
             {categories.map((c) => (
-              <div key={c.id} className="w-[120px] shrink-0 lg:w-[150px]">
+              <div key={c.id} className="w-[124px] shrink-0 lg:w-[148px]">
                 <CategoryCard
                   icon={c.image ?? ""}
                   title={c.name}
@@ -243,30 +248,51 @@ const StoresPage: React.FC = () => {
         ]}
       />
 
-      <div className="mx-auto w-full max-w-site px-4 py-6 sm:px-6">
+      <div className={`${CONTAINER} py-6`}>
 
-      {/* البحث — التصنيفات صارت في شريط الكروت أعلاه */}
-      <div className="relative mb-6">
-        <FiSearch
-          className="pointer-events-none absolute start-4 top-1/2 -translate-y-1/2 text-mk-faint"
-          size={17}
-          aria-hidden
-        />
-        <input
-          type="search"
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          placeholder={t("stores.search_placeholder", "ابحث عن متجر…")}
-          className={`h-12 w-full rounded-mk-md border border-mk-border bg-white pe-11 ps-11 text-[14px] text-mk-text outline-none transition-colors placeholder:text-mk-faint focus:border-mk-primary ${FOCUS}`}
-        />
-        {searchInput && (
+      {/* شريط أدوات واحد: بحث وعدّاد ومسح — بدل ثلاثة أسطر متفرّقة */}
+      <div className="mb-6 flex flex-wrap items-center gap-3 rounded-mk-md border border-mk-border bg-white p-3 shadow-mk-card">
+        <div className="relative min-w-[220px] flex-1">
+          <FiSearch
+            className="pointer-events-none absolute start-3.5 top-1/2 -translate-y-1/2 text-mk-faint"
+            size={16}
+            aria-hidden
+          />
+          <input
+            type="search"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder={t("stores.search_placeholder", "ابحث عن متجر…")}
+            className={`h-11 w-full rounded-mk-sm border border-mk-border bg-mk-tint3 pe-10 ps-10 text-[13.5px] text-mk-text outline-none transition-colors placeholder:text-mk-faint focus:border-mk-primary focus:bg-white ${FOCUS}`}
+          />
+          {searchInput && (
+            <button
+              type="button"
+              onClick={() => setSearchInput("")}
+              aria-label={t("cardsPage.clearAll", "مسح")}
+              className={`absolute end-2.5 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full text-mk-faint transition-colors hover:bg-mk-tint2 hover:text-mk-primary ${FOCUS}`}
+            >
+              <FiX size={14} />
+            </button>
+          )}
+        </div>
+
+        <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-[12.5px] font-bold text-mk-muted">
+          <FiGrid size={13} aria-hidden />
+          {t("stores.showing", {
+            shown: items.length,
+            total: meta.total,
+            defaultValue: "{{shown}} من {{total}} متجر",
+          })}
+        </span>
+
+        {hasFilters && (
           <button
             type="button"
-            onClick={() => setSearchInput("")}
-            aria-label={t("cardsPage.clearAll", "مسح")}
-            className={`absolute end-3 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-mk-faint transition-colors hover:bg-mk-tint2 hover:text-mk-primary ${FOCUS}`}
+            onClick={clearAll}
+            className={`rounded-full bg-[#FDE9EB] px-3.5 py-1.5 text-[12px] font-extrabold text-mk-red transition-colors hover:brightness-95 ${FOCUS}`}
           >
-            <FiX size={15} />
+            {t("cardsPage.clearAll", "مسح الفلاتر")}
           </button>
         )}
       </div>
@@ -281,24 +307,6 @@ const StoresPage: React.FC = () => {
         <ErrorState onRetry={() => refetch()} />
       ) : items.length > 0 ? (
         <>
-          <div className="mb-3 flex items-center gap-2 text-[12.5px] font-bold text-mk-muted">
-            <FiGrid size={13} aria-hidden />
-            {t("stores.showing", {
-              shown: items.length,
-              total: meta.total,
-              defaultValue: "{{shown}} من {{total}} متجر",
-            })}
-            {hasFilters && (
-              <button
-                type="button"
-                onClick={clearAll}
-                className={`ms-auto rounded-full bg-[#FDE9EB] px-3 py-1 text-[12px] font-semibold text-mk-red transition-colors hover:brightness-95 ${FOCUS}`}
-              >
-                {t("cardsPage.clearAll", "مسح الفلاتر")}
-              </button>
-            )}
-          </div>
-
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {items.map((m) => (
               <MerchantCard key={m.id} merchant={m} />
