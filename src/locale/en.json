@@ -2526,6 +2526,7 @@
     "count_one": "1 store",
     "count_other": "{{count}} stores",
     "showing": "{{shown}} of {{total}} stores",
-    "end": "That's all the stores"
+    "end": "That's all the stores",
+    "eyebrow": "Our partners"
   }
 }

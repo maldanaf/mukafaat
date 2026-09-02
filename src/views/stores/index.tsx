@@ -8,7 +8,17 @@ import { useMerchants } from "@hooks/api/useMokafaatQueries";
 import MerchantCard, {
   type MerchantSummary,
 } from "@views/offers/components/MerchantCard";
-import { EmptyState, ErrorState, SkeletonGrid, FOCUS, SmartImage, paletteFor } from "@ui";
+import {
+  EmptyState,
+  ErrorState,
+  SkeletonGrid,
+  FOCUS,
+  PageHero,
+  PinnedChipsBar,
+  paletteFor,
+} from "@ui";
+import usePinnedUnderHeader from "@hooks/usePinnedUnderHeader";
+import CategoryCard from "@components/CategoryCard";
 import { BreadcrumbSchema } from "@components/seo";
 
 /** التصنيف كما يصل من `/api/merchants` — مع عدد متاجره */
@@ -53,7 +63,8 @@ const StoresPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [items, setItems] = useState<MerchantSummary[]>([]);
 
-  const filterRef = useRef<HTMLDivElement | null>(null);
+  const categoriesRef = useRef<HTMLElement | null>(null);
+  const pinned = usePinnedUnderHeader(categoriesRef);
 
   /** البحث بعد توقّف الكتابة — لا طلب لكل حرف */
   useEffect(() => {
@@ -151,7 +162,7 @@ const StoresPage: React.FC = () => {
   };
 
   return (
-    <div className="mx-auto w-full max-w-site px-4 py-6 sm:px-6">
+    <>
       <BreadcrumbSchema
         items={[
           { name: t("home.navbar.home", "الرئيسية"), url: "/" },
@@ -159,81 +170,107 @@ const StoresPage: React.FC = () => {
         ]}
       />
 
-      <header className="mb-5">
-        <h1 className="m-0 text-[22px] font-extrabold text-mk-text-strong sm:text-[27px]">
-          {t("stores.title", "المتاجر")}
-        </h1>
-        <p className="m-0 mt-1 text-[13.5px] text-mk-muted">
-          {t(
-            "stores.subtitle",
-            "تصفّح المتاجر الشريكة وخصوماتها الدائمة على مدار العام.",
-          )}
-        </p>
-      </header>
+      {/* الترويسة الموحّدة — نفس ترويسة صفحة العروض */}
+      <PageHero
+        title={t("stores.title", "المتاجر")}
+        eyebrow={t("stores.eyebrow", "شركاؤنا")}
+        subtitle={t(
+          "stores.subtitle",
+          "تصفّح المتاجر الشريكة وخصوماتها الدائمة على مدار العام.",
+        )}
+        crumbs={[
+          { label: t("home.navbar.home", "الرئيسية"), to: "/" },
+          { label: t("stores.title", "المتاجر") },
+        ]}
+      />
 
-      {/*
-        الفلاتر لاصقة: القائمة طويلة والتصفية تفقد قيمتها إن اضطرّ
-        المستخدم للعودة إلى أعلى الصفحة في كل مرّة.
-      */}
-      <div
-        ref={filterRef}
-        className="sticky z-30 -mx-4 mb-6 border-b border-mk-border bg-white/95 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6"
-        style={{ top: "var(--mk-header-h, 0px)" }}
-      >
-        <div className="relative mb-3">
-          <FiSearch
-            className="pointer-events-none absolute start-4 top-1/2 -translate-y-1/2 text-mk-faint"
-            size={17}
-            aria-hidden
-          />
-          <input
-            type="search"
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            placeholder={t("stores.search_placeholder", "ابحث عن متجر…")}
-            className={`h-12 w-full rounded-mk-md border border-mk-border bg-mk-tint3 pe-11 ps-11 text-[14px] text-mk-text outline-none transition-colors placeholder:text-mk-faint focus:border-mk-primary focus:bg-white ${FOCUS}`}
-          />
-          {searchInput && (
-            <button
-              type="button"
-              onClick={() => setSearchInput("")}
-              aria-label={t("cardsPage.clearAll", "مسح")}
-              className={`absolute end-3 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-mk-faint transition-colors hover:bg-mk-tint2 hover:text-mk-primary ${FOCUS}`}
-            >
-              <FiX size={15} />
-            </button>
-          )}
-        </div>
-
-        {/* شرائح التصنيفات — بشعار التصنيف ولونه */}
-        <div className="mk-scroll-x gap-2 pb-0.5">
-          <FilterChip
-            active={categoryId === ""}
-            label={t("home.categories_new.all", "الكل")}
-            count={meta.total}
-            color="#400198"
-            onClick={() => setCategoryId("")}
-          />
-          {categories.map((c) => {
-            const { c: color } = paletteFor(c.color, c.id);
-            return (
-              <FilterChip
-                key={c.id}
-                active={categoryId === String(c.id)}
-                label={c.name}
-                count={c.merchants_count}
-                color={color}
-                image={c.image}
-                onClick={() =>
-                  setCategoryId((prev) =>
-                    prev === String(c.id) ? "" : String(c.id),
-                  )
-                }
+      {/* شريط التصنيفات — كروت مربّعة تطفو على الترويسة كصفحة العروض */}
+      <section ref={categoriesRef} className="relative z-10 mx-auto w-full max-w-site px-4 sm:px-6">
+        <div className="-mt-10">
+          <div className="mk-scroll-x gap-3 pb-2">
+            <div className="w-[120px] shrink-0 lg:w-[150px]">
+              <CategoryCard
+                icon=""
+                title={t("home.categories_new.all", "الكل")}
+                alt=""
+                selected={categoryId === ""}
+                onClick={() => setCategoryId("")}
               />
-            );
-          })}
+            </div>
+            {categories.map((c) => (
+              <div key={c.id} className="w-[120px] shrink-0 lg:w-[150px]">
+                <CategoryCard
+                  icon={c.image ?? ""}
+                  title={c.name}
+                  alt={c.name}
+                  selected={categoryId === String(c.id)}
+                  onClick={() =>
+                    setCategoryId((prev) =>
+                      prev === String(c.id) ? "" : String(c.id),
+                    )
+                  }
+                />
+              </div>
+            ))}
+          </div>
         </div>
+      </section>
+
+      {/* الشريط المثبّت عند تمرير شريط التصنيفات خارج الشاشة */}
+      <PinnedChipsBar
+        pinned={pinned}
+        title={t("home.categories_new.title", "التصنيفات")}
+        items={[
+          {
+            id: "all",
+            name: t("home.categories_new.all", "الكل"),
+            image: null,
+            color: "#400198",
+            active: categoryId === "",
+            onClick: () => setCategoryId(""),
+          },
+          ...categories.map((c) => ({
+            id: c.id,
+            name: c.name,
+            image: c.image ?? null,
+            color: paletteFor(c.color, c.id).c,
+            active: categoryId === String(c.id),
+            onClick: () =>
+              setCategoryId((prev) =>
+                prev === String(c.id) ? "" : String(c.id),
+              ),
+          })),
+        ]}
+      />
+
+      <div className="mx-auto w-full max-w-site px-4 py-6 sm:px-6">
+
+      {/* البحث — التصنيفات صارت في شريط الكروت أعلاه */}
+      <div className="relative mb-6">
+        <FiSearch
+          className="pointer-events-none absolute start-4 top-1/2 -translate-y-1/2 text-mk-faint"
+          size={17}
+          aria-hidden
+        />
+        <input
+          type="search"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          placeholder={t("stores.search_placeholder", "ابحث عن متجر…")}
+          className={`h-12 w-full rounded-mk-md border border-mk-border bg-white pe-11 ps-11 text-[14px] text-mk-text outline-none transition-colors placeholder:text-mk-faint focus:border-mk-primary ${FOCUS}`}
+        />
+        {searchInput && (
+          <button
+            type="button"
+            onClick={() => setSearchInput("")}
+            aria-label={t("cardsPage.clearAll", "مسح")}
+            className={`absolute end-3 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-mk-faint transition-colors hover:bg-mk-tint2 hover:text-mk-primary ${FOCUS}`}
+          >
+            <FiX size={15} />
+          </button>
+        )}
       </div>
+
 
       {showSkeleton ? (
         <SkeletonGrid
@@ -294,50 +331,9 @@ const StoresPage: React.FC = () => {
           onAction={hasFilters ? clearAll : undefined}
         />
       )}
-    </div>
+      </div>
+    </>
   );
 };
-
-/** شريحة تصنيف — بشعاره ولونه، ولون الهوية عند التفعيل */
-const FilterChip: React.FC<{
-  active: boolean;
-  label: string;
-  count?: number;
-  color: string;
-  image?: string | null;
-  onClick: () => void;
-}> = ({ active, label, count, color, image, onClick }) => (
-  <button
-    type="button"
-    onClick={onClick}
-    aria-pressed={active}
-    className={`group flex h-11 shrink-0 items-center gap-2 rounded-full border ps-1.5 pe-3.5 text-[13px] font-extrabold transition-all duration-200 hover:-translate-y-0.5 ${FOCUS}`}
-    style={
-      active
-        ? { borderColor: color, backgroundColor: `${color}14`, color }
-        : { borderColor: "#ECE9F5", backgroundColor: "#FFFFFF", color: "#4A4A63" }
-    }
-  >
-    <span
-      className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full"
-      style={{ backgroundColor: `${color}1F` }}
-    >
-      {image ? (
-        <SmartImage src={image} alt="" className="h-4.5 w-4.5 object-contain" />
-      ) : (
-        <FiGrid size={14} style={{ color }} aria-hidden />
-      )}
-    </span>
-    <span className="whitespace-nowrap">{label}</span>
-    {count != null && count > 0 && (
-      <span
-        className="rounded-full px-1.5 py-0.5 text-[10.5px] font-extrabold"
-        style={{ backgroundColor: `${color}1F`, color }}
-      >
-        {count}
-      </span>
-    )}
-  </button>
-);
 
 export default StoresPage;

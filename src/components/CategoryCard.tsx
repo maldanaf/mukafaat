@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Link } from "@/lib/router-compat";
+import { LuLayoutGrid } from "react-icons/lu";
 
 interface CategoryCardProps {
   icon: string;
@@ -10,6 +11,10 @@ interface CategoryCardProps {
   categoryKey?: string;
   /** عند true يظهر الكارد بحالة محدّد (حد وألوان أوضح) */
   selected?: boolean;
+  /** وجهة بديلة — الافتراضي `/offers/{categoryKey}` */
+  to?: string;
+  /** تصفية في المكان بدل التنقّل (صفحة المتاجر) */
+  onClick?: () => void;
 }
 
 const CategoryCard: React.FC<CategoryCardProps> = ({
@@ -18,6 +23,8 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   alt,
   categoryKey,
   selected = false,
+  to,
+  onClick,
 }) => {
   const cardContent = (
     <div
@@ -60,13 +67,25 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
             : "bg-gradient-to-br from-mk-tint3 to-mk-tint group-hover:from-mk-tint group-hover:to-mk-border-strong"
         }`}
       >
-        <img
-          src={icon}
-          alt={alt}
-          className={`w-8 h-8 object-contain transition-transform duration-300 ${
-            selected ? "opacity-100" : "filter group-hover:scale-110"
-          }`}
-        />
+        {/* أيقونة بديلة حين لا صورة للتصنيف — أوضح من صورة مكسورة */}
+        {icon ? (
+          <img
+            src={icon}
+            alt={alt}
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).style.display = "none";
+            }}
+            className={`w-8 h-8 object-contain transition-transform duration-300 ${
+              selected ? "opacity-100" : "filter group-hover:scale-110"
+            }`}
+          />
+        ) : (
+          <LuLayoutGrid
+            size={26}
+            className={selected ? "text-[#400198]" : "text-mk-muted"}
+            aria-hidden
+          />
+        )}
       </div>
 
       {/* Title */}
@@ -89,9 +108,18 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
     </div>
   );
 
+  // تصفية في المكان — صفحة المتاجر تُصفّي بلا تنقّل
+  if (onClick) {
+    return (
+      <button type="button" onClick={onClick} className="w-full text-start">
+        {cardContent}
+      </button>
+    );
+  }
+
   // If categoryKey is provided, wrap with Link for navigation
-  if (categoryKey) {
-    return <Link to={`/offers/${categoryKey}`}>{cardContent}</Link>;
+  if (to || categoryKey) {
+    return <Link to={to ?? `/offers/${categoryKey}`}>{cardContent}</Link>;
   }
 
   // Otherwise, return the card content without navigation
