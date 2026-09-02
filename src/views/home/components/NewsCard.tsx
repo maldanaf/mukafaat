@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useNavigate } from "@/lib/router-compat";
+import { Link } from "@/lib/router-compat";
 import { useIsRTL } from "@hooks";
 import { useTranslation } from "react-i18next";
 import { IoIosArrowRoundForward } from "react-icons/io";
@@ -45,7 +45,6 @@ const NewsCard: React.FC<NewsCardProps> = ({
   onShare,
   onVisit,
 }) => {
-  const navigate = useNavigate();
   const isRTL = useIsRTL();
   const { t } = useTranslation();
 
@@ -53,19 +52,26 @@ const NewsCard: React.FC<NewsCardProps> = ({
     if (onShare) onShare(id);
   };
 
+  /**
+   * الكرت رابط حقيقي `<a href>` لا `div` بـ onClick.
+   *
+   * الزاحف لا ينفّذ معالجات النقر، فكانت المقالات غير قابلة للاكتشاف
+   * من صفحة المدونة مهما كثرت. onVisit يبقى للإحصاء فقط.
+   */
+  const href = `/blogs/${slug}`;
+
   const handleVisit = () => {
     if (onVisit) onVisit(id);
-    // Navigate to the article page using slug
-    navigate(`/blogs/${slug}`);
   };
 
   return (
-    <div
-      className="cursor-pointer mainNewsBlogsCard bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 max-w-sm"
+    <Link
+      to={href}
+      onClick={handleVisit}
+      className="block cursor-pointer mainNewsBlogsCard bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 max-w-sm"
       style={{
         direction: isRTL ? "rtl" : "ltr",
       }}
-      onClick={handleVisit}
     >
       {/* Image Section - Height 180px as requested */}
       <div className="relative h-[180px] overflow-hidden ">
@@ -136,8 +142,8 @@ const NewsCard: React.FC<NewsCardProps> = ({
         </p>
 
         {/* Visit Now Button */}
-        <button
-          onClick={handleVisit}
+        {/* span لا button: الكرت نفسه رابط، وزرٌّ داخل رابط ترميز غير صالح */}
+        <span
           className="text-sm text-[#400198] hover:text-[#fd671a] transition-colors duration-300 font-semibold flex items-center gap-2"
           style={{
             fontFamily: isRTL ? "Readex Pro, sans-serif" : "Jost, sans-serif",
@@ -149,9 +155,9 @@ const NewsCard: React.FC<NewsCardProps> = ({
               isRTL ? "rotate-45" : "-rotate-45"
             }`}
           />
-        </button>
+        </span>
       </div>
-    </div>
+    </Link>
   );
 };
 
