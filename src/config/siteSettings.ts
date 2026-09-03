@@ -45,7 +45,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     const res = await fetch(`${API_BASE}/api/web/settings`, {
       headers: { Accept: "application/json", "Accept-Language": "ar" },
       // نُحدّثها كل ساعة — الإعدادات نادرة التغيّر ولا نُثقل الخادم
-      next: { revalidate: 3600 },
+      next: { revalidate: 60 },
     });
     if (!res.ok) return FALLBACK;
 

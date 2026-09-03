@@ -14,7 +14,7 @@ async function getCategoryName(slug: string): Promise<string | null> {
       `${API_BASE}/api/merchants?category_slug=${encodeURIComponent(slug)}&per_page=1`,
       {
         headers: { Accept: "application/json", "Accept-Language": "ar" },
-        next: { revalidate: 3600 },
+        next: { revalidate: 60 },
       },
     );
     if (!res.ok) return null;

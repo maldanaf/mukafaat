@@ -31,7 +31,7 @@ async function getArticle(slug: string): Promise<Article | null> {
   try {
     const res = await fetch(`${API_BASE}/api/web/news/${slug}`, {
       headers: { Accept: "application/json", "Accept-Language": "ar" },
-      next: { revalidate: 600 },
+      next: { revalidate: 60 },
     });
     if (!res.ok) return null;
     const body = await res.json();
