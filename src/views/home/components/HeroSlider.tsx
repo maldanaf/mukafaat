@@ -629,7 +629,8 @@ const HeroSlider = () => {
         </div>
       </section> */}
 
-      <CategorySection />
+      {/* من الرئيسية: التصنيف يفتح متاجره لا عروضه */}
+      <CategorySection basePath="/stores" />
     </>
   );
 };

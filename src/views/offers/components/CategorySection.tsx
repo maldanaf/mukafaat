@@ -17,7 +17,15 @@ import usePinnedUnderHeader from "@hooks/usePinnedUnderHeader";
 import { useIsRTL } from "@hooks";
 import { useWebHome } from "@hooks/api/useMokafaatQueries";
 
-const CategorySection: React.FC = () => {
+/**
+ * صف التصنيفات.
+ *
+ * `basePath` يحدّد وجهة التصنيف: صفحة العروض تُبقيه على `/offers`،
+ * والرئيسية تُرسله إلى `/stores` لأن المتجر وحدة التصفّح الأولى.
+ */
+const CategorySection: React.FC<{ basePath?: "/offers" | "/stores" }> = ({
+  basePath = "/offers",
+}) => {
   const { t } = useTranslation();
   const isRTL = useIsRTL();
   const { data: webHomeResponse, isLoading, error } = useWebHome();
@@ -193,7 +201,7 @@ const CategorySection: React.FC = () => {
                   icon={category.icon}
                   title={category.title}
                   alt={category.alt}
-                  categoryKey={category.key}
+                  to={`${basePath}/${category.key}`}
                 />
               </div>
             ))}
@@ -211,7 +219,7 @@ const CategorySection: React.FC = () => {
                     icon={category.icon}
                     title={category.title}
                     alt={category.alt}
-                    categoryKey={category.key}
+                    to={`${basePath}/${category.key}`}
                   />
                 </div>
               ))}
@@ -253,7 +261,7 @@ const CategorySection: React.FC = () => {
                     icon={category.icon}
                     title={category.title}
                     alt={category.alt}
-                    categoryKey={category.key}
+                    to={`${basePath}/${category.key}`}
                   />
                 </div>
               ))}
@@ -278,7 +286,7 @@ const CategorySection: React.FC = () => {
                     icon={category.icon}
                     title={category.title}
                     alt={category.alt}
-                    categoryKey={category.key}
+                    to={`${basePath}/${category.key}`}
                   />
                 </div>
               ))}
@@ -295,7 +303,7 @@ const CategorySection: React.FC = () => {
           name: category.title,
           image: category.icon,
           color: pick(i).c,
-          href: `/offers/${category.key}`,
+          href: `${basePath}/${category.key}`,
         }))}
       />
     </section>

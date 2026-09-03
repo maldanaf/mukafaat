@@ -317,7 +317,8 @@ const MobileHome: React.FC<Props> = ({ home, isLoading = false }) => {
                   key={category.id}
                   type="button"
                   onClick={() =>
-                    navigate(category.slug ? `/offers/${category.slug}` : `/offers?category=${category.id}`)
+                    // التصنيف يفتح متاجره لا عروضه
+                    navigate(category.slug ? `/stores/${category.slug}` : "/stores")
                   }
                   className={`mk-lift flex min-h-[92px] flex-col items-center justify-center gap-2 rounded-mk-md border border-mk-border bg-white p-2 shadow-mk-card active:scale-[0.96] ${FOCUS}`}
                 >

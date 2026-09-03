@@ -37,16 +37,19 @@ const CategoriesBand: React.FC<Props> = ({ categories, title, showViewAll = true
   /** القسم تجاوز الهيدر لأعلى — عندها يظهر شريط التصنيفات المثبّت */
   const pinned = usePinnedUnderHeader(sectionRef);
 
-  /** صفحة القسم تعتمد الـ slug: /offers/{slug} — وإلا نمرّر المعرّف كباراميتر */
+  /**
+   * التصنيف يفتح متاجره لا عروضه.
+   *
+   * المتجر وحدة التصفّح الأولى في المنصّة وخصوماته الدائمة هي جوهرها،
+   * فإرسال المستخدم من التصنيف إلى العروض كان يُخرجه من مسار المتاجر.
+   */
   const openCategory = (category: CategoryItem | { id: "all" }) => {
-    // «الكل» تقود إلى صفحة المتاجر لا العروض: الشريط شريط تصنيفات
-    // متاجر، وإرسال المستخدم للعروض كان يُخرجه من مسار المتاجر
     if (category.id === "all") {
       navigate("/stores");
       return;
     }
     const item = category as CategoryItem;
-    navigate(item.slug ? `/offers/${item.slug}` : `/offers?category=${item.id}`);
+    navigate(item.slug ? `/stores/${item.slug}` : "/stores");
   };
 
   const all: (CategoryItem | { id: "all"; name: string; image: null; slug: undefined })[] = [
