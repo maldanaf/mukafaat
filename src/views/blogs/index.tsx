@@ -1,237 +1,318 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
-import { Helmet } from "@/lib/helmet-compat";
-import { BsChevronDown } from "react-icons/bs";
-import { HiOutlineHome } from "react-icons/hi";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { FiSearch, FiX, FiGrid } from "react-icons/fi";
 import { useIsRTL } from "@hooks";
+import { useTranslation } from "react-i18next";
 
 import FAQSection from "@views/home/components/FAQSection";
-import { useNavigate, useLocation } from "@/lib/router-compat";
-import NewsCard from "@views/home/components/NewsCard";
-import { useLoadMoreOnScroll } from "@hooks/useLoadMoreOnScroll";
-import { useInquiryModal } from "@context";
 import GetStartedSection from "@views/home/components/GetStartedSection";
-import { useWebHome } from "@hooks/api/useMokafaatQueries";
+import NewsCard from "@views/home/components/NewsCard";
+import { useWebNews } from "@hooks/api/useMokafaatQueries";
 import { mapApiNewsToModels } from "@network/mappers/newsMapper";
 import type { NewsArticleModel } from "@network/mappers/newsMapper";
+import { EmptyState, ErrorState, SkeletonGrid, FOCUS, PageHero } from "@ui";
+import { BreadcrumbSchema } from "@components/seo";
 
-const ALL_CATEGORY_KEY = "__all__";
+/** تصنيف المدونة كما يصل من `/api/web/news` */
+interface BlogCategory {
+  id: number | string;
+  name: string;
+  slug?: string | null;
+}
 
+type SortKey = "newest" | "most_viewed" | "most_shared";
+
+const PER_PAGE = 12;
+
+/**
+ * مدونة مكافآت.
+ *
+ * طلب مخصّص لا بيانات الرئيسية: كانت تقرأ من `useWebHome` فتعرض ما
+ * ترسله الرئيسية من مقالات معدودة، بلا ترقيم ولا فلترة على الخادم —
+ * فلا تظهر بقية المقالات مهما كثرت.
+ */
 const BlogsPage: React.FC = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
   const isRTL = useIsRTL();
-  useInquiryModal(); // متوفر للاستخدام لاحقاً (مثلاً زر استفسار)
+  const { t } = useTranslation();
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 12;
-  const [selectedCategory, setSelectedCategory] =
-    useState<string>(ALL_CATEGORY_KEY);
-  const [showMoreCategories, setShowMoreCategories] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState("");
+  const [categoryId, setCategoryId] = useState<string>("");
+  const [sortBy, setSortBy] = useState<SortKey>("newest");
+  const [page, setPage] = useState(1);
+  const [items, setItems] = useState<NewsArticleModel[]>([]);
 
-  const { data: webHomeResponse } = useWebHome();
-
-  const newsList = useMemo((): NewsArticleModel[] => {
-    if (!webHomeResponse) return [];
-    const res = webHomeResponse as Record<string, unknown>;
-    const data = res?.data as Record<string, unknown> | undefined;
-    const news = data?.news as Array<Record<string, unknown>> | undefined;
-    if (!Array.isArray(news)) return [];
-    return mapApiNewsToModels(news);
-  }, [webHomeResponse]);
-
-  const categories = useMemo(() => {
-    const allLabel = {
-      key: ALL_CATEGORY_KEY,
-      ar: "جميع الفئات",
-      en: "All Category",
-    };
-    const byKey = new Map<string, { key: string; ar: string; en: string }>();
-    byKey.set(ALL_CATEGORY_KEY, allLabel);
-    newsList.forEach((article) => {
-      if (article.category && !byKey.has(article.category)) {
-        byKey.set(article.category, {
-          key: article.category,
-          ar: article.categoryAr,
-          en: article.categoryEn,
-        });
-      }
-    });
-    return Array.from(byKey.values());
-  }, [newsList]);
-
+  /** البحث بعد توقّف الكتابة — لا طلب لكل حرف */
   useEffect(() => {
-    if (location.state?.selectedCategory) {
-      setSelectedCategory(String(location.state.selectedCategory));
-      setCurrentPage(1);
-      navigate(location.pathname, { replace: true });
-    }
-  }, [location.state, navigate, location.pathname]);
+    const id = setTimeout(() => setSearch(searchInput.trim()), 350);
+    return () => clearTimeout(id);
+  }, [searchInput]);
 
-  const filteredNews = useMemo(() => {
-    if (selectedCategory === ALL_CATEGORY_KEY) return newsList;
-    return newsList.filter((article) => article.category === selectedCategory);
-  }, [selectedCategory, newsList]);
+  /** أي تغيير في الفلاتر يبدأ الترقيم من جديد */
+  useEffect(() => {
+    setPage(1);
+    setItems([]);
+  }, [search, categoryId, sortBy]);
 
-  const allNews = filteredNews;
-
-  // Load-more pagination
-  const totalPages = Math.ceil(allNews.length / itemsPerPage);
-  const currentNews = allNews.slice(0, currentPage * itemsPerPage);
-  const hasMoreNews = currentPage < totalPages;
-  const loadMoreRef = useLoadMoreOnScroll({
-    hasMore: hasMoreNews,
-    loading: false,
-    loadMore: () => setCurrentPage((p) => p + 1),
+  const { data, isLoading, isFetching, isError, refetch } = useWebNews({
+    per_page: PER_PAGE,
+    page,
+    search: search || undefined,
+    news_category_id: categoryId || undefined,
+    sort_by: sortBy,
   });
 
-  const handleCategoryChange = (categoryKey: string) => {
-    setSelectedCategory(categoryKey);
-    setCurrentPage(1);
+  const root = useMemo(() => {
+    const r = (data as Record<string, unknown>) ?? {};
+    return ((r.data as Record<string, unknown>) ?? r) as Record<string, unknown>;
+  }, [data]);
+
+  const categories: BlogCategory[] = useMemo(() => {
+    const list = root.categories;
+    return Array.isArray(list) ? (list as BlogCategory[]) : [];
+  }, [root]);
+
+  const pageItems: NewsArticleModel[] = useMemo(() => {
+    const list = root.news;
+    return Array.isArray(list)
+      ? mapApiNewsToModels(list as Array<Record<string, unknown>>)
+      : [];
+  }, [root]);
+
+  const meta = useMemo(() => {
+    const p = (root.pagination ?? {}) as Record<string, unknown>;
+    return {
+      total: Number(p.total ?? 0),
+      lastPage: Number(p.last_page ?? 1),
+    };
+  }, [root]);
+
+  /** نراكم الصفحات بدل استبدالها — مع منع التكرار عند إعادة الجلب */
+  useEffect(() => {
+    if (!pageItems.length) return;
+    setItems((prev) => {
+      const seen = new Set(prev.map((a) => String(a.id)));
+      const fresh = pageItems.filter((a) => !seen.has(String(a.id)));
+      return fresh.length ? [...prev, ...fresh] : prev;
+    });
+  }, [pageItems]);
+
+  const hasMore = page < meta.lastPage;
+  const stateRef = useRef({ hasMore, isFetching });
+  stateRef.current = { hasMore, isFetching };
+
+  const observerRef = useRef<IntersectionObserver | null>(null);
+
+  /**
+   * ref callback لا useEffect: الحارس داخل فرع شرطي لا يُركَّب إلا بعد
+   * وصول أول دفعة، فيكون المرجع فارغاً لحظة تشغيل الـ effect.
+   */
+  const attachSentinel = (el: HTMLDivElement | null) => {
+    observerRef.current?.disconnect();
+    if (!el) return;
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        if (!entries[0]?.isIntersecting) return;
+        const { hasMore: more, isFetching: busy } = stateRef.current;
+        if (more && !busy) setPage((p) => p + 1);
+      },
+      { rootMargin: "600px" },
+    );
+    observerRef.current.observe(el);
   };
 
-  const toggleShowMoreCategories = () => {
-    setShowMoreCategories(!showMoreCategories);
+  useEffect(() => () => observerRef.current?.disconnect(), []);
+
+  const hasFilters = Boolean(search || categoryId);
+  const showSkeleton = isLoading && items.length === 0;
+
+  const clearAll = () => {
+    setSearchInput("");
+    setSearch("");
+    setCategoryId("");
   };
 
-  const handleNewsClick = (news: NewsArticleModel) => {
-    navigate(`/blogs/${news.slug}`);
-  };
+  const chip = (active: boolean) =>
+    `h-10 shrink-0 rounded-full border px-4 text-[13px] font-extrabold transition-all duration-200 ${FOCUS} ${
+      active
+        ? "border-[#C9BCEC] bg-mk-tint2 text-mk-primary"
+        : "border-mk-border bg-white text-mk-muted hover:border-[#C9BCEC]"
+    }`;
+
+  const sorts: { key: SortKey; label: string }[] = [
+    { key: "newest", label: t("blogsPage.sort_newest", "الأحدث") },
+    { key: "most_viewed", label: t("blogsPage.sort_viewed", "الأكثر قراءة") },
+    { key: "most_shared", label: t("blogsPage.sort_shared", "الأكثر شيوعاً") },
+  ];
 
   return (
     <>
-      <Helmet>
-        <title>
-          {isRTL ? "المدونة والأخبار - مكافآت" : "Blogs & News - Mukafaat"}
-        </title>
-        <meta
-          name="description"
-          content={
-            isRTL
-              ? "اقرأ أحدث المقالات والأخبار حول العروض والخصومات والبطاقات والكوبونز والحجوزات في المملكة العربية السعودية"
-              : "Read our latest blogs and news about offers, discounts, cards, couponz, and bookings in Saudi Arabia."
-          }
-        />
-      </Helmet>
+      <BreadcrumbSchema
+        items={[
+          { name: t("home.navbar.home", "الرئيسية"), url: "/" },
+          { name: t("blogsPage.title", "المدونة"), url: "/blogs" },
+        ]}
+      />
 
-      <div className="min-h-screen bg-gray-50" style={{ paddingTop: "72px" }}>
-        {/* Listing Header */}
-        <div className="bg-white pb-6">
-          <div className="container mx-auto px-4 lg:px-0 py-0">
-            {/* Breadcrumb */}
-            <div className="flex items-center text-sm text-[#141414] font-medium mb-4 pt-4">
-              <HiOutlineHome className="me-2 text-lg" />
-              <span
-                className="cursor-pointer hover:text-[#fd671a] transition-colors"
-                onClick={() => navigate("/")}
+      <PageHero
+        title={isRTL ? "مدونة مكافآت" : "Mukafaat Blog"}
+        eyebrow={t("blogsPage.eyebrow", "اقرأ واستفد")}
+        subtitle={t(
+          "blogsPage.subtitle",
+          "مقالات ونصائح حول العروض والخصومات والبطاقات والكوبونات في السعودية.",
+        )}
+        crumbs={[
+          { label: t("home.navbar.home", "الرئيسية"), to: "/" },
+          { label: t("blogsPage.title", "المدونة") },
+        ]}
+      />
+
+      <div className="mx-auto w-full max-w-site px-4 py-6 sm:px-6">
+        {/* شريط الأدوات: بحث وترتيب وعدّاد */}
+        <div className="mb-4 flex flex-wrap items-center gap-3 rounded-mk-md border border-mk-border bg-white p-3 shadow-mk-card">
+          <div className="relative min-w-[220px] flex-1">
+            <FiSearch
+              className="pointer-events-none absolute start-3.5 top-1/2 -translate-y-1/2 text-mk-faint"
+              size={16}
+              aria-hidden
+            />
+            <input
+              type="search"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder={t(
+                "blogsPage.search_placeholder",
+                "ابحث بعنوان المقالة أو كلمة مفتاحية…",
+              )}
+              className={`h-11 w-full rounded-mk-sm border border-mk-border bg-mk-tint3 pe-10 ps-10 text-[13.5px] text-mk-text outline-none transition-colors placeholder:text-mk-faint focus:border-mk-primary focus:bg-white ${FOCUS}`}
+            />
+            {searchInput && (
+              <button
+                type="button"
+                onClick={() => setSearchInput("")}
+                aria-label={t("cardsPage.clearAll", "مسح")}
+                className={`absolute end-2.5 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full text-mk-faint transition-colors hover:bg-mk-tint2 hover:text-mk-primary ${FOCUS}`}
               >
-                {isRTL ? "الرئيسية" : "Home"}
-              </span>
-              <BsChevronDown
-                className={`mx-2 transform ${
-                  isRTL ? "rotate-90" : "rotate-[270deg]"
-                }`}
-              />
-              <span
-                className="cursor-pointer hover:text-[#fd671a] transition-colors"
-                onClick={() => navigate("/blogs")}
+                <FiX size={14} />
+              </button>
+            )}
+          </div>
+
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as SortKey)}
+            aria-label={t("blogsPage.sort", "الترتيب")}
+            className={`h-11 shrink-0 rounded-mk-sm border border-mk-border bg-white px-3 text-[13px] font-bold text-mk-text outline-none focus:border-mk-primary ${FOCUS}`}
+          >
+            {sorts.map((s) => (
+              <option key={s.key} value={s.key}>
+                {s.label}
+              </option>
+            ))}
+          </select>
+
+          <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-[12.5px] font-bold text-mk-muted">
+            <FiGrid size={13} aria-hidden />
+            {t("blogsPage.showing", {
+              shown: items.length,
+              total: meta.total,
+              defaultValue: "{{shown}} من {{total}} مقالة",
+            })}
+          </span>
+
+          {hasFilters && (
+            <button
+              type="button"
+              onClick={clearAll}
+              className={`rounded-full bg-[#FDE9EB] px-3.5 py-1.5 text-[12px] font-extrabold text-mk-red transition-colors hover:brightness-95 ${FOCUS}`}
+            >
+              {t("cardsPage.clearAll", "مسح الفلاتر")}
+            </button>
+          )}
+        </div>
+
+        {/* تصنيفات المدونة */}
+        {categories.length > 0 && (
+          <div className="mk-scroll-x mb-6 gap-2 pb-1">
+            <button
+              type="button"
+              onClick={() => setCategoryId("")}
+              className={chip(categoryId === "")}
+            >
+              {t("blogsPage.all", "جميع المقالات")}
+            </button>
+            {categories.map((c) => (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() =>
+                  setCategoryId((prev) =>
+                    prev === String(c.id) ? "" : String(c.id),
+                  )
+                }
+                className={chip(categoryId === String(c.id))}
               >
-                {isRTL ? "المدونة والأخبار" : "Blogs & News"}
-              </span>
+                {c.name}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {showSkeleton ? (
+          <SkeletonGrid
+            count={PER_PAGE}
+            className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+          />
+        ) : isError && items.length === 0 ? (
+          <ErrorState onRetry={() => refetch()} />
+        ) : items.length > 0 ? (
+          <>
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {items.map((news) => (
+                <NewsCard key={news.id} {...news} />
+              ))}
             </div>
 
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-              <div className="space-y-2">
-                <h1
-                  className="text-[#400198] text-3xl font-bold"
-                  style={{
-                    fontFamily: isRTL
-                      ? "Readex Pro, sans-serif"
-                      : "Jost, sans-serif",
-                  }}
+            <div ref={attachSentinel} className="h-8 w-full" aria-hidden />
+
+            {isFetching && items.length > 0 && (
+              <div className="mt-5">
+                <SkeletonGrid
+                  count={4}
+                  className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                />
+              </div>
+            )}
+
+            {hasMore && !isFetching && (
+              <div className="mt-8 flex justify-center">
+                <button
+                  type="button"
+                  onClick={() => setPage((p) => p + 1)}
+                  className={`rounded-full bg-[linear-gradient(135deg,#400198_0%,#6703EB_100%)] px-6 py-3 text-[13.5px] font-extrabold text-white transition-transform hover:-translate-y-0.5 ${FOCUS}`}
                 >
-                  {isRTL ? "مدونة مكافآت" : "Mukafaat Blog"}
-                </h1>
-                <p className="text-gray-600 text-sm">
-                  {isRTL
-                    ? "اكتشف أفضل المقالات والنصائح حول العروض والخصومات والبطاقات والكوبونز والحجوزات في المملكة العربية السعودية. وفر المال واستمتع بأفضل الخدمات"
-                    : "Discover the best articles and tips about offers, discounts, cards, couponz, and bookings in Saudi Arabia. Save money and enjoy the best services"}
-                </p>
+                  {t("blogsPage.load_more", "عرض المزيد")}
+                </button>
               </div>
-            </div>
+            )}
 
-            {/* Category Filter Bar */}
-            <div className="mt-6">
-              <div className="flex flex-wrap gap-3">
-                {categories
-                  .slice(0, showMoreCategories ? categories.length : 6)
-                  .map((cat) => (
-                    <button
-                      key={cat.key}
-                      onClick={() => handleCategoryChange(cat.key)}
-                      className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg  ${
-                        selectedCategory === cat.key
-                          ? "bg-[#400198] text-white"
-                          : "bg-white text-[#4C4C4C] border border-gray-300 hover:border-[#400198]"
-                      }`}
-                    >
-                      {isRTL ? cat.ar : cat.en}
-                    </button>
-                  ))}
-                {categories.length > 6 && (
-                  <button
-                    onClick={toggleShowMoreCategories}
-                    className="px-4 py-2 rounded-full text-sm font-medium bg-white text-[#4C4C4C] border border-gray-300 hover:border-[#400198] transition-all duration-200"
-                  >
-                    {showMoreCategories
-                      ? isRTL
-                        ? "عرض أقل"
-                        : "Show Less"
-                      : isRTL
-                      ? "عرض المزيد"
-                      : "Show More"}
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* News Listings */}
-        <div className="bg-white">
-          <div className="container mx-auto px-4 lg:px-0 pb-4">
-            <div className="pt-0 pb-20 border-t border-[#DDDDDD]">
-              {/* News Listings */}
-              <div className="container mx-auto px-4 lg:px-0 py-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-                  {currentNews.map((news) => (
-                    <NewsCard
-                      key={news.id}
-                      {...news}
-                      onVisit={() => handleNewsClick(news)}
-                    />
-                  ))}
-                </div>
-
-                {/* Load More + Infinite Scroll */}
-                {hasMoreNews && (
-                  <div className="flex flex-col items-center justify-center mt-10 gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setCurrentPage((p) => p + 1)}
-                      className="px-6 py-3 bg-[#400198] text-white rounded-xl font-medium hover:bg-[#54015d] transition-colors"
-                    >
-                      {isRTL ? "عرض المزيد" : "Load more"}
-                    </button>
-                    <div ref={loadMoreRef} className="h-px w-full" aria-hidden="true" />
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+            {!hasMore && (
+              <p className="mt-8 text-center text-[12.5px] text-mk-faint">
+                {t("blogsPage.end", "عرضنا كل المقالات")}
+              </p>
+            )}
+          </>
+        ) : (
+          <EmptyState
+            title={t("blogsPage.empty", "لا توجد مقالات مطابقة")}
+            description=""
+            actionLabel={hasFilters ? t("cardsPage.clearAll", "مسح الفلاتر") : undefined}
+            onAction={hasFilters ? clearAll : undefined}
+          />
+        )}
       </div>
+
       <GetStartedSection className="mt-0 mb-0" />
       <FAQSection />
     </>

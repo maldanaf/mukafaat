@@ -2528,5 +2528,20 @@
     "showing": "{{shown}} of {{total}} stores",
     "end": "That's all the stores",
     "eyebrow": "Our partners"
+  },
+  "blogsPage": {
+    "title": "Blog",
+    "eyebrow": "Read & learn",
+    "subtitle": "Articles and tips about offers, discounts, cards and coupons in Saudi Arabia.",
+    "search_placeholder": "Search by title or keyword…",
+    "sort": "Sort",
+    "sort_newest": "Newest",
+    "sort_viewed": "Most read",
+    "sort_shared": "Most shared",
+    "all": "All articles",
+    "showing": "{{shown}} of {{total}} articles",
+    "load_more": "Load more",
+    "end": "That's all the articles",
+    "empty": "No matching articles"
   }
 }

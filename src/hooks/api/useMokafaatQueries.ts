@@ -504,11 +504,17 @@ export function useWebCouponCategories(categorySlug: string) {
   });
 }
 
-export function useWebNews() {
+/**
+ * مقالات المدونة — مع التصنيفات والترقيم.
+ *
+ * كانت صفحة المدونة تقرأ من `useWebHome` فتعرض ما ترسله الرئيسية من
+ * مقالات معدودة بلا ترقيم ولا فلترة على الخادم.
+ */
+export function useWebNews(params?: Record<string, unknown>) {
   const lang = useQueryLang();
   return useQuery({
-    queryKey: [...mokafaatKeys.webNews, lang],
-    queryFn: () => webApi.news().then((r) => r.data),
+    queryKey: [...mokafaatKeys.webNews, params, lang],
+    queryFn: () => webApi.news(params).then((r) => r.data),
   });
 }
 

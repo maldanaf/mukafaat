@@ -72,9 +72,13 @@ export function mapApiNewsToModel(
     const newsImage =
       fixedImage || "https://via.placeholder.com/800x600?text=News";
 
-    // Default category
-    const categoryAr = "أخبار";
-    const categoryEn = "News";
+    // تصنيف المقالة كما يصل من الـ API — كان ثابتاً «أخبار» لكل مقالة
+    // مهما كان تصنيفها الحقيقي
+    const apiCategory = (apiNews.category ?? null) as
+      | { name?: string }
+      | null;
+    const categoryAr = apiCategory?.name?.trim() || "أخبار";
+    const categoryEn = apiCategory?.name?.trim() || "News";
     const category = categoryAr;
 
     return {
@@ -86,7 +90,8 @@ export function mapApiNewsToModel(
       descriptionEn: summary,
       date: dateAr,
       dateEn,
-      views: "0", // API doesn't provide views
+      // الـ API يُرجع عدد المشاهدات فعلاً — كان ثابتاً صفراً
+      views: String(apiNews.views ?? 0),
       category,
       categoryEn,
       categoryAr,
