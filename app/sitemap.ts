@@ -77,6 +77,23 @@ async function fetchMerchantCategories(): Promise<Record<string, unknown>[]> {
   }
 }
 
+
+/** تصنيفات المدونة — تُرجَع ضمن استجابة /api/web/news */
+async function fetchBlogCategories(): Promise<Record<string, unknown>[]> {
+  try {
+    const res = await fetch(`${API_BASE}/api/web/news?per_page=1`, {
+      headers: { Accept: "application/json", "Accept-Language": "ar" },
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return [];
+    const body = await res.json();
+    const list = body?.data?.categories;
+    return Array.isArray(list) ? list : [];
+  } catch {
+    return [];
+  }
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // ===== الصفحات الثابتة =====
   // نستثني ما لا يُفهرس: السلة، الحساب، المحفظة، الطلبات، الدخول، صفحات النتائج
@@ -101,8 +118,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // ===== المحتوى الديناميكي =====
-  const [offers, cards, merchants, categories, articles, merchantCategories] =
-    await Promise.all([
+  const [
+    offers,
+    cards,
+    merchants,
+    categories,
+    articles,
+    merchantCategories,
+    blogCategories,
+  ] = await Promise.all([
     fetchList("/api/web/offers?per_page=200"),
     fetchList("/api/web/cards?per_page=200"),
     fetchList("/api/merchants?per_page=200"),
@@ -110,6 +134,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     fetchList("/api/web/news"),
     // تصنيفات المتاجر تأتي ضمن استجابة /api/merchants تحت مفتاح categories
     fetchMerchantCategories(),
+    fetchBlogCategories(),
   ]);
 
   const dynamic: MetadataRoute.Sitemap = [];
@@ -150,6 +175,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   for (const a of articles) {
     if (a.slug) dynamic.push(entry(`/blogs/${a.slug}`, "weekly", 0.6));
+  }
+
+  // صفحات تصنيفات المدونة — لكل تصنيف رابطه المستقل
+  for (const c of blogCategories) {
+    if (c.slug) dynamic.push(entry(`/blogs/category/${c.slug}`, "weekly", 0.6));
   }
 
   // إزالة التكرار — قد يظهر نفس الرابط من مصدرين

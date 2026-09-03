@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FiSearch, FiX, FiGrid } from "react-icons/fi";
 import { useIsRTL } from "@hooks";
+import { Link, useNavigate, useParams } from "@/lib/router-compat";
 import { useTranslation } from "react-i18next";
 
 import FAQSection from "@views/home/components/FAQSection";
@@ -38,8 +39,15 @@ const BlogsPage: React.FC = () => {
 
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
-  const [categoryId, setCategoryId] = useState<string>("");
   const [sortBy, setSortBy] = useState<SortKey>("newest");
+
+  /**
+   * التصنيف من المسار `/blogs/category/{slug}` لا من حالة داخلية:
+   * الفلتر الداخلي لا يُنتج رابطاً يُشارَك أو تفهرسه المحرّكات.
+   */
+  const navigate = useNavigate();
+  const { categorySlug } = useParams<{ categorySlug?: string }>();
+  const activeSlug = categorySlug ?? "";
   const [page, setPage] = useState(1);
   const [items, setItems] = useState<NewsArticleModel[]>([]);
 
@@ -53,13 +61,13 @@ const BlogsPage: React.FC = () => {
   useEffect(() => {
     setPage(1);
     setItems([]);
-  }, [search, categoryId, sortBy]);
+  }, [search, activeSlug, sortBy]);
 
   const { data, isLoading, isFetching, isError, refetch } = useWebNews({
     per_page: PER_PAGE,
     page,
     search: search || undefined,
-    news_category_id: categoryId || undefined,
+    category_slug: activeSlug || undefined,
     sort_by: sortBy,
   });
 
@@ -124,17 +132,18 @@ const BlogsPage: React.FC = () => {
 
   useEffect(() => () => observerRef.current?.disconnect(), []);
 
-  const hasFilters = Boolean(search || categoryId);
+  const hasFilters = Boolean(search || activeSlug);
   const showSkeleton = isLoading && items.length === 0;
 
+  /** التصنيف يُمسح بالتنقّل إلى /blogs لا بتغيير حالة داخلية */
   const clearAll = () => {
     setSearchInput("");
     setSearch("");
-    setCategoryId("");
+    if (activeSlug) navigate("/blogs");
   };
 
   const chip = (active: boolean) =>
-    `h-10 shrink-0 rounded-full border px-4 text-[13px] font-extrabold transition-all duration-200 ${FOCUS} ${
+    `inline-flex h-10 shrink-0 items-center rounded-full border px-4 text-[13px] font-extrabold transition-all duration-200 ${FOCUS} ${
       active
         ? "border-[#C9BCEC] bg-mk-tint2 text-mk-primary"
         : "border-mk-border bg-white text-mk-muted hover:border-[#C9BCEC]"
@@ -235,26 +244,17 @@ const BlogsPage: React.FC = () => {
         {/* تصنيفات المدونة */}
         {categories.length > 0 && (
           <div className="mk-scroll-x mb-6 gap-2 pb-1">
-            <button
-              type="button"
-              onClick={() => setCategoryId("")}
-              className={chip(categoryId === "")}
-            >
+            <Link to="/blogs" className={chip(activeSlug === "")}>
               {t("blogsPage.all", "جميع المقالات")}
-            </button>
+            </Link>
             {categories.map((c) => (
-              <button
+              <Link
                 key={c.id}
-                type="button"
-                onClick={() =>
-                  setCategoryId((prev) =>
-                    prev === String(c.id) ? "" : String(c.id),
-                  )
-                }
-                className={chip(categoryId === String(c.id))}
+                to={c.slug ? `/blogs/category/${c.slug}` : "/blogs"}
+                className={chip(activeSlug === String(c.slug ?? ""))}
               >
                 {c.name}
-              </button>
+              </Link>
             ))}
           </div>
         )}
