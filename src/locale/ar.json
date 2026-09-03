@@ -2566,7 +2566,11 @@
     "count_other": "{{count}} متجر",
     "showing": "{{shown}} من {{total}} متجر",
     "end": "عرضنا كل المتاجر المتاحة",
-    "eyebrow": "شركاؤنا"
+    "eyebrow": "شركاؤنا",
+    "prev": "السابق",
+    "next": "التالي",
+    "prev_categories": "التصنيفات السابقة",
+    "next_categories": "التصنيفات التالية"
   },
   "blogsPage": {
     "title": "المدونة",

@@ -2534,7 +2534,11 @@
     "count_other": "{{count}} stores",
     "showing": "{{shown}} of {{total}} stores",
     "end": "That's all the stores",
-    "eyebrow": "Our partners"
+    "eyebrow": "Our partners",
+    "prev": "Previous",
+    "next": "Next",
+    "prev_categories": "Previous categories",
+    "next_categories": "Next categories"
   },
   "blogsPage": {
     "title": "Blog",

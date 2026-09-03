@@ -2534,7 +2534,11 @@
     "count_other": "{{count}} اسٹورز",
     "showing": "{{total}} میں سے {{shown}} اسٹورز",
     "end": "تمام اسٹورز دکھا دیے گئے",
-    "eyebrow": "ہمارے شراکت دار"
+    "eyebrow": "ہمارے شراکت دار",
+    "prev": "پچھلا",
+    "next": "اگلا",
+    "prev_categories": "پچھلے زمرے",
+    "next_categories": "اگلے زمرے"
   },
   "blogsPage": {
     "title": "بلاگ",

@@ -2534,7 +2534,11 @@
     "count_other": "{{count}} स्टोर",
     "showing": "{{total}} में से {{shown}} स्टोर",
     "end": "सभी स्टोर दिखा दिए गए",
-    "eyebrow": "हमारे साझेदार"
+    "eyebrow": "हमारे साझेदार",
+    "prev": "पिछला",
+    "next": "अगला",
+    "prev_categories": "पिछली श्रेणियाँ",
+    "next_categories": "अगली श्रेणियाँ"
   },
   "blogsPage": {
     "title": "ब्लॉग",

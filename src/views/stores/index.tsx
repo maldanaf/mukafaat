@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useNavigate } from "@/lib/router-compat";
 import { useTranslation } from "react-i18next";
 import { FiSearch, FiX, FiGrid } from "react-icons/fi";
+import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { useMerchants } from "@hooks/api/useMokafaatQueries";
 import MerchantCard, {
   type MerchantSummary,
@@ -19,6 +20,7 @@ import {
   paletteFor,
 } from "@ui";
 import usePinnedUnderHeader from "@hooks/usePinnedUnderHeader";
+import useHorizontalScroller from "@hooks/useHorizontalScroller";
 import CategoryCard from "@components/CategoryCard";
 import { BreadcrumbSchema } from "@components/seo";
 
@@ -33,6 +35,10 @@ interface CategoryChip {
 }
 
 const PER_PAGE = 12;
+
+/** زر تقليب شريط التصنيفات — يبهت ويتعطّل عند الطرف */
+const ARROW_BTN =
+  "flex h-9 w-9 items-center justify-center rounded-full border border-mk-border bg-white text-mk-primary shadow-mk-card transition-all duration-200 hover:-translate-y-0.5 hover:border-[#C9BCEC] disabled:pointer-events-none disabled:opacity-35";
 
 /** استخراج قائمة من استجابة قد تأتي بأشكال مختلفة */
 function pick<T>(res: unknown, ...keys: string[]): T[] {
@@ -66,6 +72,7 @@ const StoresPage: React.FC = () => {
    * متاجر كل تصنيف غير قابلة للاكتشاف رغم وجودها.
    */
   const navigate = useNavigate();
+  const catScroller = useHorizontalScroller<HTMLDivElement>();
   const { categorySlug } = useParams<{ categorySlug?: string }>();
   const activeSlug = categorySlug ?? "";
   const [items, setItems] = useState<MerchantSummary[]>([]);
@@ -199,7 +206,35 @@ const StoresPage: React.FC = () => {
       */}
       <section ref={categoriesRef} className="relative z-10">
         <div className={`${CONTAINER} -mt-8`}>
-          <div className="mk-scroll-x gap-3 pb-3 pt-1">
+          {/*
+            الأزرار تُصيَّر دائماً وتُعطَّل عند الطرف: إخفاؤها خلف شرط
+            الحواف يخلق حلقة — لا تُقاس الحواف قبل تركيب الكروت، ولا
+            تظهر الأزرار قبل قياسها.
+          */}
+          <div className="mb-2 flex items-center justify-end gap-2">
+              <button
+                type="button"
+                aria-label={t("stores.prev_categories", "التصنيفات السابقة")}
+                disabled={!catScroller.edges.start}
+                onClick={() => catScroller.scrollByStep(-1)}
+                className={ARROW_BTN}
+              >
+                <LuChevronRight size={18} className="rtl:hidden" aria-hidden />
+                <LuChevronLeft size={18} className="hidden rtl:block" aria-hidden />
+              </button>
+              <button
+                type="button"
+                aria-label={t("stores.next_categories", "التصنيفات التالية")}
+                disabled={!catScroller.edges.end}
+                onClick={() => catScroller.scrollByStep(1)}
+                className={ARROW_BTN}
+              >
+                <LuChevronLeft size={18} className="rtl:hidden" aria-hidden />
+                <LuChevronRight size={18} className="hidden rtl:block" aria-hidden />
+              </button>
+          </div>
+
+          <div ref={catScroller.trackRef} className="mk-scroll-x gap-3 pb-3 pt-1">
             <div className="w-[124px] shrink-0 lg:w-[148px]">
               <CategoryCard
                 icon=""
