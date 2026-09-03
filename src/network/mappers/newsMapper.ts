@@ -15,6 +15,8 @@ export interface NewsArticleModel {
   categoryEn: string;
   categoryAr: string;
   slug: string;
+  /** من أضاف المقالة — فارغ إن لم يُسجَّل */
+  author?: string | null;
 }
 
 /**
@@ -95,6 +97,7 @@ export function mapApiNewsToModel(
       category,
       categoryEn,
       categoryAr,
+      author: (apiNews.author as string | null) ?? null,
       slug: slug || `news-${id}`,
     };
   } catch (error) {

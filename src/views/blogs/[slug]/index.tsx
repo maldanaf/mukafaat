@@ -56,10 +56,20 @@ const BlogArticlePage: React.FC = () => {
     return article;
   }, [articleDetailResponse]);
 
-  // Use the list item for metadata (title, image, date, etc.)
+  /**
+   * بيانات المقالة من استجابة التفاصيل لا من قائمة الرئيسية.
+   *
+   * كانت تُلتقط من `useWebHome` بالبحث عن الـ slug، فتحمل ما ترسله
+   * الرئيسية فقط: عدّاد مشاهدات صفراً وتصنيفاً ثابتاً وبلا كاتب —
+   * ولا تظهر أصلاً إن لم تكن المقالة ضمن ما ترسله الرئيسية.
+   */
   const currentArticle = useMemo(() => {
+    if (articleDetail) {
+      const mapped = mapApiNewsToModels([articleDetail]);
+      if (mapped.length) return mapped[0];
+    }
     return newsList.find((article) => article.slug === slug);
-  }, [newsList, slug]);
+  }, [articleDetail, newsList, slug]);
 
   const relatedArticles = useMemo(() => {
     if (!currentArticle) return [];
@@ -223,8 +233,10 @@ const BlogArticlePage: React.FC = () => {
                       {/* Editor Pill */}
                       <div className="flex items-center shadow-md gap-2 px-4 py-2 bg-white border border-gray-200 rounded-full">
                         <IoPersonOutline className="text-[#fd671a] text-lg" />
+                        {/* اسم من أضاف المقالة — كان نصّاً ثابتاً «الإدارة» */}
                         <span className="text-[#400198] font-medium text-sm">
-                          {isRTL ? "تم تحريره بواسطة الإدارة" : "Edited by Admin"}
+                          {currentArticle.author ||
+                            (isRTL ? "فريق مكافآت" : "Mukafaat Team")}
                         </span>
                       </div>
 

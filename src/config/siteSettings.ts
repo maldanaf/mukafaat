@@ -11,6 +11,20 @@ const API_BASE = (
   process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.mukafaat.com.sa"
 ).replace(/\/$/, "");
 
+/**
+ * أكواد التتبّع القادمة من تاب «التتبّع والتحليلات» في اللوحة.
+ * كل حقل اختياري: غيابه يعني ألّا يُطبع للأداة وسم أصلاً.
+ */
+export interface TrackingSettings {
+  gtmId: string | null;
+  googleAnalyticsId: string | null;
+  facebookPixelId: string | null;
+  snapchatPixelId: string | null;
+  tiktokPixelId: string | null;
+  customHeadScripts: string | null;
+  customBodyScripts: string | null;
+}
+
 export interface SiteSettings {
   siteName: string;
   description: string;
@@ -19,7 +33,19 @@ export interface SiteSettings {
   email: string | null;
   address: string | null;
   social: string[];
+  tracking: TrackingSettings;
 }
+
+/** لا تتبّع إطلاقاً — الحالة الافتراضية حين يتعذّر الوصول للـ API */
+const EMPTY_TRACKING: TrackingSettings = {
+  gtmId: null,
+  googleAnalyticsId: null,
+  facebookPixelId: null,
+  snapchatPixelId: null,
+  tiktokPixelId: null,
+  customHeadScripts: null,
+  customBodyScripts: null,
+};
 
 /** القيم التي نعتمدها إن تعذّر الوصول للـ API — لا نخترع بيانات تواصل */
 const FALLBACK: SiteSettings = {
@@ -30,6 +56,7 @@ const FALLBACK: SiteSettings = {
   email: null,
   address: null,
   social: [],
+  tracking: EMPTY_TRACKING,
 };
 
 /** رابط مطلق لصورة قد تأتي نسبية من الخادم */
@@ -38,6 +65,25 @@ function absoluteAsset(value: unknown): string | null {
   if (!raw) return null;
   if (/^https?:\/\//i.test(raw)) return raw;
   return `${API_BASE}${raw.startsWith("/") ? raw : `/${raw}`}`;
+}
+
+/** نصّ غير فارغ أو null — يوحّد "" و undefined في قيمة واحدة */
+function text(value: unknown): string | null {
+  const raw = typeof value === "string" ? value.trim() : "";
+  return raw || null;
+}
+
+/**
+ * معرّف أداة تتبّع بعد التحقّق من صيغته.
+ *
+ * هذه المعرّفات تُطبع داخل جسم <script>، فلو مرّ فيها اقتباس أو وسم إغلاق
+ * لأمكن كسر السكربت وحقن كود في كل صفحة. اللوحة تتحقّق منها أصلاً، ونكرّر
+ * التحقّق هنا لأن الوسوم تُبنى في هذا الملف ولا يصحّ أن يعتمد أمانها على
+ * سلامة طرفٍ آخر.
+ */
+function trackingId(value: unknown, pattern: RegExp): string | null {
+  const raw = text(value);
+  return raw && pattern.test(raw) ? raw : null;
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {
@@ -54,6 +100,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     const general = s.general ?? {};
     const contact = s.contact ?? {};
     const social = s.social ?? {};
+    const tracking = s.tracking ?? {};
 
     return {
       siteName: general.site_name || FALLBACK.siteName,
@@ -66,6 +113,19 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       social: Object.values(social).filter(
         (v): v is string => typeof v === "string" && v.trim().length > 0,
       ),
+      tracking: {
+        gtmId: trackingId(tracking.gtm_id, /^GTM-[A-Z0-9]+$/),
+        googleAnalyticsId: trackingId(
+          tracking.google_analytics_id,
+          /^(G|UA|AW)-[A-Z0-9-]+$/i,
+        ),
+        facebookPixelId: trackingId(tracking.facebook_pixel_id, /^[0-9]+$/),
+        snapchatPixelId: trackingId(tracking.snapchat_pixel_id, /^[A-Za-z0-9-]+$/),
+        tiktokPixelId: trackingId(tracking.tiktok_pixel_id, /^[A-Za-z0-9]+$/),
+        // الأكواد المخصّصة تُحقن كما هي بقرار صاحب الموقع — لا صيغة نتحقّق منها
+        customHeadScripts: text(tracking.custom_head_scripts),
+        customBodyScripts: text(tracking.custom_body_scripts),
+      },
     };
   } catch {
     return FALLBACK;

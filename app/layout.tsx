@@ -4,6 +4,7 @@ import RouteLoadingIndicator from "@components/RouteLoadingIndicator";
 import "../src/index.css";
 import { SITE_URL, absoluteUrl, alternateLanguages, SITE_NAME_EN } from "@config/site";
 import { getSiteSettings, buildSiteSchema } from "@config/siteSettings";
+import { TrackingHead, TrackingBody } from "@components/TrackingScripts";
 
 /** العنوان والوصف الافتراضيان — يُستبدلان بما في لوحة التحكم إن وُجد */
 const DEFAULT_TITLE =
@@ -130,8 +131,14 @@ export default async function RootLayout({
           src="https://eauthenticate.saudibusiness.gov.sa/EAuthSealApi/seal.js"
           async
         />
+
+        {/* أكواد التتبّع من لوحة التحكم — لا تُطبع إن كانت الحقول فارغة */}
+        <TrackingHead tracking={settings.tracking} />
       </head>
       <body suppressHydrationWarning>
+        {/* إطار GTM البديل يجب أن يقع أول <body> */}
+        <TrackingBody tracking={settings.tracking} />
+
         <RouteLoadingIndicator />
         <Providers>{children}</Providers>
 
