@@ -2504,7 +2504,14 @@
     "empty": "इस श्रेणी में अभी कोई स्टोर नहीं",
     "verified": "सत्यापित स्टोर",
     "coming_soon": "जल्द आ रहा है",
-    "open": "देखें"
+    "open": "देखें",
+    "featured": "विशेष",
+    "new": "नया जोड़ा",
+    "share": "साझा करें",
+    "favorite": "पसंदीदा",
+    "views": "दृश्य",
+    "favorites": "पसंदीदा",
+    "shares": "शेयर"
   },
   "permanentDiscounts": {
     "title": "स्थायी छूट",

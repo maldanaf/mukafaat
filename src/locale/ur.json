@@ -2504,7 +2504,14 @@
     "empty": "اس زمرے میں ابھی کوئی اسٹور نہیں",
     "verified": "تصدیق شدہ اسٹور",
     "coming_soon": "جلد آ رہا ہے",
-    "open": "دیکھیں"
+    "open": "دیکھیں",
+    "featured": "نمایاں",
+    "new": "نیا شامل",
+    "share": "شیئر",
+    "favorite": "پسندیدہ",
+    "views": "مشاہدات",
+    "favorites": "پسندیدہ",
+    "shares": "شیئرز"
   },
   "permanentDiscounts": {
     "title": "مستقل رعایتیں",

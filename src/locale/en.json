@@ -2504,7 +2504,14 @@
     "empty": "No stores in this category yet",
     "verified": "Verified store",
     "coming_soon": "Coming soon",
-    "open": "Visit"
+    "open": "Visit",
+    "featured": "Featured",
+    "new": "Newly added",
+    "share": "Share",
+    "favorite": "Favorite",
+    "views": "Views",
+    "favorites": "Favorites",
+    "shares": "Shares"
   },
   "permanentDiscounts": {
     "title": "Permanent discounts",
