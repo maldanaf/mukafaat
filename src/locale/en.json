@@ -2538,7 +2538,9 @@
     "prev": "Previous",
     "next": "Next",
     "prev_categories": "Previous categories",
-    "next_categories": "Next categories"
+    "next_categories": "Next categories",
+    "all_in": "All {{name}}",
+    "back_all": "All stores"
   },
   "blogsPage": {
     "title": "Blog",

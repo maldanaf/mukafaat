@@ -99,10 +99,25 @@ const StoresPage: React.FC = () => {
     category_slug: activeSlug || undefined,
   });
 
-  const categories = useMemo(
-    () => pick<CategoryChip>(data, "categories"),
-    [data],
-  );
+  /**
+   * شريط التصنيفات سياقي: الصفحة العامة تعرض الرئيسية، وداخل تصنيف
+   * تعرض إخوته. الـ API صار يُرجع `{ parent, items }` بدل مصفوفة.
+   */
+  const categoryBlock = useMemo(() => {
+    const root = (data as Record<string, unknown>) ?? {};
+    const d = (root.data as Record<string, unknown>) ?? root;
+    const c = d.categories as
+      | { parent?: { slug?: string; name?: string } | null; items?: CategoryChip[] }
+      | CategoryChip[]
+      | undefined;
+
+    // توافق مع استجابة أقدم كانت تُرجع مصفوفة مباشرة
+    if (Array.isArray(c)) return { parent: null, items: c };
+    return { parent: c?.parent ?? null, items: c?.items ?? [] };
+  }, [data]);
+
+  const categories = categoryBlock.items;
+  const parentCategory = categoryBlock.parent;
 
   const pageMerchants = useMemo(
     () => pick<MerchantSummary>(data, "merchants", "data"),
@@ -235,13 +250,29 @@ const StoresPage: React.FC = () => {
           </div>
 
           <div ref={catScroller.trackRef} className="mk-scroll-x gap-3 pb-3 pt-1">
+            {/*
+              داخل تصنيف: الكرت الأول يعود إلى الأب لا إلى كل المتاجر،
+              فالشريط يعرض إخوة التصنيف المفتوح ومَخرجه الطبيعي أبوه.
+            */}
             <div className="w-[124px] shrink-0 lg:w-[148px]">
               <CategoryCard
                 icon=""
-                title={t("home.categories_new.all", "الكل")}
+                title={
+                  parentCategory
+                    ? t("stores.all_in", {
+                        name: parentCategory.name,
+                        defaultValue: "كل {{name}}",
+                      })
+                    : t("home.categories_new.all", "الكل")
+                }
                 alt=""
-                selected={activeSlug === ""}
-                to="/stores"
+                selected={
+                  activeSlug === "" ||
+                  activeSlug === String(parentCategory?.slug ?? "")
+                }
+                to={
+                  parentCategory?.slug ? `/stores/${parentCategory.slug}` : "/stores"
+                }
               />
             </div>
             {categories.map((c) => (
@@ -266,12 +297,34 @@ const StoresPage: React.FC = () => {
         items={[
           {
             id: "all",
-            name: t("home.categories_new.all", "الكل"),
+            name: parentCategory
+              ? t("stores.all_in", {
+                  name: parentCategory.name,
+                  defaultValue: "كل {{name}}",
+                })
+              : t("home.categories_new.all", "الكل"),
             image: null,
             color: "#400198",
-            active: activeSlug === "",
-            href: "/stores",
+            active:
+              activeSlug === "" ||
+              activeSlug === String(parentCategory?.slug ?? ""),
+            href: parentCategory?.slug
+              ? `/stores/${parentCategory.slug}`
+              : "/stores",
           },
+          // مَخرج إلى كل المتاجر حين نكون داخل تصنيف
+          ...(parentCategory
+            ? [
+                {
+                  id: "__root__",
+                  name: t("stores.back_all", "كل المتاجر"),
+                  image: null,
+                  color: "#6B7280",
+                  active: false,
+                  href: "/stores",
+                },
+              ]
+            : []),
           ...categories.map((c) => ({
             id: c.id,
             name: c.name,

@@ -2570,7 +2570,9 @@
     "prev": "السابق",
     "next": "التالي",
     "prev_categories": "التصنيفات السابقة",
-    "next_categories": "التصنيفات التالية"
+    "next_categories": "التصنيفات التالية",
+    "all_in": "كل {{name}}",
+    "back_all": "كل المتاجر"
   },
   "blogsPage": {
     "title": "المدونة",

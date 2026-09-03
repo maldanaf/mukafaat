@@ -2538,7 +2538,9 @@
     "prev": "پچھلا",
     "next": "اگلا",
     "prev_categories": "پچھلے زمرے",
-    "next_categories": "اگلے زمرے"
+    "next_categories": "اگلے زمرے",
+    "all_in": "تمام {{name}}",
+    "back_all": "تمام اسٹورز"
   },
   "blogsPage": {
     "title": "بلاگ",

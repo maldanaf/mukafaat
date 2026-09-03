@@ -2538,7 +2538,9 @@
     "prev": "पिछला",
     "next": "अगला",
     "prev_categories": "पिछली श्रेणियाँ",
-    "next_categories": "अगली श्रेणियाँ"
+    "next_categories": "अगली श्रेणियाँ",
+    "all_in": "सभी {{name}}",
+    "back_all": "सभी स्टोर"
   },
   "blogsPage": {
     "title": "ब्लॉग",
