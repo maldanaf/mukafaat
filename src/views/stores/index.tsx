@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useSearchParams } from "@/lib/router-compat";
+import { useParams, useNavigate } from "@/lib/router-compat";
 import { useTranslation } from "react-i18next";
 import { FiSearch, FiX, FiGrid } from "react-icons/fi";
 import { useMerchants } from "@hooks/api/useMokafaatQueries";
@@ -54,14 +54,20 @@ function pick<T>(res: unknown, ...keys: string[]): T[] {
  */
 const StoresPage: React.FC = () => {
   const { t } = useTranslation();
-  const [searchParams] = useSearchParams();
 
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
-  const [categoryId, setCategoryId] = useState<string>(
-    searchParams.get("category") ?? "",
-  );
   const [page, setPage] = useState(1);
+
+  /**
+   * التصنيف يأتي من المسار `/stores/{slug}` لا من حالة داخلية.
+   *
+   * الفلتر الداخلي لا يُنتج رابطاً يُشارَك أو تفهرسه المحرّكات، فكانت
+   * متاجر كل تصنيف غير قابلة للاكتشاف رغم وجودها.
+   */
+  const navigate = useNavigate();
+  const { categorySlug } = useParams<{ categorySlug?: string }>();
+  const activeSlug = categorySlug ?? "";
   const [items, setItems] = useState<MerchantSummary[]>([]);
 
   const categoriesRef = useRef<HTMLElement | null>(null);
@@ -77,13 +83,13 @@ const StoresPage: React.FC = () => {
   useEffect(() => {
     setPage(1);
     setItems([]);
-  }, [search, categoryId]);
+  }, [search, activeSlug]);
 
   const { data, isLoading, isFetching, isError, refetch } = useMerchants({
     per_page: PER_PAGE,
     page,
     search: search || undefined,
-    category_id: categoryId || undefined,
+    category_slug: activeSlug || undefined,
   });
 
   const categories = useMemo(
@@ -153,13 +159,14 @@ const StoresPage: React.FC = () => {
   /** فصل المراقب عند مغادرة الصفحة */
   useEffect(() => () => observerRef.current?.disconnect(), []);
 
-  const hasFilters = Boolean(search || categoryId);
+  const hasFilters = Boolean(search || activeSlug);
   const showSkeleton = isLoading && items.length === 0;
 
+  /** التصنيف يُمسح بالتنقّل إلى /stores لا بتغيير حالة داخلية */
   const clearAll = () => {
     setSearchInput("");
     setSearch("");
-    setCategoryId("");
+    if (activeSlug) navigate("/stores");
   };
 
   return (
@@ -198,8 +205,8 @@ const StoresPage: React.FC = () => {
                 icon=""
                 title={t("home.categories_new.all", "الكل")}
                 alt=""
-                selected={categoryId === ""}
-                onClick={() => setCategoryId("")}
+                selected={activeSlug === ""}
+                to="/stores"
               />
             </div>
             {categories.map((c) => (
@@ -208,12 +215,8 @@ const StoresPage: React.FC = () => {
                   icon={c.image ?? ""}
                   title={c.name}
                   alt={c.name}
-                  selected={categoryId === String(c.id)}
-                  onClick={() =>
-                    setCategoryId((prev) =>
-                      prev === String(c.id) ? "" : String(c.id),
-                    )
-                  }
+                  selected={activeSlug === String(c.slug ?? "")}
+                  to={c.slug ? `/stores/${c.slug}` : "/stores"}
                 />
               </div>
             ))}
@@ -231,19 +234,16 @@ const StoresPage: React.FC = () => {
             name: t("home.categories_new.all", "الكل"),
             image: null,
             color: "#400198",
-            active: categoryId === "",
-            onClick: () => setCategoryId(""),
+            active: activeSlug === "",
+            href: "/stores",
           },
           ...categories.map((c) => ({
             id: c.id,
             name: c.name,
             image: c.image ?? null,
             color: paletteFor(c.color, c.id).c,
-            active: categoryId === String(c.id),
-            onClick: () =>
-              setCategoryId((prev) =>
-                prev === String(c.id) ? "" : String(c.id),
-              ),
+            active: activeSlug === String(c.slug ?? ""),
+            href: c.slug ? `/stores/${c.slug}` : "/stores",
           })),
         ]}
       />

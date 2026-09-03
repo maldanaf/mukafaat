@@ -60,6 +60,23 @@ async function fetchList(path: string): Promise<Record<string, unknown>[]> {
   }
 }
 
+
+/** تصنيفات المتاجر — تُرجَع ضمن استجابة /api/merchants لا بمسار مستقل */
+async function fetchMerchantCategories(): Promise<Record<string, unknown>[]> {
+  try {
+    const res = await fetch(`${API_BASE}/api/merchants?per_page=1`, {
+      headers: { Accept: "application/json", "Accept-Language": "ar" },
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return [];
+    const body = await res.json();
+    const list = body?.data?.categories;
+    return Array.isArray(list) ? list : [];
+  } catch {
+    return [];
+  }
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // ===== الصفحات الثابتة =====
   // نستثني ما لا يُفهرس: السلة، الحساب، المحفظة، الطلبات، الدخول، صفحات النتائج
@@ -84,12 +101,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // ===== المحتوى الديناميكي =====
-  const [offers, cards, merchants, categories, articles] = await Promise.all([
+  const [offers, cards, merchants, categories, articles, merchantCategories] =
+    await Promise.all([
     fetchList("/api/web/offers?per_page=200"),
     fetchList("/api/web/cards?per_page=200"),
     fetchList("/api/merchants?per_page=200"),
     fetchList("/api/categories?type=offers"),
     fetchList("/api/web/news"),
+    // تصنيفات المتاجر تأتي ضمن استجابة /api/merchants تحت مفتاح categories
+    fetchMerchantCategories(),
   ]);
 
   const dynamic: MetadataRoute.Sitemap = [];
@@ -121,6 +141,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   for (const m of merchants) {
     const key = m.slug ?? m.id;
     if (key) dynamic.push(entry(`/store/${key}`, "weekly", 0.75));
+  }
+
+  // صفحات تصنيفات المتاجر — لكل تصنيف رابطه المستقل
+  for (const c of merchantCategories) {
+    if (c.slug) dynamic.push(entry(`/stores/${c.slug}`, "weekly", 0.7));
   }
 
   for (const a of articles) {
