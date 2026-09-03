@@ -21,7 +21,7 @@ import {
 } from "@ui";
 import usePinnedUnderHeader from "@hooks/usePinnedUnderHeader";
 import useHorizontalScroller from "@hooks/useHorizontalScroller";
-import CategoryCard from "@components/CategoryCard";
+import CategoryPill from "./CategoryPill";
 import { BreadcrumbSchema } from "@components/seo";
 
 /** التصنيف كما يصل من `/api/merchants` — مع عدد متاجره */
@@ -38,7 +38,7 @@ const PER_PAGE = 12;
 
 /** زر تقليب شريط التصنيفات — يبهت ويتعطّل عند الطرف */
 const ARROW_BTN =
-  "flex h-9 w-9 items-center justify-center rounded-full border border-mk-border bg-white text-mk-primary shadow-mk-card transition-all duration-200 hover:-translate-y-0.5 hover:border-[#C9BCEC] disabled:pointer-events-none disabled:opacity-35";
+  "hidden h-9 w-9 shrink-0 items-center justify-center rounded-full bg-mk-tint2 text-mk-primary transition-all duration-200 hover:bg-mk-tint hover:text-mk-primary disabled:pointer-events-none disabled:opacity-30 sm:flex";
 
 /** استخراج قائمة من استجابة قد تأتي بأشكال مختلفة */
 function pick<T>(res: unknown, ...keys: string[]): T[] {
@@ -215,18 +215,19 @@ const StoresPage: React.FC = () => {
       />
 
       {/*
-        شريط التصنيفات — يطفو على الترويسة كصفحة العروض.
+        شريط التصنيفات — شرائح أفقية مضغوطة تطفو على الترويسة.
         الحشو الداخلي على المسار المتمرّر لا على الحاوية، وإلا قُصّت
-        الكروت عند الحافتين وبدت مقطوعة.
+        الشرائح عند الحافتين وبدت مقطوعة.
       */}
       <section ref={categoriesRef} className="relative z-10">
-        <div className={`${CONTAINER} -mt-8`}>
-          {/*
-            الأزرار تُصيَّر دائماً وتُعطَّل عند الطرف: إخفاؤها خلف شرط
-            الحواف يخلق حلقة — لا تُقاس الحواف قبل تركيب الكروت، ولا
-            تظهر الأزرار قبل قياسها.
-          */}
-          <div className="mb-2 flex items-center justify-end gap-2">
+        <div className={`${CONTAINER} -mt-7`}>
+          <div className="rounded-mk-lg border border-mk-border bg-white/95 p-2.5 shadow-mk-card backdrop-blur-md">
+            <div className="flex items-center gap-2">
+              {/*
+                الأزرار تُصيَّر دائماً وتُعطَّل عند الطرف: إخفاؤها خلف
+                شرط الحواف يخلق حلقة — لا تُقاس الحواف قبل تركيب
+                الشرائح، ولا تظهر الأزرار قبل قياسها.
+              */}
               <button
                 type="button"
                 aria-label={t("stores.prev_categories", "التصنيفات السابقة")}
@@ -234,9 +235,61 @@ const StoresPage: React.FC = () => {
                 onClick={() => catScroller.scrollByStep(-1)}
                 className={ARROW_BTN}
               >
-                <LuChevronRight size={18} className="rtl:hidden" aria-hidden />
-                <LuChevronLeft size={18} className="hidden rtl:block" aria-hidden />
+                <LuChevronRight size={17} className="rtl:hidden" aria-hidden />
+                <LuChevronLeft size={17} className="hidden rtl:block" aria-hidden />
               </button>
+
+              <div
+                ref={catScroller.trackRef}
+                className="mk-scroll-x min-w-0 flex-1 gap-2 py-0.5"
+              >
+                {/*
+                  داخل تصنيف: الشريحة الأولى تعود إلى الأب لا إلى كل
+                  المتاجر، فالشريط يعرض إخوة التصنيف ومَخرجه أبوه.
+                */}
+                <CategoryPill
+                  isAll
+                  item={{
+                    id: "all",
+                    name: parentCategory
+                      ? t("stores.all_in", {
+                          name: parentCategory.name,
+                          defaultValue: "كل {{name}}",
+                        })
+                      : t("home.categories_new.all", "كل المتاجر"),
+                    merchants_count: parentCategory ? undefined : meta.total,
+                  }}
+                  to={
+                    parentCategory?.slug
+                      ? `/stores/${parentCategory.slug}`
+                      : "/stores"
+                  }
+                  active={
+                    activeSlug === "" ||
+                    activeSlug === String(parentCategory?.slug ?? "")
+                  }
+                />
+
+                {categories.map((c) => (
+                  <CategoryPill
+                    key={c.id}
+                    item={c}
+                    to={c.slug ? `/stores/${c.slug}` : "/stores"}
+                    active={activeSlug === String(c.slug ?? "")}
+                  />
+                ))}
+
+                {/* مَخرج إلى كل المتاجر حين نكون داخل تصنيف */}
+                {parentCategory && (
+                  <CategoryPill
+                    isAll
+                    item={{ id: "__root__", name: t("stores.back_all", "كل المتاجر") }}
+                    to="/stores"
+                    active={false}
+                  />
+                )}
+              </div>
+
               <button
                 type="button"
                 aria-label={t("stores.next_categories", "التصنيفات التالية")}
@@ -244,48 +297,10 @@ const StoresPage: React.FC = () => {
                 onClick={() => catScroller.scrollByStep(1)}
                 className={ARROW_BTN}
               >
-                <LuChevronLeft size={18} className="rtl:hidden" aria-hidden />
-                <LuChevronRight size={18} className="hidden rtl:block" aria-hidden />
+                <LuChevronLeft size={17} className="rtl:hidden" aria-hidden />
+                <LuChevronRight size={17} className="hidden rtl:block" aria-hidden />
               </button>
-          </div>
-
-          <div ref={catScroller.trackRef} className="mk-scroll-x gap-3 pb-3 pt-1">
-            {/*
-              داخل تصنيف: الكرت الأول يعود إلى الأب لا إلى كل المتاجر،
-              فالشريط يعرض إخوة التصنيف المفتوح ومَخرجه الطبيعي أبوه.
-            */}
-            <div className="w-[124px] shrink-0 lg:w-[148px]">
-              <CategoryCard
-                icon=""
-                title={
-                  parentCategory
-                    ? t("stores.all_in", {
-                        name: parentCategory.name,
-                        defaultValue: "كل {{name}}",
-                      })
-                    : t("home.categories_new.all", "الكل")
-                }
-                alt=""
-                selected={
-                  activeSlug === "" ||
-                  activeSlug === String(parentCategory?.slug ?? "")
-                }
-                to={
-                  parentCategory?.slug ? `/stores/${parentCategory.slug}` : "/stores"
-                }
-              />
             </div>
-            {categories.map((c) => (
-              <div key={c.id} className="w-[124px] shrink-0 lg:w-[148px]">
-                <CategoryCard
-                  icon={c.image ?? ""}
-                  title={c.name}
-                  alt={c.name}
-                  selected={activeSlug === String(c.slug ?? "")}
-                  to={c.slug ? `/stores/${c.slug}` : "/stores"}
-                />
-              </div>
-            ))}
           </div>
         </div>
       </section>
