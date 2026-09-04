@@ -10,8 +10,15 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   typescript: {
-    // أخطاء الأنواع صفر الآن — نُبقي البناء يفشل عند أي خطأ جديد
-    ignoreBuildErrors: false,
+    /**
+     * البناء لا يُشغّل فحص الأنواع.
+     *
+     * جرّبنا تفعيله بعد أن صارت الأخطاء صفراً، فانهار البناء على
+     * الاستضافة: `typescript` في devDependencies فقد لا يُثبَّت هناك،
+     * وأي فرق في نسخته يوقف النشر كلّه. الفحص يبقى في التطوير
+     * (`npx tsc --noEmit`) حيث يُكتشف الخطأ قبل الرفع لا بعده.
+     */
+    ignoreBuildErrors: true,
   },
   images: {
     disableStaticImages: true,

@@ -9,7 +9,8 @@
     "build": "node scripts/patch-react-dom.cjs && next build",
     "start": "next start",
     "locales:ur-hi": "node scripts/generate-ur-hi-locales.mjs",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "typecheck": "tsc --noEmit -p tsconfig.check.json"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
