@@ -65,7 +65,7 @@ const InvestmentsPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>Investments - Mukafaat</title>
+        <title>Investments</title>
         <meta
           name="description"
           content="Explore our investment opportunities in Turkey. Browse our updated investment listings to find your ideal investment opportunity today."

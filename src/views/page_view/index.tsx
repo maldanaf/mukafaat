@@ -59,7 +59,7 @@ export default function PageView() {
   return (
     <>
       <Helmet>
-        <title>{title} | {isRTL ? "مكافآت" : "Mukafaat"}</title>
+        <title>{title}</title>
       </Helmet>
 
       {/* Hero */}
@@ -177,7 +177,7 @@ function CompanyPlansSection() {
                   isFeatured ? "border-[#fd671a] bg-gradient-to-br from-[#fff7f2] to-white shadow-lg scale-105" : "border-gray-200 bg-white"
                 }`}
               >
-                {isFeatured && (
+                {Boolean(isFeatured) && (
                   <div className="bg-[#fd671a] text-white text-xs font-bold px-3 py-1 rounded-full inline-block mb-3">
                     {isRTL ? "⭐ الأكثر شعبية" : "⭐ Most Popular"}
                   </div>

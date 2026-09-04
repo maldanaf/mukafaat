@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { useNavigate } from "@/lib/router-compat";
+import { Link, useNavigate } from "@/lib/router-compat";
 import { useIsRTL } from "@hooks";
 import { useTranslation } from "react-i18next";
 import { type Offer } from "@data/offers";
@@ -27,9 +27,17 @@ import { toast } from "react-toastify";
 interface OfferCardProps {
   offer: Offer;
   onOfferClick: (offer: Offer) => void;
+  /**
+   * وجهة الكرت كرابط حقيقي.
+   *
+   * الكرت كان `div` بـ`onClick` فلا يراه زاحف جوجل رابطاً ولا يفهرس
+   * صفحة العرض. مع `href` يصير `<a>` ويبقى `onOfferClick` للمستدعين
+   * الذين يفتحون نافذة بدل التنقّل.
+   */
+  href?: string;
 }
 
-const OfferCard: React.FC<OfferCardProps> = ({ offer, onOfferClick }) => {
+const OfferCard: React.FC<OfferCardProps> = ({ offer, onOfferClick, href }) => {
   const isRTL = useIsRTL();
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -58,6 +66,9 @@ const OfferCard: React.FC<OfferCardProps> = ({ offer, onOfferClick }) => {
   );
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
+    // داخل <a> لا يكفي stopPropagation: المتصفّح يتبع الرابط ما لم نمنع
+    // السلوك الافتراضي، فكان النقر على القلب ينقل لصفحة العرض
+    e.preventDefault();
     e.stopPropagation();
     if (!isAuthenticated) {
       navigate(
@@ -122,19 +133,25 @@ const OfferCard: React.FC<OfferCardProps> = ({ offer, onOfferClick }) => {
     priceAfter,
   );
 
+  // رابط حقيقي متى توفّرت الوجهة، وإلا نعود للسلوك القديم
+  const Shell: React.ElementType = href ? Link : "div";
+  const shellProps = href
+    ? { to: href, className: `${VIVID_CARD} cursor-pointer block ${FOCUS}` }
+    : {
+        role: "button",
+        tabIndex: 0,
+        className: `${VIVID_CARD} cursor-pointer ${FOCUS}`,
+        onClick: () => onOfferClick(offer),
+        onKeyDown: (e: React.KeyboardEvent) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onOfferClick(offer);
+          }
+        },
+      };
+
   return (
-    <div
-      role="button"
-      tabIndex={0}
-      className={`${VIVID_CARD} cursor-pointer ${FOCUS}`}
-      onClick={() => onOfferClick(offer)}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onOfferClick(offer);
-        }
-      }}
-    >
+    <Shell {...shellProps}>
       {/* الصورة — نسبة محفوظة بلا قفزات تخطيط */}
       <div className={VIVID_MEDIA}>
         <Ratio ratio="aspect-[16/10]">
@@ -230,7 +247,7 @@ const OfferCard: React.FC<OfferCardProps> = ({ offer, onOfferClick }) => {
           </span>
         </div>
       </div>
-    </div>
+    </Shell>
   );
 };
 

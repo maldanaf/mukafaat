@@ -170,9 +170,10 @@ const CategoryCardsPage = () => {
             <span className="text-sm">{isRTL ? "العودة" : "Back"}</span>
           </button>
 
-          <h1 className="text-white text-3xl md:text-4xl font-bold mb-2">
+          {/* H1 يصدر من الخادم — هذا العنوان المرئي بمستوى H2 */}
+          <h2 className="text-white text-3xl md:text-4xl font-bold mb-2">
             {category?.name}
-          </h1>
+          </h2>
           <p className="text-white/80 text-sm">
             {pagination.total}{" "}
             {isRTL ? "بطاقة متاحة" : "cards available"}

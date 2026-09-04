@@ -573,7 +573,7 @@ const CardOfferDetailPage = () => {
                     offer={related}
                     companyId={related.companyId}
                     onOfferClick={() =>
-                      navigate(`/cards/${(related as Record<string,unknown>).merchantSlug || related.companyId}/${(related as Record<string,unknown>).slug || related.id}`)
+                      navigate(`/cards/${(related as unknown as Record<string, unknown>).merchantSlug || related.companyId}/${(related as unknown as Record<string, unknown>).slug || related.id}`)
                     }
                   />
                 ))}

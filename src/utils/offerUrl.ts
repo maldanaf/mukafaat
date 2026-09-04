@@ -7,14 +7,19 @@
 export function buildOfferUrl(offer: {
   id?: number | string;
   slug?: string | null;
-  category?: { slug?: string | null; name?: string | null } | null;
+  /** يصل ككائن أو كسلسلة نصّية حسب مصدر البيانات */
+  category?: { slug?: string | null; name?: string | null } | string | null;
   categorySlug?: string | null;
   merchant?: { id?: number | string; slug?: string | null } | null;
   merchantSlug?: string | null;
   companyId?: string | number | null;
 }): string {
   const category =
-    offer.category?.slug || offer.categorySlug || "all";
+    (typeof offer.category === "string"
+      ? offer.category
+      : offer.category?.slug) ||
+    offer.categorySlug ||
+    "all";
   const merchant =
     offer.merchant?.slug ||
     offer.merchantSlug ||

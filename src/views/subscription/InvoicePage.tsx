@@ -20,7 +20,7 @@ const SubscriptionInvoicePage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{t("invoice.title")} | Mokafaat</title>
+        <title>{t("invoice.title")}</title>
       </Helmet>
 
       <section className="min-h-screen bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] px-4 pb-14 pt-20">

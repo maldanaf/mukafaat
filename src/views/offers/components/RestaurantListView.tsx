@@ -1,6 +1,7 @@
 "use client";
 
-import { useNavigate } from "@/lib/router-compat";
+import { Link } from "@/lib/router-compat";
+import { merchantUrl } from "@utils/merchantUrl";
 import { useTranslation } from "react-i18next";
 
 function pickArEnField(pair: { ar: string; en: string }, lang: string) {
@@ -39,17 +40,16 @@ const RestaurantListView: React.FC<RestaurantListViewProps> = ({
   getRestaurantImage,
   className = "",
 }) => {
-  const navigate = useNavigate();
   const { i18n, t } = useTranslation();
   const langBase = i18n.language?.split("-")[0] || "en";
 
   return (
     <div className={`grid grid-cols-1 lg:grid-cols-2 gap-4 ${className}`}>
       {restaurants.map((restaurant) => (
-        <div
+        <Link
           key={restaurant.id}
-          className="bg-white rounded-mk-md border border-mk-border shadow-mk-raised hover:shadow-mk-hover transition-all duration-300 overflow-hidden cursor-pointer"
-          onClick={() => navigate(`/offers/${category}/${restaurant.slug}`)}
+          className="block bg-white rounded-mk-md border border-mk-border shadow-mk-raised hover:shadow-mk-hover transition-all duration-300 overflow-hidden cursor-pointer"
+          to={merchantUrl(restaurant)}
         >
           <div className="flex">
             {/* Image Section - Right */}
@@ -132,7 +132,7 @@ const RestaurantListView: React.FC<RestaurantListViewProps> = ({
               </div>
             </div>
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   );

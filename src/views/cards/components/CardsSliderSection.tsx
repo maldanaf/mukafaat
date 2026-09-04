@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useMemo, useRef, useEffect, useState } from "react";
-import OwlCarousel from "@components/DynamicOwlCarousel";
+import OwlCarousel, {
+  type OwlCarouselHandle,
+} from "@components/DynamicOwlCarousel";
 import { useIsRTL } from "@hooks";
 import { Pattern } from "@assets";
 import OfferCard from "@views/cards/[companyId]/components/OfferCard";
@@ -50,7 +52,7 @@ const CardsSliderSection: React.FC<CardsSliderSectionProps> = ({
 }) => {
   const isRTL = useIsRTL();
   const [carouselKey, setCarouselKey] = useState(0);
-  const owlCarouselRef = useRef<OwlCarousel | null>(null);
+  const owlCarouselRef = useRef<OwlCarouselHandle | null>(null);
 
   useEffect(() => {
     setCarouselKey((prev) => prev + 1);

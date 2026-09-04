@@ -107,11 +107,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry("/about", "monthly", 0.7),
     entry("/contact", "monthly", 0.6),
     entry("/subscription/plans", "monthly", 0.8),
-    entry("/careers", "weekly", 0.5),
-    entry("/jobs", "weekly", 0.5),
-    entry("/gallery", "monthly", 0.4),
-    entry("/portfolio", "monthly", 0.4),
-    entry("/investments", "monthly", 0.4),
+    // (حُذفت /careers و/jobs و/gallery و/portfolio و/investments:
+    //  مكوّناتها موجودة لكن بلا مسارات في app/ فكانت تُعطي 404 للزاحف)
     entry("/store-request", "monthly", 0.5),
     entry("/privacy-policy", "yearly", 0.3),
     entry("/terms-and-conditions", "yearly", 0.3),
@@ -144,20 +141,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     if (slug) dynamic.push(entry(`/offers/${slug}`, "daily", 0.7));
   }
 
+  // المسار الحقيقي: /offers/{category}/{merchant}/{offer} — بلا مقطع `offer/`
+  // (كان يُنتج 404 لكل روابط العروض في الخريطة)، والتاجر بالـ slug لا بالرقم
   for (const o of offers) {
     const id = o.slug ?? o.id;
     const cat = (o.category as Record<string, unknown>)?.slug;
-    const merchant = (o.merchant as Record<string, unknown>)?.id;
+    const merchantObj = o.merchant as Record<string, unknown> | undefined;
+    const merchant = merchantObj?.slug ?? merchantObj?.id;
     if (id && cat && merchant) {
-      dynamic.push(entry(`/offers/${cat}/${merchant}/offer/${id}`, "weekly", 0.6));
+      dynamic.push(entry(`/offers/${cat}/${merchant}/${id}`, "weekly", 0.6));
     }
   }
 
+  // البطاقة تُعنون بمقطع واحد: /cards/{cardSlug}
   for (const c of cards) {
     const id = c.slug ?? c.id;
-    const company = (c.merchant as Record<string, unknown>)?.id;
-    if (id && company) {
-      dynamic.push(entry(`/cards/${company}/offer/${id}`, "weekly", 0.6));
+    if (id) {
+      dynamic.push(entry(`/cards/${id}`, "weekly", 0.6));
     }
   }
 

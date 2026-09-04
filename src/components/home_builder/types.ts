@@ -7,6 +7,30 @@ import type { OfferTileData, PromoConfig } from "@ui";
 /** أشكال عرض قسم عروض التصنيف على الويب */
 export type WebDisplayStyle = "grid_4" | "grid_3" | "carousel" | "list";
 
+/** أشكال عرض بلوك المتاجر — يضيف «الشعارات المضغوطة» على أشكال العروض */
+export type MerchantDisplayStyle = WebDisplayStyle | "logos";
+
+/** كرت المتجر داخل بلوك المتاجر */
+export interface LayoutMerchant {
+  id: number;
+  slug?: string | null;
+  name: string;
+  logo?: string | null;
+  cover_image?: string | null;
+  city?: string | null;
+  category?: { id: number; name: string; slug?: string | null } | null;
+  rating?: number;
+  reviews_count?: number;
+  views_count?: number;
+  favorites_count?: number;
+  shares_count?: number;
+  max_discount?: number | null;
+  discounts_count?: number;
+  is_verified?: boolean;
+  is_coming_soon?: boolean;
+  is_open_now?: boolean;
+}
+
 /** شكل البانر الترويجي الحرّ */
 export type WebBannerLayout = "banner" | "card";
 
@@ -19,16 +43,18 @@ export interface LayoutBannerConfig extends PromoConfig {
 export interface LayoutSection {
   id: number;
   sort_order: number;
-  type: "builtin" | "category_offers" | "promo_banner";
+  type: "builtin" | "category_offers" | "category_merchants" | "promo_banner";
   /** مفتاح القسم الجاهز، أو `category_{id}` / `banner_{id}` */
   key: string;
   /** عنوان مخصّص من اللوحة — null = العنوان الافتراضي المترجَم */
   title: string | null;
   show_view_all: boolean;
-  display_style: WebDisplayStyle | WebBannerLayout | null;
+  display_style: WebDisplayStyle | MerchantDisplayStyle | WebBannerLayout | null;
   category_id: number | null;
   category_slug: string | null;
-  items: OfferTileData[];
+  /** معرّفات تصنيفات بلوك المتاجر (بلوك المتاجر فقط) */
+  category_ids?: number[];
+  items: OfferTileData[] | LayoutMerchant[];
   banner: LayoutBannerConfig | null;
 }
 

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Link } from "@/lib/router-compat";
-import { FiAward, FiPercent, FiTag } from "react-icons/fi";
+import { FiPercent, FiTag } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
 import { SmartImage, FOCUS } from "@ui";
 import CurrencyIcon from "@components/CurrencyIcon";
@@ -76,9 +76,6 @@ const PermanentDiscounts: React.FC<{ discounts: PermanentDiscount[] }> = ({
         <span className="rounded-full bg-mk-tint2 px-2 py-0.5 text-[11.5px] font-extrabold text-mk-primary">
           {discounts.length}
         </span>
-        <span className="ms-auto hidden text-[11.5px] text-mk-muted sm:inline">
-          {t("permanentDiscounts.no_expiry", "سارية دائماً — بلا تاريخ انتهاء")}
-        </span>
       </header>
 
       <ul className="divide-y divide-mk-border">
@@ -119,13 +116,6 @@ const PermanentDiscounts: React.FC<{ discounts: PermanentDiscount[] }> = ({
                   <CurrencyIcon className="text-mk-muted" size={10} />
                 </span>
               ) : null}
-
-              {d.requires_subscription && (
-                <span className="hidden shrink-0 items-center gap-1 rounded-full bg-mk-tint2 px-2 py-0.5 text-[10.5px] font-bold text-mk-primary sm:inline-flex">
-                  <FiAward size={11} aria-hidden />
-                  {t("permanentDiscounts.needs_subscription", "يتطلّب اشتراكاً")}
-                </span>
-              )}
 
               {/* القيمة — أبرز ما في الصف */}
               <span className="inline-flex shrink-0 items-center gap-0.5 rounded-mk-sm bg-[linear-gradient(135deg,#400198_0%,#6703EB_100%)] px-2.5 py-1.5 font-extrabold leading-none text-white">

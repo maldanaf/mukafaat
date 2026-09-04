@@ -7,6 +7,17 @@ import React, { useRef, useState, useEffect, useCallback, forwardRef, useImperat
  * Same DOM structure & CSS classes as OwlCarousel2.
  */
 
+/**
+ * ما يكشفه المكوّن عبر `ref`.
+ *
+ * كان `forwardRef<unknown, …>` فصار كل `useRef<OwlCarouselHandle>` في الصفحات
+ * يستعمل قيمة كنوع (TS2749)، ويُفقد `margin` نوعه داخلياً (TS18046).
+ */
+export interface OwlCarouselHandle {
+  next: () => void;
+  prev: () => void;
+}
+
 interface Props {
   children: React.ReactNode;
   className?: string;
@@ -20,10 +31,30 @@ interface Props {
   autoplayHoverPause?: boolean;
   rtl?: boolean | string;
   responsive?: Record<number, { items: number }>;
-  [key: string]: unknown;
+  /**
+   * خيارات OwlCarousel الإضافية التي تمرّرها بعض الصفحات.
+   *
+   * كانت `[key: string]: unknown` على مستوى الواجهة، فتوحّد TypeScript
+   * كل خاصية معها ويصير `children` و`style` و`margin` بنوع `unknown`
+   * (١١ خطأ). حصرها هنا يُبقي الخصائص المصرَّحة مكتوبة النوع.
+   */
+  items?: number;
+  center?: boolean;
+  stagePadding?: number;
+  smartSpeed?: number;
+  navText?: string[];
+  autoWidth?: boolean;
+  slideBy?: number | string;
+  mouseDrag?: boolean;
+  touchDrag?: boolean;
+  autoplaySpeed?: number;
+  dotsEach?: boolean | number;
+  startPosition?: number;
+  animateIn?: boolean | string;
+  animateOut?: boolean | string;
 }
 
-const DynamicOwlCarousel = forwardRef<unknown, Props>(function OwlCarousel(
+const DynamicOwlCarousel = forwardRef<OwlCarouselHandle, Props>(function OwlCarousel(
   {
     children,
     className = "",
@@ -114,8 +145,8 @@ const DynamicOwlCarousel = forwardRef<unknown, Props>(function OwlCarousel(
               style={{
                 flex: `0 0 ${itemW}%`,
                 maxWidth: `${itemW}%`,
-                paddingLeft: `${margin / 2}px`,
-                paddingRight: `${margin / 2}px`,
+                paddingLeft: `${Number(margin) / 2}px`,
+                paddingRight: `${Number(margin) / 2}px`,
                 boxSizing: "border-box",
               }}
             >

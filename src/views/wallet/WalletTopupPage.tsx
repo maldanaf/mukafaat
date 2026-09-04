@@ -193,7 +193,7 @@ const WalletTopupPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{t("wallet.topupTitle")} | Mokafaat</title>
+        <title>{t("wallet.topupTitle")}</title>
       </Helmet>
 
       <div className="mx-auto max-w-2xl">

@@ -868,6 +868,22 @@ export function useMerchantDetail(idOrSlug: string | number | undefined) {
   });
 }
 
+/**
+ * متابعة المتجر / إلغاؤها.
+ *
+ * نُبطل ذاكرة تفاصيل المتجر بعد النجاح ليعود `is_following`
+ * و`followers_count` محدَّثين من الخادم بدل تخمينهما محلياً.
+ */
+export function useMerchantFollowToggle(idOrSlug: string | number | undefined) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => merchantsApi.follow(idOrSlug!),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["mokafaat", "merchant", idOrSlug] });
+    },
+  });
+}
+
 // ========== Profile ==========
 export function useProfile(enabled = true) {
   const lang = useQueryLang();

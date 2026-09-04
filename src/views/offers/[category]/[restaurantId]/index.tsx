@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useParams, useNavigate, Link as RouterLink } from "@/lib/router-compat";
 import { Helmet } from "@/lib/helmet-compat";
 import { useIsRTL } from "@hooks";
@@ -12,6 +12,9 @@ import {
   FiDollarSign,
   FiCalendar,
   FiCheckCircle,
+  FiMapPin,
+  FiUserPlus,
+  FiUserCheck,
 } from "react-icons/fi";
 import {
   offerCategories,
@@ -35,8 +38,11 @@ import {
   SmartImage,
   Ratio,
   FOCUS,
+  ShareIcon,
+  HeartIcon,
 } from "@ui";
 import { LuChevronLeft } from "react-icons/lu";
+import { FaWhatsapp } from "react-icons/fa";
 import { Ribbon } from "@views/offers/components/CatalogKit";
 import GetStartedSection from "@views/home/components/GetStartedSection";
 import { useWebHome, useMerchantDetail } from "@hooks/api/useMokafaatQueries";
@@ -46,6 +52,15 @@ import StoreWorkingHours, {
   type WorkingHourRow,
 } from "@components/StoreWorkingHours";
 import { useTranslation } from "react-i18next";
+import { useShareSheetStore } from "@stores/shareSheetStore";
+import { useUserStore } from "@stores/userStore";
+import {
+  useFavorites,
+  useFavoriteToggle,
+  useMerchantFollowToggle,
+} from "@hooks/api/useMokafaatQueries";
+import { normalizeFavoritesList } from "@utils/favorites";
+import { merchantsApi } from "@network/services/mokafaatService";
 
 /**
  * وقت التوصيل كما في التطبيق: القيمة التي تحمل وحدتها تُترك كما هي،
@@ -70,6 +85,24 @@ function formatMoneyValue(raw: unknown): string {
   return Number.isInteger(value) ? String(value) : value.toFixed(2);
 }
 
+/**
+ * المتجر كما تبنيه الصفحة: نموذج `Restaurant` الأساسي مضافاً إليه ما
+ * يزيده الـ API — الغلاف والخصومات الدائمة وعدّادات التفاعل.
+ */
+type StoreView = Restaurant & {
+  whatsapp?: string | null;
+  isFollowing?: boolean;
+  followersCount?: number;
+  latitude?: number | null;
+  longitude?: number | null;
+  locationUrl?: string | null;
+  cover?: string | null;
+  discounts?: PermanentDiscount[];
+  favoritesCount?: number;
+  sharesCount?: number;
+  isFavorited?: boolean;
+};
+
 const RestaurantDetailsPage = () => {
   /**
    * المسار الجديد `/store/{slug}` لا يحمل مقطع التصنيف، والقديم يحمله.
@@ -84,6 +117,11 @@ const RestaurantDetailsPage = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<"offers" | "menu">("offers");
   const { data: merchantDetailData, isLoading: merchantLoading } = useMerchantDetail(merchantSlug);
+  const openShare = useShareSheetStore((st) => st.openShare);
+  const isAuthenticated = useUserStore((st) => !!st.token);
+  const { data: favoritesData } = useFavorites();
+  const toggleFavorite = useFavoriteToggle();
+  const toggleFollow = useMerchantFollowToggle(merchantSlug);
 
   /** slug تصنيف المتجر: من الرابط إن وُجد، وإلا من بيانات الـ API */
   const category: string = useMemo(() => {
@@ -96,7 +134,7 @@ const RestaurantDetailsPage = () => {
     return cat?.slug ?? "";
   }, [categoryParam, merchantDetailData]);
 
-  const restaurant = useMemo<Restaurant | null>(() => {
+  const restaurant = useMemo<StoreView | null>(() => {
     if (!merchantDetailData) return null;
     const res = merchantDetailData as Record<string, unknown>;
     const data = (res?.data ?? res) as Record<string, unknown>;
@@ -144,6 +182,10 @@ const RestaurantDetailsPage = () => {
       reviewsCount: Number(m.reviews_count ?? 0),
       views: Number(m.views_count ?? 0),
       saves: Number(m.followers_count ?? 0),
+      // المفضلة والمشاركة — يقودان زرّي الرأس
+      favoritesCount: Number(m.favorites_count ?? 0),
+      sharesCount: Number(m.shares_count ?? 0),
+      isFavorited: Boolean(m.is_favorited),
       color: "#400198",
       topColor: "bg-[#400198]",
       offers,
@@ -155,7 +197,13 @@ const RestaurantDetailsPage = () => {
       minimumOrder: Number(m.min_order ?? 0),
       deliveryFee: Number(m.delivery_fee ?? 0),
       whatsapp: m.whatsapp ? String(m.whatsapp) : null,
-    } as Restaurant & { whatsapp?: string | null };
+      // المتابعة والموقع — يقودان زرّي المتابعة والخريطة
+      isFollowing: Boolean(m.is_following),
+      followersCount: Number(m.followers_count ?? 0),
+      latitude: m.latitude != null ? Number(m.latitude) : null,
+      longitude: m.longitude != null ? Number(m.longitude) : null,
+      locationUrl: m.location_url ? String(m.location_url) : null,
+    } as StoreView;
   }, [merchantDetailData, merchantSlug, category]);
 
   // متجر «قريباً»: يظهر في الموقع لكن بلا عروض مع رسالة ترقّب
@@ -277,6 +325,88 @@ const RestaurantDetailsPage = () => {
     return list.reduce((max, d) => Math.max(max, Number(d.discount_percentage) || 0), 0);
   }, [restaurant]);
 
+  /**
+   * حالة المفضلة وعدّاداها.
+   *
+   * فوق الـ return المبكر كسابقه — الخطافات لا تُستدعى شرطياً.
+   */
+  const favoritesList = useMemo(
+    () => normalizeFavoritesList(favoritesData ?? null),
+    [favoritesData],
+  );
+
+  const isFavorite = useMemo(() => {
+    if (!restaurant) return false;
+    // الخادم يعرف الحالة عند تحميل الصفحة، والقائمة تعكس أي تبديل بعدها
+    const inList = favoritesList.some(
+      (f) =>
+        f.favorable_type === "merchant" &&
+        String(f.favorable_id) === String(restaurant.id),
+    );
+    return favoritesData ? inList : Boolean(restaurant.isFavorited);
+  }, [favoritesList, favoritesData, restaurant]);
+
+  const favoriteCount = Number(restaurant?.favoritesCount ?? 0);
+  const [shareCount, setShareCount] = useState<number>(0);
+
+  // عدّاد المشاركة يأتي مع بيانات المتجر ثم يزيد محلياً عند المشاركة
+  useEffect(() => {
+    setShareCount(Number(restaurant?.sharesCount ?? 0));
+  }, [restaurant?.sharesCount]);
+
+  const handleShare = () => {
+    if (!restaurant) return;
+    const url = `${window.location.origin}/store/${restaurant.slug ?? restaurant.id}`;
+    openShare({ title: restaurant.name.ar, url });
+
+    // تسجيل المشاركة في الخادم — فشلها لا يمنع فتح لوحة المشاركة
+    setShareCount((n) => n + 1);
+    merchantsApi.share(String(restaurant.slug ?? restaurant.id)).catch(() => {
+      setShareCount((n) => Math.max(0, n - 1));
+    });
+  };
+
+  /** المتابعة: للمسجَّلين فقط — الزائر يُحوَّل للدخول ثم يعود */
+  const isFollowing = Boolean(restaurant?.isFollowing);
+  const followersCount = Number(restaurant?.followersCount ?? 0);
+
+  const handleFollow = () => {
+    if (!restaurant) return;
+    if (!isAuthenticated) {
+      const back = `/store/${restaurant.slug ?? restaurant.id}`;
+      navigate(`/login?returnUrl=${encodeURIComponent(back)}`);
+      return;
+    }
+    toggleFollow.mutate();
+  };
+
+  /**
+   * رابط الخريطة: الرابط المحفوظ إن وُجد، وإلا إحداثيات المتجر.
+   * يفتح في تبويب جديد كي لا يفقد الزائر صفحة المتجر.
+   */
+  const mapHref = useMemo(() => {
+    if (!restaurant) return null;
+    if (restaurant.locationUrl) return restaurant.locationUrl;
+
+    const { latitude: lat, longitude: lng } = restaurant;
+    if (lat == null || lng == null) return null;
+
+    return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+  }, [restaurant]);
+
+  const handleFavorite = () => {
+    if (!restaurant) return;
+    if (!isAuthenticated) {
+      const back = `/store/${restaurant.slug ?? restaurant.id}`;
+      navigate(`/login?returnUrl=${encodeURIComponent(back)}`);
+      return;
+    }
+    toggleFavorite.mutate({
+      favorable_type: "merchant",
+      favorable_id: String(restaurant.id),
+    });
+  };
+
   if (merchantLoading) {
     return (
       <div className="bg-mk-bg">
@@ -347,11 +477,8 @@ const RestaurantDetailsPage = () => {
 
   return (
     <>
+      {/* العنوان يأتي من `generateMetadata` على الخادم — وسم هنا يطمسه بعنوان مشوّه */}
       <Helmet>
-        <title>
-          {isRTL ? restaurant.name.ar : restaurant.name.en} -{" "}
-          {isRTL ? "العروض" : "Offers"}
-        </title>
         <link
           rel="canonical"
           href={`https://mukafaat.com.sa/store/${merchantSlug}`}
@@ -421,6 +548,74 @@ const RestaurantDetailsPage = () => {
                 ))}
               </ol>
             </nav>
+
+            {/* مشاركة المتجر وإضافته للمفضلة — طرف الصف المقابل لزر الرجوع */}
+            <div className="ms-auto flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleShare}
+                aria-label={t("storePage.share", "مشاركة المتجر")}
+                className={`inline-flex h-11 items-center gap-2 rounded-mk-md border border-white/25 bg-white/10 px-3.5 text-[13px] font-semibold text-white transition-colors hover:bg-white/20 ${FOCUS}`}
+              >
+                <ShareIcon size={16} />
+                <span className="hidden sm:inline">{t("storePage.share", "مشاركة")}</span>
+                {shareCount > 0 && (
+                  <span className="text-[12px] font-bold text-white/70" dir="ltr">
+                    {shareCount}
+                  </span>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleFavorite}
+                disabled={toggleFavorite.isPending}
+                aria-pressed={isFavorite}
+                aria-label={t("storePage.favorite", "إضافة للمفضلة")}
+                className={`inline-flex h-11 items-center gap-2 rounded-mk-md border px-3.5 text-[13px] font-semibold transition-colors disabled:opacity-60 ${FOCUS} ${
+                  isFavorite
+                    ? "border-mk-accent bg-mk-accent text-white hover:bg-mk-accent/90"
+                    : "border-white/25 bg-white/10 text-white hover:bg-white/20"
+                }`}
+              >
+                <HeartIcon size={16} filled={isFavorite} />
+                <span className="hidden sm:inline">
+                  {isFavorite
+                    ? t("storePage.favorited", "في المفضلة")
+                    : t("storePage.favorite", "المفضلة")}
+                </span>
+                {favoriteCount > 0 && (
+                  <span className="text-[12px] font-bold opacity-70" dir="ltr">
+                    {favoriteCount}
+                  </span>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleFollow}
+                disabled={toggleFollow.isPending}
+                aria-pressed={isFollowing}
+                aria-label={t("storePage.follow", "متابعة المتجر")}
+                className={`inline-flex h-11 items-center gap-2 rounded-mk-md border px-3.5 text-[13px] font-semibold transition-colors disabled:opacity-60 ${FOCUS} ${
+                  isFollowing
+                    ? "border-white/40 bg-white text-mk-primary hover:bg-white/90"
+                    : "border-white/25 bg-white/10 text-white hover:bg-white/20"
+                }`}
+              >
+                {isFollowing ? <FiUserCheck size={16} /> : <FiUserPlus size={16} />}
+                <span className="hidden sm:inline">
+                  {isFollowing
+                    ? t("storePage.following", "تتابعه")
+                    : t("storePage.follow_short", "متابعة")}
+                </span>
+                {followersCount > 0 && (
+                  <span className="text-[12px] font-bold opacity-70" dir="ltr">
+                    {followersCount}
+                  </span>
+                )}
+              </button>
+            </div>
           </div>
 
           <div className="flex flex-wrap items-end justify-between gap-5">
@@ -442,7 +637,8 @@ const RestaurantDetailsPage = () => {
                   {restaurant?.category?.ar ||
                     (categoryInfo ? (isRTL ? categoryInfo.ar : categoryInfo.en) : "")}
                 </p>
-                <h1 className="m-0 flex flex-wrap items-center gap-3 text-[26px] font-extrabold leading-tight text-white sm:text-[34px]">
+                {/* H1 يصدر من الخادم — هذا العنوان المرئي بمستوى H2 */}
+                <h2 className="m-0 flex flex-wrap items-center gap-3 text-[26px] font-extrabold leading-tight text-white sm:text-[34px]">
                   {isRTL ? restaurant.name.ar : restaurant.name.en}
                   {/* أعلى خصم دائم — أهمّ رقم في الصفحة فيظهر بجوار الاسم */}
                   {topDiscount > 0 && (
@@ -458,23 +654,39 @@ const RestaurantDetailsPage = () => {
                       </span>
                     </span>
                   )}
-                </h1>
+                </h2>
                 <p className="m-0 mt-1.5 max-w-2xl text-[13.5px] leading-relaxed text-white/75">
                   {stripHtml(restaurant.description[isRTL ? "ar" : "en"])}
                 </p>
               </div>
             </div>
 
-            {(restaurant as unknown as Record<string, unknown>).whatsapp ? (
-              <a
-                href={`https://wa.me/${(restaurant as unknown as Record<string, unknown>).whatsapp}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`inline-flex min-h-[48px] items-center gap-2 rounded-full bg-[linear-gradient(135deg,#12A06A,#0B7B50)] px-6 text-[14px] font-extrabold text-white shadow-[0_12px_28px_-10px_rgba(18,160,106,0.9)] transition-transform hover:-translate-y-0.5 ${FOCUS}`}
-              >
-                {t("storePage.whatsapp", "تواصل واتساب")}
-              </a>
-            ) : null}
+            {/* التواصل والموقع — كلاهما يفتح في تبويب جديد */}
+            <div className="flex flex-wrap items-center gap-2.5">
+              {restaurant.whatsapp ? (
+                <a
+                  href={`https://wa.me/${String(restaurant.whatsapp).replace(/[^0-9]/g, "")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`inline-flex min-h-[48px] items-center gap-2 rounded-full bg-[linear-gradient(135deg,#12A06A,#0B7B50)] px-6 text-[14px] font-extrabold text-white shadow-[0_12px_28px_-10px_rgba(18,160,106,0.9)] transition-transform hover:-translate-y-0.5 ${FOCUS}`}
+                >
+                  <FaWhatsapp size={19} aria-hidden />
+                  {t("storePage.whatsapp", "تواصل واتساب")}
+                </a>
+              ) : null}
+
+              {mapHref ? (
+                <a
+                  href={mapHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`inline-flex min-h-[48px] items-center gap-2 rounded-full border border-white/25 bg-white/10 px-5 text-[14px] font-extrabold text-white transition-colors hover:bg-white/20 ${FOCUS}`}
+                >
+                  <FiMapPin size={17} aria-hidden />
+                  {t("storePage.open_map", "الموقع على الخريطة")}
+                </a>
+              ) : null}
+            </div>
           </div>
 
           {/* الشارات: موثّق / مفتوح-مغلق / قريباً / التقييم / العدّادات */}
@@ -604,7 +816,12 @@ const RestaurantDetailsPage = () => {
               (restaurant.offers.length > 0 ? (
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 2xl:grid-cols-3">
                   {restaurant.offers.map((offer) => (
-                    <OfferCard key={offer.id} offer={offer} onOfferClick={handleOfferClick} />
+                    <OfferCard
+                      key={offer.id}
+                      offer={offer}
+                      href={`/offers/${category}/${merchantSlug}/${offer.slug || offer.id}`}
+                      onOfferClick={handleOfferClick}
+                    />
                   ))}
                 </div>
               ) : (

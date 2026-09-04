@@ -37,7 +37,7 @@ function ContactPage() {
   return (
     <>
       <Helmet>
-        <title>{t("home.navbar.contact")}</title>
+        {/* العنوان من الخادم — مع لاحقة «| مكافآت» */}
         <link rel="canonical" href="https://mukafaat.com.sa/contact" />
         <meta
           name="description"

@@ -28,6 +28,7 @@ import {
 } from "./components/newhome";
 import {
   CategoryOffersSection,
+  CategoryMerchantsSection,
   LayoutPromoBanner,
   readLayout,
   type LayoutSection,
@@ -220,6 +221,9 @@ const HomePage = () => {
       if (section.type === "category_offers") {
         return <CategoryOffersSection key={`cat-${section.id}`} section={section} />;
       }
+      if (section.type === "category_merchants") {
+        return <CategoryMerchantsSection key={`merch-${section.id}`} section={section} />;
+      }
       if (section.type === "promo_banner") {
         return <LayoutPromoBanner key={`banner-${section.id}`} section={section} />;
       }
@@ -257,7 +261,7 @@ const HomePage = () => {
   return (
     <>
       <Helmet>
-        <title>{`Mukafaat - ${t("home.navbar.home")}`}</title>
+        {/* العنوان من الخادم — «مكافآت | عروض وخصومات…» المعتمد للسيو */}
         <link rel="canonical" href="https://mukafaat.com.sa" />
         <meta
           name="description"

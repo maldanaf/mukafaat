@@ -15,6 +15,7 @@ import { offerCategories } from "@data/offers";
 import { useFavorites, useFavoriteToggle } from "@hooks/api/useMokafaatQueries";
 import { normalizeFavoritesList } from "@utils/favorites";
 import { useUserStore } from "@stores/userStore";
+import { merchantUrl } from "@utils/merchantUrl";
 import { toast } from "react-toastify";
 
 interface RestaurantType {
@@ -478,7 +479,7 @@ const PropertySlider: React.FC = () => {
               >
                 <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden relative">
                   <Link
-                    to={`/store/${restaurant.slug || restaurant.id}`}
+                    to={merchantUrl(restaurant)}
                     className="absolute inset-0 z-0 rounded-xl"
                     aria-label={restaurant.name}
                   />
@@ -534,7 +535,7 @@ const PropertySlider: React.FC = () => {
                         type="button"
                         className="w-8 h-8 border border-white rounded-full flex items-center justify-center hover:bg-white hover:bg-opacity-20 transition-all duration-200"
                         onClick={() => {
-                          const url = `${window.location.origin}/store/${restaurant.slug || restaurant.id}`;
+                          const url = `${window.location.origin}${merchantUrl(restaurant)}`;
                           openShare({ title: restaurant.name, url });
                         }}
                       >

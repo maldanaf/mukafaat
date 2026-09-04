@@ -109,6 +109,8 @@ export const merchantsApi = {
     api.get(API_ENDPOINTS.merchants, { params }),
   detail: (id: string | number) => api.get(API_ENDPOINTS.merchantDetail(id)),
   follow: (id: string | number) => api.post(API_ENDPOINTS.merchantFollow(id)),
+  /** تسجيل مشاركة المتجر — عام بلا تسجيل دخول */
+  share: (id: string | number) => api.post(API_ENDPOINTS.merchantShare(id)),
   review: (merchantId: string | number) =>
     api.get(API_ENDPOINTS.merchantReview, {
       params: { merchant_id: merchantId },

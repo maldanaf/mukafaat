@@ -1,5 +1,7 @@
 "use client";
 
+import type { TFunction } from "i18next";
+
 import React, { useMemo } from "react";
 import { useNavigate } from "@/lib/router-compat";
 import { Helmet } from "@/lib/helmet-compat";
@@ -156,7 +158,7 @@ const ActiveCard: React.FC<{
   days: number;
   endDate: string;
   endingSoon: boolean;
-  t: (k: string, d?: string) => string;
+  t: TFunction;
 }> = ({ planName, price, days, endDate, endingSoon, t }) => (
   <div className="rounded-mk-xl bg-gradient-to-bl from-mk-primary-light to-mk-primary p-6 text-white shadow-mk-raised">
     <div className="flex items-center justify-between gap-3">
@@ -195,7 +197,7 @@ const ActiveCard: React.FC<{
   </div>
 );
 
-const NoSubscriptionCard: React.FC<{ t: (k: string, d?: string) => string }> = ({
+const NoSubscriptionCard: React.FC<{ t: TFunction }> = ({
   t,
 }) => (
   <div className="rounded-mk-xl border border-mk-border bg-white p-8 text-center shadow-mk-card">
@@ -220,7 +222,7 @@ const PlanRow: React.FC<{
   hasActive: boolean;
   isUpgrade: boolean;
   onChoose: () => void;
-  t: (k: string, d?: string) => string;
+  t: TFunction;
 }> = ({ plan, isCurrent, hasActive, isUpgrade, onChoose, t }) => {
   const { i18n } = useTranslation();
   const isRTL = i18n.language?.startsWith("ar") ?? true;

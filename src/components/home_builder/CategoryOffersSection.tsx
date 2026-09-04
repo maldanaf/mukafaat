@@ -2,7 +2,7 @@
 
 import { t } from "i18next";
 import { Link } from "@/lib/router-compat";
-import { CONTAINER, OfferTile, SectionHeader, SmartImage } from "@ui";
+import { CONTAINER, OfferTile, SectionHeader, SmartImage, type OfferTileData } from "@ui";
 import { buildOfferUrl } from "@utils/offerUrl";
 import type { LayoutSection, WebDisplayStyle } from "./types";
 
@@ -22,7 +22,8 @@ const GRID_CLASS: Record<string, string> = {
  * والشكل (شبكة ٤/٣ أعمدة، شريط أفقي، قائمة) يختاره الأدمن.
  */
 const CategoryOffersSection: React.FC<Props> = ({ section }) => {
-  const offers = section.items ?? [];
+  // `items` صار اتحاداً بعد إضافة بلوك المتاجر — هذا القسم عروض دائماً
+  const offers = (section.items ?? []) as OfferTileData[];
   if (!offers.length) return null;
 
   const style = (section.display_style as WebDisplayStyle) || "grid_4";

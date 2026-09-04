@@ -24,6 +24,7 @@ function MembershipCard({
   idNumber,
   isActive = true,
   membershipQrUrl,
+  membershipBarcodeUrl,
 }: {
   fullName: string;
   membershipNumber: string;
@@ -33,6 +34,8 @@ function MembershipCard({
   isActive?: boolean;
   /** رابط صورة QR من API البروفايل (membership_qr_url) — يُستخدم عند توفره */
   membershipQrUrl?: string | null;
+  /** باركود Code128 لرقم العضوية — يقرأه ماسح الكاشير على اللابتوب */
+  membershipBarcodeUrl?: string | null;
 }) {
   const { t } = useTranslation();
   const isRTL = useIsRTL();
@@ -50,6 +53,21 @@ function MembershipCard({
     return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&ecc=M&data=${enc}`;
   }, [qrValue]);
   const qrSrc = membershipQrUrl?.trim() || qrSrcFallback;
+
+  /**
+   * الباركود الخطّي — مكمّل للـ QR لا بديل عنه.
+   *
+   * كاشير الجوال يمسح الـ QR، وكاشير اللابتوب يستعمل ماسحاً خطّياً
+   * يُدخل الرقم كأنه لوحة مفاتيح، فنشفّر رقم العضوية وحده.
+   */
+  const barcodeSrc = useMemo(() => {
+    const digits = String(membershipNumber ?? "").replace(/\s/g, "");
+    if (!digits) return null;
+    return (
+      membershipBarcodeUrl?.trim() ||
+      `https://barcodeapi.org/api/128/${encodeURIComponent(digits)}`
+    );
+  }, [membershipBarcodeUrl, membershipNumber]);
   const displayBig = formatDigitsSpaced(membershipNumber);
   /** تدرج خلفية: فوق #6A0DAD → تحت #4B0082 */
   const cardGradient = "linear-gradient(180deg, #6A0DAD 0%, #4B0082 100%)";
@@ -116,6 +134,22 @@ function MembershipCard({
               decoding="async"
             />
           </div>
+
+          {/* الباركود — لماسحات الكاشير على اللابتوب */}
+          {barcodeSrc && (
+            <div className="mb-5 flex flex-col items-center gap-1.5 sm:mb-6">
+              <img
+                src={barcodeSrc}
+                alt=""
+                className="block h-[62px] w-auto max-w-[86%] object-contain"
+                loading="lazy"
+                decoding="async"
+              />
+              <span className="font-mono text-[11px] tracking-[0.2em] text-mk-muted">
+                {String(membershipNumber ?? "")}
+              </span>
+            </div>
+          )}
 
           <div className="my-4 border-t border-dashed border-mk-border-2 sm:my-5" />
 

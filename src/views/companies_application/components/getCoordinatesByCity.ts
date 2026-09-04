@@ -6,6 +6,9 @@ export async function getCoordinatesByCity(
   const API_KEY = process.env.NEXT_PUBLIC_OPEN_CAGE_DATA_TOKEN;
   const BASE_URL = process.env.NEXT_PUBLIC_OPEN_CAGE_DATA_BASE_URL;
 
+  // متغيّرا البيئة قد يغيبان — بلا رابط لا طلب
+  if (!BASE_URL) return null;
+
   try {
     const response = await axios.get(BASE_URL, {
       params: {

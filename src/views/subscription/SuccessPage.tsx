@@ -35,7 +35,7 @@ const SubscriptionSuccessPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{t("home.subscription.thankYouForSubscribing")} | Mokafaat</title>
+        <title>{t("home.subscription.thankYouForSubscribing")}</title>
       </Helmet>
 
       <section className="min-h-screen bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] px-4 py-14">

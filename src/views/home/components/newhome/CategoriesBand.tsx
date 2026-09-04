@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate } from "@/lib/router-compat";
+import { Link, useNavigate } from "@/lib/router-compat";
 import { LuLayoutGrid, LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { t } from "i18next";
 import { CONTAINER } from "./tokens";
@@ -43,13 +43,15 @@ const CategoriesBand: React.FC<Props> = ({ categories, title, showViewAll = true
    * المتجر وحدة التصفّح الأولى في المنصّة وخصوماته الدائمة هي جوهرها،
    * فإرسال المستخدم من التصنيف إلى العروض كان يُخرجه من مسار المتاجر.
    */
-  const openCategory = (category: CategoryItem | { id: "all" }) => {
-    if (category.id === "all") {
-      navigate("/stores");
-      return;
-    }
+  /** وجهة التصنيف — تُستعمل كـ href في الشبكة وكوجهة تنقّل في الشريط اللاصق */
+  const categoryHref = (category: CategoryItem | { id: "all" }): string => {
+    if (category.id === "all") return "/stores";
     const item = category as CategoryItem;
-    navigate(item.slug ? `/stores/${item.slug}` : "/stores");
+    return item.slug ? `/stores/${item.slug}` : "/stores";
+  };
+
+  const openCategory = (category: CategoryItem | { id: "all" }) => {
+    navigate(categoryHref(category));
   };
 
   const all: (CategoryItem | { id: "all"; name: string; image: null; slug: undefined })[] = [
@@ -95,7 +97,7 @@ const CategoriesBand: React.FC<Props> = ({ categories, title, showViewAll = true
             "اختر التصنيف الذي يناسبك وتصفّح عروضه فوراً.",
           )}
           linkLabel={showViewAll ? t("home.categories_new.all_link", "عرض جميع التصنيفات") : undefined}
-          linkTo={showViewAll ? "/offers" : undefined}
+          linkTo={showViewAll ? "/stores" : undefined}
           className="!mb-6"
           actions={
             <div className="hidden items-center gap-2 lg:flex">
@@ -133,10 +135,10 @@ const CategoriesBand: React.FC<Props> = ({ categories, title, showViewAll = true
                 category.id,
               );
               return (
-                <button
+                <Link
                   key={String(category.id)}
-                  onClick={() => openCategory(category as CategoryItem)}
-                  className={`group mk-lift flex w-[124px] flex-col items-center gap-3 rounded-mk-2xl border border-[#EFEDF7] bg-white px-3 py-5 shadow-mk-card hover:border-[#C9BCEC] sm:w-[140px] ${FOCUS}`}
+                  to={categoryHref(category as CategoryItem)}
+                  className={`group mk-lift flex w-[124px] shrink-0 flex-col items-center gap-3 rounded-mk-2xl border border-[#EFEDF7] bg-white px-3 py-5 text-inherit no-underline shadow-mk-card hover:border-[#C9BCEC] sm:w-[140px] ${FOCUS}`}
                 >
                   <span
                     className="relative flex h-[70px] w-[70px] items-center justify-center overflow-hidden rounded-mk-2xl shadow-[0_10px_22px_-12px_rgba(46,16,101,0.5)] transition-transform duration-200 group-hover:scale-110"
@@ -159,7 +161,7 @@ const CategoriesBand: React.FC<Props> = ({ categories, title, showViewAll = true
                   <span className="line-clamp-2 text-center text-[13.5px] font-extrabold leading-tight text-[#4A4A63] transition-colors duration-200 group-hover:text-[#400198]">
                     {category.name}
                   </span>
-                </button>
+                </Link>
               );
             })}
           </div>

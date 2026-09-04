@@ -164,7 +164,7 @@ const StoreRequestPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{t("storeRequest.meta_title")} | Mokafaat</title>
+        <title>{t("storeRequest.meta_title")}</title>
       </Helmet>
 
       <PageHero

@@ -10,7 +10,8 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: true,
+    // أخطاء الأنواع صفر الآن — نُبقي البناء يفشل عند أي خطأ جديد
+    ignoreBuildErrors: false,
   },
   images: {
     disableStaticImages: true,
@@ -30,6 +31,29 @@ const nextConfig = {
       },
     ];
   },
+  /**
+   * الصفحات المُدارة من اللوحة لها مساران: المختصر و`/pages/{slug}`.
+   *
+   * كلاهما يعطي 200 بنفس المحتوى — تكرار صريح يضرّ بالفهرسة. نُبقي
+   * المختصر ونحوّل الطويل إليه تحويلاً دائماً (301).
+   */
+  async redirects() {
+    const duplicates = [
+      ["about-us", "/about"],
+      ["contact-us", "/contact"],
+      ["privacy-policy", "/privacy-policy"],
+      ["terms-and-conditions", "/terms-and-conditions"],
+    ];
+
+    return duplicates.map(([slug, destination]) => ({
+      source: `/pages/${slug}`,
+      destination,
+      // 301 صراحةً لا 308: الزبون طلبها بهذا الرقم، والاثنان دائمان
+      // لكن 301 هي المتعارف عليها في تقارير السيو
+      statusCode: 301,
+    }));
+  },
+
   async rewrites() {
     const apiBaseUrl =
       process.env.NEXT_PUBLIC_API_BASE_URL || "https://admin.mukafaat.com.sa";

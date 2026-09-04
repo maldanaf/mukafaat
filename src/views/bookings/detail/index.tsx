@@ -60,7 +60,10 @@ export default function BookingDetailPage() {
     if (!listing) return;
     try {
       const res = await webApi.bookingClick(Number(listing.id));
-      const url = (res.data as Record<string, unknown>)?.data?.affiliate_url || listing.affiliate_url;
+      const body = (res.data as Record<string, unknown>)?.data as
+        | Record<string, unknown>
+        | undefined;
+      const url = body?.affiliate_url ?? (listing as Record<string, unknown>).affiliate_url;
       window.open(String(url), "_blank");
     } catch {
       window.open(String(listing.affiliate_url), "_blank");
@@ -419,9 +422,9 @@ export default function BookingDetailPage() {
                       <h3 className="font-bold text-gray-900 text-sm mb-2 line-clamp-2">{String(item.title ?? "")}</h3>
                       <div className="flex items-center justify-between mb-3">
                         <span className="text-[#400198] font-bold">
-                          {item.price_from} <CurrencyIcon size={12} className="inline" />
+                          {String(item.price_from ?? "")} <CurrencyIcon size={12} className="inline" />
                         </span>
-                        {(item.provider as Record<string, unknown>)?.logo && (
+                        {Boolean((item.provider as Record<string, unknown>)?.logo) && (
                           <img src={String((item.provider as Record<string, unknown>).logo)} alt="" className="h-5 object-contain" />
                         )}
                       </div>

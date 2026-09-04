@@ -195,8 +195,8 @@ const StoresPage: React.FC = () => {
     <>
       <BreadcrumbSchema
         items={[
-          { name: t("home.navbar.home", "الرئيسية"), url: "/" },
-          { name: t("stores.title", "المتاجر"), url: "/stores" },
+          { name: t("home.navbar.home", "الرئيسية"), path: "/" },
+          { name: t("stores.title", "المتاجر"), path: "/stores" },
         ]}
       />
 

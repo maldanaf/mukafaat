@@ -190,7 +190,7 @@ const OrderActivatePage: React.FC = () => {
     return (
       <>
         <Helmet>
-          <title>{isRTL ? "تم التفعيل" : "Activated"} | Mokafaat</title>
+          <title>{isRTL ? "تم التفعيل" : "Activated"}</title>
         </Helmet>
         <div className="min-h-screen pt-10 pb-10 flex items-center justify-center px-4"
           style={{ background: "linear-gradient(150deg, #1B1150 0%, #400198 55%, #6703EB 100%)" }}>
@@ -233,7 +233,7 @@ const OrderActivatePage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{isRTL ? "تفعيل العرض" : "Activate Offer"} | Mokafaat</title>
+        <title>{isRTL ? "تفعيل العرض" : "Activate Offer"}</title>
       </Helmet>
 
       <div className="min-h-screen pt-10 pb-10 flex flex-col items-center px-4"

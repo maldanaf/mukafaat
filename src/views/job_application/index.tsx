@@ -96,7 +96,7 @@ const JobApplicationHero = ({ jobTitle }: { jobTitle: string }) => {
 
 const JobApplication = () => {
   const { id: jobId } = useParams();
-  const location = useLocation() as {
+  const location = useLocation() as unknown as {
     state?: { title?: string; titleAr?: string };
   };
   const isRTL = useIsRTL();

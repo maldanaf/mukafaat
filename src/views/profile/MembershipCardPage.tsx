@@ -34,6 +34,7 @@ interface ProfileUser {
   id_number?: string;
   membership_number?: string;
   membership_qr_url?: string | null;
+  membership_barcode_url?: string | null;
   membership_verify_url?: string | null;
   has_subscription?: boolean;
   subscription?: { status?: string } | null;
@@ -147,7 +148,7 @@ const MembershipCardPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{t("membershipCard.meta_title")} | Mokafaat</title>
+        <title>{t("membershipCard.meta_title")}</title>
       </Helmet>
 
       <div className="space-y-5" dir={isRTL ? "rtl" : "ltr"}>
@@ -188,6 +189,7 @@ const MembershipCardPage: React.FC = () => {
               idNumber={String(profileUser?.id_number ?? "").trim()}
               isActive={isActive}
               membershipQrUrl={profileUser?.membership_qr_url ?? undefined}
+              membershipBarcodeUrl={profileUser?.membership_barcode_url ?? undefined}
             />
 
             <AccountPanel

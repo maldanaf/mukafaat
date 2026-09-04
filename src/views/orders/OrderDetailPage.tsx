@@ -230,7 +230,7 @@ const OrderDetailPage: React.FC = () => {
       <Helmet>
         <title>
           {isRTL ? "تفاصيل الطلب" : "Order Details"} #
-          {order.orderNumber ?? order.id} | Mokafaat
+          {order.orderNumber ?? order.id}
         </title>
       </Helmet>
 

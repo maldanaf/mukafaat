@@ -9,6 +9,7 @@ import { useUserStore } from "@stores/userStore";
 import { useHydrated } from "@hooks/useHydrated";
 import { useShareSheetStore } from "@stores/shareSheetStore";
 import { useReferrals, useReferralRewards } from "@hooks/api/useMokafaatQueries";
+import { referralsApi } from "@network/services/mokafaatService";
 import { Button, ShareIcon, FOCUS } from "@ui";
 import CurrencyIcon from "@components/CurrencyIcon";
 import { formatPrice } from "@utils/subscriptionPricing";
@@ -156,6 +157,47 @@ const ReferralsPage: React.FC = () => {
 
   const [copied, setCopied] = useState<"code" | "link" | null>(null);
 
+  /**
+   * إدخال كود دعوة يدوياً.
+   *
+   * الربط التلقائي يعمل عبر رابط الدعوة فقط، ومن يسمع الكود شفهياً
+   * لم يكن لديه أي مكان يُدخله فيه.
+   */
+  const [codeInput, setCodeInput] = useState("");
+  const [attachState, setAttachState] = useState<
+    { kind: "idle" | "loading" } | { kind: "ok" | "err"; msg: string }
+  >({ kind: "idle" });
+
+  const submitCode = async () => {
+    const code = codeInput.trim().toUpperCase();
+    if (!code) return;
+
+    setAttachState({ kind: "loading" });
+    try {
+      const res = await referralsApi.attach(code);
+      const body = res?.data as Record<string, unknown> | undefined;
+
+      if (body?.status === false) {
+        setAttachState({
+          kind: "err",
+          msg: String(body?.msg || t("referrals.attach_invalid", "كود الدعوة غير صالح أو مستخدم مسبقاً")),
+        });
+        return;
+      }
+
+      setAttachState({
+        kind: "ok",
+        msg: String(body?.msg || t("referrals.attach_ok", "تم ربط كود الدعوة بنجاح")),
+      });
+      setCodeInput("");
+    } catch {
+      setAttachState({
+        kind: "err",
+        msg: t("referrals.attach_invalid", "كود الدعوة غير صالح أو مستخدم مسبقاً"),
+      });
+    }
+  };
+
   const copy = (value: string, which: "code" | "link") => {
     try {
       void navigator.clipboard.writeText(value);
@@ -189,7 +231,7 @@ const ReferralsPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{t("referrals.meta_title")} | Mokafaat</title>
+        <title>{t("referrals.meta_title")}</title>
       </Helmet>
 
       <div className="space-y-5" dir={isRTL ? "rtl" : "ltr"}>
@@ -199,6 +241,53 @@ const ReferralsPage: React.FC = () => {
           icon={<ShareIcon />}
           tint="teal"
         />
+
+        {/* إدخال كود دعوة سمعه المستخدم شفهياً — الرابط يربطه تلقائياً */}
+        <div className="rounded-mk-lg border border-mk-border bg-white p-4 shadow-mk-card">
+          <p className="m-0 mb-2 text-[13.5px] font-bold text-mk-text-strong">
+            {t("referrals.have_code", "لديك كود دعوة من صديق؟")}
+          </p>
+          <div className="flex flex-wrap items-center gap-2">
+            <input
+              type="text"
+              value={codeInput}
+              onChange={(e) => {
+                setCodeInput(e.target.value);
+                if (attachState.kind !== "idle") setAttachState({ kind: "idle" });
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  void submitCode();
+                }
+              }}
+              placeholder={t("referrals.code_placeholder", "أدخل الكود هنا")}
+              dir="ltr"
+              className={`h-11 min-w-[180px] flex-1 rounded-mk-md border border-mk-border px-3 text-[14px] font-bold uppercase tracking-wider outline-none focus:border-mk-primary ${FOCUS}`}
+            />
+            <button
+              type="button"
+              onClick={() => void submitCode()}
+              disabled={!codeInput.trim() || attachState.kind === "loading"}
+              className={`h-11 rounded-mk-md bg-[linear-gradient(135deg,#400198_0%,#6703EB_100%)] px-5 text-[13.5px] font-extrabold text-white disabled:opacity-50 ${FOCUS}`}
+            >
+              {attachState.kind === "loading"
+                ? t("common.loading", "جارٍ…")
+                : t("referrals.apply_code", "تفعيل")}
+            </button>
+          </div>
+
+          {attachState.kind === "ok" && (
+            <p className="m-0 mt-2 text-[12.5px] font-bold text-mk-success">
+              ✅ {attachState.msg}
+            </p>
+          )}
+          {attachState.kind === "err" && (
+            <p className="m-0 mt-2 text-[12.5px] font-bold text-mk-danger">
+              {attachState.msg}
+            </p>
+          )}
+        </div>
 
         {isLoading && <AccountLoading hero rows={3} />}
 

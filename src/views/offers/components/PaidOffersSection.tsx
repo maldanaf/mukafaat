@@ -8,7 +8,9 @@ import { type Offer } from "@data/offers";
 import OfferCard from "./OfferCard";
 import { SkeletonGrid } from "@ui";
 import { SectionTitle } from "./CatalogKit";
-import OwlCarousel from "@components/DynamicOwlCarousel";
+import OwlCarousel, {
+  type OwlCarouselHandle,
+} from "@components/DynamicOwlCarousel";
 import { useWebOffers } from "@hooks/api/useMokafaatQueries";
 import { mapApiOffersToModels } from "@network/mappers/offersMapper";
 import { buildWebOffersParams } from "@utils/webFilters";
@@ -29,7 +31,7 @@ const PaidOffersSection: React.FC = () => {
   const isRTL = useIsRTL();
   const navigate = useNavigate();
   const [carouselKey, setCarouselKey] = useState(0);
-  const owlCarouselRef = useRef<OwlCarousel | null>(null);
+  const owlCarouselRef = useRef<OwlCarouselHandle | null>(null);
 
   // نجلب كمية أكبر ثم نفلتر حسب price !== 0 (platformPrice)
   const { data: paidRes, isLoading } = useWebOffers(

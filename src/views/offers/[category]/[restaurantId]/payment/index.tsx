@@ -622,7 +622,7 @@ const PaymentPage: React.FC = () => {
             </Link>
             <span className="text-white text-xs mx-2">|</span>
             <Link
-              to={`/offers/${category}/${merchantSlug}`}
+              to={`/store/${merchantSlug}`}
               className="text-white hover:text-mk-lilac transition-colors cursor-pointer text-xs"
             >
               {isRTL ? company.name.ar : company.name.en}

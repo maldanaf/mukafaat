@@ -25,19 +25,16 @@ const DEFAULT_DESCRIPTION =
  */
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
-  const general = (settings?.general ?? {}) as Record<string, unknown>;
-
-  const siteName = String(general.site_name || "").trim() || "مكافآت";
-  const description =
-    String(general.site_description || "").trim() || DEFAULT_DESCRIPTION;
+  // `getSiteSettings` يُسطّح `general` أصلاً إلى حقول مكتوبة النوع
+  const description = settings?.description?.trim() || DEFAULT_DESCRIPTION;
 
   return {
     // يجعل Next يحوّل كل رابط نسبي في الوسوم إلى مطلق على النطاق الصحيح
     metadataBase: new URL(SITE_URL),
     title: {
+      // الرئيسية بعنوانها الكامل، وكل صفحة داخلية تُلحق اسمها باسم المنصّة
       default: DEFAULT_TITLE,
-      // الصفحات الداخلية تُلحق اسمها باسم المنصّة
-      template: `%s | ${siteName}`,
+      template: "%s | مكافآت",
     },
     description,
     keywords:
@@ -121,17 +118,6 @@ export default async function RootLayout({
           })();
         `}} />
 
-        {/*
-          ختم التحقّق — المركز السعودي للأعمال.
-          السكربت هنا، وحاوية الختم في <body>: المتصفّح لا يقبل <div>
-          داخل <head> فينقله خارجه، فيختلف ما صيّره السيرفر عمّا يبنيه
-          العميل وتنهار الترطيب (hydration) في كل صفحات الموقع.
-        */}
-        <script
-          src="https://eauthenticate.saudibusiness.gov.sa/EAuthSealApi/seal.js"
-          async
-        />
-
         {/* أكواد التتبّع من لوحة التحكم — لا تُطبع إن كانت الحقول فارغة */}
         <TrackingHead tracking={settings.tracking} />
       </head>
@@ -141,17 +127,6 @@ export default async function RootLayout({
 
         <RouteLoadingIndicator />
         <Providers>{children}</Providers>
-
-        {/* ختم التحقّق — المركز السعودي للأعمال */}
-        <div
-          className="sbc-verify-seal"
-          data-token="RDdhYk03RERjVmUzSVFiTTg2TnNPUT09"
-          data-position="bottom-left"
-        />
-        <script
-          src="https://eauthenticate.saudibusiness.gov.sa/EAuthSealApi/seal.js"
-          async
-        />
       </body>
     </html>
   );

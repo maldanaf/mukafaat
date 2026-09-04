@@ -76,7 +76,6 @@ const MerchantCard: React.FC<{ merchant: MerchantSummary }> = ({ merchant }) => 
 
   const discount = Number(merchant.max_discount ?? 0);
   const hasDiscount = Number.isFinite(discount) && discount > 0;
-  const extraCount = Math.max(0, (merchant.discounts_count ?? 0) - 1);
 
   const rating = Number(merchant.rating ?? 0);
   const views = Number(merchant.views_count ?? 0);
@@ -246,27 +245,6 @@ const MerchantCard: React.FC<{ merchant: MerchantSummary }> = ({ merchant }) => 
           </span>
         </div>
 
-        <div className="mt-3 flex items-center gap-2 border-t border-mk-border pt-2.5">
-          {hasDiscount ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-mk-tint2 px-2.5 py-1 text-[11.5px] font-extrabold text-mk-primary">
-              <FiTag size={12} aria-hidden />
-              {extraCount > 0
-                ? t("merchantCard.more_discounts", {
-                    count: extraCount,
-                    defaultValue: `و{{count}} خصومات أخرى`,
-                  })
-                : t("merchantCard.view_discounts", "اعرض الخصومات")}
-            </span>
-          ) : (
-            <span className="text-[11.5px] font-bold text-mk-faint">
-              {t("merchantCard.no_discounts", "تصفّح المتجر")}
-            </span>
-          )}
-
-          <span className="ms-auto text-[11.5px] font-extrabold text-mk-primary transition-transform duration-200 group-hover/vivid:-translate-x-0.5">
-            ←
-          </span>
-        </div>
       </div>
     </Link>
   );

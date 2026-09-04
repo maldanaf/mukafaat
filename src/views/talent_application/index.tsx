@@ -75,7 +75,18 @@ function TalentApplicationPage() {
     endpoint: API_ENDPOINTS.registerJobSeeker,
   });
 
-  const submitForm = (data: unknown) => {
+  /** حقول نموذج التقديم كما يرسلها react-hook-form */
+  interface TalentFormData {
+    fullName: string;
+    email: string;
+    mobileNumber: string;
+    idNumber: string;
+    education: string;
+    bio: string;
+    [key: string]: unknown;
+  }
+
+  const submitForm = (data: TalentFormData) => {
     const jobSeeker: JobSeekerModel = {
       photo: photo,
       fullName: data.fullName,

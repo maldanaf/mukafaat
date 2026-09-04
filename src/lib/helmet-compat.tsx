@@ -18,6 +18,36 @@ interface HelmetProps {
   children?: React.ReactNode;
 }
 
+/**
+ * يسطّح محتوى <title> إلى نصّ واحد.
+ *
+ * JSX يقسّم `{a} | {b}` إلى عناصر مصفوفة، و`String(array)` يصلها بفواصل
+ * فيخرج العنوان «الأسئلة المتكررة, | ,مكافآت». نصلها هنا بلا فواصل
+ * ونضغط المسافات المكرّرة.
+ */
+function flattenTitle(children: React.ReactNode): string {
+  const parts: string[] = [];
+
+  const walk = (node: React.ReactNode): void => {
+    if (node === null || node === undefined || typeof node === "boolean") return;
+    if (Array.isArray(node)) {
+      node.forEach(walk);
+      return;
+    }
+    if (typeof node === "string" || typeof node === "number") {
+      parts.push(String(node));
+      return;
+    }
+    if (React.isValidElement(node)) {
+      walk((node.props as { children?: React.ReactNode }).children);
+    }
+  };
+
+  walk(children);
+
+  return parts.join("").replace(/\s+/g, " ").trim();
+}
+
 // Client-side Helmet that updates document.head
 export function Helmet({ children }: HelmetProps) {
   useEffect(() => {
@@ -29,7 +59,7 @@ export function Helmet({ children }: HelmetProps) {
       const { type, props } = child;
 
       if (type === "title" && props.children) {
-        document.title = String(props.children);
+        document.title = flattenTitle(props.children);
       } else if (type === "meta") {
         const meta = document.createElement("meta");
         Object.entries(props as Record<string, string>).forEach(

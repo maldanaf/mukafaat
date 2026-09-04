@@ -112,7 +112,7 @@ const SubscriptionPlansPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{t("home.subscription.choosePlan")} | Mokafaat</title>
+        {/* العنوان من الخادم: «باقات الاشتراك» — أوضح في نتائج البحث */}
       </Helmet>
 
       <section className="min-h-screen bg-[linear-gradient(165deg,#1B1150_0%,#400198_60%,#6703EB_100%)] px-4 pb-14 pt-24">

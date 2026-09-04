@@ -197,11 +197,12 @@ const LoginPage: React.FC = () => {
 
           {!otpSent ? (
             <>
-              <h2 className="text-2xl font-bold text-[#400198] mb-2">
+              {/* العنوان الرئيسي للصفحة — كان h2 بلا h1 إطلاقاً */}
+              <h1 className="text-2xl font-bold text-[#400198] mb-2">
                 {isRegisterMode
                   ? t("home.login.register_title")
                   : t("home.login.login_title")}
-              </h2>
+              </h1>
               <p className="text-gray-600 mb-6 text-center">
                 {isRegisterMode
                   ? t("home.login.register_desc")
@@ -306,7 +307,7 @@ const LoginPage: React.FC = () => {
               </div>
               <button
                 className="mt-1 w-full h-[49px] py-3 bg-[#FF702A] text-white font-bold text-base rounded-full flex items-center justify-center border-none shadow-none hover:bg-[#E55A1F] transition-all"
-                onClick={handleVerifyOtp}
+                onClick={() => handleVerifyOtp()}
                 disabled={loading}
               >
                 {loading

@@ -18,7 +18,11 @@ import React, { forwardRef } from "react";
 // ─── useNavigate ───
 export function useNavigate() {
   const router = useNextRouter();
-  const navigate = (to: string | number, options?: { replace?: boolean }) => {
+  // بعض الصفحات تمرّر `state` (إرث react-router) — نقبله ونتجاهله
+  const navigate = (
+    to: string | number,
+    options?: { replace?: boolean; state?: unknown },
+  ) => {
     if (typeof to === "number") {
       if (to === -1) router.back();
       else router.forward();

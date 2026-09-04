@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import OwlCarousel from "@components/DynamicOwlCarousel";
+import OwlCarousel, {
+  type OwlCarouselHandle,
+} from "@components/DynamicOwlCarousel";
 // import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import { useIsRTL } from "@hooks";
@@ -45,7 +47,7 @@ const DreamProperties: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [carouselKey, setCarouselKey] = useState(0);
   const [showMoreTags, setShowMoreTags] = useState(false);
-  const owlCarouselRef = useRef<OwlCarousel | null>(null);
+  const owlCarouselRef = useRef<OwlCarouselHandle | null>(null);
   const openShare = useShareSheetStore((s) => s.openShare);
 
   // Force re-render when language or direction changes

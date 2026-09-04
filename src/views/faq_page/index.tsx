@@ -45,7 +45,7 @@ export default function FaqPage() {
   return (
     <>
       <Helmet>
-        <title>{isRTL ? "الأسئلة المتكررة" : "FAQ"} | {isRTL ? "مكافآت" : "Mukafaat"}</title>
+        {/* العنوان من الخادم — يحمل لاحقة «| مكافآت» تلقائياً */}
       </Helmet>
 
       {/* Hero */}
@@ -53,7 +53,7 @@ export default function FaqPage() {
         <div className="absolute inset-0 bg-primary opacity-30" />
         <div className="relative pt-20 pb-12 px-6 mx-auto max-w-site w-full text-center z-10">
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-            {isRTL ? "الأسئلة المتكررة" : "Frequently Asked Questions"}
+            {isRTL ? "الأسئلة الشائعة" : "Frequently Asked Questions"}
           </h1>
           <p className="text-white/80 text-sm mb-6">
             {isRTL ? "إجابات لكل ما تريد معرفته عن مكافآت" : "Answers to everything you want to know about Mukafaat"}
@@ -61,7 +61,7 @@ export default function FaqPage() {
           <nav className="flex items-center justify-center gap-1 text-xs text-white/70">
             <Link to="/" className="hover:text-white">{isRTL ? "الرئيسية" : "Home"}</Link>
             <span>|</span>
-            <span className="text-[#fd671a]">{isRTL ? "الأسئلة المتكررة" : "FAQ"}</span>
+            <span className="text-[#fd671a]">{isRTL ? "الأسئلة الشائعة" : "FAQ"}</span>
           </nav>
         </div>
         <div className="absolute -bottom-10 z-0">

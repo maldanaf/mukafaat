@@ -211,9 +211,10 @@ const BlogArticlePage: React.FC = () => {
                 <div className="bg-white rounded-xl p-0">
                   <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
                     <div>
-                      <h1 className="text-2xl font-bold text-[#400198] mb-2">
+                      {/* H1 يصدر من الخادم — هذا عنوان مرئي بمستوى H2 */}
+                      <h2 className="text-2xl font-bold text-[#400198] mb-2">
                         {articleTitle || (isRTL ? currentArticle?.title : currentArticle?.titleEn)}
-                      </h1>
+                      </h2>
                     </div>
                   </div>
                 </div>

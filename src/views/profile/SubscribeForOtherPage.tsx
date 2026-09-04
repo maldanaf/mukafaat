@@ -392,7 +392,7 @@ const SubscribeForOtherPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{t("subscribeForOther.meta_title")} | Mokafaat</title>
+        <title>{t("subscribeForOther.meta_title")}</title>
       </Helmet>
 
       <div className="space-y-5" dir={isRTL ? "rtl" : "ltr"}>

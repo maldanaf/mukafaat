@@ -8,7 +8,9 @@ import { type Offer } from "@data/offers";
 import OfferCard from "./OfferCard";
 import { EmptyState } from "@ui";
 import { SectionTitle } from "./CatalogKit";
-import OwlCarousel from "@components/DynamicOwlCarousel";
+import OwlCarousel, {
+  type OwlCarouselHandle,
+} from "@components/DynamicOwlCarousel";
 import { Pattern } from "@assets";
 import { useWebOffers } from "@hooks/api/useMokafaatQueries";
 import { mapApiOffersToModels } from "@network/mappers/offersMapper";
@@ -32,7 +34,7 @@ const LatestOffersSection: React.FC = () => {
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
   const [carouselKey, setCarouselKey] = useState(0);
-  const owlCarouselRef = useRef<OwlCarousel | null>(null);
+  const owlCarouselRef = useRef<OwlCarouselHandle | null>(null);
 
   const { data: latestRes, isLoading: apiLoading } = useWebOffers(
     buildWebOffersParams({ sortBy: "latest", search: searchQuery || undefined }),

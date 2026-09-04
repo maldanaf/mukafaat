@@ -139,7 +139,8 @@ const useCreateContractFile = ({
         });
 
         const pdfBytes = await pdfDoc.save();
-        const blob = new Blob([pdfBytes], { type: "application/pdf" });
+        // pdf-lib يُرجع Uint8Array<ArrayBufferLike> ولا يقبله BlobPart مباشرةً
+        const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
         setContractFile(blobToFile(blob, "contract"));
         const blobSize = blob.size;
 

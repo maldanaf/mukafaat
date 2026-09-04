@@ -197,7 +197,7 @@ const FamilyPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{t("family.meta_title")} | Mokafaat</title>
+        <title>{t("family.meta_title")}</title>
       </Helmet>
 
       <div className="space-y-5" dir={isRTL ? "rtl" : "ltr"}>

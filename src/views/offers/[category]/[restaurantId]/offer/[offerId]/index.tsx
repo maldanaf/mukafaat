@@ -578,10 +578,8 @@ const OfferDetailPage = () => {
         }
         onBackToOffer={() => setSubscribersOnlyModalOpen(false)}
       />
+      {/* العنوان من الخادم — الوسم هنا كان يُخرج «العرض, - ,المتجر, | ,عروض» */}
       <Helmet>
-        <title>
-          {offerTitle} - {restaurantName} | {t("offerDetail.offers_brand")}
-        </title>
         <link
           rel="canonical"
           href={`https://mukafaat.com.sa/offers/${category}/${merchantSlug}/${offerSlug}`}
@@ -732,7 +730,7 @@ const OfferDetailPage = () => {
             )}
             <span className="text-xs">|</span>
             <Link
-              to={`/offers/${category}/${merchantSlug}`}
+              to={`/store/${merchantSlug}`}
               className="hover:text-white transition-colors text-xs"
             >
               {restaurantName}

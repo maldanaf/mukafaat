@@ -400,7 +400,7 @@ const MembershipVerifyPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>التحقق من العضوية — مكافآت</title>
+        <title>التحقق من العضوية</title>
       </Helmet>
       <div
         className="min-h-screen px-4 py-8 sm:py-12"

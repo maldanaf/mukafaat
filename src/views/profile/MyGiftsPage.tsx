@@ -64,7 +64,7 @@ const MyGiftsPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{t("giftSubscription.gifts_title")} | Mokafaat</title>
+        <title>{t("giftSubscription.gifts_title")}</title>
       </Helmet>
 
       <div className="space-y-5" dir={isRTL ? "rtl" : "ltr"}>

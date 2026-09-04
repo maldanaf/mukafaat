@@ -191,7 +191,7 @@ const NotificationsPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{t("notificationsPage.meta_title")} | Mokafaat</title>
+        <title>{t("notificationsPage.meta_title")}</title>
       </Helmet>
 
       <div className="space-y-4" dir={isRTL ? "rtl" : "ltr"}>

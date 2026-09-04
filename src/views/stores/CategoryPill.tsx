@@ -71,21 +71,12 @@ const CategoryPill: React.FC<{
         )}
       </span>
 
-      <span className="flex min-w-0 flex-col leading-tight">
-        <span
-          className="whitespace-nowrap text-[13.5px] font-extrabold"
-          style={{ color: active ? tone : "#2B1B5E" }}
-        >
-          {item.name}
-        </span>
-        {item.merchants_count != null && item.merchants_count > 0 && (
-          <span
-            className="text-[11px] font-bold opacity-75"
-            style={{ color: active ? tone : "#6B6880" }}
-          >
-            {item.merchants_count}
-          </span>
-        )}
+      {/* الاسم وحده — العدد يشوّش ولا يفيد الزائر في الاختيار */}
+      <span
+        className="whitespace-nowrap text-[13.5px] font-extrabold"
+        style={{ color: active ? tone : "#2B1B5E" }}
+      >
+        {item.name}
       </span>
     </Link>
   );

@@ -365,7 +365,7 @@ const SubscriptionPaymentPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{t("home.subscription.paymentTitle")} | Mokafaat</title>
+        <title>{t("home.subscription.paymentTitle")}</title>
       </Helmet>
 
       <section className="min-h-screen bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] px-4 pb-14 pt-20">

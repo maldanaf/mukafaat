@@ -5,7 +5,9 @@ import { useNavigate } from "@/lib/router-compat";
 import { useTranslation } from "react-i18next";
 import OfferCard from "../../offers/components/OfferCard";
 import { Pattern, PatternNewProperty } from "../../../assets";
-import OwlCarousel from "@components/DynamicOwlCarousel";
+import OwlCarousel, {
+  type OwlCarouselHandle,
+} from "@components/DynamicOwlCarousel";
 import { useIsRTL } from "../../../hooks";
 import { type Offer } from "@data/offers";
 import { useWebOffers } from "@hooks/api/useMokafaatQueries";
@@ -30,7 +32,7 @@ const OffersSection: React.FC = () => {
     "latest" | "free" | "paid" | "suggested"
   >("latest");
   const [carouselKey, setCarouselKey] = useState(0);
-  const owlCarouselRef = useRef<OwlCarousel | null>(null);
+  const owlCarouselRef = useRef<OwlCarouselHandle | null>(null);
 
   // Fetch offers from API: /api/web/offers?category_id&price_min&price_max&pricing_type&search&sort_by
   const { data: latestRes, isLoading: latestLoading } = useWebOffers(

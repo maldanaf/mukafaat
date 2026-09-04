@@ -93,7 +93,7 @@ const PropertyPage: React.FC = () => {
         <title>
           {isRTL
             ? `${propertyData.title} - مكافآت`
-            : `${propertyData.title} - Mukafaat`}
+            : `${propertyData.title}`}
         </title>
         <meta
           name="description"

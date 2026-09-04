@@ -140,7 +140,7 @@ const PropertyProductPage: React.FC = () => {
         <title>
           {isRTL
             ? `${propertyProduct.title} - مكافآت`
-            : `${propertyProduct.title} - Mukafaat`}
+            : `${propertyProduct.title}`}
         </title>
         <meta
           name="description"

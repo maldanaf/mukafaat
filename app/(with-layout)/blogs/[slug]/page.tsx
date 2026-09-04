@@ -106,8 +106,7 @@ export default async function Page({
     getSiteSettings(),
   ]);
 
-  const general = (settings?.general ?? {}) as Record<string, unknown>;
-  const siteName = String(general.site_name || "").trim() || "مكافآت";
+  const siteName = settings?.siteName?.trim() || "مكافآت";
 
   /** سكيما BlogPosting — تُصيَّر على الخادم ليقرأها الزاحف */
   const schema = article
@@ -146,6 +145,16 @@ export default async function Page({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
         />
       )}
+      {/*
+        عنوان المقال كـ H1 مُصيَّر على الخادم.
+
+        جسم المقال يُبنى في العميل بعد جلب البيانات، فكان أول HTML يصل
+        الزاحف بلا H1 إطلاقاً — العنوان في <title> فقط. نضعه هنا مخفياً
+        بصرياً (يبقى مقروءاً للزاحف وقارئ الشاشة) ونُنزل عنوان العميل
+        إلى H2 كي لا يتكرّر H1 بعد الترطيب.
+      */}
+      {article?.title && <h1 className="sr-only">{article.title}</h1>}
+
       <Suspense>
         <BlogArticlePage />
       </Suspense>

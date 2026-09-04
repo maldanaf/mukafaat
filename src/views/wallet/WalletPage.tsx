@@ -121,7 +121,7 @@ const WalletPage: React.FC = () => {
   const onRedeemConfirm = () => {
     redeemMutation.mutate({ points }, {
       onSuccess: (res) => {
-        const payload = (res as Record<string, unknown>)?.data ?? res;
+        const payload = (res as unknown as Record<string, unknown>)?.data ?? res;
         const root = (payload as Record<string, unknown>);
         if (root?.status === false) {
           toast.error(String(root?.msg ?? root?.message ?? t("wallet.redeem_error")));
@@ -372,7 +372,7 @@ const WalletPage: React.FC = () => {
                                   <span className="text-xs text-mk-muted">{String(tx.time_ago ?? tx.created_at ?? "")}</span>
                                   <span className="text-xs text-mk-faint">•</span>
                                   <span className="text-xs text-mk-muted">{String(tx.payment_method_label ?? tx.payment_method ?? "")}</span>
-                                  {tx.card_last_four && (
+                                  {Boolean(tx.card_last_four) && (
                                     <>
                                       <span className="text-xs text-mk-faint">•</span>
                                       <span className="text-xs text-mk-muted">****{String(tx.card_last_four)}</span>

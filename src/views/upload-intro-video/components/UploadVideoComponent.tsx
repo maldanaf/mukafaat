@@ -1,5 +1,7 @@
 "use client";
 
+import type { TFunction } from "i18next";
+
 import { ErrorMessage, FileUploader, PrimaryButton } from "@components";
 import { APP_ROUTES } from "@constants";
 import { useUploadFreelancerIntroVideo } from "@hooks";
@@ -8,7 +10,8 @@ import { useNavigate } from "@/lib/router-compat";
 
 const UploadVideoComponent = (props: {
   email: string;
-  t: unknown;
+  /** دالة الترجمة الممرَّرة من الصفحة الأب */
+  t: TFunction;
   clearEmail: () => void;
 }) => {
   const { email, t, clearEmail } = props;

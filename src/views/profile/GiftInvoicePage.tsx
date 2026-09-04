@@ -112,7 +112,7 @@ const GiftInvoicePage: React.FC<{ subscriptionId?: string }> = ({
   return (
     <>
       <Helmet>
-        <title>{t("giftSubscription.invoice_title")} | Mokafaat</title>
+        <title>{t("giftSubscription.invoice_title")}</title>
       </Helmet>
 
       <div className="space-y-5" dir={isRTL ? "rtl" : "ltr"}>

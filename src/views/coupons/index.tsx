@@ -489,7 +489,7 @@ const CouponsPage = () => {
   return (
     <>
       <Helmet>
-        <title>{t("coupons.title")}</title>
+        {/* العنوان من الخادم — يحمل لاحقة «| مكافآت» تلقائياً */}
         <link rel="canonical" href="https://mukafaat.com.sa/coupons" />
       </Helmet>
 

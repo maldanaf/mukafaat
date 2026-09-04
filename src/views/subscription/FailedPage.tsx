@@ -22,7 +22,7 @@ const SubscriptionFailedPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{t("home.subscription.paymentFailed")} | Mokafaat</title>
+        <title>{t("home.subscription.paymentFailed")}</title>
       </Helmet>
 
       <section className="flex min-h-screen flex-col items-center justify-center bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] px-4 py-12">

@@ -503,7 +503,8 @@ const OrdersPage: React.FC = () => {
                               <IoEyeOutline className="w-4 h-4" />
                               {t("orders.view")}
                             </Link>
-                            {order.status === "completed" && order.voucherUrl && (
+                            {/* الحالة في الـ API هي "used" لا "completed" — كان الزر لا يظهر أبداً */}
+                            {order.status === "used" && order.voucherUrl && (
                               <button
                                 type="button"
                                 onClick={() =>

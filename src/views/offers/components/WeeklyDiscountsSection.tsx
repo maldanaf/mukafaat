@@ -4,7 +4,9 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/lib/router-compat";
 import { useIsRTL } from "@hooks";
-import OwlCarousel from "@components/DynamicOwlCarousel";
+import OwlCarousel, {
+  type OwlCarouselHandle,
+} from "@components/DynamicOwlCarousel";
 import { type Offer } from "@data/offers";
 import OfferCard from "./OfferCard";
 import { SkeletonGrid } from "@ui";
@@ -29,7 +31,7 @@ const WeeklyDiscountsSection: React.FC = () => {
   const isRTL = useIsRTL();
   const navigate = useNavigate();
   const [carouselKey, setCarouselKey] = useState(0);
-  const owlCarouselRef = useRef<OwlCarousel | null>(null);
+  const owlCarouselRef = useRef<OwlCarouselHandle | null>(null);
 
   // نجلب كمية أكبر ثم نفلتر حسب price === 0 (platformPrice)
   const { data: freeRes, isLoading } = useWebOffers(

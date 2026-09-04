@@ -234,7 +234,6 @@ const CardsPage = () => {
     return (
       <>
         <Helmet>
-          <title>{t("cardsPage.pageTitle")}</title>
           <link rel="canonical" href="https://mukafaat.com.sa/cards" />
         </Helmet>
         {/* نسخة الموبايل تجلب بياناتها بنفسها */}
@@ -256,7 +255,6 @@ const CardsPage = () => {
   return (
     <>
       <Helmet>
-        <title>{t("cardsPage.pageTitle")}</title>
         <link rel="canonical" href="https://mukafaat.com.sa/cards" />
       </Helmet>
 

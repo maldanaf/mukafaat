@@ -462,7 +462,7 @@ const SuccessPage: React.FC = () => {
       <Helmet>
         <title>
           {t("offerCheckoutSuccess.payment_success_title")} #
-          {order.orderNumber ?? order.id} | Mokafaat
+          {order.orderNumber ?? order.id}
         </title>
       </Helmet>
 
