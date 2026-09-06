@@ -34,7 +34,8 @@ const MobileTopBar: React.FC = () => {
     if (!q) return;
     setSearchOpen(false);
     setQuery("");
-    navigate(`/offers?search=${encodeURIComponent(q)}`);
+    // المتاجر وجهة البحث كما في نسخة سطح المكتب
+    navigate(`/stores?search=${encodeURIComponent(q)}`);
   };
 
   return (

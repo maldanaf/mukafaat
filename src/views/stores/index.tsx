@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useParams, useNavigate } from "@/lib/router-compat";
+import { useParams, useNavigate, useSearchParams } from "@/lib/router-compat";
 import { useTranslation } from "react-i18next";
 import { FiSearch, FiX, FiGrid } from "react-icons/fi";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
@@ -61,8 +61,18 @@ function pick<T>(res: unknown, ...keys: string[]): T[] {
 const StoresPage: React.FC = () => {
   const { t } = useTranslation();
 
-  const [searchInput, setSearchInput] = useState("");
-  const [search, setSearch] = useState("");
+  /**
+   * البحث يبدأ من الرابط.
+   *
+   * بحث الرئيسية يقود إلى `/stores?search=...`، وبلا قراءة الرابط
+   * كان يصل الزائر لصفحة متاجر كاملة وحقل بحث فارغ — كأن بحثه ضاع.
+   * وهو كذلك يجعل نتيجة البحث رابطاً يُشارَك.
+   */
+  const [searchParams] = useSearchParams();
+  const initialSearch = searchParams.get("search")?.trim() ?? "";
+
+  const [searchInput, setSearchInput] = useState(initialSearch);
+  const [search, setSearch] = useState(initialSearch);
   const [page, setPage] = useState(1);
 
   /**
@@ -85,6 +95,18 @@ const StoresPage: React.FC = () => {
     const id = setTimeout(() => setSearch(searchInput.trim()), 350);
     return () => clearTimeout(id);
   }, [searchInput]);
+
+  /**
+   * بحثٌ جديد من الرئيسية والصفحة مفتوحة أصلاً.
+   *
+   * التنقّل بين رابطين لنفس الصفحة لا يعيد التركيب، فقيمة البداية
+   * وحدها تُبقي الحقل على البحث القديم — وكذلك عند الرجوع للخلف.
+   */
+  useEffect(() => {
+    const fromUrl = searchParams.get("search")?.trim() ?? "";
+    setSearchInput((current) => (current === fromUrl ? current : fromUrl));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   /** أي تغيير في الفلاتر يبدأ الترقيم من جديد */
   useEffect(() => {

@@ -56,10 +56,16 @@ const SearchBar: React.FC<Props> = ({ cities, pool, overlap = false }) => {
     };
   }, [showResults]);
 
+  /**
+   * البحث يقود إلى المتاجر لا إلى العروض.
+   *
+   * المتجر صار وحدة التصفّح الأولى في المنصة، والزائر يكتب اسم متجر
+   * غالباً — فكانت النتيجة صفحة عروض تُخفي المتجر الذي طلبه.
+   */
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     const q = query.trim();
-    navigate(q ? `/offers?search=${encodeURIComponent(q)}` : "/offers");
+    navigate(q ? `/stores?search=${encodeURIComponent(q)}` : "/stores");
   };
 
   const activeCity = cities.find((c) => c.id === cityId);

@@ -194,7 +194,7 @@ const MobileHome: React.FC<Props> = ({ home, isLoading = false }) => {
 
           <button
             type="button"
-            onClick={() => navigate("/offers")}
+            onClick={() => navigate("/stores")}
             className={`flex min-h-[50px] w-full items-center gap-2.5 rounded-mk-md bg-white px-4 text-start text-[13.5px] font-medium text-mk-faint shadow-mk-float active:scale-[0.99] ${FOCUS}`}
           >
             <LuSearch size={18} className="shrink-0 text-mk-accent" aria-hidden />
