@@ -188,9 +188,9 @@ const QrLandingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-mk-bg pb-16">
       <ChangePageTitle
-        pageTitle="عروض قريبة منك | مكافآت"
+        pageTitle={t("ui.t_f1bada", "عروض قريبة منك | مكافآت")}
         path="/qr"
-        description="امسح كود مكافآت لتظهر لك عروض المتاجر القريبة من مكانك."
+        description={t("ui.t_4d1d3a", "امسح كود مكافآت لتظهر لك عروض المتاجر القريبة من مكانك.")}
       />
 
       {/* ===== البانر التسويقي ===== */}

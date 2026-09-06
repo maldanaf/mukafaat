@@ -443,9 +443,9 @@ const RestaurantDetailsPage = () => {
     return (
       <div className={`${CONTAINER} flex min-h-[60vh] items-center justify-center py-16`}>
         <EmptyState
-          title={isRTL ? "التاجر غير موجود" : "Merchant not found"}
+          title={t("offersPage.t_a2b7b2", "التاجر غير موجود")}
           description=""
-          actionLabel={isRTL ? "العودة للعروض" : "Back to Offers"}
+          actionLabel={t("offersPage.t_c84b48", "العودة للعروض")}
           actionTo="/offers"
           className="w-full max-w-lg"
         />
@@ -851,13 +851,13 @@ const RestaurantDetailsPage = () => {
             {/* التبويبات — شرائح بنفسجية واضحة */}
             <div
               role="tablist"
-              aria-label={isRTL ? "أقسام المتجر" : "Store sections"}
+              aria-label={t("offersPage.t_6a972c", "أقسام المتجر")}
               className="mb-6 flex w-fit max-w-full gap-1 overflow-x-auto rounded-mk-md border border-mk-border bg-white p-1 shadow-mk-card"
             >
               {([
                 {
                   key: "offers" as const,
-                  label: t("home.navbar.offers", isRTL ? "العروض" : "Offers"),
+                  label: t("home.navbar.offers", t("notFound.t_7a56a6", "العروض")),
                   count: restaurant.offers.length,
                 },
                 {
@@ -899,13 +899,13 @@ const RestaurantDetailsPage = () => {
             {activeTab === "offers" && isComingSoon && (
               <EmptyState
                 icon={<FiClock />}
-                title={isRTL ? "قريباً على مكافآت" : "Coming soon to Mukafaat"}
+                title={t("offersPage.t_4f3870", "قريباً على مكافآت")}
                 description={
                   isRTL
                     ? `عروض وخصومات ${restaurant.name.ar} ستتوفر قريباً — تابعنا ليصلك كل جديد.`
                     : `${restaurant.name.en}'s offers are launching soon — stay tuned.`
                 }
-                actionLabel={t("offerDetail.back_to_offers", isRTL ? "كل العروض" : "All offers")}
+                actionLabel={t("offerDetail.back_to_offers", t("offersPage.t_702547", "كل العروض"))}
                 actionTo="/offers"
               />
             )}
@@ -925,9 +925,9 @@ const RestaurantDetailsPage = () => {
                 </div>
               ) : (
                 <EmptyState
-                  title={t("ui.empty.offers", isRTL ? "لا توجد عروض حالياً" : "No offers right now")}
+                  title={t("ui.empty.offers", t("offersPage.t_c1c1b7", "لا توجد عروض حالياً"))}
                   description=""
-                  actionLabel={t("offerDetail.back_to_offers", isRTL ? "كل العروض" : "All offers")}
+                  actionLabel={t("offerDetail.back_to_offers", t("offersPage.t_702547", "كل العروض"))}
                   actionTo="/offers"
                 />
               ))}
@@ -968,7 +968,7 @@ const RestaurantDetailsPage = () => {
                 </div>
               ) : (
                 <EmptyState
-                  title={isRTL ? "لا توجد منتجات حالياً" : "No products available"}
+                  title={t("offersPage.t_29cacb", "لا توجد منتجات حالياً")}
                   description=""
                 />
               ))}

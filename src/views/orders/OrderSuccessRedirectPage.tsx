@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "i18next";
 import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams, useNavigate } from "@/lib/router-compat";
 import { usePaymentCallback } from "@hooks/api/useMokafaatQueries";
@@ -119,10 +120,10 @@ const OrderSuccessRedirectPage: React.FC = () => {
           </svg>
         </div>
         <h1 className="text-2xl md:text-3xl font-bold text-white text-center mb-2">
-          {isRTL ? "تمت العملية بنجاح" : "Success"}
+          {t("orders.t_97bd54", "تمت العملية بنجاح")}
         </h1>
         <p className="text-white/80 text-center mb-8">
-          {isRTL ? "تمت الدفعة بنجاح" : "Payment completed successfully"}
+          {t("orders.t_62c626", "تمت الدفعة بنجاح")}
         </p>
         {message && (
           <p className="text-white/60 text-sm mb-6">
@@ -138,7 +139,7 @@ const OrderSuccessRedirectPage: React.FC = () => {
             }}
             className="px-8 py-3 rounded-full bg-white text-mk-text font-medium hover:bg-mk-tint2 transition-colors"
           >
-            {isRTL ? "عرض الطلب" : "View Order"}
+            {t("orders.t_eecaab", "عرض الطلب")}
           </button>
         ) : showFallbackButton ? (
           <button
@@ -149,12 +150,12 @@ const OrderSuccessRedirectPage: React.FC = () => {
             }}
             className="px-8 py-3 rounded-full bg-white text-mk-text font-medium hover:bg-mk-tint2 transition-colors"
           >
-            {isRTL ? "عرض الطلبات" : "View Orders"}
+            {t("orders.t_9fe617", "عرض الطلبات")}
           </button>
         ) : (
           <div className="flex items-center gap-2 text-white/70">
             <span className="inline-block w-5 h-5 border-2 border-white/50 border-t-white rounded-full animate-spin" />
-            <span>{isRTL ? "جاري التحويل..." : "Redirecting..."}</span>
+            <span>{t("orders.t_02f70c", "جاري التحويل...")}</span>
           </div>
         )}
       </div>
@@ -165,7 +166,7 @@ const OrderSuccessRedirectPage: React.FC = () => {
     <div className="min-h-screen bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] flex items-center justify-center">
       <div className="flex items-center gap-2 text-white/80">
         <span className="inline-block w-6 h-6 border-2 border-white/50 border-t-white rounded-full animate-spin" />
-        <span>{isRTL ? "جاري التحويل..." : "Redirecting..."}</span>
+        <span>{t("orders.t_02f70c", "جاري التحويل...")}</span>
       </div>
     </div>
   );

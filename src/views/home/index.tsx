@@ -265,12 +265,12 @@ const HomePage = () => {
         <link rel="canonical" href="https://mukafaat.com.sa" />
         <meta
           name="description"
-          content="مكافآت — منصة العروض والخصومات والكوبونات والبطاقات الرقمية في المملكة العربية السعودية."
+          content={t("ui.t_1616ec", "مكافآت — منصة العروض والخصومات والكوبونات والبطاقات الرقمية في المملكة العربية السعودية.")}
         />
         <meta property="og:title" content={`Mukafaat - ${t("home.navbar.home")}`} />
         <meta
           property="og:description"
-          content="مكافآت — منصة العروض والخصومات والكوبونات والبطاقات الرقمية في المملكة العربية السعودية."
+          content={t("ui.t_1616ec", "مكافآت — منصة العروض والخصومات والكوبونات والبطاقات الرقمية في المملكة العربية السعودية.")}
         />
       </Helmet>
 

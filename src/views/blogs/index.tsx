@@ -165,7 +165,7 @@ const BlogsPage: React.FC = () => {
       />
 
       <PageHero
-        title={isRTL ? "مدونة مكافآت" : "Mukafaat Blog"}
+        title={t("blogs.t_426d44", "مدونة مكافآت")}
         eyebrow={t("blogsPage.eyebrow", "اقرأ واستفد")}
         subtitle={t(
           "blogsPage.subtitle",
@@ -226,7 +226,7 @@ const BlogsPage: React.FC = () => {
             {t("blogsPage.showing", {
               shown: items.length,
               total: meta.total,
-              defaultValue: "{{shown}} من {{total}} مقالة",
+              defaultValue: t("blogs.t_6d4b76", "{{shown}} من {{total}} مقالة"),
             })}
           </span>
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "i18next";
 import React, { useState, useEffect, useRef } from "react";
 import {
   useParams,
@@ -187,7 +188,7 @@ const PaymentPage: React.FC = () => {
       elementSelector: ".mysr-form-offer",
       applePay: { country: "SA", label: config.description },
     }).catch(() => {
-      setErrorMsg(isRTL ? "تعذر تحميل بوابة الدفع. حدّث الصفحة أو تواصل مع الدعم." : "Failed to load payment gateway. Refresh or contact support.");
+      setErrorMsg(t("payment.t_a2f04e", "تعذر تحميل بوابة الدفع. حدّث الصفحة أو تواصل مع الدعم."));
       setShowMoyasarForm(false);
       moyasarInitedRef.current = false;
     });
@@ -209,13 +210,13 @@ const PaymentPage: React.FC = () => {
         ) : (
           <div className="text-center">
             <h1 className="text-2xl font-bold text-mk-text mb-4">
-              {isRTL ? "العرض غير موجود" : "Offer not found"}
+              {t("payment.t_8084a7", "العرض غير موجود")}
             </h1>
             <button
               onClick={() => navigate("/offers")}
               className="px-6 py-3 bg-[#400198] text-white rounded-mk-sm hover:bg-[#54015d] transition-colors"
             >
-              {isRTL ? "العودة للعروض" : "Back to Offers"}
+              {t("offersPage.t_c84b48", "العودة للعروض")}
             </button>
           </div>
         )}
@@ -230,11 +231,11 @@ const PaymentPage: React.FC = () => {
   const remainingAfterWallet = Math.max(0, effectivePrice - walletBalance);
 
   const paymentMethods = [
-    { id: "card", name: { ar: "بطاقة ائتمانية", en: "Credit Card" }, icons: [Visa, Master], disabled: false },
+    { id: "card", name: { ar: t("payment.t_2651e9", "بطاقة ائتمانية"), en: "Credit Card" }, icons: [Visa, Master], disabled: false },
     ...(applePayReady
-      ? [{ id: "applepay", name: { ar: "آبل باي", en: "Apple Pay" }, icons: [ApplePay], disabled: false }]
+      ? [{ id: "applepay", name: { ar: t("payment.t_60a3d5", "آبل باي"), en: "Apple Pay" }, icons: [ApplePay], disabled: false }]
       : []),
-    { id: "mada", name: { ar: "مدى", en: "Mada" }, icons: [Mada], disabled: false },
+    { id: "mada", name: { ar: t("payment.t_960cc4", "مدى"), en: "Mada" }, icons: [Mada], disabled: false },
     // تمارا: خيار إضافي يظهر عند تفعيله من اللوحة وكون المبلغ داخل حدود الحساب
     ...(tamaraAvailable
       ? [{
@@ -250,7 +251,7 @@ const PaymentPage: React.FC = () => {
     {
       id: "wallet",
       name: {
-        ar: walletCoversAll ? `المحفظة (${walletBalance} ر.س)` : walletPartial ? `المحفظة (${walletBalance} ر.س) + بطاقة` : `المحفظة (0 ر.س)`,
+        ar: walletCoversAll ? `المحفظة (${walletBalance} ر.س)` : walletPartial ? `المحفظة (${walletBalance} ر.س) + بطاقة` : t("payment.t_abefdc", `المحفظة (0 ر.س)`),
         en: walletCoversAll ? `Wallet (${walletBalance} SAR)` : walletPartial ? `Wallet (${walletBalance} SAR) + Card` : `Wallet (0 SAR)`,
       },
       icons: [Wallet],
@@ -297,7 +298,7 @@ const PaymentPage: React.FC = () => {
       orderId,
       returnUrl: buildOfferReturnUrl(orderId, "tamara"),
     }).then((r) => {
-      if (!r.ok) setErrorMsg(r.error || (isRTL ? "تعذّر بدء الدفع عبر تمارا" : "Failed to start Tamara payment"));
+      if (!r.ok) setErrorMsg(r.error || (t("payment.t_bc5705", "تعذّر بدء الدفع عبر تمارا")));
     });
 
   const submitPayment = async (useWalletPayment = false) => {
@@ -306,7 +307,7 @@ const PaymentPage: React.FC = () => {
     // فقط نمنع لو العرض حصري للمشتركين وما فيه سعر لغير المشتركين
     const requiresSub = offer.requiresSubscription && (offer.nonSubscriberPrice == null || offer.nonSubscriberPrice <= 0);
     if (!isSubscribed && requiresSub) {
-      setErrorMsg(isRTL ? "يجب أن يكون لديك اشتراك فعال للحصول على هذا العرض. يرجى الاشتراك أولاً." : "You need an active subscription for this offer. Please subscribe first.");
+      setErrorMsg(t("payment.t_8d2cc4", "يجب أن يكون لديك اشتراك فعال للحصول على هذا العرض. يرجى الاشتراك أولاً."));
       return;
     }
 
@@ -317,13 +318,13 @@ const PaymentPage: React.FC = () => {
         const validateRes = await api.post(`/api/orders/${orderIdFromState}/validate-payment`);
         const vData = (validateRes.data as Record<string, unknown>);
         if (vData.status === false) {
-          setErrorMsg(String(vData.msg || (isRTL ? "لا يمكن إتمام الدفع" : "Cannot complete payment")));
+          setErrorMsg(String(vData.msg || (t("payment.t_bbd210", "لا يمكن إتمام الدفع"))));
           return;
         }
       } catch (err) {
         const errData = (err as { response?: { data?: { msg?: string; status?: boolean } } })?.response?.data;
         if (errData?.status === false) {
-          setErrorMsg(String(errData.msg || (isRTL ? "لا يمكن إتمام الدفع" : "Cannot complete payment")));
+          setErrorMsg(String(errData.msg || (t("payment.t_bbd210", "لا يمكن إتمام الدفع"))));
           return;
         }
       }
@@ -338,7 +339,7 @@ const PaymentPage: React.FC = () => {
         const d = (res.data as Record<string, unknown>) ?? {};
         if (d.status === false) {
           setErrorMsg(
-            String(d.msg || (isRTL ? "فشل الدفع بالمحفظة" : "Wallet payment failed")),
+            String(d.msg || (t("payment.t_957d75", "فشل الدفع بالمحفظة"))),
           );
           return;
         }
@@ -348,7 +349,7 @@ const PaymentPage: React.FC = () => {
         const errData =
           (err as { response?: { data?: { msg?: string } } })?.response?.data;
         setErrorMsg(
-          String(errData?.msg || (isRTL ? "فشل الدفع بالمحفظة" : "Wallet payment failed")),
+          String(errData?.msg || (t("payment.t_957d75", "فشل الدفع بالمحفظة"))),
         );
         return;
       }
@@ -375,7 +376,7 @@ const PaymentPage: React.FC = () => {
           returnUrl: buildOfferReturnUrl(orderIdFromState),
         });
         if (!r.ok) {
-          setErrorMsg(r.error || (isRTL ? "تعذّر بدء عملية الدفع" : "Failed to start payment"));
+          setErrorMsg(r.error || (t("payment.t_50ef45", "تعذّر بدء عملية الدفع")));
         }
         return;
       }
@@ -397,7 +398,7 @@ const PaymentPage: React.FC = () => {
             currency: (paymentInfoFromState.currency as string) || "SAR",
             description:
               (paymentInfoFromState.description as string) ||
-              (isRTL ? "إتمام الدفع للطلب" : "Complete order payment"),
+              (t("payment.t_0deaaa", "إتمام الدفع للطلب")),
             publishableKey,
             callbackUrl,
             metadata: (paymentInfoFromState.metadata as Record<string, unknown>) || {},
@@ -411,9 +412,7 @@ const PaymentPage: React.FC = () => {
         }
       }
       setErrorMsg(
-        isRTL
-          ? "لا تتوفر بيانات الدفع لهذا الطلب. ارجع لصفحة العرض واضغط على شراء مرة أخرى."
-          : "Payment info is not available for this order. Go back and click Buy again.",
+        t("payment.t_24d450", "لا تتوفر بيانات الدفع لهذا الطلب. ارجع لصفحة العرض واضغط على شراء مرة أخرى."),
       );
       return;
     }
@@ -434,7 +433,7 @@ const PaymentPage: React.FC = () => {
           const data = response?.data ?? res;
           const root = (data as Record<string, unknown>) ?? {};
           if (root.status === false) {
-            const msg = (root.msg as string) || (root.message as string) || (isRTL ? "فشل إنشاء الطلب" : "Failed to create order");
+            const msg = (root.msg as string) || (root.message as string) || (t("payment.t_cdf331", "فشل إنشاء الطلب"));
             const errNum = root.errNum as string | undefined;
             if (errNum === "E005") {
               queryClient.invalidateQueries({ queryKey: mokafaatKeys.subscriptionStatus });
@@ -474,9 +473,7 @@ const PaymentPage: React.FC = () => {
               const publishableKey = (paymentInfo?.publishable_key as string | undefined) || "";
               if (!publishableKey || amountHalala < 100) {
                 setErrorMsg(
-                  isRTL
-                    ? "بيانات الدفع غير مكتملة. تواصل مع الدعم."
-                    : "Incomplete payment information. Please contact support.",
+                  t("payment.t_143241", "بيانات الدفع غير مكتملة. تواصل مع الدعم."),
                 );
                 return;
               }
@@ -485,7 +482,7 @@ const PaymentPage: React.FC = () => {
                 currency: (paymentInfo?.currency as string) || "SAR",
                 description:
                   (paymentInfo?.description as string) ||
-                  (isRTL ? "إتمام الدفع للطلب" : "Complete order payment"),
+                  (t("payment.t_0deaaa", "إتمام الدفع للطلب")),
                 publishableKey,
                 callbackUrl: buildMoyasarCallbackUrl(orderId),
                 metadata: (paymentInfo?.metadata as Record<string, unknown>) || {},
@@ -508,7 +505,7 @@ const PaymentPage: React.FC = () => {
                 orderId,
                 returnUrl: buildOfferReturnUrl(orderId),
               }).then((r) => {
-                if (!r.ok) setErrorMsg(r.error || (isRTL ? "تعذّر بدء عملية الدفع" : "Failed to start payment"));
+                if (!r.ok) setErrorMsg(r.error || (t("payment.t_50ef45", "تعذّر بدء عملية الدفع")));
               });
               return;
             }
@@ -523,7 +520,7 @@ const PaymentPage: React.FC = () => {
                   orderId,
                   returnUrl: buildOfferReturnUrl(orderId),
                 }).then((r) => {
-                  if (!r.ok) setErrorMsg(r.error || (isRTL ? "تعذّر بدء عملية الدفع" : "Failed to start payment"));
+                  if (!r.ok) setErrorMsg(r.error || (t("payment.t_50ef45", "تعذّر بدء عملية الدفع")));
                 });
               } else {
                 startMoyasar();
@@ -536,11 +533,11 @@ const PaymentPage: React.FC = () => {
             window.location.href = `/orders/${orderId}`;
             return;
           }
-          setErrorMsg(isRTL ? "لم يتم إرجاع رابط الدفع. جرّب مرة أخرى." : "Payment link was not returned. Please try again.");
+          setErrorMsg(t("payment.t_1e80a8", "لم يتم إرجاع رابط الدفع. جرّب مرة أخرى."));
         },
         onError: (err) => {
           if (err instanceof AxiosError && err.response?.status === 401) {
-            setErrorMsg(isRTL ? "يجب تسجيل الدخول" : "Login required");
+            setErrorMsg(t("payment.t_043553", "يجب تسجيل الدخول"));
             return;
           }
           const data = (err as AxiosError<{ msg?: string; message?: string; errNum?: string }>)?.response?.data;
@@ -554,7 +551,7 @@ const PaymentPage: React.FC = () => {
             setErrorMsg(String(data.msg || data.message));
             return;
           }
-          setErrorMsg(isRTL ? "فشل إنشاء الطلب" : "Failed to create order");
+          setErrorMsg(t("payment.t_cdf331", "فشل إنشاء الطلب"));
         },
       }
     );
@@ -572,7 +569,7 @@ const PaymentPage: React.FC = () => {
             className="mb-5 inline-flex w-fit items-center gap-2 self-start rounded-full border border-white/25 bg-white/10 px-4 py-2 text-white transition-colors hover:bg-white/20"
           >
             <FiArrowLeft className="text-lg rtl:rotate-180" />
-            <span className="text-sm">{isRTL ? "العودة" : "Back"}</span>
+            <span className="text-sm">{t("cards.t_5e987a", "العودة")}</span>
           </button>
 
           {/* Restaurant Logo */}
@@ -586,15 +583,13 @@ const PaymentPage: React.FC = () => {
 
           {/* Title */}
           <h1 className="text-2xl md:text-2xl font-bold mb-2 tracking-tight leading-none text-white">
-            {isRTL ? "إتمام الدفع" : "Complete Payment"}
+            {t("payment.t_79986e", "إتمام الدفع")}
           </h1>
 
           {/* Description */}
           <p className="text-white/80 text-base mb-4">
             {stripHtml(
-              isRTL
-                ? "إتمام عملية الدفع للعرض المحدد"
-                : "Complete payment for the selected offer"
+              t("payment.t_cc0aeb", "إتمام عملية الدفع للعرض المحدد")
             )}
           </p>
 
@@ -604,14 +599,14 @@ const PaymentPage: React.FC = () => {
               to="/"
               className="text-white hover:text-mk-lilac transition-colors cursor-pointer text-xs"
             >
-              {isRTL ? "الرئيسية" : "Home"}
+              {t("ui.t_b986d8", "الرئيسية")}
             </Link>
             <span className="text-white text-xs mx-2">|</span>
             <Link
               to="/offers"
               className="text-white hover:text-mk-lilac transition-colors cursor-pointer text-xs"
             >
-              {isRTL ? "العروض" : "Offers"}
+              {t("notFound.t_7a56a6", "العروض")}
             </Link>
             <span className="text-white text-xs mx-2">|</span>
             <Link
@@ -629,7 +624,7 @@ const PaymentPage: React.FC = () => {
             </Link>
             <span className="text-white text-xs mx-2">|</span>
             <span className="text-[#fd671a] font-medium text-xs">
-              {isRTL ? "الدفع" : "Payment"}
+              {t("payment.t_bdf621", "الدفع")}
             </span>
           </div>
         </div>
@@ -650,7 +645,7 @@ const PaymentPage: React.FC = () => {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-mk-md p-6 sticky top-8">
               <h2 className="text-lg font-semibold text-mk-text mb-4">
-                {isRTL ? "ملخص الطلب" : "Order Summary"}
+                {t("payment.t_9ebdd7", "ملخص الطلب")}
               </h2>
 
               {/* Company Logo */}
@@ -695,7 +690,7 @@ const PaymentPage: React.FC = () => {
               <div className="space-y-2 mb-4">
                 <div className="flex justify-between text-sm">
                   <span className="text-mk-muted">
-                    {isRTL ? "السعر الأصلي" : "Original Price"}
+                    {t("payment.t_351ce2", "السعر الأصلي")}
                   </span>
                   <span className="flex items-center gap-1">
                     {offer.originalPrice}
@@ -704,7 +699,7 @@ const PaymentPage: React.FC = () => {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-mk-muted">
-                    {isRTL ? "الخصم" : "Discount"}
+                    {t("payment.t_57092d", "الخصم")}
                   </span>
                   <span className="text-green-600">
                     -{offer.discountPercentage}%
@@ -712,7 +707,7 @@ const PaymentPage: React.FC = () => {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-mk-muted">
-                    {isRTL ? "السعر بعد الخصم" : "Discounted Price"}
+                    {t("payment.t_5640e8", "السعر بعد الخصم")}
                   </span>
                   <span className="flex items-center gap-1">
                     {offer.discountPrice}
@@ -722,7 +717,7 @@ const PaymentPage: React.FC = () => {
                 {offer.platformPrice != null && offer.platformPrice !== offer.discountPrice && (
                   <div className="flex justify-between text-sm">
                     <span className="text-mk-muted">
-                      {isRTL ? "المبلغ على المنصة" : "Platform price"}
+                      {t("payment.t_29cb90", "المبلغ على المنصة")}
                     </span>
                     <span className="flex items-center gap-1 font-medium">
                       {unitPrice}
@@ -747,18 +742,18 @@ const PaymentPage: React.FC = () => {
                 {discount ? (
                   <div className="space-y-1 mb-2">
                     <div className="flex justify-between text-sm text-mk-muted">
-                      <span>{isRTL ? "المجموع قبل الكود" : "Subtotal"}</span>
+                      <span>{t("payment.t_2c9da0", "المجموع قبل الكود")}</span>
                       <span className="line-through">{totalPrice} {isRTL ? "ر.س" : "SAR"}</span>
                     </div>
                     <div className="flex justify-between text-sm text-emerald-600">
-                      <span>{isRTL ? "خصم الكود" : "Code discount"}</span>
+                      <span>{t("payment.t_14f917", "خصم الكود")}</span>
                       <span>− {discount.discount_amount} {isRTL ? "ر.س" : "SAR"}</span>
                     </div>
                   </div>
                 ) : null}
                 <div className="flex justify-between items-center">
                   <span className="font-semibold text-mk-text">
-                    {isRTL ? "المجموع" : "Total"}
+                    {t("payment.t_1e0455", "المجموع")}
                   </span>
                   <span className="text-xl font-bold text-[#400198] flex items-center gap-1">
                     {(discount ? discount.final_amount : totalPrice) > 0 ? (
@@ -768,7 +763,7 @@ const PaymentPage: React.FC = () => {
                       </>
                     ) : (
                       <span className="text-green-600">
-                        {isRTL ? "بدون رسوم" : "No fees"}
+                        {t("payment.t_2d46b6", "بدون رسوم")}
                       </span>
                     )}
                   </span>
@@ -783,7 +778,7 @@ const PaymentPage: React.FC = () => {
               {showMoyasarForm ? (
                 <>
                   <h2 className="text-lg font-semibold text-mk-text mb-6">
-                    {isRTL ? "إتمام الدفع عبر ميسر" : "Complete payment via Moyasar"}
+                    {t("payment.t_f50f38", "إتمام الدفع عبر ميسر")}
                   </h2>
                   {errorMsg && (
                     <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-mk-sm text-red-700 text-sm">
@@ -791,7 +786,7 @@ const PaymentPage: React.FC = () => {
                     </div>
                   )}
                   <p className="text-mk-muted mb-4">
-                    {isRTL ? "أدخل بيانات البطاقة أدناه:" : "Enter your card details below:"}
+                    {t("payment.t_ae9576", "أدخل بيانات البطاقة أدناه:")}
                   </p>
                   <div className="mysr-form-offer min-h-[200px]" />
                   <button
@@ -804,13 +799,13 @@ const PaymentPage: React.FC = () => {
                     }}
                     className="mt-4 px-4 py-2 border border-mk-border-2 text-mk-text-strong rounded-mk-sm hover:bg-mk-tint3"
                   >
-                    {isRTL ? "العودة لاختيار طريقة الدفع" : "Back to payment methods"}
+                    {t("payment.t_0157bc", "العودة لاختيار طريقة الدفع")}
                   </button>
                 </>
               ) : (
                 <>
                   <h2 className="text-lg font-semibold text-mk-text mb-6">
-                    {isRTL ? "اختر طريقة الدفع" : "Choose Payment Method"}
+                    {t("payment.t_c073b7", "اختر طريقة الدفع")}
                   </h2>
 
                   {errorMsg && (
@@ -827,7 +822,7 @@ const PaymentPage: React.FC = () => {
                         }
                         className="mt-3 text-[#400198] font-medium underline hover:no-underline block"
                       >
-                        {isRTL ? "الذهاب لصفحة الاشتراك" : "Go to subscription page"}
+                        {t("payment.t_6e9af0", "الذهاب لصفحة الاشتراك")}
                       </button>
                     </div>
                   )}
@@ -866,12 +861,12 @@ const PaymentPage: React.FC = () => {
                             )}
                             {method.id === "wallet" && walletCoversAll && (
                               <span className="text-xs text-green-600">
-                                {isRTL ? "الرصيد كافي لدفع المبلغ كاملاً" : "Balance covers full amount"}
+                                {t("payment.t_c296bd", "الرصيد كافي لدفع المبلغ كاملاً")}
                               </span>
                             )}
                             {method.id === "wallet" && walletEmpty && (
                               <span className="text-xs text-red-500">
-                                {isRTL ? "لا يوجد رصيد في المحفظة" : "No wallet balance"}
+                                {t("payment.t_f94f3e", "لا يوجد رصيد في المحفظة")}
                               </span>
                             )}
                           </div>
@@ -903,7 +898,7 @@ const PaymentPage: React.FC = () => {
                   {createOrder.isPending && (
                     <div className="flex items-center justify-center gap-2 text-mk-muted py-4">
                       <LoadingSpinner />
-                      <span>{isRTL ? "جاري معالجة الدفع..." : "Processing payment..."}</span>
+                      <span>{t("payment.t_1e8456", "جاري معالجة الدفع...")}</span>
                     </div>
                   )}
                 </>

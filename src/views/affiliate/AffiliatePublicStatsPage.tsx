@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "i18next";
 import React, { useEffect, useState } from "react";
 import { useParams } from "@/lib/router-compat";
 import { Helmet } from "@/lib/helmet-compat";
@@ -111,12 +112,12 @@ const AffiliatePublicStatsPage: React.FC = () => {
           setData(body.data);
           setError(null);
         } else {
-          setError(body?.msg || "تعذّر تحميل البيانات");
+          setError(body?.msg || t("ui.t_b71ff7", "تعذّر تحميل البيانات"));
         }
       })
       .catch((err) => {
         if (cancelled) return;
-        const msg = err?.response?.data?.msg || "تعذّر تحميل البيانات";
+        const msg = err?.response?.data?.msg || t("ui.t_b71ff7", "تعذّر تحميل البيانات");
         setError(msg);
       })
       .finally(() => {
@@ -150,7 +151,7 @@ const AffiliatePublicStatsPage: React.FC = () => {
             borderRadius: 12,
           }}
         >
-          {error || "خطأ غير معروف"}
+          {error || t("ui.t_520e39", "خطأ غير معروف")}
         </div>
       </div>
     );
@@ -195,25 +196,25 @@ const AffiliatePublicStatsPage: React.FC = () => {
           {/* KPI cards */}
           <div style={styles.statsGrid}>
             <KpiCard
-              label="مرات الاستخدام"
+              label={t("ui.t_0f331f", "مرات الاستخدام")}
               value={fmtInt(stats.total_usages)}
               icon={<FiShoppingBag size={28} color="#400198" />}
             />
             <KpiCard
-              label="إجمالي المبيعات"
+              label={t("ui.t_7db74e", "إجمالي المبيعات")}
               value={fmt(stats.total_sales)}
               hint="ر.س"
               icon={<FiTrendingUp size={28} color="#16a34a" />}
             />
             <KpiCard
-              label="إجمالي العمولة"
+              label={t("ui.t_1d353b", "إجمالي العمولة")}
               value={fmt(stats.total_commission)}
               hint="ر.س"
               valueColor="#16a34a"
               icon={<FiDollarSign size={28} color="#ca8a04" />}
             />
             <KpiCard
-              label="قيد التسوية"
+              label={t("ui.t_0685e5", "قيد التسوية")}
               value={fmt(stats.pending_commission)}
               hint={`ر.س · مدفوع: ${fmt(stats.paid_commission)}`}
               valueColor="#ca8a04"

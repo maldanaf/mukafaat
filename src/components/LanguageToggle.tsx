@@ -54,7 +54,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
       code: "ur",
       name: "اردو",
       flag: "🇵🇰",
-      country: "پاکستان",
+      country: t("ui.t_a77b0d", "پاکستان"),
       countryCode: "pk",
       image: UrduFlag,
     },

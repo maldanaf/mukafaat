@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "i18next";
 import React from "react";
 import {
   formatCardNumber,
@@ -12,22 +13,28 @@ import {
   validateCardholderName,
 } from "@utils/cardInput";
 
-const errorMessagesEn: Record<string, string> = {
-  "رقم البطاقة قصير": "Card number is too short",
-  "رقم البطاقة طويل": "Card number is too long",
-  "رقم البطاقة غير صالح": "Invalid card number",
-  "أدخل MM/YY": "Enter MM/YY",
-  "شهر غير صالح": "Invalid month",
-  "البطاقة منتهية الصلاحية": "Card has expired",
-  "CVV غير مكتمل": "CVV incomplete",
-  "CVV غير صالح": "Invalid CVV",
-  "أدخل اسم حامل البطاقة": "Enter cardholder name",
-  "الاسم قصير جداً": "Name is too short",
+/**
+ * رسائل تحقّق البطاقة تصل عربية من `cardInput.ts`.
+ *
+ * كانت تُترجَم بخريطة عربي→إنجليزي فقط، فتبقى عربية في الأوردو
+ * والهندي. صارت تُترجم بمفاتيح i18n فتغطّي اللغات الأربع.
+ */
+const errorKeys: Record<string, string> = {
+  "رقم البطاقة قصير": "cards.t_e965eb",
+  "رقم البطاقة طويل": "cards.t_8996ce",
+  "رقم البطاقة غير صالح": "cards.t_67f9cb",
+  "أدخل MM/YY": "cards.t_c1657e",
+  "شهر غير صالح": "cards.t_51ba58",
+  "البطاقة منتهية الصلاحية": "cards.t_8b31ee",
+  "CVV غير مكتمل": "cards.t_7ed28d",
+  "CVV غير صالح": "cards.t_257a1f",
+  "أدخل اسم حامل البطاقة": "cards.t_893698",
+  "الاسم قصير جداً": "cards.t_dd829b",
 };
 
-function translateError(msg: string, isRTL: boolean): string {
-  if (!isRTL && errorMessagesEn[msg]) return errorMessagesEn[msg];
-  return msg;
+function translateError(msg: string, _isRTL: boolean): string {
+  const key = errorKeys[msg];
+  return key ? t(key, msg) : msg;
 }
 
 export interface CardNumberInputProps {

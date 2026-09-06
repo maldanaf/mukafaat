@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "i18next";
 import React, { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate, Link } from "@/lib/router-compat";
 import { Helmet } from "@/lib/helmet-compat";
@@ -77,7 +78,7 @@ const OrderActivatePage: React.FC = () => {
   const handleSubmit = () => {
     const fullCode = code.join("");
     if (fullCode.length !== 4) {
-      setErrorMsg(isRTL ? "أدخل الكود المكون من 4 أرقام" : "Enter the 4-digit code");
+      setErrorMsg(t("orders.t_adf332", "أدخل الكود المكون من 4 أرقام"));
       return;
     }
     if (!orderId) return;
@@ -90,17 +91,17 @@ const OrderActivatePage: React.FC = () => {
           const data = res as Record<string, unknown>;
           const root = (data?.data ?? data) as Record<string, unknown>;
           if (root.status === false) {
-            setErrorMsg((root.msg as string) || (isRTL ? "كود خاطئ" : "Wrong code"));
+            setErrorMsg((root.msg as string) || (t("orders.t_758ad6", "كود خاطئ")));
             setCode(["", "", "", ""]);
             inputRefs.current[0]?.focus();
             return;
           }
           setActivated(true);
-          toast.success(isRTL ? "تم تفعيل العرض بنجاح!" : "Offer activated successfully!");
+          toast.success(t("orders.t_83365d", "تم تفعيل العرض بنجاح!"));
         },
         onError: (err: unknown) => {
           const errData = (err as { response?: { data?: { msg?: string; message?: string } } })?.response?.data;
-          setErrorMsg(errData?.msg || errData?.message || (isRTL ? "كود التفعيل غير صحيح" : "Invalid activation code"));
+          setErrorMsg(errData?.msg || errData?.message || (t("orders.t_c977ae", "كود التفعيل غير صحيح")));
           setCode(["", "", "", ""]);
           inputRefs.current[0]?.focus();
         },
@@ -114,10 +115,10 @@ const OrderActivatePage: React.FC = () => {
         style={{ background: "linear-gradient(150deg, #1B1150 0%, #400198 55%, #6703EB 100%)" }}>
         <div className="text-center bg-white/10 rounded-mk-xl p-8 max-w-md mx-4">
           <h2 className="text-xl font-bold text-white mb-4">
-            {isRTL ? "تسجيل الدخول مطلوب" : "Login required"}
+            {t("orders.t_4f66ec", "تسجيل الدخول مطلوب")}
           </h2>
           <Link to="/login" className="bg-white text-mk-primary px-6 py-3 rounded-mk-md font-medium">
-            {isRTL ? "تسجيل الدخول" : "Login"}
+            {t("orders.t_8c6117", "تسجيل الدخول")}
           </Link>
         </div>
       </div>
@@ -144,20 +145,18 @@ const OrderActivatePage: React.FC = () => {
                 <IoCheckmarkCircle className="w-12 h-12 text-green-500" />
               </div>
               <h2 className="text-2xl font-bold text-mk-text mb-2">
-                {isRTL ? "تم تفعيل هذا العرض مسبقاً" : "This offer is already activated"}
+                {t("orders.t_2487f9", "تم تفعيل هذا العرض مسبقاً")}
               </h2>
               {orderData.item?.name && (
                 <p className="text-mk-muted mb-1">{orderData.item.name}</p>
               )}
               {orderData.merchant?.name && (
                 <p className="text-sm text-mk-muted mb-6">
-                  {isRTL ? "لدى" : "at"} {orderData.merchant.name}
+                  {t("orders.t_4be8d4", "لدى")} {orderData.merchant.name}
                 </p>
               )}
               <p className="text-sm text-green-600 bg-green-50 rounded-mk-sm p-3 mb-6">
-                {isRTL
-                  ? "تم استخدام هذا العرض بنجاح. يمكنك مراجعة تفاصيل الطلب أو تصفح عروض أخرى."
-                  : "This offer has been used successfully. You can view order details or browse other offers."}
+                {t("orders.t_f8a5e6", "تم استخدام هذا العرض بنجاح. يمكنك مراجعة تفاصيل الطلب أو تصفح عروض أخرى.")}
               </p>
             </>
           ) : (
@@ -166,18 +165,18 @@ const OrderActivatePage: React.FC = () => {
                 <IoArrowBackOutline className="w-10 h-10 text-red-500" />
               </div>
               <h2 className="text-2xl font-bold text-mk-text mb-4">
-                {isRTL ? "الطلب غير موجود" : "Order not found"}
+                {t("orders.t_6e3a20", "الطلب غير موجود")}
               </h2>
             </>
           )}
           <div className="flex gap-3">
             <button onClick={() => navigate(`/orders/${orderId}`)}
               className="flex-1 py-3 rounded-mk-md bg-[#400198] text-white font-medium hover:bg-[#33007a] transition-colors">
-              {isRTL ? "تفاصيل الطلب" : "Order Details"}
+              {t("orders.t_52ab77", "تفاصيل الطلب")}
             </button>
             <button onClick={() => navigate("/offers")}
               className="flex-1 py-3 rounded-mk-md border border-mk-border-2 text-mk-text-strong font-medium hover:bg-mk-tint3 transition-colors">
-              {isRTL ? "تصفح العروض" : "Browse Offers"}
+              {t("orders.t_d6cd55", "تصفح العروض")}
             </button>
           </div>
         </div>
@@ -190,7 +189,7 @@ const OrderActivatePage: React.FC = () => {
     return (
       <>
         <Helmet>
-          <title>{isRTL ? "تم التفعيل" : "Activated"}</title>
+          <title>{t("orders.t_fd85c4", "تم التفعيل")}</title>
         </Helmet>
         <div className="min-h-screen pt-10 pb-10 flex items-center justify-center px-4"
           style={{ background: "linear-gradient(150deg, #1B1150 0%, #400198 55%, #6703EB 100%)" }}>
@@ -199,29 +198,27 @@ const OrderActivatePage: React.FC = () => {
               <IoCheckmarkCircle className="w-12 h-12 text-green-500" />
             </div>
             <h2 className="text-2xl font-bold text-mk-text mb-2">
-              {isRTL ? "تم تفعيل العرض بنجاح!" : "Offer Activated Successfully!"}
+              {t("orders.t_83365d", "تم تفعيل العرض بنجاح!")}
             </h2>
             <p className="text-mk-muted mb-2">
               {orderData.item?.name || ""}
             </p>
             {orderData.merchant?.name && (
               <p className="text-sm text-mk-muted mb-6">
-                {isRTL ? "لدى" : "at"} {orderData.merchant.name}
+                {t("orders.t_4be8d4", "لدى")} {orderData.merchant.name}
               </p>
             )}
             <p className="text-sm text-green-600 bg-green-50 rounded-mk-sm p-3 mb-6">
-              {isRTL
-                ? "استمتع بعرضك! يمكنك مراجعة تفاصيل الطلب من صفحة طلباتي."
-                : "Enjoy your offer! You can review order details from My Orders."}
+              {t("orders.t_6c3d8b", "استمتع بعرضك! يمكنك مراجعة تفاصيل الطلب من صفحة طلباتي.")}
             </p>
             <div className="flex gap-3">
               <button onClick={() => navigate(`/orders/${orderId}`)}
                 className="flex-1 py-3 rounded-mk-md bg-[#400198] text-white font-medium hover:bg-[#33007a] transition-colors">
-                {isRTL ? "تفاصيل الطلب" : "Order Details"}
+                {t("orders.t_52ab77", "تفاصيل الطلب")}
               </button>
               <button onClick={() => navigate("/offers")}
                 className="flex-1 py-3 rounded-mk-md border border-mk-border-2 text-mk-text-strong font-medium hover:bg-mk-tint3 transition-colors">
-                {isRTL ? "تصفح العروض" : "Browse Offers"}
+                {t("orders.t_d6cd55", "تصفح العروض")}
               </button>
             </div>
           </div>
@@ -233,7 +230,7 @@ const OrderActivatePage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{isRTL ? "تفعيل العرض" : "Activate Offer"}</title>
+        <title>{t("orders.t_1275a8", "تفعيل العرض")}</title>
       </Helmet>
 
       <div className="min-h-screen pt-10 pb-10 flex flex-col items-center px-4"
@@ -244,7 +241,7 @@ const OrderActivatePage: React.FC = () => {
           <button type="button" onClick={() => navigate(`/orders/${orderId}`)}
             className="flex items-center gap-2 text-white/90 hover:text-white transition-colors">
             <IoArrowBackOutline className="w-6 h-6" />
-            <span className="text-sm font-medium">{isRTL ? "تفاصيل الطلب" : "Order Details"}</span>
+            <span className="text-sm font-medium">{t("orders.t_52ab77", "تفاصيل الطلب")}</span>
           </button>
         </div>
 
@@ -256,7 +253,7 @@ const OrderActivatePage: React.FC = () => {
           </div>
 
           <h2 className="text-xl font-bold text-mk-text text-center mb-2">
-            {isRTL ? "تفعيل العرض عند التاجر" : "Activate Offer at Merchant"}
+            {t("orders.t_cc1b3f", "تفعيل العرض عند التاجر")}
           </h2>
 
           {/* اسم العرض والتاجر */}
@@ -272,9 +269,7 @@ const OrderActivatePage: React.FC = () => {
           )}
 
           <p className="text-mk-muted text-center text-sm mb-6">
-            {isRTL
-              ? "اطلب من التاجر كود التفعيل المكوّن من 4 أرقام وأدخله هنا"
-              : "Ask the merchant for the 4-digit activation code and enter it below"}
+            {t("orders.t_91b735", "اطلب من التاجر كود التفعيل المكوّن من 4 أرقام وأدخله هنا")}
           </p>
 
           {/* حقول الكود */}
@@ -309,15 +304,13 @@ const OrderActivatePage: React.FC = () => {
             className="w-full py-3.5 rounded-mk-md bg-[#400198] text-white font-medium hover:bg-[#33007a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-2"
           >
             {verifyCode.isPending
-              ? (isRTL ? "جاري التحقق..." : "Verifying...")
-              : (isRTL ? "تفعيل العرض" : "Activate Offer")}
+              ? (t("auth.t_a786bc", "جاري التحقق..."))
+              : (t("orders.t_1275a8", "تفعيل العرض"))}
           </button>
 
           {/* ملاحظة */}
           <p className="text-xs text-mk-faint text-center mt-4">
-            {isRTL
-              ? "كود التفعيل خاص بالتاجر ويُستخدم للتأكد من استلامك للعرض"
-              : "The activation code is merchant-specific and confirms you received the offer"}
+            {t("orders.t_749b2b", "كود التفعيل خاص بالتاجر ويُستخدم للتأكد من استلامك للعرض")}
           </p>
         </div>
       </div>

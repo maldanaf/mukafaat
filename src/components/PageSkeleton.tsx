@@ -1,3 +1,4 @@
+import { t } from "i18next";
 import React from "react";
 
 /**
@@ -15,7 +16,7 @@ export default function PageSkeleton({
   withHero?: boolean;
 }) {
   return (
-    <div className="min-h-[70vh]" role="status" aria-label="جارٍ التحميل">
+    <div className="min-h-[70vh]" role="status" aria-label={t("ui.t_3f2dc4", "جارٍ التحميل")}>
       {withHero && (
         <div className="bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)] py-10">
           <div className="mx-auto w-full max-w-site px-4 sm:px-6">

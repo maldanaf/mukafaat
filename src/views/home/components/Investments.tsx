@@ -181,7 +181,7 @@ const Investments: React.FC = () => {
 
   const handleShare = (id: number) => {
     const item = investmentProperties.find((x) => x.id === id);
-    const title = item?.title ?? (isRTL ? "استثمارات" : "Investments");
+    const title = item?.title ?? (t("ui.t_03a3dd", "استثمارات"));
     const url = window.location.href;
     openShare({ title, url });
   };

@@ -107,7 +107,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
           <div className="flex items-center gap-2">
             <HiOutlineEye className="text-md text-[#fd671a]" />
             <span className="text-xs text-gray-700 font-medium">
-              {isRTL ? "المشاهدات: " : "Views: "}
+              {t("cards.t_5bc733", "المشاهدات: ")}
               {views}
             </span>
           </div>

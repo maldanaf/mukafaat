@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "i18next";
 import React, { useEffect, useRef } from "react";
 import { useSearchParams, useNavigate } from "@/lib/router-compat";
 import { useIsRTL } from "@hooks";
@@ -200,7 +201,7 @@ const OrderPaymentCallbackPage: React.FC = () => {
       <div className="flex flex-col items-center gap-4">
         <span className="inline-block w-10 h-10 border-4 border-white/30 border-t-white rounded-full animate-spin" />
         <p className="text-white/90 text-lg">
-          {isRTL ? "جاري التحقق من الدفع..." : "Verifying payment..."}
+          {t("orders.t_8727b1", "جاري التحقق من الدفع...")}
         </p>
       </div>
     </div>

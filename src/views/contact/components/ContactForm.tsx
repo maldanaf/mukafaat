@@ -154,7 +154,7 @@ const ContactForm = () => {
                 <input
                   {...register("fullName")}
                   type="text"
-                  placeholder={isRTL ? "أدخل اسمك" : "Enter your name"}
+                  placeholder={t("contact.t_802b71", "أدخل اسمك")}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#400198] focus:border-transparent pr-10"
                 />
                 <FaRegUser className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
@@ -174,7 +174,7 @@ const ContactForm = () => {
                 <input
                   {...register("mobileNumber")}
                   type="tel"
-                  placeholder={isRTL ? "أدخل رقم الهاتف" : "Enter phone number"}
+                  placeholder={t("contact.t_decebe", "أدخل رقم الهاتف")}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#400198] focus:border-transparent pr-10"
                 />
                 <FiPhone className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
@@ -198,7 +198,7 @@ const ContactForm = () => {
                   {...register("email")}
                   type="email"
                   placeholder={
-                    isRTL ? "أدخل بريدك الإلكتروني" : "Enter your Email"
+                    t("contact.t_0ad388", "أدخل بريدك الإلكتروني")
                   }
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#400198] focus:border-transparent pr-10"
                 />
@@ -219,7 +219,7 @@ const ContactForm = () => {
                 <input
                   {...register("companyName")}
                   type="text"
-                  placeholder={isRTL ? "أدخل اسم الشركة" : "Enter your address"}
+                  placeholder={t("contact.t_390f0c", "أدخل اسم الشركة")}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#400198] focus:border-transparent pr-10"
                 />
                 <IoLocationOutline className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
@@ -240,7 +240,7 @@ const ContactForm = () => {
           </label>
           <textarea
             {...register("message")}
-            placeholder={isRTL ? "أدخل رسالتك هنا" : "Enter your message here"}
+            placeholder={t("contact.t_8c9c16", "أدخل رسالتك هنا")}
             rows={4}
             className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#400198] focus:border-transparent resize-none"
           />

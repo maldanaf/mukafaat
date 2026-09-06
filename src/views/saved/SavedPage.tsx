@@ -73,10 +73,10 @@ const SavedPage: React.FC = () => {
         onSuccess: () => {
           refetch();
           toast.success(
-            isRTL ? "تمت إزالته من المفضلة" : "Removed from favorites",
+            t("cards.t_347f37", "تمت إزالته من المفضلة"),
           );
         },
-        onError: () => toast.error(isRTL ? "فشل في التحديث" : "Update failed"),
+        onError: () => toast.error(t("saved.t_348424", "فشل في التحديث")),
       },
     );
   };
@@ -177,11 +177,11 @@ const SavedPage: React.FC = () => {
         <EmptyState
           className="max-w-md"
           icon={<HeartIcon size={28} />}
-          title={t("ui.loginRequired.title", isRTL ? "تسجيل الدخول مطلوب" : "Login required")}
+          title={t("ui.loginRequired.title", t("orders.t_4f66ec", "تسجيل الدخول مطلوب"))}
           description={
-            isRTL ? "سجّل دخولك لعرض المفضلة" : "Sign in to view your saved items"
+            t("saved.t_dc2e4a", "سجّل دخولك لعرض المفضلة")
           }
-          actionLabel={t("ui.loginRequired.cta", isRTL ? "تسجيل الدخول" : "Login")}
+          actionLabel={t("ui.loginRequired.cta", t("orders.t_8c6117", "تسجيل الدخول"))}
           actionTo="/login?returnUrl=/saved"
         />
       </div>
@@ -337,7 +337,7 @@ const SavedPage: React.FC = () => {
                           </span>
                           {isClickable && (
                             <span className="inline-flex items-center gap-1 rounded-full bg-mk-tint px-3 py-1.5 text-[12px] font-extrabold text-mk-primary transition-colors group-hover/vivid:bg-mk-primary group-hover/vivid:text-white">
-                              {t("saved.view_details", isRTL ? "عرض التفاصيل" : "View details")}
+                              {t("saved.view_details", t("saved.t_932d8a", "عرض التفاصيل"))}
                               <span aria-hidden className="rtl:-scale-x-100">
                                 &#8594;
                               </span>

@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "i18next";
 import React, { useMemo } from "react";
 import { useParams } from "@/lib/router-compat";
 import { Helmet } from "@/lib/helmet-compat";
@@ -42,13 +43,13 @@ function translateStatus(status: string): string {
     .toLowerCase()
     .trim();
   const map: Record<string, string> = {
-    active: "فعال",
-    expired: "منتهي",
-    cancelled: "ملغي",
-    canceled: "ملغي",
-    pending: "قيد الانتظار",
-    suspended: "موقوف",
-    inactive: "غير فعال",
+    active: t("membership.t_6f6379", "فعال"),
+    expired: t("membership.t_a6ed2a", "منتهي"),
+    cancelled: t("membership.t_91b1e1", "ملغي"),
+    canceled: t("membership.t_91b1e1", "ملغي"),
+    pending: t("membership.t_8aed06", "قيد الانتظار"),
+    suspended: t("membership.t_499473", "موقوف"),
+    inactive: t("membership.t_78a6c7", "غير فعال"),
   };
   return map[s] || status || "—";
 }
@@ -298,20 +299,20 @@ function MembershipVerifyCard({
           </p>
 
           <div className="mb-5 rounded-xl bg-gray-50 px-4 py-3 text-right">
-            <CardRow label="حالة الاشتراك" value={translateStatus(status)} />
-            <CardRow label="اسم الباقة" value={planName} />
-            <CardRow label="تاريخ البداية" value={formatDate(startDate)} />
-            <CardRow label="تاريخ النهاية" value={formatDate(endDate)} />
+            <CardRow label={t("membership.t_82c319", "حالة الاشتراك")} value={translateStatus(status)} />
+            <CardRow label={t("membership.t_8ea605", "اسم الباقة")} value={planName} />
+            <CardRow label={t("membership.t_0173a7", "تاريخ البداية")} value={formatDate(startDate)} />
+            <CardRow label={t("membership.t_dc1bb8", "تاريخ النهاية")} value={formatDate(endDate)} />
             {walletBalance !== undefined && (
-              <CardRow label="رصيد المحفظة" value={walletBalance} mono />
+              <CardRow label={t("membership.t_97935c", "رصيد المحفظة")} value={walletBalance} mono />
             )}
             {pointsBalance !== undefined && (
-              <CardRow label="رصيد النقاط" value={pointsBalance} mono />
+              <CardRow label={t("membership.t_fb58a9", "رصيد النقاط")} value={pointsBalance} mono />
             )}
             {hasActiveSubscription !== undefined && (
               <CardRow
-                label="اشتراك فعّال"
-                value={hasActiveSubscription ? "نعم" : "لا"}
+                label={t("membership.t_0eac77", "اشتراك فعّال")}
+                value={hasActiveSubscription ? "نعم" : t("membership.t_5c528d", "لا")}
               />
             )}
           </div>
@@ -376,7 +377,7 @@ function MembershipVerifyCard({
                 isActive ? "text-gray-900" : "text-gray-600"
               }`}
             >
-              {isActive ? "فعالة" : "الحالة منتهية"}
+              {isActive ? "فعالة" : t("membership.t_08ae78", "الحالة منتهية")}
             </span>
           </div>
         </div>
@@ -431,7 +432,7 @@ const MembershipVerifyPage: React.FC = () => {
             <p className="mt-2 text-sm text-gray-600">
               {error instanceof AxiosError && error.response?.status === 404
                 ? "رقم العضوية غير موجود أو انتهى الاشتراك."
-                : "حدث خطأ أثناء جلب البيانات. يرجى المحاولة لاحقاً."}
+                : t("membership.t_064867", "حدث خطأ أثناء جلب البيانات. يرجى المحاولة لاحقاً.")}
             </p>
           </div>
         )}

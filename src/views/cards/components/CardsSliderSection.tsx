@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "i18next";
 import React, { useMemo, useRef, useEffect, useState } from "react";
 import OwlCarousel, {
   type OwlCarouselHandle,
@@ -131,7 +132,7 @@ const CardsSliderSection: React.FC<CardsSliderSectionProps> = ({
         )}
         {!isLoading && cards.length === 0 && (
           <div className="text-center py-12 text-mk-muted">
-            {isRTL ? "لا توجد بطاقات متاحة حالياً" : "No cards available at the moment"}
+            {t("cards.t_1857d4", "لا توجد بطاقات متاحة حالياً")}
           </div>
         )}
       </div>

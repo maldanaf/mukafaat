@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "i18next";
 import { useState, useEffect, useRef, useMemo } from "react";
 import {
   useParams,
@@ -213,9 +214,7 @@ const PaymentPage = () => {
       applePay: { country: "SA", label: config.description },
     }).catch(() => {
       setErrorMsg(
-        isRTL
-          ? "تعذر تحميل بوابة الدفع. حدّث الصفحة أو تواصل مع الدعم."
-          : "Failed to load payment gateway. Refresh or contact support."
+        t("payment.t_a2f04e", "تعذر تحميل بوابة الدفع. حدّث الصفحة أو تواصل مع الدعم.")
       );
       setShowMoyasarForm(false);
       moyasarInitedRef.current = false;
@@ -244,13 +243,13 @@ const PaymentPage = () => {
       <div className="min-h-screen bg-mk-tint3 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-mk-text mb-4">
-            {isRTL ? "البطاقة غير موجودة" : "Card not found"}
+            {t("payment.t_64ad76", "البطاقة غير موجودة")}
           </h1>
           <button
             onClick={() => navigate("/cards")}
             className="px-6 py-3 bg-[#400198] text-white rounded-mk-sm hover:bg-[#54015d] transition-colors"
           >
-            {isRTL ? "العودة للبطاقات" : "Back to Cards"}
+            {t("cards.t_e0cbd5", "العودة للبطاقات")}
           </button>
         </div>
       </div>
@@ -263,11 +262,11 @@ const PaymentPage = () => {
   const remainingAfterWallet = Math.max(0, effectivePrice - walletBalance);
 
   const paymentMethods = [
-    { id: "card", name: { ar: "بطاقة ائتمانية", en: "Credit Card" }, icons: [Visa, Master], disabled: false },
+    { id: "card", name: { ar: t("payment.t_2651e9", "بطاقة ائتمانية"), en: "Credit Card" }, icons: [Visa, Master], disabled: false },
     ...(applePayReady
-      ? [{ id: "applepay", name: { ar: "آبل باي", en: "Apple Pay" }, icons: [ApplePay], disabled: false }]
+      ? [{ id: "applepay", name: { ar: t("payment.t_60a3d5", "آبل باي"), en: "Apple Pay" }, icons: [ApplePay], disabled: false }]
       : []),
-    { id: "mada", name: { ar: "مدى", en: "Mada" }, icons: [Mada], disabled: false },
+    { id: "mada", name: { ar: t("payment.t_960cc4", "مدى"), en: "Mada" }, icons: [Mada], disabled: false },
     // تمارا: خيار إضافي يظهر عند تفعيله من اللوحة وكون المبلغ داخل حدود الحساب
     ...(tamaraAvailable
       ? [{
@@ -283,7 +282,7 @@ const PaymentPage = () => {
     {
       id: "wallet",
       name: {
-        ar: walletCoversAll ? `المحفظة (${walletBalance} ر.س)` : walletPartial ? `المحفظة (${walletBalance} ر.س) + بطاقة` : `المحفظة (0 ر.س)`,
+        ar: walletCoversAll ? `المحفظة (${walletBalance} ر.س)` : walletPartial ? `المحفظة (${walletBalance} ر.س) + بطاقة` : t("payment.t_abefdc", `المحفظة (0 ر.س)`),
         en: walletCoversAll ? `Wallet (${walletBalance} SAR)` : walletPartial ? `Wallet (${walletBalance} SAR) + Card` : `Wallet (0 SAR)`,
       },
       icons: [Wallet],
@@ -328,7 +327,7 @@ const PaymentPage = () => {
       orderId,
       returnUrl: buildCardReturnUrl(orderId, "tamara"),
     }).then((r) => {
-      if (!r.ok) setErrorMsg(r.error || (isRTL ? "تعذّر بدء الدفع عبر تمارا" : "Failed to start Tamara payment"));
+      if (!r.ok) setErrorMsg(r.error || (t("payment.t_bc5705", "تعذّر بدء الدفع عبر تمارا")));
     });
 
   const submitPayment = async (useWalletPayment = false) => {
@@ -336,9 +335,7 @@ const PaymentPage = () => {
     setErrorMsg(null);
     if (!isSubscribed) {
       setErrorMsg(
-        isRTL
-          ? "يجب أن يكون لديك اشتراك فعال لشراء هذه البطاقة. يرجى الاشتراك أولاً."
-          : "You need an active subscription to purchase this card. Please subscribe first."
+        t("payment.t_7aa000", "يجب أن يكون لديك اشتراك فعال لشراء هذه البطاقة. يرجى الاشتراك أولاً.")
       );
       return;
     }
@@ -350,13 +347,13 @@ const PaymentPage = () => {
         const vRes = await api.post(`/api/orders/${orderIdFromState}/validate-payment`);
         const vData = vRes.data as Record<string, unknown>;
         if (vData.status === false) {
-          setErrorMsg(String(vData.msg || (isRTL ? "لا يمكن إتمام الدفع" : "Cannot complete payment")));
+          setErrorMsg(String(vData.msg || (t("payment.t_bbd210", "لا يمكن إتمام الدفع"))));
           return;
         }
       } catch (err) {
         const errData = (err as { response?: { data?: { msg?: string; status?: boolean } } })?.response?.data;
         if (errData?.status === false) {
-          setErrorMsg(String(errData.msg || (isRTL ? "لا يمكن إتمام الدفع" : "Cannot complete payment")));
+          setErrorMsg(String(errData.msg || (t("payment.t_bbd210", "لا يمكن إتمام الدفع"))));
           return;
         }
       }
@@ -371,7 +368,7 @@ const PaymentPage = () => {
         const d = (res.data as Record<string, unknown>) ?? {};
         if (d.status === false) {
           setErrorMsg(
-            String(d.msg || (isRTL ? "فشل الدفع بالمحفظة" : "Wallet payment failed")),
+            String(d.msg || (t("payment.t_957d75", "فشل الدفع بالمحفظة"))),
           );
           return;
         }
@@ -381,7 +378,7 @@ const PaymentPage = () => {
         const errData =
           (err as { response?: { data?: { msg?: string } } })?.response?.data;
         setErrorMsg(
-          String(errData?.msg || (isRTL ? "فشل الدفع بالمحفظة" : "Wallet payment failed")),
+          String(errData?.msg || (t("payment.t_957d75", "فشل الدفع بالمحفظة"))),
         );
         return;
       }
@@ -407,7 +404,7 @@ const PaymentPage = () => {
           returnUrl: buildCardReturnUrl(orderIdFromState),
         });
         if (!r.ok) {
-          setErrorMsg(r.error || (isRTL ? "تعذّر بدء عملية الدفع" : "Failed to start payment"));
+          setErrorMsg(r.error || (t("payment.t_50ef45", "تعذّر بدء عملية الدفع")));
         }
         return;
       }
@@ -428,7 +425,7 @@ const PaymentPage = () => {
             currency: (paymentInfoFromState.currency as string) || "SAR",
             description:
               (paymentInfoFromState.description as string) ||
-              (isRTL ? "إتمام الدفع للبطاقة" : "Complete card payment"),
+              (t("payment.t_d19bc1", "إتمام الدفع للبطاقة")),
             publishableKey,
             callbackUrl: buildMoyasarCallbackUrl(orderIdFromState),
             metadata: (paymentInfoFromState.metadata as Record<string, unknown>) || {},
@@ -442,9 +439,7 @@ const PaymentPage = () => {
         }
       }
       setErrorMsg(
-        isRTL
-          ? "لا تتوفر بيانات الدفع لهذا الطلب. ارجع لصفحة البطاقة واضغط على شراء مرة أخرى."
-          : "Payment info is not available. Go back and click Buy again.",
+        t("payment.t_1d5ff7", "لا تتوفر بيانات الدفع لهذا الطلب. ارجع لصفحة البطاقة واضغط على شراء مرة أخرى."),
       );
       return;
     }
@@ -467,7 +462,7 @@ const PaymentPage = () => {
             const msg =
               (root.msg as string) ||
               (root.message as string) ||
-              (isRTL ? "فشل إنشاء الطلب" : "Failed to create order");
+              (t("payment.t_cdf331", "فشل إنشاء الطلب"));
             const errNum = root.errNum as string | undefined;
             if (errNum === "E005") {
               queryClient.invalidateQueries({ queryKey: mokafaatKeys.subscriptionStatus });
@@ -507,7 +502,7 @@ const PaymentPage = () => {
                 orderId,
                 returnUrl: buildCardReturnUrl(orderId),
               }).then((r) => {
-                if (!r.ok) setErrorMsg(r.error || (isRTL ? "تعذّر بدء عملية الدفع" : "Failed to start payment"));
+                if (!r.ok) setErrorMsg(r.error || (t("payment.t_50ef45", "تعذّر بدء عملية الدفع")));
               });
             };
 
@@ -525,9 +520,7 @@ const PaymentPage = () => {
               const publishableKey = (paymentInfo?.publishable_key as string) || "";
               if (!publishableKey || amountHalala < 100) {
                 setErrorMsg(
-                  isRTL
-                    ? "بيانات الدفع غير مكتملة. تواصل مع الدعم."
-                    : "Incomplete payment information. Please contact support.",
+                  t("payment.t_143241", "بيانات الدفع غير مكتملة. تواصل مع الدعم."),
                 );
                 return;
               }
@@ -536,7 +529,7 @@ const PaymentPage = () => {
                 currency: (paymentInfo?.currency as string) || "SAR",
                 description:
                   (paymentInfo?.description as string) ||
-                  (isRTL ? "إتمام الدفع للطلب" : "Complete order payment"),
+                  (t("payment.t_0deaaa", "إتمام الدفع للطلب")),
                 publishableKey,
                 callbackUrl: buildMoyasarCallbackUrl(orderId),
                 metadata: (paymentInfo?.metadata as Record<string, unknown>) || {},
@@ -568,12 +561,12 @@ const PaymentPage = () => {
             return;
           }
           setErrorMsg(
-            isRTL ? "لم يتم إرجاع رابط الدفع. جرّب مرة أخرى." : "Payment link was not returned. Please try again."
+            t("payment.t_1e80a8", "لم يتم إرجاع رابط الدفع. جرّب مرة أخرى.")
           );
         },
         onError: (err) => {
           if (err instanceof AxiosError && err.response?.status === 401) {
-            setErrorMsg(isRTL ? "يجب تسجيل الدخول" : "Login required");
+            setErrorMsg(t("payment.t_043553", "يجب تسجيل الدخول"));
             return;
           }
           const data = (err as AxiosError<{ msg?: string; message?: string; errNum?: string }>)
@@ -588,7 +581,7 @@ const PaymentPage = () => {
             setErrorMsg(String(data.msg || data.message));
             return;
           }
-          setErrorMsg(isRTL ? "فشل إنشاء الطلب" : "Failed to create order");
+          setErrorMsg(t("payment.t_cdf331", "فشل إنشاء الطلب"));
         },
       }
     );
@@ -598,7 +591,7 @@ const PaymentPage = () => {
     <>
       <Helmet>
         <title>
-          {isRTL ? "إتمام الدفع" : "Complete Payment"} - {company.name[isRTL ? "ar" : "en"]}
+          {t("payment.t_79986e", "إتمام الدفع")} - {company.name[isRTL ? "ar" : "en"]}
         </title>
         <link rel="canonical" href={`https://mukafaat.com.sa/cards/${companyId}/payment`} />
       </Helmet>
@@ -613,7 +606,7 @@ const PaymentPage = () => {
               className="absolute top-4 left-4 text-white hover:text-mk-lilac transition-colors flex items-center gap-2"
             >
               <FiArrowLeft className="text-xl" />
-              <span className="text-sm">{isRTL ? "العودة" : "Back"}</span>
+              <span className="text-sm">{t("cards.t_5e987a", "العودة")}</span>
             </button>
 
             <div className="w-14 h-14 mx-auto mb-4 rounded-full overflow-hidden">
@@ -625,20 +618,20 @@ const PaymentPage = () => {
             </div>
 
             <h1 className="text-2xl md:text-2xl font-bold mb-2 tracking-tight leading-none text-white">
-              {isRTL ? "إتمام الدفع" : "Complete Payment"}
+              {t("payment.t_79986e", "إتمام الدفع")}
             </h1>
 
             <p className="text-white/80 text-base mb-4">
-              {isRTL ? "إتمام عملية الدفع للبطاقة المحددة" : "Complete payment for the selected card"}
+              {t("payment.t_c0a612", "إتمام عملية الدفع للبطاقة المحددة")}
             </p>
 
             <div className="flex items-center justify-center text-sm md:text-base">
               <Link to="/" className="text-white hover:text-mk-lilac transition-colors cursor-pointer text-xs">
-                {isRTL ? "الرئيسية" : "Home"}
+                {t("ui.t_b986d8", "الرئيسية")}
               </Link>
               <span className="text-white text-xs mx-2">|</span>
               <Link to="/cards" className="text-white hover:text-mk-lilac transition-colors cursor-pointer text-xs">
-                {isRTL ? "البطاقات" : "Cards"}
+                {t("cards.t_cd328b", "البطاقات")}
               </Link>
               <span className="text-white text-xs mx-2">|</span>
               <Link
@@ -649,7 +642,7 @@ const PaymentPage = () => {
               </Link>
               <span className="text-white text-xs mx-2">|</span>
               <span className="text-[#fd671a] font-medium text-xs">
-                {isRTL ? "الدفع" : "Payment"}
+                {t("payment.t_bdf621", "الدفع")}
               </span>
             </div>
           </div>
@@ -665,7 +658,7 @@ const PaymentPage = () => {
             <div className="lg:col-span-1">
               <div className="bg-white rounded-mk-md p-6 sticky top-8">
                 <h2 className="text-lg font-semibold text-mk-text mb-4">
-                  {isRTL ? "ملخص الطلب" : "Order Summary"}
+                  {t("payment.t_9ebdd7", "ملخص الطلب")}
                 </h2>
 
                 <div className="flex items-center gap-3 mb-4">
@@ -708,7 +701,7 @@ const PaymentPage = () => {
                   {offer.originalPrice != null && (
                     <div className="flex justify-between text-sm">
                       <span className="text-mk-muted">
-                        {isRTL ? "السعر الأصلي" : "Original Price"}
+                        {t("payment.t_351ce2", "السعر الأصلي")}
                       </span>
                       <span className="flex items-center gap-1">
                         {offer.originalPrice}
@@ -718,7 +711,7 @@ const PaymentPage = () => {
                   )}
                   <div className="flex justify-between text-sm">
                     <span className="text-mk-muted">
-                      {isRTL ? "سعر البطاقة" : "Card Price"}
+                      {t("payment.t_682999", "سعر البطاقة")}
                     </span>
                     <span className="flex items-center gap-1">
                       {unitPrice}
@@ -742,18 +735,18 @@ const PaymentPage = () => {
                   {discount ? (
                     <div className="space-y-1 mb-2">
                       <div className="flex justify-between text-sm text-mk-muted">
-                        <span>{isRTL ? "المجموع قبل الكود" : "Subtotal"}</span>
+                        <span>{t("payment.t_2c9da0", "المجموع قبل الكود")}</span>
                         <span className="line-through">{totalPrice} {isRTL ? "ر.س" : "SAR"}</span>
                       </div>
                       <div className="flex justify-between text-sm text-emerald-600">
-                        <span>{isRTL ? "خصم الكود" : "Code discount"}</span>
+                        <span>{t("payment.t_14f917", "خصم الكود")}</span>
                         <span>− {discount.discount_amount} {isRTL ? "ر.س" : "SAR"}</span>
                       </div>
                     </div>
                   ) : null}
                   <div className="flex justify-between items-center">
                     <span className="font-semibold text-mk-text">
-                      {isRTL ? "المجموع" : "Total"}
+                      {t("payment.t_1e0455", "المجموع")}
                     </span>
                     <span className="text-xl font-bold text-[#400198] flex items-center gap-1">
                       {(discount ? discount.final_amount : totalPrice) > 0 ? (
@@ -763,7 +756,7 @@ const PaymentPage = () => {
                         </>
                       ) : (
                         <span className="text-green-600">
-                          {isRTL ? "بدون رسوم" : "No fees"}
+                          {t("payment.t_2d46b6", "بدون رسوم")}
                         </span>
                       )}
                     </span>
@@ -778,7 +771,7 @@ const PaymentPage = () => {
                 {showMoyasarForm ? (
                   <>
                     <h2 className="text-lg font-semibold text-mk-text mb-6">
-                      {isRTL ? "إتمام الدفع عبر ميسر" : "Complete payment via Moyasar"}
+                      {t("payment.t_f50f38", "إتمام الدفع عبر ميسر")}
                     </h2>
                     {errorMsg && (
                       <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-mk-sm text-red-700 text-sm">
@@ -786,7 +779,7 @@ const PaymentPage = () => {
                       </div>
                     )}
                     <p className="text-mk-muted mb-4">
-                      {isRTL ? "أدخل بيانات البطاقة أدناه:" : "Enter your card details below:"}
+                      {t("payment.t_ae9576", "أدخل بيانات البطاقة أدناه:")}
                     </p>
                     <div className="mysr-form-card min-h-[200px]" />
                     <button
@@ -799,13 +792,13 @@ const PaymentPage = () => {
                       }}
                       className="mt-4 px-4 py-2 border border-mk-border-2 text-mk-text-strong rounded-mk-sm hover:bg-mk-tint3"
                     >
-                      {isRTL ? "العودة لاختيار طريقة الدفع" : "Back to payment methods"}
+                      {t("payment.t_0157bc", "العودة لاختيار طريقة الدفع")}
                     </button>
                   </>
                 ) : (
                   <>
                     <h2 className="text-lg font-semibold text-mk-text mb-6">
-                      {isRTL ? "اختر طريقة الدفع" : "Choose Payment Method"}
+                      {t("payment.t_c073b7", "اختر طريقة الدفع")}
                     </h2>
 
                     {errorMsg && (
@@ -821,7 +814,7 @@ const PaymentPage = () => {
                             }
                             className="mt-3 text-[#400198] font-medium underline hover:no-underline block"
                           >
-                            {isRTL ? "الذهاب لصفحة الاشتراك" : "Go to subscription page"}
+                            {t("payment.t_6e9af0", "الذهاب لصفحة الاشتراك")}
                           </button>
                         )}
                       </div>
@@ -858,10 +851,10 @@ const PaymentPage = () => {
                                 </span>
                               )}
                               {method.id === "wallet" && walletCoversAll && (
-                                <span className="text-xs text-green-600">{isRTL ? "الرصيد كافي" : "Balance covers full amount"}</span>
+                                <span className="text-xs text-green-600">{t("payment.t_a3ea36", "الرصيد كافي")}</span>
                               )}
                               {method.id === "wallet" && walletEmpty && (
-                                <span className="text-xs text-red-500">{isRTL ? "لا يوجد رصيد" : "No balance"}</span>
+                                <span className="text-xs text-red-500">{t("payment.t_0a3e1c", "لا يوجد رصيد")}</span>
                               )}
                             </div>
                           </div>
@@ -886,7 +879,7 @@ const PaymentPage = () => {
                     {createOrder.isPending && (
                       <div className="flex items-center justify-center gap-2 text-mk-muted py-4">
                         <LoadingSpinner />
-                        <span>{isRTL ? "جاري معالجة الدفع..." : "Processing payment..."}</span>
+                        <span>{t("payment.t_1e8456", "جاري معالجة الدفع...")}</span>
                       </div>
                     )}
                   </>

@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "i18next";
 import React, { useMemo } from "react";
 import { useIsRTL } from "@hooks";
 import { ShareIcon, HeartIcon } from "@ui";
@@ -62,11 +63,11 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({
         onSuccess: () => {
           toast.success(
             wasFavorite
-              ? isRTL ? "تمت الإزالة من المفضلة" : "Removed from favorites"
-              : isRTL ? "تمت الإضافة للمفضلة" : "Added to favorites",
+              ? t("cards.t_063b91", "تمت الإزالة من المفضلة")
+              : t("cards.t_2537ae", "تمت الإضافة للمفضلة"),
           );
         },
-        onError: () => toast.error(isRTL ? "حدث خطأ" : "Error"),
+        onError: () => toast.error(t("cards.t_c94c75", "حدث خطأ")),
       },
     );
   };

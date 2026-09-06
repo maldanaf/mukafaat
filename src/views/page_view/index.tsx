@@ -14,7 +14,7 @@ import CurrencyIcon from "@components/CurrencyIcon";
 export default function PageView() {
   const { slug } = useParams<{ slug: string }>();
   const isRTL = useIsRTL();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const langBase = i18n.language?.split("-")[0] || "ar";
   const { data, isLoading } = usePageDetail(slug || "");
 
@@ -47,9 +47,9 @@ export default function PageView() {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-3">{isRTL ? "الصفحة غير موجودة" : "Page Not Found"}</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-3">{t("notFound.t_7299fd", "الصفحة غير موجودة")}</h2>
           <Link to="/" className="bg-[#400198] text-white px-6 py-3 rounded-xl font-medium hover:bg-[#33007a] transition-colors inline-block">
-            {isRTL ? "الرئيسية" : "Home"}
+            {t("ui.t_b986d8", "الرئيسية")}
           </Link>
         </div>
       </div>
@@ -68,7 +68,7 @@ export default function PageView() {
         <div className="relative pt-20 pb-10 px-6 mx-auto max-w-site w-full text-center z-10">
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">{title}</h1>
           <nav className="flex items-center justify-center gap-1 text-xs text-white/70">
-            <Link to="/" className="hover:text-white">{isRTL ? "الرئيسية" : "Home"}</Link>
+            <Link to="/" className="hover:text-white">{t("ui.t_b986d8", "الرئيسية")}</Link>
             <span>|</span>
             <span className="text-[#fd671a]">{title}</span>
           </nav>
@@ -123,6 +123,7 @@ export default function PageView() {
 }
 
 function CompanyPlansSection() {
+  const { t } = useTranslation();
   const isRTL = useIsRTL();
   const { i18n } = useTranslation();
   const langBase = i18n.language?.split("-")[0] || "ar";
@@ -140,21 +141,21 @@ function CompanyPlansSection() {
     (plan[`description_${langBase}`] as string) || (plan.description_ar as string) || (plan.description_en as string) || "";
 
   const durationLabels: Record<string, { ar: string; en: string }> = {
-    monthly: { ar: "شهري", en: "Monthly" },
-    "3_months": { ar: "٣ شهور", en: "3 Months" },
-    "6_months": { ar: "٦ شهور", en: "6 Months" },
-    yearly: { ar: "سنوي", en: "Yearly" },
-    "2_years": { ar: "سنتين", en: "2 Years" },
+    monthly: { ar: t("cards.t_564ef2", "شهري"), en: "Monthly" },
+    "3_months": { ar: t("pageView.t_492634", "٣ شهور"), en: "3 Months" },
+    "6_months": { ar: t("pageView.t_0b0ad4", "٦ شهور"), en: "6 Months" },
+    yearly: { ar: t("cards.t_019ca7", "سنوي"), en: "Yearly" },
+    "2_years": { ar: t("pageView.t_01c15a", "سنتين"), en: "2 Years" },
   };
 
   return (
     <div className="mt-10">
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-[#400198] mb-2">
-          {isRTL ? "اختر الباقة المناسبة لشركتك" : "Choose Your Corporate Plan"}
+          {t("pageView.t_bb7ad4", "اختر الباقة المناسبة لشركتك")}
         </h2>
         <p className="text-gray-600">
-          {isRTL ? "باقات مرنة تناسب كل الأحجام والميزانيات" : "Flexible plans for every size and budget"}
+          {t("pageView.t_326571", "باقات مرنة تناسب كل الأحجام والميزانيات")}
         </p>
       </div>
 
@@ -162,7 +163,7 @@ function CompanyPlansSection() {
         <div className="flex justify-center py-8"><LoadingSpinner /></div>
       ) : plans.length === 0 ? (
         <div className="text-center py-8 text-gray-500 bg-gray-50 rounded-2xl">
-          {isRTL ? "لا توجد باقات متاحة حالياً. تواصل معنا للحصول على عرض مخصص." : "No plans available. Contact us for a custom offer."}
+          {t("pageView.t_14555f", "لا توجد باقات متاحة حالياً. تواصل معنا للحصول على عرض مخصص.")}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -179,7 +180,7 @@ function CompanyPlansSection() {
               >
                 {Boolean(isFeatured) && (
                   <div className="bg-[#fd671a] text-white text-xs font-bold px-3 py-1 rounded-full inline-block mb-3">
-                    {isRTL ? "⭐ الأكثر شعبية" : "⭐ Most Popular"}
+                    {t("pageView.t_55033b", "⭐ الأكثر شعبية")}
                   </div>
                 )}
                 <h3 className="text-2xl font-bold text-[#400198] mb-2">{getName(plan)}</h3>
@@ -201,19 +202,19 @@ function CompanyPlansSection() {
                 <ul className="space-y-2 mb-6 text-sm">
                   <li className="flex items-start gap-2">
                     <FiCheckCircle className="text-green-500 mt-0.5 flex-shrink-0" />
-                    <span>{isRTL ? "وصول لكل العروض الحصرية" : "Access to all exclusive offers"}</span>
+                    <span>{t("pageView.t_433312", "وصول لكل العروض الحصرية")}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <FiCheckCircle className="text-green-500 mt-0.5 flex-shrink-0" />
-                    <span>{isRTL ? "لوحة تحكم لإدارة الموظفين" : "HR dashboard"}</span>
+                    <span>{t("pageView.t_832c42", "لوحة تحكم لإدارة الموظفين")}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <FiCheckCircle className="text-green-500 mt-0.5 flex-shrink-0" />
-                    <span>{isRTL ? "تقارير وإحصائيات مفصلة" : "Detailed reports"}</span>
+                    <span>{t("pageView.t_f6a07c", "تقارير وإحصائيات مفصلة")}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <FiCheckCircle className="text-green-500 mt-0.5 flex-shrink-0" />
-                    <span>{isRTL ? "دعم مخصص 24/7" : "24/7 dedicated support"}</span>
+                    <span>{t("pageView.t_1c850b", "دعم مخصص 24/7")}</span>
                   </li>
                 </ul>
 
@@ -223,7 +224,7 @@ function CompanyPlansSection() {
                     isFeatured ? "bg-[#fd671a] text-white hover:bg-[#e55a15]" : "bg-[#400198] text-white hover:bg-[#33007a]"
                   }`}
                 >
-                  {isRTL ? "اطلب هذه الباقة" : "Request This Plan"}
+                  {t("pageView.t_8e3378", "اطلب هذه الباقة")}
                 </Link>
               </div>
             );
@@ -233,10 +234,10 @@ function CompanyPlansSection() {
 
       <div className="text-center mt-8 p-6 bg-gray-50 rounded-2xl">
         <p className="text-gray-700 mb-3">
-          {isRTL ? "تحتاج لباقة مخصصة لشركتك؟" : "Need a custom plan for your company?"}
+          {t("pageView.t_9ceea1", "تحتاج لباقة مخصصة لشركتك؟")}
         </p>
         <Link to="/contact" className="inline-block bg-[#400198] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#33007a]">
-          {isRTL ? "تواصل معنا" : "Contact Us"}
+          {t("faq.t_988638", "تواصل معنا")}
         </Link>
       </div>
     </div>

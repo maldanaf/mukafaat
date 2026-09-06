@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "i18next";
 import React, { useState } from "react";
 import { useParams, useNavigate, Link } from "@/lib/router-compat";
 import { Helmet } from "@/lib/helmet-compat";
@@ -137,9 +138,7 @@ const OrderDetailPage: React.FC = () => {
       const msg =
         e instanceof Error && e.message
           ? e.message
-          : isRTL
-            ? "فشل التنزيل"
-            : "Download failed";
+          : t("orders.t_1fb1a6", "فشل التنزيل");
       toast.error(msg);
     });
   };
@@ -152,13 +151,13 @@ const OrderDetailPage: React.FC = () => {
       >
         <div className="text-center bg-white/10 rounded-mk-xl p-8 max-w-md mx-4">
           <h2 className="text-xl font-bold text-white mb-4">
-            {isRTL ? "تسجيل الدخول مطلوب" : "Login required"}
+            {t("orders.t_4f66ec", "تسجيل الدخول مطلوب")}
           </h2>
           <Link
             to="/login?returnUrl=/orders"
             className="bg-white text-mk-primary px-6 py-3 rounded-mk-md font-medium hover:bg-white/90 transition-colors inline-block"
           >
-            {isRTL ? "تسجيل الدخول" : "Login"}
+            {t("orders.t_8c6117", "تسجيل الدخول")}
           </Link>
         </div>
       </div>
@@ -184,7 +183,7 @@ const OrderDetailPage: React.FC = () => {
       >
         <div className="text-center bg-white/10 rounded-mk-xl p-8 max-w-md">
           <h2 className="text-xl font-bold text-white mb-2">
-            {isRTL ? "الطلب غير موجود" : "Order not found"}
+            {t("orders.t_6e3a20", "الطلب غير موجود")}
           </h2>
           <p className="text-white/80 mb-6">{String(error?.message || "")}</p>
           <button
@@ -192,7 +191,7 @@ const OrderDetailPage: React.FC = () => {
             onClick={() => navigate("/orders")}
             className="bg-white text-mk-primary px-6 py-3 rounded-mk-md font-medium hover:bg-white/90 transition-colors"
           >
-            {isRTL ? "العودة للطلبات" : "Back to Orders"}
+            {t("orders.t_2b1d4f", "العودة للطلبات")}
           </button>
         </div>
       </div>
@@ -229,7 +228,7 @@ const OrderDetailPage: React.FC = () => {
     <>
       <Helmet>
         <title>
-          {isRTL ? "تفاصيل الطلب" : "Order Details"} #
+          {t("orders.t_52ab77", "تفاصيل الطلب")} #
           {order.orderNumber ?? order.id}
         </title>
       </Helmet>
@@ -249,7 +248,7 @@ const OrderDetailPage: React.FC = () => {
           >
             <IoArrowBackOutline className="w-6 h-6" />
             <span className="text-sm font-medium">
-              {isRTL ? "الطلبات" : "Orders"}
+              {t("orders.t_3c5b19", "الطلبات")}
             </span>
           </button>
         </div>
@@ -262,11 +261,11 @@ const OrderDetailPage: React.FC = () => {
               {(() => {
                 const st = rawOrderData?.status ?? order?.rawStatus ?? order?.status;
                 const map: Record<string, { label: string; labelEn: string; color: string }> = {
-                  pending:   { label: "في انتظار الدفع", labelEn: "Awaiting Payment", color: "bg-yellow-100 text-yellow-800" },
-                  active:    { label: "مؤكد - جاهز للاستخدام", labelEn: "Confirmed - Ready", color: "bg-blue-100 text-blue-800" },
-                  used:      { label: "تم التفعيل ✓", labelEn: "Activated ✓", color: "bg-green-100 text-green-800" },
-                  expired:   { label: "منتهي الصلاحية", labelEn: "Expired", color: "bg-orange-100 text-orange-800" },
-                  cancelled: { label: "ملغي", labelEn: "Cancelled", color: "bg-red-100 text-red-800" },
+                  pending:   { label: t("orders.t_0befbb", "في انتظار الدفع"), labelEn: "Awaiting Payment", color: "bg-yellow-100 text-yellow-800" },
+                  active:    { label: t("orders.t_aa14a6", "مؤكد - جاهز للاستخدام"), labelEn: "Confirmed - Ready", color: "bg-blue-100 text-blue-800" },
+                  used:      { label: t("orders.t_a22ac5", "تم التفعيل ✓"), labelEn: "Activated ✓", color: "bg-green-100 text-green-800" },
+                  expired:   { label: t("orders.t_709d5f", "منتهي الصلاحية"), labelEn: "Expired", color: "bg-orange-100 text-orange-800" },
+                  cancelled: { label: t("membership.t_91b1e1", "ملغي"), labelEn: "Cancelled", color: "bg-red-100 text-red-800" },
                 };
                 const info = map[String(st)] ?? map.pending;
                 return (
@@ -279,7 +278,7 @@ const OrderDetailPage: React.FC = () => {
                 type="button"
                 onClick={() => navigate("/orders")}
                 className="w-10 h-10 flex items-center justify-center rounded-full text-mk-muted hover:bg-mk-tint2 transition-colors"
-                aria-label={isRTL ? "إغلاق" : "Close"}
+                aria-label={t("ui.t_5bf826", "إغلاق")}
               >
                 <IoClose className="w-6 h-6" />
               </button>
@@ -293,7 +292,7 @@ const OrderDetailPage: React.FC = () => {
                     <span className="text-2xl">🎫</span>
                   </div>
                   <p className="text-sm font-medium text-mk-muted">
-                    {isRTL ? "رموز البطاقة" : "Card Code(s)"}
+                    {t("orders.t_1afaae", "رموز البطاقة")}
                   </p>
                 </div>
                 <div className="space-y-2">
@@ -308,12 +307,12 @@ const OrderDetailPage: React.FC = () => {
                         onClick={() => {
                           navigator.clipboard.writeText(code);
                           import("react-toastify").then(({ toast }) =>
-                            toast.success(isRTL ? "تم النسخ" : "Copied!")
+                            toast.success(t("orders.t_5a9a57", "تم النسخ"))
                           );
                         }}
                         className="text-xs text-mk-primary hover:text-mk-deep font-medium bg-mk-tint hover:bg-mk-border-strong px-3 py-1.5 rounded-mk-sm transition-colors"
                       >
-                        {isRTL ? "نسخ" : "Copy"}
+                        {t("orders.t_46e684", "نسخ")}
                       </button>
                     </div>
                   ))}
@@ -326,7 +325,7 @@ const OrderDetailPage: React.FC = () => {
               <div className="flex justify-center mb-6">
                 <img
                   src={order.qrCodeUrl || rawOrderData?.qr_code_url || ""}
-                  alt={isRTL ? "رمز الاستجابة السريعة" : "QR Code"}
+                  alt={t("orders.t_2db7d8", "رمز الاستجابة السريعة")}
                   className="w-48 h-48 object-contain"
                 />
               </div>
@@ -338,7 +337,7 @@ const OrderDetailPage: React.FC = () => {
                   {formatVoucherNumber(voucherNumber)}
                 </p>
                 <p className="text-sm text-mk-muted mt-1">
-                  {isRTL ? "رقم القسيمة" : "Voucher Number"}
+                  {t("orders.t_e4c075", "رقم القسيمة")}
                 </p>
               </div>
             )}
@@ -347,7 +346,7 @@ const OrderDetailPage: React.FC = () => {
             {!isCardOrder && cardCodes.length > 0 && (
               <div className="mb-6">
                 <p className="text-sm text-mk-muted mb-2">
-                  {isRTL ? "رموز البطاقة" : "Card Code(s)"}
+                  {t("orders.t_1afaae", "رموز البطاقة")}
                 </p>
                 <ul className="space-y-1">
                   {cardCodes.map((code, i) => (
@@ -374,7 +373,7 @@ const OrderDetailPage: React.FC = () => {
                   )}
                 </span>
                 <span className="text-mk-muted">
-                  {isRTL ? "تاريخ الشراء" : "Purchase Date"}
+                  {t("orders.t_21fc46", "تاريخ الشراء")}
                 </span>
               </div>
               {!isCardOrder && (
@@ -385,7 +384,7 @@ const OrderDetailPage: React.FC = () => {
                     {formatOrderDate(rawOrderData?.expires_at, isRTL)}
                   </span>
                   <span className="text-mk-muted">
-                    {isRTL ? "انتهاء الكوبون" : "Coupon Expiry"}
+                    {t("orders.t_090a00", "انتهاء الكوبون")}
                   </span>
                 </div>
               )}
@@ -398,12 +397,8 @@ const OrderDetailPage: React.FC = () => {
                   </span>
                   <span className="text-mk-muted">
                     {isCardOrder
-                      ? isRTL
-                        ? "البطاقة"
-                        : "Card"
-                      : isRTL
-                        ? "العرض"
-                        : "Offer"}
+                      ? t("orders.t_20ac8d", "البطاقة")
+                      : t("orders.t_ba6e15", "العرض")}
                   </span>
                 </div>
               )}
@@ -416,12 +411,8 @@ const OrderDetailPage: React.FC = () => {
                   </span>
                   <span className="text-mk-muted">
                     {isCardOrder
-                      ? isRTL
-                        ? "البطاقة"
-                        : "Card"
-                      : isRTL
-                        ? "العرض"
-                        : "Offer"}
+                      ? t("orders.t_20ac8d", "البطاقة")
+                      : t("orders.t_ba6e15", "العرض")}
                   </span>
                 </div>
               )}
@@ -441,7 +432,7 @@ const OrderDetailPage: React.FC = () => {
                     {(orderMerchant as { name?: string }).name}
                   </span>
                   <span className="text-mk-muted">
-                    {isRTL ? "التاجر" : "Merchant"}
+                    {t("orders.t_dfc66e", "التاجر")}
                   </span>
                 </div>
               )}
@@ -453,7 +444,7 @@ const OrderDetailPage: React.FC = () => {
                     {formatOrderDate(rawOrderData.activated_at, isRTL)}
                   </span>
                   <span className="text-mk-muted">
-                    {isRTL ? "تاريخ التفعيل" : "Activated At"}
+                    {t("orders.t_2ea162", "تاريخ التفعيل")}
                   </span>
                 </div>
               )}
@@ -465,7 +456,7 @@ const OrderDetailPage: React.FC = () => {
                     {formatOrderDate(rawOrderData.expires_at, isRTL)}
                   </span>
                   <span className="text-mk-muted">
-                    {isRTL ? "انتهاء الصلاحية" : "Expires At"}
+                    {t("orders.t_75152f", "انتهاء الصلاحية")}
                   </span>
                 </div>
               )}
@@ -479,12 +470,8 @@ const OrderDetailPage: React.FC = () => {
                 </span>
                 <span className="text-mk-muted">
                   {isCardOrder
-                    ? isRTL
-                      ? "الكمية"
-                      : "Quantity"
-                    : isRTL
-                      ? "عدد الصفقات المشتراة"
-                      : "Number of Deals Purchased"}
+                    ? t("orders.t_a95134", "الكمية")
+                    : t("orders.t_dedd51", "عدد الصفقات المشتراة")}
                 </span>
               </div>
               {/* نوع الصلاحية (للبطاقات) */}
@@ -494,21 +481,15 @@ const OrderDetailPage: React.FC = () => {
                 >
                   <span className="text-mk-text font-medium">
                     {orderItem.validity_type === "annual"
-                      ? isRTL
-                        ? "سنوي"
-                        : "Annual"
+                      ? t("cards.t_019ca7", "سنوي")
                       : orderItem.validity_type === "monthly"
-                        ? isRTL
-                          ? "شهري"
-                          : "Monthly"
+                        ? t("cards.t_564ef2", "شهري")
                         : orderItem.validity_type === "quarterly"
-                          ? isRTL
-                            ? "ربع سنوي"
-                            : "Quarterly"
+                          ? t("cards.t_bd8f12", "ربع سنوي")
                           : orderItem.validity_type}
                   </span>
                   <span className="text-mk-muted">
-                    {isRTL ? "نوع الصلاحية" : "Validity"}
+                    {t("orders.t_bfb2df", "نوع الصلاحية")}
                   </span>
                 </div>
               )}
@@ -524,7 +505,7 @@ const OrderDetailPage: React.FC = () => {
                   <CurrencyIcon size={20} className="text-[#fd671a]" />
                 </span>
                 <span className="text-mk-muted">
-                  {isRTL ? "السعر الإجمالي" : "Total Price"}
+                  {t("orders.t_8824f5", "السعر الإجمالي")}
                 </span>
               </div>
             </div>
@@ -538,7 +519,7 @@ const OrderDetailPage: React.FC = () => {
                     onClick={() => setTermsOpen(true)}
                     className="text-sm text-mk-muted hover:text-[#fd671a] transition-colors inline-flex items-center gap-1"
                   >
-                    {isRTL ? "الشروط والأحكام" : "Terms & Conditions"}
+                    {t("orders.t_bec6c4", "الشروط والأحكام")}
                     <span className="rtl:rotate-180" aria-hidden>→</span>
                   </button>
                 )}
@@ -548,7 +529,7 @@ const OrderDetailPage: React.FC = () => {
                     onClick={() => setPrivacyOpen(true)}
                     className="text-sm text-mk-muted hover:text-[#fd671a] transition-colors inline-flex items-center gap-1"
                   >
-                    {isRTL ? "سياسة الخصوصية" : "Privacy Policy"}
+                    {t("orders.t_8b7b36", "سياسة الخصوصية")}
                     <span className="rtl:rotate-180" aria-hidden>→</span>
                   </button>
                 )}
@@ -563,7 +544,7 @@ const OrderDetailPage: React.FC = () => {
                   onClick={() => navigate(`/orders/${orderId}/activate`)}
                   className="w-full py-3 px-4 rounded-mk-md bg-[#400198] text-white font-medium hover:bg-[#33007a] transition-colors"
                 >
-                  {isRTL ? "تفعيل العرض عند التاجر" : "Activate Offer at Merchant"}
+                  {t("orders.t_cc1b3f", "تفعيل العرض عند التاجر")}
                 </button>
               )}
               <div className="flex gap-3">
@@ -574,7 +555,7 @@ const OrderDetailPage: React.FC = () => {
                     className="flex-1 py-3 px-4 rounded-mk-md bg-[#fd671a] text-white font-medium hover:bg-[#D9500B] transition-colors flex items-center justify-center gap-2"
                   >
                     <IoDownloadOutline className="w-5 h-5" />
-                    {isRTL ? "تنزيل PDF" : "Download PDF"}
+                    {t("orders.t_c97705", "تنزيل PDF")}
                   </button>
                 )}
                 <button
@@ -582,7 +563,7 @@ const OrderDetailPage: React.FC = () => {
                   onClick={() => navigate("/orders")}
                   className="flex-1 py-3 px-4 rounded-mk-md border border-mk-border-2 text-mk-text-strong font-medium hover:bg-mk-tint3 transition-colors"
                 >
-                  {isRTL ? "طلباتي" : "My Orders"}
+                  {t("orders.t_00246e", "طلباتي")}
                 </button>
               </div>
             </div>
@@ -593,7 +574,7 @@ const OrderDetailPage: React.FC = () => {
       {/* Terms Modal */}
       {termsOpen && (
         <InfoModal
-          title={isRTL ? "الشروط والأحكام" : "Terms & Conditions"}
+          title={t("orders.t_bec6c4", "الشروط والأحكام")}
           content={terms || ""}
           onClose={() => setTermsOpen(false)}
           isRTL={isRTL}
@@ -603,7 +584,7 @@ const OrderDetailPage: React.FC = () => {
       {/* Privacy Policy Modal */}
       {privacyOpen && (
         <InfoModal
-          title={isRTL ? "سياسة الخصوصية" : "Privacy Policy"}
+          title={t("orders.t_8b7b36", "سياسة الخصوصية")}
           content={privacyPolicy}
           onClose={() => setPrivacyOpen(false)}
           isRTL={isRTL}
@@ -659,7 +640,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ title, content, onClose, isRTL })
             onClick={onClose}
             className="px-5 py-2 rounded-full bg-[#400198] text-white hover:bg-[#33007a] transition-colors text-sm"
           >
-            {isRTL ? "إغلاق" : "Close"}
+            {t("ui.t_5bf826", "إغلاق")}
           </button>
         </div>
       </div>

@@ -82,15 +82,11 @@ const OfferCard: React.FC<OfferCardProps> = ({ offer, onOfferClick, href }) => {
         onSuccess: () => {
           toast.success(
             isFavorite
-              ? isRTL
-                ? "تمت إزالته من المفضلة"
-                : "Removed from favorites"
-              : isRTL
-                ? "تمت الإضافة إلى المفضلة"
-                : "Added to favorites",
+              ? t("cards.t_347f37", "تمت إزالته من المفضلة")
+              : t("cards.t_1aab25", "تمت الإضافة إلى المفضلة"),
           );
         },
-        onError: () => toast.error(isRTL ? "حدث خطأ" : "Something went wrong"),
+        onError: () => toast.error(t("cards.t_c94c75", "حدث خطأ")),
       },
     );
   };

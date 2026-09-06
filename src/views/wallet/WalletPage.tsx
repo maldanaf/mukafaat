@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "i18next";
 import React, { useState } from "react";
 import { POINTS_ENABLED } from "@config/features";
 import { useTranslation } from "react-i18next";
@@ -154,23 +155,23 @@ const WalletPage: React.FC = () => {
               <IoGiftOutline className="w-8 h-8 text-orange-500" />
             </div>
             <h3 className="text-lg font-bold text-mk-text">
-              {isRTL ? "تحويل النقاط إلى المحفظة" : "Convert Points to Wallet"}
+              {t("wallet.t_48eed1", "تحويل النقاط إلى المحفظة")}
             </h3>
           </div>
 
           <div className="space-y-3 mb-6">
             <div className="flex items-center justify-between p-3 bg-orange-50 rounded-mk-md">
-              <span className="text-sm text-mk-muted">{isRTL ? "النقاط المتاحة" : "Available Points"}</span>
-              <span className="font-bold text-orange-600">{points} {isRTL ? "نقطة" : "pts"}</span>
+              <span className="text-sm text-mk-muted">{t("wallet.t_94adc2", "النقاط المتاحة")}</span>
+              <span className="font-bold text-orange-600">{points} {t("wallet.t_e09821", "نقطة")}</span>
             </div>
             <div className="flex items-center justify-between p-3 bg-green-50 rounded-mk-md">
-              <span className="text-sm text-mk-muted">{isRTL ? "القيمة بالريال" : "Value in SAR"}</span>
+              <span className="text-sm text-mk-muted">{t("wallet.t_ce0f42", "القيمة بالريال")}</span>
               <span className="font-bold text-green-600 flex items-center gap-1">
                 {pointsValue ?? 0} <CurrencyIcon size={14} className="text-green-600" />
               </span>
             </div>
             <div className="flex items-center justify-between p-3 bg-mk-tint3 rounded-mk-md">
-              <span className="text-sm text-mk-muted">{isRTL ? "رصيد المحفظة بعد التحويل" : "Wallet After"}</span>
+              <span className="text-sm text-mk-muted">{t("wallet.t_e93d95", "رصيد المحفظة بعد التحويل")}</span>
               <span className="font-bold text-mk-primary flex items-center gap-1">
                 {(walletBalance + (pointsValue ?? 0)).toFixed(2)} <CurrencyIcon size={14} className="text-mk-primary" />
               </span>
@@ -178,9 +179,7 @@ const WalletPage: React.FC = () => {
           </div>
 
           <p className="text-xs text-mk-muted text-center mb-4">
-            {isRTL
-              ? "سيتم تحويل جميع النقاط إلى رصيد في المحفظة. هذه العملية لا يمكن التراجع عنها."
-              : "All points will be converted to wallet balance. This action cannot be undone."}
+            {t("wallet.t_f39f2f", "سيتم تحويل جميع النقاط إلى رصيد في المحفظة. هذه العملية لا يمكن التراجع عنها.")}
           </p>
 
           <div className="flex gap-3">
@@ -190,15 +189,15 @@ const WalletPage: React.FC = () => {
               className="flex-1 py-3 rounded-mk-md bg-[#400198] text-white font-medium hover:bg-[#33007a] transition-colors disabled:opacity-50"
             >
               {redeemMutation.isPending
-                ? (isRTL ? "جاري التحويل..." : "Converting...")
-                : (isRTL ? "تأكيد التحويل" : "Confirm")}
+                ? (t("orders.t_02f70c", "جاري التحويل..."))
+                : (t("wallet.t_f025a6", "تأكيد التحويل"))}
             </button>
             <button
               onClick={() => setRedeemModalOpen(false)}
               disabled={redeemMutation.isPending}
               className="flex-1 py-3 rounded-mk-md border border-mk-border-2 text-mk-text-strong font-medium hover:bg-mk-tint3 transition-colors disabled:opacity-50"
             >
-              {isRTL ? "إلغاء" : "Cancel"}
+              {t("ui.t_e776b0", "إلغاء")}
             </button>
           </div>
         </div>
@@ -299,7 +298,7 @@ const WalletPage: React.FC = () => {
             <div className="bg-white rounded-mk-sm shadow-mk-card p-4 mb-6">
               <div className="flex space-x-4 space-x-reverse">
                 {([
-                  { key: "payments" as const, label: isRTL ? "المدفوعات" : "Payments" },
+                  { key: "payments" as const, label: t("wallet.t_430ece", "المدفوعات") },
                   { key: "transactions" as const, label: t("wallet.financial_transactions") },
                   ...(POINTS_ENABLED
                     ? [{ key: "points" as const, label: t("wallet.points_log") }]
@@ -325,7 +324,7 @@ const WalletPage: React.FC = () => {
               <div className="bg-white rounded-mk-sm shadow-mk-card p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-lg font-bold text-mk-text">
-                    {isRTL ? "سجل المدفوعات" : "Payment History"}
+                    {t("wallet.t_4a0110", "سجل المدفوعات")}
                   </h3>
                   {(() => {
                     const root = (myTransactionsData as Record<string, unknown>)?.data ?? myTransactionsData;
@@ -333,7 +332,7 @@ const WalletPage: React.FC = () => {
                     const totalPaid = Number(summary?.total_paid ?? 0);
                     return totalPaid > 0 ? (
                       <span className="text-sm text-mk-muted">
-                        {isRTL ? "إجمالي المدفوعات:" : "Total paid:"}{" "}
+                        {t("wallet.t_f7723c", "إجمالي المدفوعات:")}{" "}
                         <span className="font-bold text-[#400198]">{totalPaid}</span>{" "}
                         <CurrencyIcon size={12} className="inline text-[#400198]" />
                       </span>
@@ -349,7 +348,7 @@ const WalletPage: React.FC = () => {
                   if (txList.length === 0) {
                     return (
                       <div className="text-center py-8 text-mk-muted">
-                        {isRTL ? "لا توجد مدفوعات" : "No payments yet"}
+                        {t("wallet.t_6fbd1f", "لا توجد مدفوعات")}
                       </div>
                     );
                   }
@@ -491,10 +490,10 @@ function WalletTransactionRow({
   const isEarn = String(item.type ?? "") === "earned" || points > 0;
   const isReversed = String(item.type ?? "") === "reversed";
   const typeLabel = isReversed
-    ? (isRTL ? "استرجاع" : "Reversed")
+    ? (t("wallet.t_bba289", "استرجاع"))
     : isEarn
-      ? (isRTL ? "مكتسبة" : "Earned")
-      : (isRTL ? "مستخدمة" : "Redeemed");
+      ? (t("wallet.t_e2b0d9", "مكتسبة"))
+      : (t("wallet.t_2ead28", "مستخدمة"));
 
   return (
     <div className="flex items-center justify-between p-4 border border-mk-border rounded-mk-md hover:shadow-mk-card transition-all">

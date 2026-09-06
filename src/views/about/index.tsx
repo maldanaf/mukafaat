@@ -68,7 +68,7 @@ const AboutPage: React.FC = () => {
                 onClick={() => navigate("/")}
                 className="hover:text-mk-primary"
               >
-                {t("home.navbar.home", isRTL ? "الرئيسية" : "Home")}
+                {t("home.navbar.home", t("ui.t_b986d8", "الرئيسية"))}
               </button>
               <BsChevronDown
                 className={`mx-2 text-xs ${isRTL ? "rotate-90" : "rotate-[270deg]"}`}
@@ -105,7 +105,7 @@ const AboutPage: React.FC = () => {
             ) : (
               // لا محتوى في اللوحة بعد — لا نعرض صفحة فارغة بلا تفسير
               <EmptyState
-                title={t("common.noContent", isRTL ? "لا يوجد محتوى" : "No content")}
+                title={t("common.noContent", t("ui.t_614dbf", "لا يوجد محتوى"))}
               />
             )}
           </div>

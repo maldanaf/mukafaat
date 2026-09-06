@@ -262,7 +262,7 @@ const Navbar: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsSearchOpen(true)}
-              aria-label={isRTL ? "بحث" : "Search"}
+              aria-label={t("ui.t_ba3add", "بحث")}
               className="hidden h-[40px] w-[40px] items-center justify-center rounded-full border border-[#ECE9F5] bg-white text-[#400198] transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-[#400198] hover:bg-[#F2EFFA] sm:flex"
             >
               <LuSearch size={17} />
@@ -471,7 +471,7 @@ const Navbar: React.FC = () => {
           >
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-lg font-bold text-[#400198]">
-                {isRTL ? "ابحث في العروض" : "Search Offers"}
+                {t("ui.t_3b05b6", "ابحث في العروض")}
               </h3>
               <button
                 type="button"
@@ -494,7 +494,7 @@ const Navbar: React.FC = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={
-                    isRTL ? "اكتب اسم العرض أو التاجر..." : "Type offer or merchant name..."
+                    t("ui.t_92d470", "اكتب اسم العرض أو التاجر...")
                   }
                   className={`w-full rounded-full border-2 border-gray-200 py-3 transition-colors focus:border-[#400198] focus:outline-none ${
                     isRTL ? "pe-12 ps-4" : "ps-12 pe-4"
@@ -507,14 +507,14 @@ const Navbar: React.FC = () => {
                   onClick={() => setIsSearchOpen(false)}
                   className="rounded-full border border-gray-300 px-5 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
                 >
-                  {isRTL ? "إلغاء" : "Cancel"}
+                  {t("ui.t_e776b0", "إلغاء")}
                 </button>
                 <button
                   type="submit"
                   disabled={!searchQuery.trim()}
                   className="rounded-full bg-[#400198] px-6 py-2 text-sm text-white transition-colors hover:bg-[#2B1B5E] disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {isRTL ? "بحث" : "Search"}
+                  {t("ui.t_ba3add", "بحث")}
                 </button>
               </div>
             </form>

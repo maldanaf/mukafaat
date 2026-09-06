@@ -144,22 +144,22 @@ const OffersSection: React.FC = () => {
     () => [
       {
         key: "latest" as const,
-        label: isRTL ? "أحدث العروض" : "Latest",
+        label: t("ui.t_dda239", "أحدث العروض"),
         count: latestOffers.length,
       },
       {
         key: "free" as const,
-        label: isRTL ? "بدون رسوم" : "No Fees",
+        label: t("payment.t_2d46b6", "بدون رسوم"),
         count: freeOffers.length,
       },
       {
         key: "paid" as const,
-        label: isRTL ? "عروض مدفوعة" : "Paid",
+        label: t("ui.t_7d384c", "عروض مدفوعة"),
         count: paidOffers.length,
       },
       {
         key: "suggested" as const,
-        label: isRTL ? "نقترحها عليك" : "Suggested",
+        label: t("ui.t_61030f", "نقترحها عليك"),
         count: suggestedOffers.length,
       },
     ],
@@ -233,7 +233,7 @@ const OffersSection: React.FC = () => {
           ) : displayOffers.length === 0 ? (
             <div className="text-center py-10">
               <p className="text-gray-500">
-                {isRTL ? "لا توجد عروض" : "No offers"}
+                {t("ui.t_be588d", "لا توجد عروض")}
               </p>
             </div>
           ) : isRTL && displayOffers.length < 4 ? (

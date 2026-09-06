@@ -93,7 +93,7 @@ function PrivacyPolicyPage() {
                 className="cursor-pointer hover:text-[#fd671a] transition-colors"
                 onClick={() => navigate("/")}
               >
-                {isRTL ? "الرئيسية" : "Home"}
+                {t("ui.t_b986d8", "الرئيسية")}
               </span>
               <BsChevronDown
                 className={`mx-2 transform ${
@@ -172,9 +172,7 @@ function PrivacyPolicyPage() {
                           : "Jost, sans-serif",
                       }}
                     >
-                      {isRTL
-                        ? "تحتاج مساعدة في التوفير؟"
-                        : "Need help with savings?"}
+                      {t("blogs.t_e9dc26", "تحتاج مساعدة في التوفير؟")}
                     </span>
                     <img
                       src={UnderTitle}
@@ -186,11 +184,11 @@ function PrivacyPolicyPage() {
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        {isRTL ? "الاسم" : "Name"}
+                        {t("blogs.t_0a9249", "الاسم")}
                       </label>
                       <input
                         type="text"
-                        placeholder={isRTL ? "أدخل الاسم" : "Enter Name"}
+                        placeholder={t("blogs.t_ba0c2e", "أدخل الاسم")}
                         className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#400198] focus:border-transparent ${
                           isRTL ? "text-right" : "text-left"
                         }`}
@@ -198,11 +196,11 @@ function PrivacyPolicyPage() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        {isRTL ? "رقم الهاتف" : "Phone Number"}
+                        {t("contact.t_211cce", "رقم الهاتف")}
                       </label>
                       <input
                         type="tel"
-                        placeholder={isRTL ? "رقم الهاتف" : "Phone Number"}
+                        placeholder={t("contact.t_211cce", "رقم الهاتف")}
                         className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#400198] focus:border-transparent ${
                           isRTL ? "text-right" : "text-left"
                         }`}
@@ -211,18 +209,14 @@ function PrivacyPolicyPage() {
                     <button
                       onClick={() =>
                         openModal(
-                          isRTL
-                            ? "احصل على مساعدة في التوفير"
-                            : "Get Help with Savings",
-                          isRTL
-                            ? "املأ النموذج أدناه وسنتصل بك لمناقشة احتياجاتك في التوفير والاستفادة من أفضل العروض."
-                            : "Fill out the form below and we'll call you back to discuss your savings needs and benefit from the best offers."
+                          t("blogs.t_16d7bd", "احصل على مساعدة في التوفير"),
+                          t("blogs.t_1f8018", "املأ النموذج أدناه وسنتصل بك لمناقشة احتياجاتك في التوفير والاستفادة من أفضل العروض.")
                         )
                       }
                       className="bg-[#400198] h-[45px] w-full justify-center hover:scale-105 transition-transform duration-300 text-sm sm:text-md px-8 sm:px-8 lg:px-8 py-2 sm:py-2 font-semibold rounded-full text-white flex items-center justify-center gap-2 cursor-pointer"
                     >
                       <LuPhoneCall className="text-lg" />
-                      {isRTL ? "اتصل بي" : "Call me"}
+                      {t("blogs.t_74c16c", "اتصل بي")}
                     </button>
                   </div>
                 </div>

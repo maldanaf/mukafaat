@@ -60,7 +60,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ url, title, onClose }) => {
       href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
     },
     {
-      name: isRTL ? "بريد إلكتروني" : "Email",
+      name: t("ui.t_3edea9", "بريد إلكتروني"),
       icon: HiOutlineMail,
       color: "bg-gray-600",
       href: `mailto:?subject=${encodedTitle}&body=${encodedUrl}`,
@@ -99,7 +99,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ url, title, onClose }) => {
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
           <h3 className="text-lg font-bold text-gray-900">
-            {isRTL ? "مشاركة" : "Share"}
+            {t("ui.t_019688", "مشاركة")}
           </h3>
           <button
             onClick={onClose}
@@ -143,7 +143,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ url, title, onClose }) => {
           >
             <div className="flex-1 min-w-0">
               <p className="text-xs text-gray-400 mb-0.5">
-                {isRTL ? "نسخ الرابط" : "Copy link"}
+                {t("ui.t_cb1b89", "نسخ الرابط")}
               </p>
               <p className="text-sm text-gray-700 truncate font-mono">
                 {url}

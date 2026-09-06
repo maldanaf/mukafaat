@@ -254,7 +254,7 @@ const StoresPage: React.FC = () => {
                     name: parentCategory
                       ? t("stores.all_in", {
                           name: parentCategory.name,
-                          defaultValue: "كل {{name}}",
+                          defaultValue: t("storesPage.t_72d897", "كل {{name}}"),
                         })
                       : t("home.categories_new.all", "كل المتاجر"),
                     merchants_count: parentCategory ? undefined : meta.total,
@@ -315,7 +315,7 @@ const StoresPage: React.FC = () => {
             name: parentCategory
               ? t("stores.all_in", {
                   name: parentCategory.name,
-                  defaultValue: "كل {{name}}",
+                  defaultValue: t("storesPage.t_72d897", "كل {{name}}"),
                 })
               : t("home.categories_new.all", "الكل"),
             image: null,
@@ -385,7 +385,7 @@ const StoresPage: React.FC = () => {
           {t("stores.showing", {
             shown: items.length,
             total: meta.total,
-            defaultValue: "{{shown}} من {{total}} متجر",
+            defaultValue: t("storesPage.t_48f9ab", "{{shown}} من {{total}} متجر"),
           })}
         </span>
 

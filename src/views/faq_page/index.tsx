@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "i18next";
 import React, { useMemo, useState } from "react";
 import { Link } from "@/lib/router-compat";
 import { Helmet } from "@/lib/helmet-compat";
@@ -53,15 +54,15 @@ export default function FaqPage() {
         <div className="absolute inset-0 bg-primary opacity-30" />
         <div className="relative pt-20 pb-12 px-6 mx-auto max-w-site w-full text-center z-10">
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-            {isRTL ? "الأسئلة الشائعة" : "Frequently Asked Questions"}
+            {t("faq.t_90b224", "الأسئلة الشائعة")}
           </h1>
           <p className="text-white/80 text-sm mb-6">
-            {isRTL ? "إجابات لكل ما تريد معرفته عن مكافآت" : "Answers to everything you want to know about Mukafaat"}
+            {t("faq.t_e1635c", "إجابات لكل ما تريد معرفته عن مكافآت")}
           </p>
           <nav className="flex items-center justify-center gap-1 text-xs text-white/70">
-            <Link to="/" className="hover:text-white">{isRTL ? "الرئيسية" : "Home"}</Link>
+            <Link to="/" className="hover:text-white">{t("ui.t_b986d8", "الرئيسية")}</Link>
             <span>|</span>
-            <span className="text-[#fd671a]">{isRTL ? "الأسئلة الشائعة" : "FAQ"}</span>
+            <span className="text-[#fd671a]">{t("faq.t_90b224", "الأسئلة الشائعة")}</span>
           </nav>
         </div>
         <div className="absolute -bottom-10 z-0">
@@ -77,7 +78,7 @@ export default function FaqPage() {
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder={isRTL ? "ابحث في الأسئلة..." : "Search questions..."}
+            placeholder={t("faq.t_107672", "ابحث في الأسئلة...")}
             className={`w-full py-3 ${isRTL ? "pr-12 pl-4" : "pl-12 pr-4"} border-2 border-gray-200 rounded-2xl focus:border-[#400198] focus:outline-none text-base shadow-sm`}
           />
         </div>
@@ -89,11 +90,11 @@ export default function FaqPage() {
             <div className="text-5xl mb-3">🤔</div>
             <p className="text-gray-600 mb-4">
               {search
-                ? (isRTL ? "لا توجد نتائج مطابقة" : "No matching results")
-                : (isRTL ? "لا توجد أسئلة حالياً" : "No questions yet")}
+                ? (t("faq.t_8d88b0", "لا توجد نتائج مطابقة"))
+                : (t("faq.t_bb5df7", "لا توجد أسئلة حالياً"))}
             </p>
             <Link to="/contact" className="inline-block bg-[#400198] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#33007a]">
-              {isRTL ? "تواصل معنا" : "Contact Us"}
+              {t("faq.t_988638", "تواصل معنا")}
             </Link>
           </div>
         ) : (
@@ -133,13 +134,13 @@ export default function FaqPage() {
         {/* CTA */}
         <div className="mt-10 p-8 bg-gradient-to-br from-[#400198] to-[#6b2bb8] rounded-2xl text-center text-white">
           <h2 className="text-xl font-bold mb-2">
-            {isRTL ? "لم تجد إجابة لسؤالك؟" : "Didn't find your answer?"}
+            {t("faq.t_3636ce", "لم تجد إجابة لسؤالك؟")}
           </h2>
           <p className="opacity-90 mb-5 text-sm">
-            {isRTL ? "فريق الدعم لدينا جاهز لمساعدتك على مدار الساعة" : "Our support team is ready to help you 24/7"}
+            {t("faq.t_5687a0", "فريق الدعم لدينا جاهز لمساعدتك على مدار الساعة")}
           </p>
           <Link to="/contact" className="inline-block bg-white text-[#400198] px-8 py-3 rounded-xl font-bold hover:bg-gray-100">
-            {isRTL ? "تواصل معنا" : "Contact Us"}
+            {t("faq.t_988638", "تواصل معنا")}
           </Link>
         </div>
       </div>

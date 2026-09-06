@@ -1,3 +1,4 @@
+import { t } from "i18next";
 import type { CardOffer } from "@data/cards";
 
 export interface CardCategory {
@@ -121,10 +122,10 @@ export function mapApiCardsToModels(
 }
 
 const validityLabel: Record<string, string> = {
-  annual: "سنوي",
-  monthly: "شهري",
-  quarterly: "ربع سنوي",
-  semi_annual: "نصف سنوي",
+  annual: t("cards.t_019ca7", "سنوي"),
+  monthly: t("cards.t_564ef2", "شهري"),
+  quarterly: t("cards.t_bd8f12", "ربع سنوي"),
+  semi_annual: t("cards.t_f6ffb8", "نصف سنوي"),
 };
 
 /**

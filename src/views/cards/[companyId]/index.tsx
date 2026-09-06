@@ -108,7 +108,7 @@ const CategoryCardsPage = () => {
     return (
       <>
         <Helmet>
-          <title>{isRTL ? "البطاقات" : "Cards"}</title>
+          <title>{t("cards.t_cd328b", "البطاقات")}</title>
         </Helmet>
         <div className="min-h-screen flex items-center justify-center">
           <LoadingSpinner />
@@ -122,13 +122,13 @@ const CategoryCardsPage = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-mk-text mb-4">
-            {isRTL ? "التصنيف غير موجود" : "Category not found"}
+            {t("cards.t_29461e", "التصنيف غير موجود")}
           </h2>
           <button
             onClick={() => navigate("/cards")}
             className="bg-mk-primary text-white px-6 py-2 rounded-mk-sm hover:bg-mk-primary transition-colors"
           >
-            {isRTL ? "العودة للبطاقات" : "Back to Cards"}
+            {t("cards.t_e0cbd5", "العودة للبطاقات")}
           </button>
         </div>
       </div>
@@ -139,7 +139,7 @@ const CategoryCardsPage = () => {
     <>
       <Helmet>
         <title>
-          {category?.name} - {isRTL ? "البطاقات" : "Cards"}
+          {category?.name} - {t("cards.t_cd328b", "البطاقات")}
         </title>
         <link
           rel="canonical"
@@ -167,7 +167,7 @@ const CategoryCardsPage = () => {
             className={`absolute top-4 ${isRTL ? "right-4" : "left-4"} text-white hover:text-mk-lilac transition-colors flex items-center gap-2`}
           >
             <FiArrowLeft className={`text-xl ${isRTL ? "rotate-180" : ""}`} />
-            <span className="text-sm">{isRTL ? "العودة" : "Back"}</span>
+            <span className="text-sm">{t("cards.t_5e987a", "العودة")}</span>
           </button>
 
           {/* H1 يصدر من الخادم — هذا العنوان المرئي بمستوى H2 */}
@@ -176,7 +176,7 @@ const CategoryCardsPage = () => {
           </h2>
           <p className="text-white/80 text-sm">
             {pagination.total}{" "}
-            {isRTL ? "بطاقة متاحة" : "cards available"}
+            {t("cards.t_0b346d", "بطاقة متاحة")}
           </p>
         </div>
       </section>
@@ -210,8 +210,8 @@ const CategoryCardsPage = () => {
               >
                 <CategoryCard
                   icon={category?.image || ""}
-                  title={isRTL ? "الكل" : "All"}
-                  alt={isRTL ? "الكل" : "All"}
+                  title={t("cards.t_11fdef", "الكل")}
+                  alt={t("cards.t_11fdef", "الكل")}
                   selected={selectedSubId === "all"}
                 />
               </button>
@@ -256,7 +256,7 @@ const CategoryCardsPage = () => {
                   : "bg-white text-mk-text-strong border-mk-border hover:bg-mk-tint3"
               }`}
             >
-              {isRTL ? "كل الدول" : "All countries"}
+              {t("cards.t_1db98b", "كل الدول")}
             </button>
             {countries.map((c) => {
               const selected = selectedCountryId === c.id;
@@ -311,9 +311,7 @@ const CategoryCardsPage = () => {
           </div>
         ) : filteredCards.length === 0 ? (
           <div className="text-center py-12 text-mk-muted">
-            {isRTL
-              ? "لا توجد بطاقات متاحة حالياً"
-              : "No cards available at the moment"}
+            {t("cards.t_1857d4", "لا توجد بطاقات متاحة حالياً")}
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
@@ -341,7 +339,7 @@ const CategoryCardsPage = () => {
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               className="px-4 py-2 rounded-mk-sm bg-white border border-mk-border text-mk-text-strong hover:bg-mk-tint3 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isRTL ? "السابق" : "Previous"}
+              {t("cards.t_f533eb", "السابق")}
             </button>
             <span className="text-sm text-mk-text-strong">
               {currentPage} / {pagination.lastPage}
@@ -354,7 +352,7 @@ const CategoryCardsPage = () => {
               }
               className="px-4 py-2 rounded-mk-sm bg-white border border-mk-border text-mk-text-strong hover:bg-mk-tint3 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isRTL ? "التالي" : "Next"}
+              {t("cards.t_2fa619", "التالي")}
             </button>
           </div>
         )}

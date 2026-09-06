@@ -153,7 +153,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
       >
         <div className="flex items-center justify-between py-4 px-6 border-b border-mk-border">
           <h2 className="text-lg font-semibold text-mk-text">
-            {isRTL ? "تصفية العروض" : "Filter Offers"}
+            {t("offersPage.t_073b15", "تصفية العروض")}
           </h2>
           <button
             onClick={onClose}

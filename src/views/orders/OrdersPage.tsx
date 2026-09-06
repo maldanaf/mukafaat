@@ -71,15 +71,15 @@ const OrdersPage: React.FC = () => {
   const getStatusLabel = (status: string) => {
     switch (status) {
       case "pending":
-        return isRTL ? "في انتظار الدفع" : "Awaiting Payment";
+        return t("orders.t_0befbb", "في انتظار الدفع");
       case "active":
-        return isRTL ? "مؤكد - جاهز للاستخدام" : "Confirmed - Ready to Use";
+        return t("orders.t_aa14a6", "مؤكد - جاهز للاستخدام");
       case "used":
-        return isRTL ? "تم التفعيل" : "Activated";
+        return t("orders.t_fd85c4", "تم التفعيل");
       case "expired":
-        return isRTL ? "منتهي الصلاحية" : "Expired";
+        return t("orders.t_709d5f", "منتهي الصلاحية");
       case "cancelled":
-        return isRTL ? "ملغي" : "Cancelled";
+        return t("membership.t_91b1e1", "ملغي");
       default:
         return status;
     }
@@ -319,36 +319,36 @@ const OrdersPage: React.FC = () => {
           {[
             {
               key: "all",
-              label: isRTL ? "الكل" : "All",
+              label: t("cards.t_11fdef", "الكل"),
               count: orders.length,
             },
             {
               key: "pending",
-              label: isRTL ? "في الانتظار" : "Pending",
+              label: t("orders.t_5a435e", "في الانتظار"),
               count: orders.filter((order) => order.status === "pending")
                 .length,
             },
             {
               key: "active",
-              label: isRTL ? "مؤكد" : "Confirmed",
+              label: t("orders.t_44048f", "مؤكد"),
               count: orders.filter((order) => order.status === "active")
                 .length,
             },
             {
               key: "used",
-              label: isRTL ? "تم التفعيل" : "Activated",
+              label: t("orders.t_fd85c4", "تم التفعيل"),
               count: orders.filter((order) => order.status === "used")
                 .length,
             },
             {
               key: "expired",
-              label: isRTL ? "منتهي" : "Expired",
+              label: t("membership.t_a6ed2a", "منتهي"),
               count: orders.filter((order) => order.status === "expired")
                 .length,
             },
             {
               key: "cancelled",
-              label: isRTL ? "ملغي" : "Cancelled",
+              label: t("membership.t_91b1e1", "ملغي"),
               count: orders.filter((order) => order.status === "cancelled")
                 .length,
             },
@@ -523,10 +523,10 @@ const OrdersPage: React.FC = () => {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-[#400198] hover:text-mk-deep transition-colors inline-flex items-center gap-1"
-                                title={isRTL ? "تحميل الفاتورة" : "Download invoice"}
+                                title={t("orders.t_6d245d", "تحميل الفاتورة")}
                               >
                                 <IoDownloadOutline className="w-4 h-4" />
-                                {isRTL ? "الفاتورة" : "Invoice"}
+                                {t("orders.t_26abf9", "الفاتورة")}
                               </a>
                             )}
                             {canCancelOrder(order) && (

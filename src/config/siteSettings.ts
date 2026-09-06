@@ -1,3 +1,4 @@
+import { t } from "i18next";
 import { SITE_URL, absoluteUrl } from "./site";
 
 /**
@@ -50,7 +51,7 @@ const EMPTY_TRACKING: TrackingSettings = {
 /** القيم التي نعتمدها إن تعذّر الوصول للـ API — لا نخترع بيانات تواصل */
 const FALLBACK: SiteSettings = {
   siteName: "مكافآت",
-  description: "منصة مكافآت — اكتشف أفضل العروض والخصومات في السعودية",
+  description: t("ui.t_0f645f", "منصة مكافآت — اكتشف أفضل العروض والخصومات في السعودية"),
   logo: absoluteUrl("/assets/logo-BcBtrMQ_.svg"),
   phone: null,
   email: null,

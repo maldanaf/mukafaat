@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "i18next";
 import React, { useState } from "react";
 import { Link } from "@/lib/router-compat";
 import { useUserStore } from "@stores/userStore";
@@ -52,20 +53,20 @@ const CartPage: React.FC = () => {
     setTimeout(() => {
       setIsProcessing(false);
       // يمكن إضافة منطق الدفع هنا
-      alert("سيتم توجيهك لصفحة الدفع");
+      alert(t("cart.t_0addd4", "سيتم توجيهك لصفحة الدفع"));
     }, 1000);
   };
 
   const getTypeLabel = (type: string) => {
     switch (type) {
       case "offer":
-        return "عرض";
+        return t("cart.t_3c7798", "عرض");
       case "card":
-        return "بطاقة";
+        return t("cart.t_2a1dc8", "بطاقة");
       case "booking":
-        return "حجز";
+        return t("cart.t_1e9a69", "حجز");
       default:
-        return "عنصر";
+        return t("cart.t_931f91", "عنصر");
     }
   };
 
@@ -160,14 +161,14 @@ const CartPage: React.FC = () => {
                               <button
                                 onClick={() => handleMoveToSaved(item)}
                                 className="text-mk-faint hover:text-red-500 transition-colors"
-                                title="نقل للمحفوظات"
+                                title={t("cart.t_5b82c1", "نقل للمحفوظات")}
                               >
                                 <IoHeartOutline className="w-5 h-5" />
                               </button>
                               <button
                                 onClick={() => handleRemoveItem(item.itemId)}
                                 className="text-mk-faint hover:text-red-500 transition-colors"
-                                title="حذف"
+                                title={t("cart.t_2d2bbd", "حذف")}
                               >
                                 <IoTrashOutline className="w-5 h-5" />
                               </button>
@@ -276,7 +277,7 @@ const CartPage: React.FC = () => {
                   disabled={isProcessing}
                   className="w-full bg-[#400198] text-white py-3 px-4 rounded-md hover:bg-[#400198c9] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                 >
-                  {isProcessing ? "جاري المعالجة..." : "الدفع الآن"}
+                  {isProcessing ? "جاري المعالجة..." : t("cart.t_39d71b", "الدفع الآن")}
                 </button>
 
                 <div className="mt-4 text-center">

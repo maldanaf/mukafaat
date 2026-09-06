@@ -1,3 +1,4 @@
+import { t } from "i18next";
 import { api } from "@network/apiClient";
 import { API_ENDPOINTS } from "@network/apiEndpoints";
 
@@ -39,7 +40,7 @@ export async function startArbPayment(
 
     const body = (res.data as Record<string, unknown>) ?? {};
     if (body.status === false) {
-      return { ok: false, error: String(body.msg || body.message || "فشل بدء الدفع") };
+      return { ok: false, error: String(body.msg || body.message || t("payment.t_b3f76f", "فشل بدء الدفع")) };
     }
 
     const data = (body.data ?? body) as Record<string, unknown>;
@@ -52,10 +53,10 @@ export async function startArbPayment(
       return { ok: true, paymentUrl };
     }
 
-    return { ok: false, error: "لم يتم إرجاع رابط الدفع" };
+    return { ok: false, error: t("payment.t_3ebc76", "لم يتم إرجاع رابط الدفع") };
   } catch (err) {
     const data = (err as { response?: { data?: { msg?: string; message?: string } } })
       ?.response?.data;
-    return { ok: false, error: String(data?.msg || data?.message || "تعذّر بدء عملية الدفع") };
+    return { ok: false, error: String(data?.msg || data?.message || t("payment.t_50ef45", "تعذّر بدء عملية الدفع")) };
   }
 }

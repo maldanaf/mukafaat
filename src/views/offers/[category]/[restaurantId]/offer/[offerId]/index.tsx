@@ -378,7 +378,7 @@ const OfferDetailPage = () => {
 
           if (!requiresPayment) {
             // Free offer — go directly to order details (activation + PDF)
-            toast.success(t("offerDetail.order_created_success") || (isRTL ? "تم إنشاء طلبك بنجاح" : "Order created successfully"));
+            toast.success(t("offerDetail.order_created_success") || (t("offersPage.t_67eba3", "تم إنشاء طلبك بنجاح")));
             if (orderId != null) {
               window.location.href = `/orders/${orderId}`;
             } else {
@@ -1208,7 +1208,7 @@ const OfferDetailPage = () => {
                   </div>
                 )}
                 {/* <div className="text-sm text-mk-muted bg-mk-tint3 rounded-mk-md p-3">
-                  {isRTL ? "قسائم الهاتف المحمول" : "Mobile vouchers"}
+                  {t("offersPage.t_fe434d", "قسائم الهاتف المحمول")}
                 </div> */}
                 {/* طرق الدفع — نفس شعارات صفحة الدفع بدل أسماء نصّية */}
                 <div>

@@ -1,3 +1,4 @@
+import { t } from "i18next";
 /**
  * تنسيق وتحقق حقول البطاقة حسب المعايير المعتمدة.
  * لا نرسل البيانات للباكند؛ الدفع الفعلي عبر ميسر.
@@ -39,9 +40,9 @@ export function luhnCheck(cardNumber: string): boolean {
 
 export function validateCardNumber(value: string): true | string {
   const digits = getCardNumberDigits(value);
-  if (digits.length < 13) return "رقم البطاقة قصير";
-  if (digits.length > 19) return "رقم البطاقة طويل";
-  if (!luhnCheck(value)) return "رقم البطاقة غير صالح";
+  if (digits.length < 13) return t("cards.t_e965eb", "رقم البطاقة قصير");
+  if (digits.length > 19) return t("cards.t_8996ce", "رقم البطاقة طويل");
+  if (!luhnCheck(value)) return t("cards.t_67f9cb", "رقم البطاقة غير صالح");
   return true;
 }
 
@@ -56,12 +57,12 @@ export function formatExpiry(value: string): string {
 
 export function validateExpiry(value: string): true | string {
   const digits = value.replace(/\D/g, "");
-  if (digits.length !== 4) return "أدخل MM/YY";
+  if (digits.length !== 4) return t("cards.t_c1657e", "أدخل MM/YY");
   const month = parseInt(digits.slice(0, 2), 10);
-  if (month < 1 || month > 12) return "شهر غير صالح";
+  if (month < 1 || month > 12) return t("cards.t_51ba58", "شهر غير صالح");
   const year = 2000 + parseInt(digits.slice(2, 4), 10);
   const exp = new Date(year, month, 0);
-  if (exp.getTime() < Date.now()) return "البطاقة منتهية الصلاحية";
+  if (exp.getTime() < Date.now()) return t("cards.t_8b31ee", "البطاقة منتهية الصلاحية");
   return true;
 }
 
@@ -72,8 +73,8 @@ export function formatCVV(value: string): string {
 
 export function validateCVV(value: string): true | string {
   const digits = value.replace(/\D/g, "");
-  if (digits.length < CVV_MIN_LENGTH) return "CVV غير مكتمل";
-  if (digits.length > CVV_MAX_LENGTH) return "CVV غير صالح";
+  if (digits.length < CVV_MIN_LENGTH) return t("cards.t_7ed28d", "CVV غير مكتمل");
+  if (digits.length > CVV_MAX_LENGTH) return t("cards.t_257a1f", "CVV غير صالح");
   return true;
 }
 
@@ -87,8 +88,8 @@ export function sanitizeCardholderName(value: string): string {
 
 export function validateCardholderName(value: string): true | string {
   const s = sanitizeCardholderName(value);
-  if (!s.length) return "أدخل اسم حامل البطاقة";
-  if (s.length < 2) return "الاسم قصير جداً";
+  if (!s.length) return t("cards.t_893698", "أدخل اسم حامل البطاقة");
+  if (s.length < 2) return t("cards.t_dd829b", "الاسم قصير جداً");
   return true;
 }
 

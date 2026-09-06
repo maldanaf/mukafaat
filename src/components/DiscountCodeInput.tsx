@@ -61,14 +61,14 @@ const DiscountCodeInput: React.FC<DiscountCodeInputProps> = ({
           const root = resp as Record<string, unknown> | undefined;
           if (!root) {
             setErrorMsg(
-              isRTL ? "تعذر التحقق من كود الخصم" : "Could not validate code",
+              t("ui.t_f33ddc", "تعذر التحقق من كود الخصم"),
             );
             return;
           }
           if (root.status === false) {
             setErrorMsg(
               (root.msg as string) ??
-                (isRTL ? "كود الخصم غير صالح" : "Invalid discount code"),
+                (t("ui.t_b2a53e", "كود الخصم غير صالح")),
             );
             return;
           }
@@ -79,14 +79,12 @@ const DiscountCodeInput: React.FC<DiscountCodeInputProps> = ({
             onChange(dc);
           } else {
             setErrorMsg(
-              isRTL ? "تعذر تطبيق كود الخصم" : "Could not apply discount",
+              t("ui.t_a8c8cd", "تعذر تطبيق كود الخصم"),
             );
           }
         },
         onError: (err) => {
-          const fallback = isRTL
-            ? "كود الخصم غير صالح"
-            : "Invalid discount code";
+          const fallback = t("ui.t_b2a53e", "كود الخصم غير صالح");
           if (err instanceof AxiosError) {
             const msg = (err.response?.data as { msg?: string } | undefined)
               ?.msg;
@@ -126,7 +124,7 @@ const DiscountCodeInput: React.FC<DiscountCodeInputProps> = ({
               {applied.title || applied.code}
             </div>
             <div className={`text-xs ${isDark ? "text-emerald-200" : "text-emerald-700"}`}>
-              {isRTL ? "تم خصم" : "Discount"}{" "}
+              {t("ui.t_d6b72c", "تم خصم")}{" "}
               <span className="font-bold">
                 {applied.discount_amount} {isRTL ? "ر.س" : "SAR"}
               </span>
@@ -141,7 +139,7 @@ const DiscountCodeInput: React.FC<DiscountCodeInputProps> = ({
               ? "bg-white/10 text-white hover:bg-white/20"
               : "bg-gray-100 text-gray-600 hover:bg-gray-200"
           }`}
-          aria-label={isRTL ? "إزالة كود الخصم" : "Remove discount code"}
+          aria-label={t("ui.t_332873", "إزالة كود الخصم")}
         >
           <FiX />
         </button>
@@ -157,7 +155,7 @@ const DiscountCodeInput: React.FC<DiscountCodeInputProps> = ({
         }`}
       >
         <FiTag className="opacity-70" />
-        {isRTL ? "كود الخصم" : "Discount code"}
+        {t("ui.t_400ad6", "كود الخصم")}
       </label>
 
       <div className="flex gap-2">
@@ -165,7 +163,7 @@ const DiscountCodeInput: React.FC<DiscountCodeInputProps> = ({
           type="text"
           value={code}
           onChange={(e) => setCode(e.target.value.toUpperCase())}
-          placeholder={isRTL ? "أدخل كود الخصم" : "Enter discount code"}
+          placeholder={t("ui.t_cd9887", "أدخل كود الخصم")}
           disabled={validateMutation.isPending}
           className={`flex-1 px-4 py-3 rounded-xl border outline-none text-sm tracking-wider uppercase ${
             isDark
@@ -186,12 +184,8 @@ const DiscountCodeInput: React.FC<DiscountCodeInputProps> = ({
           className="px-5 py-3 rounded-xl bg-[#fd671a] text-white font-bold text-sm hover:bg-[#D9500B] disabled:opacity-50 disabled:cursor-not-allowed transition"
         >
           {validateMutation.isPending
-            ? isRTL
-              ? "جاري..."
-              : "Loading..."
-            : isRTL
-              ? "تطبيق"
-              : "Apply"}
+            ? t("ui.t_343b7d", "جاري...")
+            : t("ui.t_b177f0", "تطبيق")}
         </button>
       </div>
 

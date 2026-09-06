@@ -42,18 +42,14 @@ function ContactPage() {
         <meta
           name="description"
           content={
-            isRTL
-              ? "تواصل مع مكافآت. نحن هنا لمساعدتك في أي استفسارات أو ملاحظات أو دعم تحتاجه. اتصل بنا اليوم!"
-              : "Get in touch with Mukafaat. We're here to assist you with any inquiries, feedback, or support you need. Contact us today!"
+            t("contact.t_25a575", "تواصل مع مكافآت. نحن هنا لمساعدتك في أي استفسارات أو ملاحظات أو دعم تحتاجه. اتصل بنا اليوم!")
           }
         />
         <meta property="og:title" content={t("home.navbar.contact")} />
         <meta
           property="og:description"
           content={
-            isRTL
-              ? "تواصل مع مكافآت. نحن هنا لمساعدتك في أي استفسارات أو ملاحظات أو دعم تحتاجه. اتصل بنا اليوم!"
-              : "Get in touch with Mukafaat. We're here to assist you with any inquiries, feedback, or support you need. Contact us today!"
+            t("contact.t_25a575", "تواصل مع مكافآت. نحن هنا لمساعدتك في أي استفسارات أو ملاحظات أو دعم تحتاجه. اتصل بنا اليوم!")
           }
         />
       </Helmet>
@@ -61,9 +57,7 @@ function ContactPage() {
         <PageHeader
           title="contact.title"
           description={
-            isRTL
-              ? "تواصل مع مكافآت. نحن هنا لمساعدتك في أي استفسارات أو ملاحظات أو دعم تحتاجه. اتصل بنا اليوم!"
-              : "Get in touch with Mukafaat. We're here to assist you with any inquiries, feedback, or support you need. Contact us today!"
+            t("contact.t_25a575", "تواصل مع مكافآت. نحن هنا لمساعدتك في أي استفسارات أو ملاحظات أو دعم تحتاجه. اتصل بنا اليوم!")
           }
         />
 
@@ -85,7 +79,7 @@ function ContactPage() {
                             : "Jost, sans-serif",
                         }}
                       >
-                        {isRTL ? "اتصل بنا" : "Contact Us"}
+                        {t("contact.t_c3721b", "اتصل بنا")}
                       </span>
                       <img
                         src={UnderTitle}
@@ -104,7 +98,7 @@ function ContactPage() {
                           </div>
                           <div className="flex-1">
                             <h3 className="text-lg font-bold text-white mb-2">
-                              {isRTL ? "زيارة مكتب" : "Visit A Office"}
+                              {t("contact.t_dc285e", "زيارة مكتب")}
                             </h3>
                             <p className="text-white/90 text-sm leading-relaxed">
                               {contact.address}
@@ -121,18 +115,18 @@ function ContactPage() {
                           </div>
                           <div className="flex-1">
                             <h3 className="text-lg font-bold text-white mb-2">
-                              {isRTL ? "اتصال" : "Make A Call"}
+                              {t("contact.t_f96cfb", "اتصال")}
                             </h3>
                             <div className="space-y-1">
                               {contact.phone && (
                                 <p className="text-white/90 text-sm">
-                                  {isRTL ? "اتصال: " : "Call : "}
+                                  {t("contact.t_ce073b", "اتصال: ")}
                                   {contact.phone}
                                 </p>
                               )}
                               {contact.whatsapp && contact.whatsapp !== contact.phone && (
                                 <p className="text-white/90 text-sm">
-                                  {isRTL ? "واتساب: " : "WhatsApp : "}
+                                  {t("contact.t_7d3a12", "واتساب: ")}
                                   {contact.whatsapp}
                                 </p>
                               )}
@@ -149,7 +143,7 @@ function ContactPage() {
                           </div>
                           <div className="flex-1">
                             <h3 className="text-lg font-bold text-white mb-2">
-                              {isRTL ? "إرسال بريد" : "Send Mail"}
+                              {t("contact.t_858f78", "إرسال بريد")}
                             </h3>
                             <p className="text-white/90 text-sm">
                               {contact.email}

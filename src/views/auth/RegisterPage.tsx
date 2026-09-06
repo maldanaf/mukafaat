@@ -165,7 +165,7 @@ const RegisterPage: React.FC = () => {
         setToast({ type: "error", message: res.msg });
       }
     } catch {
-      setToast({ type: "error", message: "خطأ في إرسال رمز التحقق" });
+      setToast({ type: "error", message: t("auth.t_8dbc6b", "خطأ في إرسال رمز التحقق") });
     }
   };
 
@@ -185,7 +185,7 @@ const RegisterPage: React.FC = () => {
           setToast({ type: "error", message: res.msg });
         }
       } catch {
-        setToast({ type: "error", message: "رمز التحقق غير صحيح" });
+        setToast({ type: "error", message: t("auth.t_123680", "رمز التحقق غير صحيح") });
       }
     }
   };
@@ -207,7 +207,7 @@ const RegisterPage: React.FC = () => {
     ) {
       setToast({
         type: "error",
-        message: "يرجى ملء جميع الحقول المطلوبة والموافقة على الشروط",
+        message: t("auth.t_81fd64", "يرجى ملء جميع الحقول المطلوبة والموافقة على الشروط"),
       });
       return;
     }
@@ -234,13 +234,13 @@ const RegisterPage: React.FC = () => {
       // E001: بريد مستخدم — فاليديشن على الحقل فقط (بدون توست أحمر عام)
       if (res.errNum === "E001") {
         setProfileFieldErrors({
-          email: res.msg || "البريد الإلكتروني مستخدم مسبقاً",
+          email: res.msg || t("auth.t_3f7b09", "البريد الإلكتروني مستخدم مسبقاً"),
         });
         return;
       }
       setToast({ type: "error", message: res.msg });
     } catch {
-      setToast({ type: "error", message: "خطأ في إكمال التسجيل" });
+      setToast({ type: "error", message: t("auth.t_ee9a45", "خطأ في إكمال التسجيل") });
     }
   };
 
@@ -336,7 +336,7 @@ const RegisterPage: React.FC = () => {
                     <input
                       type="text"
                       className={inputClass}
-                      placeholder="اكتب الاسم"
+                      placeholder={t("auth.t_057495", "اكتب الاسم")}
                       value={registrationData.first_name}
                       onChange={(e) =>
                         setRegistrationData((p) => ({
@@ -354,7 +354,7 @@ const RegisterPage: React.FC = () => {
                     <input
                       type="text"
                       className={inputClass}
-                      placeholder="اسم العائلة"
+                      placeholder={t("auth.t_cf0d23", "اسم العائلة")}
                       value={registrationData.last_name}
                       onChange={(e) =>
                         setRegistrationData((p) => ({
@@ -378,7 +378,7 @@ const RegisterPage: React.FC = () => {
                     <input
                       type="text"
                       className={inputClass}
-                      placeholder="رقم الهوية / الإقامة"
+                      placeholder={t("auth.t_931291", "رقم الهوية / الإقامة")}
                       value={registrationData.id_number}
                       onChange={(e) =>
                         setRegistrationData((p) => ({
@@ -479,7 +479,7 @@ const RegisterPage: React.FC = () => {
                     disabled={!cities.length}
                   >
                     <option value="">
-                      {cities.length ? "اختر المدينة" : "جاري تحميل المدن…"}
+                      {cities.length ? "اختر المدينة" : t("auth.t_6a4212", "جاري تحميل المدن…")}
                     </option>
                     {cities.map((c) => (
                       <option key={String(c.id)} value={String(c.id)}>
@@ -551,7 +551,7 @@ const RegisterPage: React.FC = () => {
                   disabled={loading}
                   className="mt-2 w-full h-[49px] py-3 bg-[#FF702A] text-white font-bold text-base rounded-full hover:bg-[#E55A1F] transition-all disabled:opacity-60"
                 >
-                  {loading ? "جاري الحفظ..." : "حفظ"}
+                  {loading ? "جاري الحفظ..." : t("auth.t_56ee6e", "حفظ")}
                 </button>
               </form>
             </>
@@ -591,7 +591,7 @@ const RegisterPage: React.FC = () => {
                     className={`text-start flex-1 border border-gray-300 px-4 py-2 text-base rounded-full focus:outline-none focus:ring-[#400198] focus:border-[#400198] min-h-[49px] ${
                       error ? "text-red-500 placeholder-red-400" : ""
                     }`}
-                    placeholder={error ? "رقم الجوال مطلوب" : "أدخل رقم الجوال"}
+                    placeholder={error ? "رقم الجوال مطلوب" : t("auth.t_080cde", "أدخل رقم الجوال")}
                     value={phone}
                     onChange={(e) =>
                       setPhone(e.target.value.replace(/[^\d]/g, ""))
@@ -605,7 +605,7 @@ const RegisterPage: React.FC = () => {
                   className="mt-1 w-full h-[49px] py-3 bg-[#FF702A] text-white font-bold text-base rounded-full hover:bg-[#E55A1F] transition-all disabled:opacity-60"
                   disabled={loading}
                 >
-                  {loading ? "جاري الإرسال..." : "إنشاء حساب"}
+                  {loading ? "جاري الإرسال..." : t("auth.t_6ec905", "إنشاء حساب")}
                 </button>
               </form>
             </>
@@ -653,7 +653,7 @@ const RegisterPage: React.FC = () => {
                 onClick={() => handleVerifyOtp()}
                 disabled={loading}
               >
-                {loading ? "جاري التحقق..." : "تحقق من الرمز"}
+                {loading ? "جاري التحقق..." : t("auth.t_13df89", "تحقق من الرمز")}
               </button>
               {error && <p className="text-md text-red-500 mt-2">{error}</p>}
             </div>

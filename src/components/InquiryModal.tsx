@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "i18next";
 import React, { useState } from "react";
 import {
   IoClose,
@@ -85,7 +86,7 @@ const InquiryModal: React.FC = () => {
           <button
             onClick={closeModal}
             className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 p-2 rounded-full transition-all duration-200"
-            title={isRTL ? "إغلاق النافذة (ESC)" : "Close modal (ESC)"}
+            title={t("contact.t_d50889", "إغلاق النافذة (ESC)")}
           >
             <IoClose className="text-2xl" />
           </button>
@@ -97,7 +98,7 @@ const InquiryModal: React.FC = () => {
             {/* Full Name */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                {isRTL ? "الاسم الكامل" : "Full Name"}
+                {t("contact.t_e19b16", "الاسم الكامل")}
               </label>
               <div className="relative">
                 <input
@@ -105,7 +106,7 @@ const InquiryModal: React.FC = () => {
                   name="fullName"
                   value={formData.fullName}
                   onChange={handleInputChange}
-                  placeholder={isRTL ? "أدخل اسمك" : "Enter your name"}
+                  placeholder={t("contact.t_802b71", "أدخل اسمك")}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#400198] focus:border-transparent pr-10"
                   required
                 />
@@ -116,7 +117,7 @@ const InquiryModal: React.FC = () => {
             {/* Phone Number */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                {isRTL ? "رقم الهاتف" : "Phone Number"}
+                {t("contact.t_211cce", "رقم الهاتف")}
               </label>
               <div className="relative">
                 <input
@@ -124,7 +125,7 @@ const InquiryModal: React.FC = () => {
                   name="phoneNumber"
                   value={formData.phoneNumber}
                   onChange={handleInputChange}
-                  placeholder={isRTL ? "أدخل رقم الهاتف" : "Enter phone number"}
+                  placeholder={t("contact.t_decebe", "أدخل رقم الهاتف")}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#400198] focus:border-transparent pr-10"
                   required
                 />
@@ -135,7 +136,7 @@ const InquiryModal: React.FC = () => {
             {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                {isRTL ? "البريد الإلكتروني" : "Email"}
+                {t("contact.t_0915ef", "البريد الإلكتروني")}
               </label>
               <div className="relative">
                 <input
@@ -144,7 +145,7 @@ const InquiryModal: React.FC = () => {
                   value={formData.email}
                   onChange={handleInputChange}
                   placeholder={
-                    isRTL ? "أدخل بريدك الإلكتروني" : "Enter your Email"
+                    t("contact.t_0ad388", "أدخل بريدك الإلكتروني")
                   }
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#400198] focus:border-transparent pr-10"
                   required
@@ -156,7 +157,7 @@ const InquiryModal: React.FC = () => {
             {/* Country */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                {isRTL ? "البلد" : "Country"}
+                {t("contact.t_4d1b5e", "البلد")}
               </label>
               <div className="relative">
                 <select
@@ -167,23 +168,23 @@ const InquiryModal: React.FC = () => {
                   required
                 >
                   <option value="">
-                    {isRTL ? "اختر بلدك" : "Select your Country"}
+                    {t("contact.t_4f0ea1", "اختر بلدك")}
                   </option>
-                  <option value="Turkey">{isRTL ? "تركيا" : "Turkey"}</option>
-                  <option value="UAE">{isRTL ? "الإمارات" : "UAE"}</option>
+                  <option value="Turkey">{t("contact.t_dfac1e", "تركيا")}</option>
+                  <option value="UAE">{t("contact.t_9bc10b", "الإمارات")}</option>
                   <option value="Saudi Arabia">
                     {isRTL ? "المملكة العربية السعودية" : "Saudi Arabia"}
                   </option>
-                  <option value="Kuwait">{isRTL ? "الكويت" : "Kuwait"}</option>
-                  <option value="Qatar">{isRTL ? "قطر" : "Qatar"}</option>
+                  <option value="Kuwait">{t("contact.t_827e15", "الكويت")}</option>
+                  <option value="Qatar">{t("contact.t_763944", "قطر")}</option>
                   <option value="Bahrain">
-                    {isRTL ? "البحرين" : "Bahrain"}
+                    {t("contact.t_2a0041", "البحرين")}
                   </option>
-                  <option value="Oman">{isRTL ? "عمان" : "Oman"}</option>
-                  <option value="Jordan">{isRTL ? "الأردن" : "Jordan"}</option>
-                  <option value="Lebanon">{isRTL ? "لبنان" : "Lebanon"}</option>
-                  <option value="Egypt">{isRTL ? "مصر" : "Egypt"}</option>
-                  <option value="Other">{isRTL ? "أخرى" : "Other"}</option>
+                  <option value="Oman">{t("contact.t_b9493d", "عمان")}</option>
+                  <option value="Jordan">{t("contact.t_bdd0aa", "الأردن")}</option>
+                  <option value="Lebanon">{t("contact.t_aec612", "لبنان")}</option>
+                  <option value="Egypt">{t("contact.t_9f5f18", "مصر")}</option>
+                  <option value="Other">{t("contact.t_83b4b5", "أخرى")}</option>
                 </select>
                 <IoLocationOutline className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg pointer-events-none" />
               </div>
@@ -193,14 +194,14 @@ const InquiryModal: React.FC = () => {
           {/* Message */}
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              {isRTL ? "رسالة الاستفسار" : "Enquiry Message"}
+              {t("contact.t_f046ba", "رسالة الاستفسار")}
             </label>
             <textarea
               name="message"
               value={formData.message}
               onChange={handleInputChange}
               placeholder={
-                isRTL ? "أدخل رسالتك هنا" : "Enter your message here"
+                t("contact.t_8c9c16", "أدخل رسالتك هنا")
               }
               rows={4}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#400198] focus:border-transparent resize-none"
@@ -215,7 +216,7 @@ const InquiryModal: React.FC = () => {
               className="bg-[#400198] hover:scale-105 transition-transform duration-300 text-sm px-8 py-3 font-semibold rounded-full text-white !flex items-center gap-2 whitespace-nowrap"
             >
               <IoPaperPlaneOutline className="text-lg" />
-              {isRTL ? "إرسال الرسالة" : "Send Message"}
+              {t("contact.t_07d759", "إرسال الرسالة")}
             </button>
           </div>
         </form>

@@ -1,3 +1,4 @@
+import { t } from "i18next";
 import { api } from "@network/apiClient";
 import { API_ENDPOINTS } from "@network/apiEndpoints";
 
@@ -44,7 +45,7 @@ export async function startTamaraPayment(
     if (body.status === false) {
       return {
         ok: false,
-        error: String(body.msg || body.message || "فشل بدء الدفع عبر تمارا"),
+        error: String(body.msg || body.message || t("payment.t_d7892a", "فشل بدء الدفع عبر تمارا")),
       };
     }
 
@@ -59,13 +60,13 @@ export async function startTamaraPayment(
       return { ok: true, checkoutUrl };
     }
 
-    return { ok: false, error: "لم يتم إرجاع رابط الدفع" };
+    return { ok: false, error: t("payment.t_3ebc76", "لم يتم إرجاع رابط الدفع") };
   } catch (err) {
     const data = (err as { response?: { data?: { msg?: string; message?: string } } })
       ?.response?.data;
     return {
       ok: false,
-      error: String(data?.msg || data?.message || "تعذّر بدء الدفع عبر تمارا"),
+      error: String(data?.msg || data?.message || t("payment.t_bc5705", "تعذّر بدء الدفع عبر تمارا")),
     };
   }
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "i18next";
 import { useWebsiteProvider } from "@hooks";
 
 const DEFAULT_EMBED =
@@ -20,7 +21,7 @@ const CompanyLocationOnMap = () => {
         height="auto"
         loading="lazy"
         className="rounded-lg"
-        title="موقع الشركة"
+        title={t("contact.t_5f04d7", "موقع الشركة")}
       />
     </div>
   );

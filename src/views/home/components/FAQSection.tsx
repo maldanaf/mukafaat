@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "i18next";
 import React, { useState } from "react";
 import { IoAdd } from "react-icons/io5";
 import { useIsRTL } from "@hooks";
@@ -18,46 +19,28 @@ const FAQSection: React.FC = () => {
   const faqData: FAQItem[] = [
     {
       id: 1,
-      question: isRTL ? "ما هي منصة مكافآت؟" : "What is Mukafaat platform?",
-      answer: isRTL
-        ? "مكافآت هي المنصة الرائدة في المملكة العربية السعودية لتوفير المال والاستفادة من أفضل العروض والخصومات على البطاقات الائتمانية والكوبونز والحجوزات السياحية."
-        : "Mukafaat is the leading platform in Saudi Arabia for saving money and benefiting from the best offers and discounts on credit cards, couponz, and travel bookings.",
+      question: t("faq.t_2ab126", "ما هي منصة مكافآت؟"),
+      answer: t("faq.t_87db1b", "مكافآت هي المنصة الرائدة في المملكة العربية السعودية لتوفير المال والاستفادة من أفضل العروض والخصومات على البطاقات الائتمانية والكوبونز والحجوزات السياحية."),
     },
     {
       id: 2,
-      question: isRTL
-        ? "كيف يمكنني الاستفادة من عروض مكافآت؟"
-        : "How can I benefit from Mukafaat offers?",
-      answer: isRTL
-        ? "يمكنك الاستفادة من عروض مكافآت من خلال تصفح العروض المتاحة، اختيار البطاقة الائتمانية المناسبة، استخدام الكوبونز المتاحة، أو حجز رحلاتك بأسعار مميزة."
-        : "You can benefit from Mukafaat offers by browsing available offers, choosing the right credit card, using available couponz, or booking your trips at competitive prices.",
+      question: t("faq.t_ef8ed5", "كيف يمكنني الاستفادة من عروض مكافآت؟"),
+      answer: t("faq.t_300b09", "يمكنك الاستفادة من عروض مكافآت من خلال تصفح العروض المتاحة، اختيار البطاقة الائتمانية المناسبة، استخدام الكوبونز المتاحة، أو حجز رحلاتك بأسعار مميزة."),
     },
     {
       id: 3,
-      question: isRTL
-        ? "هل خدمات مكافآت مجانية؟"
-        : "Are Mukafaat services free?",
-      answer: isRTL
-        ? "نعم، جميع خدمات مكافآت مجانية تماماً. نحن نربطك بأفضل العروض والخصومات المتاحة دون أي رسوم إضافية أو تكاليف خفية."
-        : "Yes, all Mukafaat services are completely free. We connect you to the best available offers and discounts without any additional fees or hidden costs.",
+      question: t("faq.t_2b1b2a", "هل خدمات مكافآت مجانية؟"),
+      answer: t("faq.t_f9b1dc", "نعم، جميع خدمات مكافآت مجانية تماماً. نحن نربطك بأفضل العروض والخصومات المتاحة دون أي رسوم إضافية أو تكاليف خفية."),
     },
     {
       id: 4,
-      question: isRTL
-        ? "هل يمكنني استخدام مكافآت في جميع أنحاء المملكة؟"
-        : "Can I use Mukafaat throughout the Kingdom?",
-      answer: isRTL
-        ? "نعم، خدمات مكافآت متاحة في جميع أنحاء المملكة العربية السعودية. نعمل مع شركاء محليين في جميع المدن الرئيسية لضمان أفضل الخدمات."
-        : "Yes, Mukafaat services are available throughout Saudi Arabia. We work with local partners in all major cities to ensure the best services.",
+      question: t("faq.t_037ef3", "هل يمكنني استخدام مكافآت في جميع أنحاء المملكة؟"),
+      answer: t("faq.t_d4f92b", "نعم، خدمات مكافآت متاحة في جميع أنحاء المملكة العربية السعودية. نعمل مع شركاء محليين في جميع المدن الرئيسية لضمان أفضل الخدمات."),
     },
     {
       id: 5,
-      question: isRTL
-        ? "كيف يمكنني التواصل مع فريق مكافآت؟"
-        : "How can I contact Mukafaat team?",
-      answer: isRTL
-        ? "يمكنك التواصل معنا عبر الموقع الإلكتروني، تطبيق الهاتف المحمول، أو من خلال خدمة العملاء المتاحة على مدار الساعة. نحن هنا لمساعدتك في أي وقت."
-        : "You can contact us through our website, mobile app, or through our 24/7 customer service. We are here to help you anytime.",
+      question: t("faq.t_effe06", "كيف يمكنني التواصل مع فريق مكافآت؟"),
+      answer: t("faq.t_a667a7", "يمكنك التواصل معنا عبر الموقع الإلكتروني، تطبيق الهاتف المحمول، أو من خلال خدمة العملاء المتاحة على مدار الساعة. نحن هنا لمساعدتك في أي وقت."),
     },
   ];
 
@@ -78,7 +61,7 @@ const FAQSection: React.FC = () => {
               fontFamily: isRTL ? "Readex Pro, sans-serif" : "Jost, sans-serif",
             }}
           >
-            {isRTL ? "الأسئلة الشائعة" : "Frequently Ask Questions"}
+            {t("faq.t_90b224", "الأسئلة الشائعة")}
           </h2>
         </div>
 
@@ -134,12 +117,10 @@ const FAQSection: React.FC = () => {
                     : "Jost, sans-serif",
                 }}
               >
-                {isRTL ? "أي سؤال؟" : "Any Question?"}
+                {t("faq.t_c502bd", "أي سؤال؟")}
               </h3>
               <p className="text-gray-600 text-lg leading-relaxed max-w-md mx-auto">
-                {isRTL
-                  ? "لديك أسئلة حول خدمات مكافآت؟ نحن هنا للإجابة عليها"
-                  : "Have questions about Mukafaat services? We're here to answer them"}
+                {t("faq.t_964ee2", "لديك أسئلة حول خدمات مكافآت؟ نحن هنا للإجابة عليها")}
               </p>
             </div>
           </div>

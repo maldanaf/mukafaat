@@ -27,7 +27,7 @@ function isoToFlag(iso: string): string {
 }
 
 export default function CountryCodeSelect({ value, onChange, className }: Props) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const isArabic = (i18n.language || "").toLowerCase().startsWith("ar");
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -180,7 +180,7 @@ export default function CountryCodeSelect({ value, onChange, className }: Props)
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="ابحث عن الدولة..."
+              placeholder={t("ui.t_70c550", "ابحث عن الدولة...")}
               className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
             />
           </div>

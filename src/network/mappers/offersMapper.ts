@@ -1,3 +1,4 @@
+import { t } from "i18next";
 import type { Offer } from "@data/offers";
 
 /**
@@ -134,7 +135,7 @@ export function mapApiOfferToModel(
       priceBefore,
       discountPercentage: discountPercent,
       validity: {
-        ar: validityAr || "غير محدد",
+        ar: validityAr || t("ui.t_b2c702", "غير محدد"),
         en: validityEn || "Not specified",
       },
       features,

@@ -37,14 +37,14 @@ function NotFoundPage() {
                 className="cursor-pointer hover:text-[#fd671a] transition-colors"
                 onClick={() => navigate("/")}
               >
-                {isRTL ? "الرئيسية" : "Home"}
+                {t("ui.t_b986d8", "الرئيسية")}
               </span>
               <BsChevronDown
                 className={`mx-2 transform ${
                   isRTL ? "rotate-90" : "rotate-[270deg]"
                 }`}
               />
-              <span>{isRTL ? "الصفحة غير موجودة" : "Page Not Found"}</span>
+              <span>{t("notFound.t_7299fd", "الصفحة غير موجودة")}</span>
             </div>
 
             <div className="flex flex-col lg:flex-row gap-4">
@@ -55,7 +55,7 @@ function NotFoundPage() {
                   <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
                     <div>
                       <h1 className="text-2xl font-bold text-[#400198] mb-2">
-                        {isRTL ? "الصفحة غير موجودة" : "Page Not Found"}
+                        {t("notFound.t_7299fd", "الصفحة غير موجودة")}
                       </h1>
                     </div>
                   </div>
@@ -79,9 +79,7 @@ function NotFoundPage() {
                                 : "Jost, sans-serif",
                             }}
                           >
-                            {isRTL
-                              ? "عذراً، الصفحة غير موجودة"
-                              : "Sorry, Page Not Found"}
+                            {t("notFound.t_89c97e", "عذراً، الصفحة غير موجودة")}
                           </span>
                           <img
                             src={UnderTitle}
@@ -90,9 +88,7 @@ function NotFoundPage() {
                           />
                         </div>
                         <p className="text-gray-700 leading-relaxed text-lg mb-8">
-                          {isRTL
-                            ? "الصفحة التي تبحث عنها غير موجودة أو تم نقلها. يرجى التحقق من الرابط أو العودة إلى الصفحة الرئيسية."
-                            : "The page you are looking for does not exist or has been moved. Please check the link or return to the home page."}
+                          {t("notFound.t_ed2ef4", "الصفحة التي تبحث عنها غير موجودة أو تم نقلها. يرجى التحقق من الرابط أو العودة إلى الصفحة الرئيسية.")}
                         </p>
                       </div>
 
@@ -101,13 +97,13 @@ function NotFoundPage() {
                           onClick={() => navigate(APP_ROUTES.home)}
                           className="bg-white border-2 border-[#400198] text-[#400198] px-8 py-3 rounded-full font-semibold hover:bg-[#400198] hover:text-white transition-all duration-300"
                         >
-                          {isRTL ? "العودة للرئيسية" : "Back to Home"}
+                          {t("notFound.t_3fb531", "العودة للرئيسية")}
                         </button>
                         <button
                           onClick={() => window.history.back()}
                           className="bg-white border-2 border-[#fd671a] text-[#fd671a] px-8 py-3 rounded-full font-semibold hover:bg-[#fd671a] hover:text-white transition-all duration-300"
                         >
-                          {isRTL ? "العودة للخلف" : "Go Back"}
+                          {t("notFound.t_a72d38", "العودة للخلف")}
                         </button>
                       </div>
                     </div>
@@ -123,7 +119,7 @@ function NotFoundPage() {
                               : "Jost, sans-serif",
                           }}
                         >
-                          {isRTL ? "تحتاج مساعدة؟" : "Need Help?"}
+                          {t("notFound.t_48b043", "تحتاج مساعدة؟")}
                         </span>
                         <img
                           src={UnderTitle}
@@ -132,30 +128,20 @@ function NotFoundPage() {
                         />
                       </div>
                       <p className="text-gray-700 leading-relaxed mb-4">
-                        {isRTL
-                          ? "إذا كنت تواجه مشكلة في العثور على ما تبحث عنه، يمكنك:"
-                          : "If you're having trouble finding what you're looking for, you can:"}
+                        {t("notFound.t_ff49ab", "إذا كنت تواجه مشكلة في العثور على ما تبحث عنه، يمكنك:")}
                       </p>
                       <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
                         <li>
-                          {isRTL
-                            ? "استخدام شريط البحث في أعلى الصفحة"
-                            : "Use the search bar at the top of the page"}
+                          {t("notFound.t_7366d4", "استخدام شريط البحث في أعلى الصفحة")}
                         </li>
                         <li>
-                          {isRTL
-                            ? "تصفح فئات العروض والبطاقات والكوبونز"
-                            : "Browse our offers, cards, and couponz categories"}
+                          {t("notFound.t_df87a4", "تصفح فئات العروض والبطاقات والكوبونز")}
                         </li>
                         <li>
-                          {isRTL
-                            ? "التحقق من الروابط في القائمة الرئيسية"
-                            : "Check the links in the main menu"}
+                          {t("notFound.t_85fc51", "التحقق من الروابط في القائمة الرئيسية")}
                         </li>
                         <li>
-                          {isRTL
-                            ? "الاتصال بنا للحصول على المساعدة"
-                            : "Contact us for assistance"}
+                          {t("notFound.t_4c1537", "الاتصال بنا للحصول على المساعدة")}
                         </li>
                       </ul>
                     </div>
@@ -181,7 +167,7 @@ function NotFoundPage() {
                           : "Jost, sans-serif",
                       }}
                     >
-                      {isRTL ? "روابط سريعة" : "Quick Links"}
+                      {t("notFound.t_6e58cd", "روابط سريعة")}
                     </span>
                     <img
                       src={UnderTitle}
@@ -194,31 +180,31 @@ function NotFoundPage() {
                       onClick={() => navigate("/offers")}
                       className="w-full text-right hover:text-[#400198] transition-colors text-sm"
                     >
-                      {isRTL ? "العروض" : "Offers"}
+                      {t("notFound.t_7a56a6", "العروض")}
                     </button>
                     <button
                       onClick={() => navigate("/cards")}
                       className="w-full text-right hover:text-[#400198] transition-colors text-sm"
                     >
-                      {isRTL ? "البطاقات" : "Cards"}
+                      {t("cards.t_cd328b", "البطاقات")}
                     </button>
                     <button
                       onClick={() => navigate("/coupons")}
                       className="w-full text-right hover:text-[#400198] transition-colors text-sm"
                     >
-                      {isRTL ? "الكوبونز" : "Couponz"}
+                      {t("notFound.t_2164b4", "الكوبونز")}
                     </button>
                     <button
                       onClick={() => navigate("/bookings")}
                       className="w-full text-right hover:text-[#400198] transition-colors text-sm"
                     >
-                      {isRTL ? "الحجوزات" : "Bookings"}
+                      {t("notFound.t_fdf32a", "الحجوزات")}
                     </button>
                     <button
                       onClick={() => navigate("/contact")}
                       className="w-full text-right hover:text-[#400198] transition-colors text-sm"
                     >
-                      {isRTL ? "اتصل بنا" : "Contact Us"}
+                      {t("contact.t_c3721b", "اتصل بنا")}
                     </button>
                   </div>
                 </div>

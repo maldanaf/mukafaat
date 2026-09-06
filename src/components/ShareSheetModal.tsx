@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "i18next";
 import { useCallback } from "react";
 import { IoMdClose } from "react-icons/io";
 import { FaWhatsapp, FaFacebookF, FaTelegramPlane } from "react-icons/fa";
@@ -41,16 +42,14 @@ export default function ShareSheetModal(props: {
     ? text.trim()
     : title?.trim()
       ? title.trim()
-      : isRTL
-        ? "مشاركة"
-        : "Share";
+      : t("ui.t_019688", "مشاركة");
 
   const copyLink = useCallback(async () => {
     try {
       await navigator.clipboard?.writeText(url);
-      toast.success(isRTL ? "تم نسخ الرابط" : "Link copied");
+      toast.success(t("ui.t_12601a", "تم نسخ الرابط"));
     } catch {
-      toast.error(isRTL ? "تعذر نسخ الرابط" : "Unable to copy link");
+      toast.error(t("ui.t_457b4e", "تعذر نسخ الرابط"));
     }
   }, [url, isRTL]);
 
@@ -90,7 +89,7 @@ export default function ShareSheetModal(props: {
         <div className="p-5 border-b border-gray-100 flex items-center justify-between">
           <div className="min-w-0">
             <div className="text-base font-bold text-gray-900 truncate">
-              {isRTL ? "مشاركة" : "Share"}
+              {t("ui.t_019688", "مشاركة")}
             </div>
             {title && (
               <div className="text-sm text-gray-500 truncate">{title}</div>
@@ -100,7 +99,7 @@ export default function ShareSheetModal(props: {
             type="button"
             onClick={onClose}
             className="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center"
-            aria-label={isRTL ? "إغلاق" : "Close"}
+            aria-label={t("ui.t_5bf826", "إغلاق")}
           >
             <IoMdClose className="text-xl text-gray-700" />
           </button>
@@ -117,7 +116,7 @@ export default function ShareSheetModal(props: {
                 <FiShare2 />
               </div>
               <span className="text-xs font-semibold text-gray-700">
-                {isRTL ? "مشاركة" : "Share"}
+                {t("ui.t_019688", "مشاركة")}
               </span>
             </button>
 
@@ -180,7 +179,7 @@ export default function ShareSheetModal(props: {
                 <FiCopy />
               </div>
               <span className="text-xs font-semibold text-gray-700">
-                {isRTL ? "نسخ الرابط" : "Copy link"}
+                {t("ui.t_cb1b89", "نسخ الرابط")}
               </span>
             </button>
           </div>
