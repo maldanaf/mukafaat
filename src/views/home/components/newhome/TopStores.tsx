@@ -5,7 +5,9 @@ import { t } from "i18next";
 import { CONTAINER } from "./tokens";
 import { FOCUS } from "@ui";
 import SectionHead from "./SectionHead";
+import { useState } from "react";
 import BrandImage from "./BrandImage";
+import ComingSoonModal from "@components/ComingSoonModal";
 import Reveal from "./Reveal";
 import { merchantUrl } from "@utils/merchantUrl";
 
@@ -14,6 +16,7 @@ interface Store {
   slug?: string | null;
   name: string;
   logo?: string | null;
+  is_coming_soon?: boolean;
   category?: { slug?: string | null } | string | null;
 }
 
@@ -22,6 +25,9 @@ const TopStores: React.FC<{ stores: Store[]; title?: string; showViewAll?: boole
   title,
   showViewAll = true,
 }) => {
+  // متجر «قريباً» لا تُفتح صفحته — نافذة الترقّب بدلها
+  const [pending, setPending] = useState<Store | null>(null);
+
   if (!stores?.length) return null;
 
   return (
@@ -36,10 +42,10 @@ const TopStores: React.FC<{ stores: Store[]; title?: string; showViewAll?: boole
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
         {stores.slice(0, 8).map((store, i) => (
           <Reveal key={store.id} delay={(i % 8) * 45} className="h-full">
-            <Link
-              to={merchantUrl(store)}
-              className={`group mk-lift relative flex h-full min-h-[118px] flex-col items-center justify-center gap-2.5 overflow-hidden rounded-mk-xl border border-[#EFEDF7] bg-white p-3 text-center shadow-mk-card hover:border-[#C9BCEC] ${FOCUS}`}
-            >
+            {(() => {
+              const shellCls = `group mk-lift relative flex h-full min-h-[118px] w-full flex-col items-center justify-center gap-2.5 overflow-hidden rounded-mk-xl border border-[#EFEDF7] bg-white p-3 text-center shadow-mk-card hover:border-[#C9BCEC] ${FOCUS}`;
+              const inner = (
+              <>
               <span
                 className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-grad-mist p-[3px] shadow-[inset_0_0_0_1.5px_#EFEDF7] transition-all duration-200 group-hover:shadow-[inset_0_0_0_2px_#C9BCEC] group-hover:scale-110"
                 aria-hidden
@@ -58,10 +64,26 @@ const TopStores: React.FC<{ stores: Store[]; title?: string; showViewAll?: boole
               <span className="line-clamp-2 text-[12.5px] font-extrabold leading-tight text-[#4A4A63] transition-colors duration-200 group-hover:text-[#400198]">
                 {store.name}
               </span>
-            </Link>
+              </>
+              );
+              return store.is_coming_soon ? (
+                <button type="button" onClick={() => setPending(store)} className={shellCls}>
+                  {inner}
+                </button>
+              ) : (
+                <Link to={merchantUrl(store)} className={shellCls}>
+                  {inner}
+                </Link>
+              );
+            })()}
           </Reveal>
         ))}
       </div>
+      <ComingSoonModal
+        isOpen={pending !== null}
+        onClose={() => setPending(null)}
+        merchant={pending}
+      />
     </section>
   );
 };

@@ -863,7 +863,19 @@ export function useMerchantDetail(idOrSlug: string | number | undefined) {
   const lang = useQueryLang();
   return useQuery({
     queryKey: ["mokafaat", "merchant", idOrSlug, lang],
-    queryFn: () => merchantsApi.detail(idOrSlug!).then((r) => r.data),
+    /**
+     * متجر «قريباً» يردّ الخادم عنه 423 ببيانات عرض مختصرة، وهي حالة
+     * مقصودة لا خطأ شبكة: نمرّرها كبيانات لتعرض الصفحة شاشة الترقّب
+     * بدل «التاجر غير موجود».
+     */
+    queryFn: () =>
+      merchantsApi
+        .detail(idOrSlug!)
+        .then((r) => r.data)
+        .catch((err) => {
+          if (err?.response?.status === 423) return err.response.data;
+          throw err;
+        }),
     enabled: !!idOrSlug,
   });
 }

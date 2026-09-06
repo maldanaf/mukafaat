@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Link, useNavigate } from "@/lib/router-compat";
 import { FiMapPin, FiTag, FiEye, FiHeart, FiShare2, FiStar } from "react-icons/fi";
 import { MdVerified } from "react-icons/md";
@@ -12,6 +12,8 @@ import { useShareSheetStore } from "@stores/shareSheetStore";
 import { useFavorites, useFavoriteToggle } from "@hooks/api/useMokafaatQueries";
 import { normalizeFavoritesList } from "@utils/favorites";
 import { merchantUrl } from "@utils/merchantUrl";
+import ComingSoonModal from "@components/ComingSoonModal";
+import MerchantCoverFallback from "@ui/MerchantCoverFallback";
 import { VIVID_CARD, VIVID_MEDIA, VIVID_SCRIM, CornerButton } from "./CatalogKit";
 
 export interface MerchantSummary {
@@ -109,16 +111,55 @@ const MerchantCard: React.FC<{ merchant: MerchantSummary }> = ({ merchant }) => 
     });
   };
 
-  return (
-    <Link to={href} className={`${VIVID_CARD} ${FOCUS}`}>
+  /**
+   * متجر «قريباً» لا تُفتح صفحته: لا عروض ولا خصومات بعد، وصفحة فارغة
+   * توحي بعطل لا بترقّب. فيبقى الكرت ظاهراً بلا رابط.
+   */
+  const isComingSoon = merchant.is_coming_soon === true;
+
+  // الضغط على متجر «قريباً» يفتح نافذة الترقّب بدل صفحة فارغة
+  const [comingSoonOpen, setComingSoonOpen] = useState(false);
+
+  const CardShell = ({ children }: { children: React.ReactNode }) =>
+    isComingSoon ? (
+      <button
+        type="button"
+        onClick={() => setComingSoonOpen(true)}
+        className={`${VIVID_CARD} ${FOCUS} w-full text-start`}
+        aria-label={`${merchant.name} — ${t("merchantCard.coming_soon", "قريباً")}`}
+      >
+        {children}
+      </button>
+    ) : (
+      <Link to={href} className={`${VIVID_CARD} ${FOCUS}`}>
+        {children}
+      </Link>
+    );
+
+  const card = (
+    <CardShell>
       <div className={VIVID_MEDIA}>
+        {/*
+          شريط ركني مائل ٤٥ درجة — يُقرأ من مسافة ولا يغطّي الغلاف،
+          بخلاف بادج صغير يضيع بين الصور. يُقصّ بحواف الحاوية.
+
+          في الزاوية البادئة (يسار العربية) لأن بادج الخصم يشغل
+          المنتهية — واجتماعهما في زاوية واحدة يخفي أحدهما.
+        */}
+        {isComingSoon && (
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -start-[52px] top-[18px] z-[3] w-[190px] -rotate-45 bg-[linear-gradient(135deg,#FFA23A_0%,#FD671A_100%)] py-1.5 text-center text-[13px] font-extrabold text-white shadow-[0_8px_20px_-8px_rgba(0,0,0,0.55)] rtl:rotate-45"
+          >
+            {t("merchantCard.coming_soon", "قريباً")}
+          </span>
+        )}
         <Ratio ratio="aspect-[2/1]">
           {cover ? (
             <SmartImage src={cover} alt={merchant.name} className="h-full w-full object-cover" />
           ) : (
-            <div className="flex h-full w-full items-center justify-center bg-mk-tint2">
-              <FiTag className="text-mk-faint" size={28} aria-hidden />
-            </div>
+            // بلا غلاف: لون هادئ خاص بالمتجر بدل أيقونة رمادية مكرّرة
+            <MerchantCoverFallback name={merchant.name} />
           )}
         </Ratio>
         <span className={VIVID_SCRIM} aria-hidden />
@@ -137,12 +178,7 @@ const MerchantCard: React.FC<{ merchant: MerchantSummary }> = ({ merchant }) => 
 
         {/* الحالة: «قريباً» أو «مميّز» أو «أضيف مؤخراً» */}
         <span className="absolute start-3 top-3 z-[2] flex flex-col items-start gap-1.5">
-          {merchant.is_coming_soon && (
-            <span className="rounded-full bg-[linear-gradient(135deg,#FFA23A_0%,#FD671A_100%)] px-3 py-1 text-[11px] font-extrabold text-white shadow-[0_8px_20px_-8px_rgba(253,103,26,0.95)] ring-1 ring-white/25">
-              {t("merchantCard.coming_soon", "قريباً")}
-            </span>
-          )}
-          {merchant.is_featured && !merchant.is_coming_soon && (
+          {merchant.is_featured && !isComingSoon && (
             <span className="inline-flex items-center gap-1 rounded-full bg-[linear-gradient(135deg,#C2246E_0%,#7A1146_100%)] px-3 py-1 text-[11px] font-extrabold text-white shadow-[0_8px_20px_-8px_rgba(194,36,110,0.95)] ring-1 ring-white/25">
               <FiStar size={11} aria-hidden />
               {t("merchantCard.featured", "مميّز")}
@@ -246,7 +282,20 @@ const MerchantCard: React.FC<{ merchant: MerchantSummary }> = ({ merchant }) => 
         </div>
 
       </div>
-    </Link>
+    </CardShell>
+  );
+
+  return (
+    <>
+      {card}
+
+      {/* خارج الكرت: زرّ داخل زرّ غير صالح، والبوابة تركّبها على body */}
+      <ComingSoonModal
+        isOpen={comingSoonOpen}
+        onClose={() => setComingSoonOpen(false)}
+        merchant={merchant}
+      />
+    </>
   );
 };
 

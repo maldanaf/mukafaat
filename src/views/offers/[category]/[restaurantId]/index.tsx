@@ -2,6 +2,8 @@
 
 import React, { useState, useMemo, useEffect } from "react";
 import { useParams, useNavigate, Link as RouterLink } from "@/lib/router-compat";
+import { TbBuildingStore } from "react-icons/tb";
+import ComingSoonModal from "@components/ComingSoonModal";
 import { Helmet } from "@/lib/helmet-compat";
 import { useIsRTL } from "@hooks";
 import {
@@ -15,6 +17,7 @@ import {
   FiMapPin,
   FiUserPlus,
   FiUserCheck,
+  FiBell,
 } from "react-icons/fi";
 import {
   offerCategories,
@@ -101,6 +104,8 @@ type StoreView = Restaurant & {
   favoritesCount?: number;
   sharesCount?: number;
   isFavorited?: boolean;
+  /** التصنيف الأب — لفتات الخبز؛ null حين يكون تصنيف المتجر رئيسياً */
+  parentCategory?: { slug: string; name: string } | null;
 };
 
 const RestaurantDetailsPage = () => {
@@ -142,10 +147,18 @@ const RestaurantDetailsPage = () => {
     if (!m) return null;
 
     const merchantName = String(m.name ?? merchantSlug);
-    const merchantLogo = m.logo ? String(m.logo) : "Pro1";
+    // بلا شعار ⇒ فارغ، ليعرض SmartImage بديله النظيف (أول حرف من
+    // الاسم) بدل صورة تجريبية لمتجر آخر
+    const merchantLogo = m.logo ? String(m.logo) : "";
     const cat = m.category as Record<string, unknown> | undefined;
     const categoryKey = (category as string) || String(cat?.slug ?? "all");
     const categoryName = String(cat?.name ?? categoryKey);
+
+    // التصنيف الأب لفتات الخبز — غيابه يعني أن التصنيف رئيسي أصلاً
+    const parent = cat?.parent as Record<string, unknown> | undefined;
+    const parentCategory = parent
+      ? { slug: String(parent.slug ?? ""), name: String(parent.name ?? "") }
+      : null;
 
     // عروض التاجر
     const offersRaw = (m.offers ?? []) as Array<Record<string, unknown>>;
@@ -175,6 +188,7 @@ const RestaurantDetailsPage = () => {
       // غلاف المتجر — كان الهيرو يستخدم الشعار خلفيةً فيخرج مسطّحاً
       cover: m.cover_image ? String(m.cover_image) : null,
       category: { key: categoryKey, ar: categoryName, en: categoryName },
+      parentCategory,
       description: { ar: String(m.description ?? ""), en: String(m.description ?? "") },
       location: { ar: "-", en: "-" },
       distance: "-",
@@ -213,6 +227,8 @@ const RestaurantDetailsPage = () => {
     const m = data?.merchant as Record<string, unknown> | undefined;
     return m?.is_coming_soon === true || m?.status === "coming_soon";
   }, [merchantDetailData]);
+
+  const [comingSoonOpen, setComingSoonOpen] = useState(false);
 
   /**
    * حالة المتجر وساعات عمله واسم تاب المحتوى — كلها من تفاصيل التاجر،
@@ -437,8 +453,76 @@ const RestaurantDetailsPage = () => {
     );
   }
 
+  /**
+   * متجر «قريباً»: صفحة ترقّب لا صفحة متجر فارغة.
+   *
+   * الزائر قد يصل بالرابط مباشرةً (من بحث أو مشاركة) فلا يمرّ على
+   * الكرت الذي يمنع الفتح — فنوقفه هنا أيضاً.
+   */
+  if (isComingSoon) {
+    return (
+      <div className={`${CONTAINER} flex min-h-[70vh] items-center justify-center py-16`}>
+        <div className="w-full max-w-md overflow-hidden rounded-mk-xl bg-white text-center shadow-mk-card">
+          <div className="bg-[linear-gradient(135deg,#400198_0%,#6703EB_100%)] px-6 pb-8 pt-10 text-white">
+            <span className="mx-auto mb-4 grid h-20 w-20 place-items-center rounded-full bg-white/15 ring-1 ring-white/25">
+              <TbBuildingStore size={38} />
+            </span>
+            <p className="m-0 text-[34px] font-extrabold leading-none">
+              {t("merchantCard.coming_soon", "قريباً")}
+            </p>
+            <p className="mx-auto mt-3 mb-0 max-w-[85%] text-[16px] font-bold opacity-95">
+              {isRTL ? restaurant.name.ar : restaurant.name.en}
+            </p>
+          </div>
+
+          <div className="px-6 pb-7 pt-5">
+            <p className="m-0 text-[13.5px] leading-relaxed text-mk-muted">
+              {t(
+                "comingSoon.body",
+                "هذا المتجر لم يُطلق بعد. تابعه ليصلك إشعار فور توفّر عروضه وخصوماته.",
+              )}
+            </p>
+
+            <button
+              type="button"
+              onClick={() => setComingSoonOpen(true)}
+              className="mt-5 flex w-full items-center justify-center gap-2 rounded-mk-md bg-[linear-gradient(135deg,#400198_0%,#6703EB_100%)] px-4 py-3 text-[14px] font-extrabold text-white"
+            >
+              <FiBell size={17} aria-hidden />
+              {t("comingSoon.follow", "تابعني عند الإطلاق")}
+            </button>
+
+            <RouterLink
+              to="/stores"
+              className="mt-3 inline-block text-[13px] font-bold text-mk-primary"
+            >
+              {t("comingSoon.browse_stores", "تصفّح المتاجر المتاحة")}
+            </RouterLink>
+          </div>
+        </div>
+
+        <ComingSoonModal
+          isOpen={comingSoonOpen}
+          onClose={() => setComingSoonOpen(false)}
+          merchant={{
+            id: restaurant.id,
+            name: isRTL ? restaurant.name.ar : restaurant.name.en,
+          }}
+        />
+      </div>
+    );
+  }
+
   // Function to get restaurant image
-  const getRestaurantImage = (logoName: string) => {
+  /**
+   * شعار المتجر.
+   *
+   * كان الافتراضي صورة تجريبية (شعار «دلما مول») فيظهر متجرٌ بشعار
+   * متجرٍ آخر. صار الغياب يُعيد فارغاً ليتولّى SmartImage البديل.
+   */
+  const getRestaurantImage = (logoName?: string | null) => {
+    if (!logoName) return "";
+
     // If it's already a URL, return it directly
     if (logoName.startsWith("http")) {
       return logoName;
@@ -463,7 +547,7 @@ const RestaurantDetailsPage = () => {
       case "Pro8":
         return Pro8;
       default:
-        return Pro1;
+        return "";
     }
   };
 
@@ -489,13 +573,16 @@ const RestaurantDetailsPage = () => {
       <section className="relative overflow-hidden bg-[linear-gradient(150deg,#1B1150_0%,#400198_55%,#6703EB_100%)]">
         {/* الصورة كخلفية ناعمة تحت التدرّج */}
         {/* الغلاف الحقيقي — يعطي الصفحة هويّة المتجر بدل لون مسطّح */}
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: `url(${restaurant.cover ?? getRestaurantImage(restaurant.logo)})`,
-          }}
-        />
+        {/* بلا غلاف ⇒ تدرّج الهوية وحده؛ صورة متجر آخر تضلّل */}
+        {(restaurant.cover || getRestaurantImage(restaurant.logo)) && (
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-cover bg-center"
+            style={{
+              backgroundImage: `url(${restaurant.cover || getRestaurantImage(restaurant.logo)})`,
+            }}
+          />
+        )}
         {/* تعتيم متدرّج: داكن أسفل ليقرأ النص، وشفّاف أعلى لتظهر الصورة */}
         <span
           aria-hidden
@@ -519,15 +606,27 @@ const RestaurantDetailsPage = () => {
             </button>
             <nav aria-label="breadcrumb" className="min-w-0">
               <ol className="flex flex-wrap items-center gap-1.5 text-[12px] text-white/75">
+                {/*
+                  المسار: الرئيسية ← التصنيف الأب ← الفرعي ← المتجر.
+                  كان يضع «العروض» مكان الأب فيضيع موضع المتجر في الشجرة.
+                  والأب يُحذف حين يكون تصنيف المتجر رئيسياً بلا أب.
+                */}
                 {[
                   { label: t("propertyDetail.breadcrumb.home", "الرئيسية"), to: "/" },
-                  { label: t("home.navbar.offers", "العروض"), to: "/offers" },
+                  ...(restaurant.parentCategory
+                    ? [
+                        {
+                          label: restaurant.parentCategory.name,
+                          to: `/stores/${restaurant.parentCategory.slug}`,
+                        },
+                      ]
+                    : []),
                   {
                     label:
                       restaurant?.category?.ar ||
                       (categoryInfo ? (isRTL ? categoryInfo.ar : categoryInfo.en) : "") ||
                       String(category ?? ""),
-                    to: `/offers/${category}`,
+                    to: `/stores/${restaurant.category.key}`,
                   },
                   { label: isRTL ? restaurant.name.ar : restaurant.name.en },
                 ].map((crumb, i) => (

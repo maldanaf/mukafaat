@@ -10,6 +10,7 @@ import SectionHead from "./SectionHead";
 import BrandImage from "./BrandImage";
 import Reveal from "./Reveal";
 import { merchantUrl } from "@utils/merchantUrl";
+import ComingSoonModal from "@components/ComingSoonModal";
 
 interface Place {
   id: number | string;
@@ -17,6 +18,7 @@ interface Place {
   name: string;
   type?: string | null;
   logo?: string | null;
+  is_coming_soon?: boolean;
   cover_image?: string | null;
   distance_km?: number | null;
   discount?: number | string | null;
@@ -50,6 +52,8 @@ const seededAngle = (seed: string, i: number) => {
 const NearbySection: React.FC<Props> = ({ places, onUseMyLocation, title, showViewAll = true }) => {
   const navigate = useNavigate();
   const [selected, setSelected] = useState(0);
+  // متجر «قريباً» لا تُفتح صفحته — نافذة الترقّب بدلها
+  const [pending, setPending] = useState<Place | null>(null);
   const [locating, setLocating] = useState(false);
   const [denied, setDenied] = useState(false);
 
@@ -245,6 +249,11 @@ const NearbySection: React.FC<Props> = ({ places, onUseMyLocation, title, showVi
                   key={place.id}
                   onClick={() => {
                     setSelected(i);
+                    // متجر «قريباً» لا تُفتح صفحته
+                    if (place.is_coming_soon) {
+                      setPending(place);
+                      return;
+                    }
                     navigate(merchantUrl(place));
                   }}
                   onMouseEnter={() => setSelected(i)}
@@ -325,6 +334,12 @@ const NearbySection: React.FC<Props> = ({ places, onUseMyLocation, title, showVi
           </div>
         </Reveal>
       </div>
+
+      <ComingSoonModal
+        isOpen={pending !== null}
+        onClose={() => setPending(null)}
+        merchant={pending}
+      />
     </section>
   );
 };

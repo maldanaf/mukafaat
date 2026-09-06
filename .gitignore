@@ -36,4 +36,5 @@ dist-ssr
 *.legacy.tsx.bak
 scratchpad/
 tmp/
-tsconfig.tsbuildinfo
+# مخرجات بناء الأنواع بكل صيغها (tsconfig.tsbuildinfo و tsconfig.check.tsbuildinfo)
+*.tsbuildinfo
