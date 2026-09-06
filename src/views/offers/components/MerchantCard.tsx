@@ -176,17 +176,12 @@ const MerchantCard: React.FC<{ merchant: MerchantSummary }> = ({ merchant }) => 
           </span>
         )}
 
-        {/* الحالة: «قريباً» أو «مميّز» أو «أضيف مؤخراً» */}
+        {/* الحالة: «مميّز» — و«قريباً» شريطٌ مائل فوقها */}
         <span className="absolute start-3 top-3 z-[2] flex flex-col items-start gap-1.5">
           {merchant.is_featured && !isComingSoon && (
             <span className="inline-flex items-center gap-1 rounded-full bg-[linear-gradient(135deg,#C2246E_0%,#7A1146_100%)] px-3 py-1 text-[11px] font-extrabold text-white shadow-[0_8px_20px_-8px_rgba(194,36,110,0.95)] ring-1 ring-white/25">
               <FiStar size={11} aria-hidden />
               {t("merchantCard.featured", "مميّز")}
-            </span>
-          )}
-          {merchant.is_new && (
-            <span className="rounded-full bg-[linear-gradient(135deg,#0E9384_0%,#0B7268_100%)] px-3 py-1 text-[11px] font-extrabold text-white shadow-[0_8px_20px_-8px_rgba(14,147,132,0.95)] ring-1 ring-white/25">
-              {t("merchantCard.new", "أضيف مؤخراً")}
             </span>
           )}
         </span>
@@ -279,6 +274,17 @@ const MerchantCard: React.FC<{ merchant: MerchantSummary }> = ({ merchant }) => 
             <FiShare2 size={12} aria-hidden />
             <span dir="ltr">{compact(shares)}</span>
           </span>
+
+          {/*
+            «أضيف مؤخراً» هنا لا فوق الغلاف: ركن الغلاف يشغله شريط
+            «قريباً» المائل، وكان الاثنان يتراكبان على كل متجر جديد
+            وقريباً معاً — وهي الحالة الشائعة لا النادرة.
+          */}
+          {merchant.is_new && (
+            <span className="ms-auto rounded-full bg-[#E6F6F4] px-2.5 py-0.5 text-[10.5px] font-extrabold text-[#0B7268]">
+              {t("merchantCard.new", "أضيف مؤخراً")}
+            </span>
+          )}
         </div>
 
       </div>
